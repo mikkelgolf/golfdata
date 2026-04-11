@@ -130,14 +130,15 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             );
           })}
 
-          {/* State borders (thin internal lines) */}
+          {/* State borders */}
           {stateBorderPath && (
             <path
               d={stateBorderPath}
               fill="none"
-              stroke="hsl(var(--border))"
-              strokeWidth="0.5"
+              stroke="hsl(var(--foreground))"
+              strokeWidth="0.75"
               strokeLinejoin="round"
+              opacity="0.2"
             />
           )}
 
