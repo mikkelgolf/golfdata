@@ -85,7 +85,7 @@ export const rankingsMen: TeamData[] = [
   { rank: 69, team: "Michigan State", conference: "B10", events: 8, wins: 49, losses: 37, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 42.7018, lng: -84.4822 },
   { rank: 70, team: "Loyola Marymount", conference: "WCC", events: 9, wins: 62, losses: 71, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 33.9700, lng: -118.4175 },
   { rank: 71, team: "Elon", conference: "CAA", events: 8, wins: 91, losses: 20, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 36.1033, lng: -79.5023 },
-  { rank: 72, team: "Marquette", conference: "BEAST", events: 9, wins: 57, losses: 63, ties: 2, eligible: false, isAutoQualifier: true, aqConference: "BEAST", lat: 43.0389, lng: -87.9298 },
+  { rank: 72, team: "Marquette", conference: "BE", events: 9, wins: 57, losses: 63, ties: 2, eligible: false, isAutoQualifier: true, aqConference: "BE", lat: 43.0389, lng: -87.9298 },
   { rank: 73, team: "South Alabama", conference: "SUNBELT", events: 8, wins: 69, losses: 40, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 30.6966, lng: -88.1780 },
   { rank: 74, team: "Stetson", conference: "ASUN", events: 10, wins: 102, losses: 48, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 29.0394, lng: -81.3031 },
   { rank: 75, team: "Kansas State", conference: "B12", events: 9, wins: 69, losses: 50, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 39.1836, lng: -96.5717 },

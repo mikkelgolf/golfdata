@@ -115,7 +115,12 @@ export default function USMap({ assignments, regionals }: USMapProps) {
           viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
           className="w-full h-auto"
           style={{ maxHeight: "520px" }}
+          role="img"
+          aria-label="Interactive map of NCAA regional site assignments showing team locations and travel lines"
         >
+          <title>NCAA Regional Assignments Map</title>
+          <desc>Interactive map showing team assignments to regional sites with travel distances</desc>
+
           {/* State fills */}
           {statesGeo.features.map((feat, i) => {
             const d = pathGen(feat);
@@ -193,16 +198,26 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             const isHovered = hoveredTeam === team.team;
 
             return (
-              <g key={`team-${team.team}`}>
+              <g key={`team-${team.team}`} role="listitem" aria-label={`${team.team}, seed ${team.seed}, ${team.distanceMiles.toLocaleString()} miles`}>
+                {/* Invisible touch target (44px minimum) */}
+                <circle
+                  cx={team.x}
+                  cy={team.y}
+                  r={22}
+                  fill="transparent"
+                  className="cursor-pointer"
+                  onMouseEnter={() => setHoveredTeam(team.team)}
+                  onMouseLeave={() => setHoveredTeam(null)}
+                  onTouchStart={() => setHoveredTeam(hoveredTeam === team.team ? null : team.team)}
+                />
+                {/* Visible dot */}
                 <circle
                   cx={team.x}
                   cy={team.y}
                   r={isHovered ? 6 : 4}
                   fill={color}
                   opacity={isActive ? (isHovered ? 1 : 0.7) : 0.15}
-                  className="transition-all duration-200 cursor-pointer"
-                  onMouseEnter={() => setHoveredTeam(team.team)}
-                  onMouseLeave={() => setHoveredTeam(null)}
+                  className="transition-all duration-200 pointer-events-none"
                 />
                 {isHovered && (
                   <text
@@ -222,28 +237,47 @@ export default function USMap({ assignments, regionals }: USMapProps) {
           {regionalPositions.map((r) => {
             const isActive =
               activeRegional === null || activeRegional === r.id;
+            const isSelected = activeRegional === r.id;
             const teams = byRegional.get(r.id) ?? [];
 
             return (
               <g
                 key={`regional-${r.id}`}
                 className="cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label={`${r.name}: ${r.host}, ${r.city} - ${teams.length} teams${isSelected ? " (selected)" : ""}`}
+                aria-pressed={isSelected}
                 onClick={() =>
-                  setActiveRegional(activeRegional === r.id ? null : r.id)
+                  setActiveRegional(isSelected ? null : r.id)
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveRegional(isSelected ? null : r.id);
+                  }
+                }}
               >
+                {/* Invisible touch target (44px minimum) */}
+                <circle
+                  cx={r.x}
+                  cy={r.y}
+                  r={22}
+                  fill="transparent"
+                />
                 {/* Outer glow when active */}
-                {activeRegional === r.id && (
+                {isSelected && (
                   <circle
                     cx={r.x}
                     cy={r.y}
                     r={20}
                     fill={r.color}
                     opacity="0.15"
+                    className="pointer-events-none"
                   />
                 )}
                 {/* Pulse ring when active */}
-                {activeRegional === r.id && (
+                {isSelected && (
                   <circle
                     cx={r.x}
                     cy={r.y}
@@ -252,24 +286,36 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                     stroke={r.color}
                     strokeWidth="1.5"
                     opacity="0.3"
-                    className="animate-pulse"
+                    className="animate-pulse pointer-events-none"
                   />
                 )}
+                {/* Focus ring */}
+                <circle
+                  cx={r.x}
+                  cy={r.y}
+                  r={16}
+                  fill="none"
+                  stroke="hsl(var(--ring))"
+                  strokeWidth="2"
+                  opacity="0"
+                  className="transition-opacity duration-150 group-focus:opacity-100"
+                  style={{ opacity: 0 }}
+                />
                 {/* Main marker */}
                 <circle
                   cx={r.x}
                   cy={r.y}
-                  r={activeRegional === r.id ? 12 : 10}
+                  r={isSelected ? 12 : 10}
                   fill={r.color}
                   stroke="hsl(var(--background))"
                   strokeWidth="2.5"
                   opacity={isActive ? 1 : 0.3}
-                  className="transition-all duration-200"
+                  className="transition-all duration-200 pointer-events-none"
                 />
                 {/* Regional label */}
                 <text
                   x={r.x}
-                  y={r.y + (activeRegional === r.id ? 25 : 23)}
+                  y={r.y + (isSelected ? 25 : 23)}
                   textAnchor="middle"
                   className={cn(
                     "text-[10px] font-semibold pointer-events-none",
@@ -297,6 +343,9 @@ export default function USMap({ assignments, regionals }: USMapProps) {
           <div
             className="absolute top-3 right-3 rounded-lg bg-background/95 border border-border p-3 max-w-[220px] backdrop-blur-sm"
             style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
+            role="status"
+            aria-live="polite"
+            aria-label={`${activeRegionalData.name} details`}
           >
             <p className="font-semibold text-[13px] text-foreground">
               {activeRegionalData.name}

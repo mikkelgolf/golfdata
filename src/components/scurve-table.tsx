@@ -15,6 +15,7 @@ import {
   MapPin,
   Plane,
 } from "lucide-react";
+import HeadToHeadMatrix, { HeadToHeadCompact } from "@/components/head-to-head-matrix";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -94,7 +95,7 @@ function SortTh({
       aria-sort={active ? (currentDir === "asc" ? "ascending" : "descending") : "none"}
       tabIndex={0}
       className={cn(
-        "px-2 py-1.5 text-[12px] font-medium text-muted-foreground uppercase tracking-wide cursor-pointer select-none whitespace-nowrap transition-colors hover:text-foreground",
+        "px-2 py-2 text-[12px] font-medium text-muted-foreground uppercase tracking-wide cursor-pointer select-none whitespace-nowrap transition-colors hover:text-foreground",
         className
       )}
       onClick={() => onSort(sortKey)}
@@ -457,7 +458,7 @@ export default function ScurveTable({
       </div>
 
       {/* Mobile card view */}
-      <div className="sm:hidden mt-2 space-y-2">
+      <div className="sm:hidden mt-2 space-y-3">
         {filtered.length === 0 ? (
           <div className="px-4 py-12 text-center text-[13px] text-muted-foreground">
             No teams match your search.
@@ -569,7 +570,7 @@ function FilterBar({
 
       {/* Mobile */}
       <div className="flex sm:hidden flex-col gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <SegmentedToggle
             options={[
               { value: "men", label: "Men" },
@@ -588,7 +589,7 @@ function FilterBar({
             onChange={(v) => onViewChange(v as ViewMode)}
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <SegmentedToggle
             options={[
               { value: "committee", label: "Committee" },
@@ -729,11 +730,11 @@ function RegionalGroup({
             <tr key={`advancement-line-${regional.id}`}>
               <td colSpan={7} className="p-0">
                 <div className="flex items-center gap-2 px-3 py-1">
-                  <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-red-400/80 whitespace-nowrap">
+                  <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-chart-4/80 whitespace-nowrap">
                     Top 5 advance to nationals
                   </span>
-                  <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
+                  <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
                 </div>
               </td>
             </tr>
@@ -814,6 +815,12 @@ function RegionalDetailPanel({
           </p>
         </div>
       </div>
+
+      {/* Head-to-Head Matrix */}
+      <HeadToHeadMatrix
+        teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
+        regionalColor={regional.color}
+      />
     </div>
   );
 }
@@ -854,7 +861,7 @@ function TeamRow({
       <td className="px-2 text-left text-[13px] text-foreground whitespace-nowrap">
         <span className="font-medium">{team.team}</span>
         {isHost && (
-          <span className="ml-1.5 inline-flex items-center rounded px-1 py-0 text-[9px] font-semibold uppercase tracking-wider bg-amber-500/15 text-amber-400">
+          <span className="ml-1.5 inline-flex items-center rounded px-1 py-0 text-[9px] font-semibold uppercase tracking-wider bg-gold/15 text-gold">
             Host
           </span>
         )}
@@ -870,7 +877,7 @@ function TeamRow({
       {/* Type */}
       <td className="px-2 text-center">
         {team.isAutoQualifier ? (
-          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-emerald-500/15 text-emerald-400">
+          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-chart-1/15 text-chart-1">
             AQ
           </span>
         ) : (
@@ -946,11 +953,14 @@ function MobileRegionalGroup({
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="px-3 py-3 bg-card/50 border-t border-border/50 space-y-2">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="px-3 py-3 bg-card/50 border-t border-border/50 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
             <StatBox label="Auto Qualifiers" value={String(teams.filter((t) => t.isAutoQualifier).length)} />
           </div>
+          <HeadToHeadCompact
+            teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
+          />
         </div>
       )}
 
@@ -966,11 +976,11 @@ function MobileRegionalGroup({
             />
             {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
               <div className="flex items-center gap-2 px-3 py-1.5">
-                <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
-                <span className="text-[9px] font-medium uppercase tracking-wider text-red-400/80">
+                <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
+                <span className="text-[9px] font-medium uppercase tracking-wider text-chart-4/80">
                   Advancing
                 </span>
-                <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
+                <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
               </div>
             )}
           </div>
@@ -1005,12 +1015,12 @@ function MobileTeamCard({
           <div className="flex items-center gap-1.5">
             <span className="font-medium text-[13px] text-foreground truncate">{team.team}</span>
             {isHost && (
-              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-amber-500/15 text-amber-400">
+              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-gold/15 text-gold">
                 Host
               </span>
             )}
             {team.isAutoQualifier && (
-              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400">
+              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-chart-1/15 text-chart-1">
                 AQ
               </span>
             )}
@@ -1151,7 +1161,7 @@ function VisualScurve({
                       <div
                         key={`${team.team}-${team.seed}`}
                         className={cn(
-                          "h-9 px-1.5 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
+                          "h-9 px-2 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
                           isAboveLine
                             ? "bg-secondary/80 hover:bg-secondary"
                             : "bg-secondary/30 hover:bg-secondary/50"
@@ -1169,12 +1179,12 @@ function VisualScurve({
                           {team.team}
                         </span>
                         {isHost && (
-                          <span className="ml-auto shrink-0 text-[8px] font-bold text-amber-400 uppercase">
+                          <span className="ml-auto shrink-0 text-[8px] font-bold text-gold uppercase">
                             H
                           </span>
                         )}
                         {team.isAutoQualifier && !isHost && (
-                          <span className="ml-auto shrink-0 text-[8px] font-bold text-emerald-400">
+                          <span className="ml-auto shrink-0 text-[8px] font-bold text-chart-1">
                             AQ
                           </span>
                         )}
@@ -1186,11 +1196,11 @@ function VisualScurve({
                 {/* Advancement line after tier containing 5th team */}
                 {tierIdx === Math.floor((TEAMS_ADVANCING - 1)) && (
                   <div className="flex items-center gap-2 px-1 py-0.5">
-                    <div className="flex-1 border-t-2 border-dashed border-red-500/40" />
-                    <span className="text-[9px] font-medium uppercase tracking-wider text-red-400/70">
+                    <div className="flex-1 border-t-2 border-dashed border-chart-4/40" />
+                    <span className="text-[9px] font-medium uppercase tracking-wider text-chart-4/70">
                       Top {TEAMS_ADVANCING} advance
                     </span>
-                    <div className="flex-1 border-t-2 border-dashed border-red-500/40" />
+                    <div className="flex-1 border-t-2 border-dashed border-chart-4/40" />
                   </div>
                 )}
               </div>

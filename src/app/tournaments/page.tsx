@@ -138,8 +138,8 @@ export default function TournamentsPage() {
                       t.gender === "Both"
                         ? "bg-primary/15 text-primary"
                         : t.gender === "Men"
-                          ? "bg-blue-500/15 text-blue-400"
-                          : "bg-pink-500/15 text-pink-400"
+                          ? "bg-chart-2/15 text-chart-2"
+                          : "bg-chart-5/15 text-chart-5"
                     }`}
                   >
                     {t.gender}

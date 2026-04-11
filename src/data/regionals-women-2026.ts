@@ -18,7 +18,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Stanford, CA",
     lat: 37.4275,
     lng: -122.1697,
-    color: "#22c55e",
+    color: "#509575",
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Chapel Hill, NC",
     lat: 35.9049,
     lng: -79.0469,
-    color: "#3b82f6",
+    color: "#5ea5fc",
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Waco, TX",
     lat: 31.5497,
     lng: -97.1143,
-    color: "#f59e0b",
+    color: "#bf9f67",
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Ann Arbor, MI",
     lat: 42.2808,
     lng: -83.7430,
-    color: "#ef4444",
+    color: "#d14747",
   },
   {
     id: 5,
@@ -54,7 +54,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Tallahassee, FL",
     lat: 30.4418,
     lng: -84.2985,
-    color: "#a855f7",
+    color: "#9b5eba",
   },
   {
     id: 6,
@@ -63,6 +63,6 @@ export const regionalsWomen2026: Regional[] = [
     city: "Simpsonville, KY",
     lat: 38.2226,
     lng: -85.3554,
-    color: "#06b6d4",
+    color: "#52acac",
   },
 ];

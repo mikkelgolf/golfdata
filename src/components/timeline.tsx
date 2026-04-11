@@ -152,14 +152,14 @@ export default function Timeline({ snapshots, diffs }: TimelineProps) {
 
                   {diff.newTeams.length > 0 && (
                     <p className="text-[12px] text-muted-foreground">
-                      <span className="text-emerald-400">New:</span>{" "}
+                      <span className="text-chart-1">New:</span>{" "}
                       {diff.newTeams.join(", ")}
                     </p>
                   )}
 
                   {diff.droppedTeams.length > 0 && (
                     <p className="text-[12px] text-muted-foreground">
-                      <span className="text-red-400">Dropped:</span>{" "}
+                      <span className="text-chart-4">Dropped:</span>{" "}
                       {diff.droppedTeams.join(", ")}
                     </p>
                   )}
@@ -177,9 +177,9 @@ function MoverRow({ change }: { change: RankChange }) {
   return (
     <p className="text-[12px] text-muted-foreground flex items-center gap-1">
       {change.delta > 0 ? (
-        <ChevronUp className="h-3 w-3 text-emerald-400 shrink-0" />
+        <ChevronUp className="h-3 w-3 text-chart-1 shrink-0" />
       ) : change.delta < 0 ? (
-        <ChevronDown className="h-3 w-3 text-red-400 shrink-0" />
+        <ChevronDown className="h-3 w-3 text-chart-4 shrink-0" />
       ) : (
         <Minus className="h-3 w-3 text-muted-foreground shrink-0" />
       )}
@@ -190,7 +190,7 @@ function MoverRow({ change }: { change: RankChange }) {
       <span
         className={cn(
           "text-[10px] font-mono",
-          change.delta > 0 ? "text-emerald-400" : "text-red-400"
+          change.delta > 0 ? "text-chart-1" : "text-chart-4"
         )}
       >
         ({change.delta > 0 ? "+" : ""}

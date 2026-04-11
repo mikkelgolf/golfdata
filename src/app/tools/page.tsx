@@ -47,8 +47,8 @@ const tools = [
 
 function StatusBadge({ status }: { status: "live" | "development" | "planned" }) {
   const styles = {
-    live: "bg-emerald-500/15 text-emerald-400",
-    development: "bg-amber-500/15 text-amber-400",
+    live: "bg-chart-1/15 text-chart-1",
+    development: "bg-gold/15 text-gold",
     planned: "bg-secondary text-muted-foreground",
   };
   const labels = {

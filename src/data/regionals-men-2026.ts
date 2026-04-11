@@ -1,3 +1,13 @@
+export interface RegionalPreview {
+  courseName?: string;
+  grassType?: string;
+  courseHistory?: string;
+  internationalPlayers?: string;
+  travelHistory?: string;
+  coachMilestones?: string;
+  notes?: string;
+}
+
 export interface Regional {
   id: number;
   name: string;
@@ -6,6 +16,7 @@ export interface Regional {
   lat: number;
   lng: number;
   color: string;
+  preview?: RegionalPreview;
 }
 
 export const regionalsMen2026: Regional[] = [
@@ -16,7 +27,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Corvallis, OR",
     lat: 44.5646,
     lng: -123.2620,
-    color: "#22c55e",
+    color: "#509575",
   },
   {
     id: 2,
@@ -25,7 +36,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Athens, GA",
     lat: 33.9519,
     lng: -83.3576,
-    color: "#3b82f6",
+    color: "#5ea5fc",
   },
   {
     id: 3,
@@ -34,7 +45,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Marana, AZ",
     lat: 32.4367,
     lng: -111.2257,
-    color: "#f59e0b",
+    color: "#bf9f67",
   },
   {
     id: 4,
@@ -43,7 +54,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Bermuda Run, NC",
     lat: 36.0048,
     lng: -80.4218,
-    color: "#ef4444",
+    color: "#d14747",
   },
   {
     id: 5,
@@ -52,7 +63,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Bryan, TX",
     lat: 30.6744,
     lng: -96.3698,
-    color: "#a855f7",
+    color: "#9b5eba",
   },
   {
     id: 6,
@@ -61,6 +72,6 @@ export const regionalsMen2026: Regional[] = [
     city: "Columbus, OH",
     lat: 40.0067,
     lng: -83.0305,
-    color: "#06b6d4",
+    color: "#52acac",
   },
 ];
