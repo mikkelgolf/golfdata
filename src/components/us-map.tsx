@@ -5,40 +5,51 @@ import { cn } from "@/lib/utils";
 import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
 import { Plane } from "lucide-react";
+import { geoAlbersUsa, geoPath } from "d3-geo";
+import { feature, mesh } from "topojson-client";
+import type { Topology, GeometryCollection } from "topojson-specification";
+import type { FeatureCollection } from "geojson";
+import usTopology from "@/data/us-states-10m.json";
 
 // ---------------------------------------------------------------------------
-// US Map SVG coordinates
+// Albers USA projection (standard for US maps - handles AK/HI insets)
 // ---------------------------------------------------------------------------
+const SVG_WIDTH = 975;
+const SVG_HEIGHT = 610;
+const projection = geoAlbersUsa()
+  .scale(1300)
+  .translate([SVG_WIDTH / 2, SVG_HEIGHT / 2]);
+const pathGen = geoPath(projection);
 
-// Convert lat/lng to SVG x/y within continental US bounds
-// Bounds: lat 24.5-49.5, lng -125 to -66.5
-const US_BOUNDS = {
-  minLat: 24.5,
-  maxLat: 49.5,
-  minLng: -125,
-  maxLng: -66.5,
-};
+// ---------------------------------------------------------------------------
+// Extract real state boundaries from TopoJSON
+// ---------------------------------------------------------------------------
+const topo = usTopology as unknown as Topology;
+const statesGeo = feature(
+  topo,
+  topo.objects.states as GeometryCollection
+) as FeatureCollection;
+const stateBorderPath = pathGen(
+  mesh(topo, topo.objects.states as GeometryCollection, (a, b) => a !== b)
+);
+const nationBorderPath = pathGen(
+  mesh(topo, topo.objects.nation as GeometryCollection)
+);
 
-const SVG_WIDTH = 960;
-const SVG_HEIGHT = 600;
-const PADDING = 40;
-
-function geoToSvg(lat: number, lng: number): { x: number; y: number } {
-  const x =
-    PADDING +
-    ((lng - US_BOUNDS.minLng) / (US_BOUNDS.maxLng - US_BOUNDS.minLng)) *
-      (SVG_WIDTH - 2 * PADDING);
-  // Invert Y because SVG y goes down, lat goes up
-  const y =
-    PADDING +
-    ((US_BOUNDS.maxLat - lat) / (US_BOUNDS.maxLat - US_BOUNDS.minLat)) *
-      (SVG_HEIGHT - 2 * PADDING);
-  return { x, y };
+// ---------------------------------------------------------------------------
+// Project lat/lng to SVG coordinates using the Albers USA projection
+// ---------------------------------------------------------------------------
+function projectPoint(
+  lat: number,
+  lng: number
+): { x: number; y: number } | null {
+  const p = projection([lng, lat]);
+  return p ? { x: p[0], y: p[1] } : null;
 }
 
-// Simplified US outline path (continental US)
-const US_OUTLINE = `M 80,120 L 120,100 L 160,95 L 200,100 L 240,90 L 280,85 L 320,88 L 360,90 L 400,92 L 440,88 L 480,85 L 520,90 L 560,95 L 600,100 L 640,110 L 680,115 L 720,120 L 760,130 L 800,140 L 840,155 L 870,170 L 880,200 L 885,230 L 880,260 L 870,290 L 855,320 L 835,345 L 820,365 L 800,380 L 790,400 L 785,420 L 790,440 L 800,460 L 810,475 L 805,490 L 790,500 L 770,510 L 750,505 L 730,500 L 720,485 L 700,475 L 680,470 L 660,465 L 640,460 L 620,455 L 600,460 L 580,465 L 560,468 L 540,470 L 520,475 L 500,478 L 480,480 L 460,485 L 440,490 L 420,492 L 400,495 L 380,498 L 360,500 L 340,498 L 320,495 L 300,490 L 280,488 L 260,490 L 240,495 L 220,498 L 200,500 L 180,502 L 160,505 L 140,508 L 120,510 L 100,512 L 80,510 L 65,505 L 55,495 L 50,480 L 48,460 L 50,440 L 52,420 L 50,400 L 48,380 L 50,360 L 52,340 L 50,320 L 48,300 L 50,280 L 52,260 L 55,240 L 58,220 L 60,200 L 62,180 L 65,160 L 70,140 Z`;
-
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 interface USMapProps {
   assignments: ScurveAssignment[];
   regionals: Regional[];
@@ -60,34 +71,41 @@ export default function USMap({ assignments, regionals }: USMapProps) {
     return map;
   }, [assignments, regionals]);
 
-  // Regional positions
+  // Project regional site positions
   const regionalPositions = useMemo(
     () =>
-      regionals.map((r) => ({
-        ...r,
-        ...geoToSvg(r.lat, r.lng),
-      })),
+      regionals
+        .map((r) => {
+          const pos = projectPoint(r.lat, r.lng);
+          return pos ? { ...r, x: pos.x, y: pos.y } : null;
+        })
+        .filter(Boolean) as (Regional & { x: number; y: number })[],
     [regionals]
   );
 
-  // Team positions
+  // Project team positions
   const teamPositions = useMemo(
     () =>
-      assignments.map((a) => ({
-        ...a,
-        ...geoToSvg(a.lat, a.lng),
-      })),
+      assignments
+        .map((a) => {
+          const pos = projectPoint(a.lat, a.lng);
+          return pos ? { ...a, x: pos.x, y: pos.y } : null;
+        })
+        .filter(Boolean) as (ScurveAssignment & { x: number; y: number })[],
     [assignments]
   );
 
-  // Active regional data
-  const activeRegionalData = activeRegional !== null
-    ? regionals.find((r) => r.id === activeRegional)
-    : null;
-  const activeTeams = activeRegional !== null
-    ? byRegional.get(activeRegional) ?? []
-    : [];
-  const activeTotalDist = activeTeams.reduce((sum, t) => sum + t.distanceMiles, 0);
+  // Active regional data for info overlay
+  const activeRegionalData =
+    activeRegional !== null
+      ? regionals.find((r) => r.id === activeRegional)
+      : null;
+  const activeTeams =
+    activeRegional !== null ? byRegional.get(activeRegional) ?? [] : [];
+  const activeTotalDist = activeTeams.reduce(
+    (sum, t) => sum + t.distanceMiles,
+    0
+  );
 
   return (
     <div className="space-y-4">
@@ -96,45 +114,74 @@ export default function USMap({ assignments, regionals }: USMapProps) {
         <svg
           viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
           className="w-full h-auto"
-          style={{ maxHeight: "500px" }}
+          style={{ maxHeight: "520px" }}
         >
-          {/* US outline */}
-          <path
-            d={US_OUTLINE}
-            fill="hsl(var(--secondary))"
-            stroke="hsl(var(--border))"
-            strokeWidth="1.5"
-            opacity="0.6"
-          />
+          {/* State fills */}
+          {statesGeo.features.map((feat, i) => {
+            const d = pathGen(feat);
+            if (!d) return null;
+            return (
+              <path
+                key={`state-${i}`}
+                d={d}
+                fill="hsl(var(--secondary))"
+                stroke="none"
+              />
+            );
+          })}
+
+          {/* State borders (thin internal lines) */}
+          {stateBorderPath && (
+            <path
+              d={stateBorderPath}
+              fill="none"
+              stroke="hsl(var(--border))"
+              strokeWidth="0.5"
+              strokeLinejoin="round"
+            />
+          )}
+
+          {/* Nation outline (thicker outer border) */}
+          {nationBorderPath && (
+            <path
+              d={nationBorderPath}
+              fill="none"
+              stroke="hsl(var(--foreground))"
+              strokeWidth="1"
+              strokeLinejoin="round"
+              opacity="0.4"
+            />
+          )}
 
           {/* Travel lines (only when a regional is selected) */}
-          {activeRegional !== null && activeRegionalData && (
-            <>
-              {teamPositions
+          {activeRegional !== null &&
+            activeRegionalData &&
+            (() => {
+              const rPos = projectPoint(
+                activeRegionalData.lat,
+                activeRegionalData.lng
+              );
+              if (!rPos) return null;
+              return teamPositions
                 .filter((t) => t.regionalId === activeRegional)
                 .map((team) => {
-                  const rPos = geoToSvg(activeRegionalData.lat, activeRegionalData.lng);
-                  // Create a curved line
                   const midX = (team.x + rPos.x) / 2;
                   const midY = (team.y + rPos.y) / 2 - 30;
                   const isHovered = hoveredTeam === team.team;
-
                   return (
-                    <g key={`line-${team.team}`}>
-                      <path
-                        d={`M ${team.x} ${team.y} Q ${midX} ${midY} ${rPos.x} ${rPos.y}`}
-                        fill="none"
-                        stroke={activeRegionalData.color}
-                        strokeWidth={isHovered ? 2.5 : 1.5}
-                        strokeDasharray={isHovered ? "none" : "4,4"}
-                        opacity={isHovered ? 0.9 : 0.4}
-                        className="transition-all duration-200"
-                      />
-                    </g>
+                    <path
+                      key={`line-${team.team}`}
+                      d={`M ${team.x} ${team.y} Q ${midX} ${midY} ${rPos.x} ${rPos.y}`}
+                      fill="none"
+                      stroke={activeRegionalData.color}
+                      strokeWidth={isHovered ? 2.5 : 1.5}
+                      strokeDasharray={isHovered ? "none" : "4,4"}
+                      opacity={isHovered ? 0.9 : 0.4}
+                      className="transition-all duration-200"
+                    />
                   );
-                })}
-            </>
-          )}
+                });
+            })()}
 
           {/* Team dots */}
           {teamPositions.map((team) => {
@@ -170,9 +217,10 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             );
           })}
 
-          {/* Regional site markers (larger, on top) */}
+          {/* Regional site markers */}
           {regionalPositions.map((r) => {
-            const isActive = activeRegional === null || activeRegional === r.id;
+            const isActive =
+              activeRegional === null || activeRegional === r.id;
             const teams = byRegional.get(r.id) ?? [];
 
             return (
@@ -183,6 +231,16 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   setActiveRegional(activeRegional === r.id ? null : r.id)
                 }
               >
+                {/* Outer glow when active */}
+                {activeRegional === r.id && (
+                  <circle
+                    cx={r.x}
+                    cy={r.y}
+                    r={20}
+                    fill={r.color}
+                    opacity="0.15"
+                  />
+                )}
                 {/* Pulse ring when active */}
                 {activeRegional === r.id && (
                   <circle
@@ -191,7 +249,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                     r={18}
                     fill="none"
                     stroke={r.color}
-                    strokeWidth="2"
+                    strokeWidth="1.5"
                     opacity="0.3"
                     className="animate-pulse"
                   />
@@ -203,14 +261,14 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   r={activeRegional === r.id ? 12 : 10}
                   fill={r.color}
                   stroke="hsl(var(--background))"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   opacity={isActive ? 1 : 0.3}
                   className="transition-all duration-200"
                 />
                 {/* Regional label */}
                 <text
                   x={r.x}
-                  y={r.y + (activeRegional === r.id ? 24 : 22)}
+                  y={r.y + (activeRegional === r.id ? 25 : 23)}
                   textAnchor="middle"
                   className={cn(
                     "text-[10px] font-semibold pointer-events-none",
@@ -236,7 +294,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
         {/* Info overlay when a regional is selected */}
         {activeRegionalData && (
           <div
-            className="absolute top-3 right-3 rounded-lg bg-background/95 border border-border p-3 max-w-[200px] backdrop-blur-sm"
+            className="absolute top-3 right-3 rounded-lg bg-background/95 border border-border p-3 max-w-[220px] backdrop-blur-sm"
             style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
           >
             <p className="font-semibold text-[13px] text-foreground">
@@ -254,7 +312,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                 {activeTotalDist.toLocaleString()} mi total travel
               </p>
             </div>
-            <div className="mt-2 space-y-0.5">
+            <div className="mt-2 space-y-0.5 max-h-[200px] overflow-y-auto">
               {activeTeams
                 .sort((a, b) => a.seed - b.seed)
                 .map((t) => (
@@ -270,7 +328,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                     onMouseLeave={() => setHoveredTeam(null)}
                   >
                     #{t.seed} {t.team}{" "}
-                    <span className="text-text-tertiary">
+                    <span className="opacity-60">
                       ({t.distanceMiles.toLocaleString()} mi)
                     </span>
                   </p>
@@ -278,7 +336,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             </div>
             <button
               onClick={() => setActiveRegional(null)}
-              className="mt-2 text-[10px] text-primary hover:text-primary-hover transition-colors"
+              className="mt-2 text-[10px] text-primary hover:underline transition-colors"
             >
               Clear selection
             </button>
@@ -290,12 +348,18 @@ export default function USMap({ assignments, regionals }: USMapProps) {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
         {regionals.map((r) => {
           const teams = byRegional.get(r.id) ?? [];
-          const totalDist = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
-          const avgDist = teams.length > 0 ? Math.round(totalDist / teams.length) : 0;
-          const maxTravel = teams.reduce(
-            (max, t) => (t.distanceMiles > max.distanceMiles ? t : max),
-            teams[0]
+          const totalDist = teams.reduce(
+            (sum, t) => sum + t.distanceMiles,
+            0
           );
+          const avgDist =
+            teams.length > 0 ? Math.round(totalDist / teams.length) : 0;
+          const maxTravel = teams.length > 0
+            ? teams.reduce(
+                (max, t) => (t.distanceMiles > max.distanceMiles ? t : max),
+                teams[0]
+              )
+            : null;
 
           return (
             <button
@@ -322,7 +386,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   {avgDist.toLocaleString()} mi avg
                 </p>
                 {maxTravel && (
-                  <p className="text-[10px] text-text-tertiary truncate">
+                  <p className="text-[10px] text-muted-foreground/70 truncate">
                     Farthest: {maxTravel.team}
                   </p>
                 )}
