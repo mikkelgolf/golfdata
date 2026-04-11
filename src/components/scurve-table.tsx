@@ -315,6 +315,7 @@ export default function ScurveTable({
 
   // Visual S-curve view
   if (viewMode === "visual") {
+    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
     return (
       <div className="w-full">
         <FilterBar
@@ -329,11 +330,22 @@ export default function ScurveTable({
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
         />
-        <VisualScurve
-          assignments={assignments}
-          regionals={gender === "men" ? menRegionals : womenRegionals}
-          regionalMap={regionalMap}
-        />
+        {/* Desktop */}
+        <div className="hidden sm:block">
+          <VisualScurve
+            assignments={assignments}
+            regionals={activeRegionals}
+            regionalMap={regionalMap}
+          />
+        </div>
+        {/* Mobile */}
+        <div className="sm:hidden">
+          <MobileVisualScurve
+            assignments={assignments}
+            regionals={activeRegionals}
+            regionalMap={regionalMap}
+          />
+        </div>
       </div>
     );
   }
@@ -1034,6 +1046,97 @@ function MobileTeamCard({
       <span className="font-mono text-[8px] text-muted-foreground w-[42px] text-right shrink-0 tabular-nums pr-0.5">
         {team.distanceMiles.toLocaleString()}
       </span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Mobile Visual S-Curve
+// ---------------------------------------------------------------------------
+
+function MobileVisualScurve({
+  assignments,
+  regionals,
+  regionalMap,
+}: {
+  assignments: ScurveAssignment[];
+  regionals: Regional[];
+  regionalMap: Map<number, Regional>;
+}) {
+  // Group teams by regional
+  const byRegional = useMemo(() => {
+    const map = new Map<number, ScurveAssignment[]>();
+    for (const r of regionals) map.set(r.id, []);
+    for (const a of assignments) map.get(a.regionalId)?.push(a);
+    for (const [, teams] of map) teams.sort((a, b) => a.seed - b.seed);
+    return map;
+  }, [assignments, regionals]);
+
+  return (
+    <div className="mt-3 grid grid-cols-2 gap-1.5">
+      {regionals.map((r) => {
+        const teams = byRegional.get(r.id) ?? [];
+        return (
+          <div
+            key={r.id}
+            className="rounded border border-border/60 overflow-hidden"
+            style={{ borderLeftColor: r.color, borderLeftWidth: "2px" }}
+          >
+            {/* Regional header */}
+            <div
+              className="px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60"
+              style={{ borderBottom: `1px solid ${r.color}30` }}
+            >
+              {r.name.replace(/ Regional$/, "")}
+            </div>
+
+            {/* Column headers */}
+            <div className="flex items-center text-[6px] uppercase tracking-wider text-muted-foreground/40 px-0.5 pt-px">
+              <span className="w-[14px] text-right shrink-0">#</span>
+              <span className="ml-0.5 min-w-0 flex-1">Team</span>
+              <span className="w-[16px] text-right shrink-0 pr-0.5">Rk</span>
+            </div>
+
+            {/* Team rows */}
+            <div className="pb-px">
+              {teams.map((team, index) => {
+                const isHost = team.team === r.host;
+                const isAboveLine = index < TEAMS_ADVANCING;
+
+                return (
+                  <div key={`${team.team}-${team.seed}`}>
+                    <div
+                      className={cn(
+                        "h-[15px] flex items-center gap-0 text-[9px] leading-none px-0.5",
+                        isAboveLine ? "bg-secondary/40" : ""
+                      )}
+                    >
+                      <span className="font-mono text-[7px] text-muted-foreground w-[14px] text-right shrink-0 tabular-nums">
+                        {team.seed}
+                      </span>
+                      <span className="font-medium text-foreground truncate min-w-0 ml-0.5 flex-1 text-[8px]">
+                        {team.team}
+                        {isHost && <span className="text-[5px] font-bold text-gold ml-0.5">H</span>}
+                        {team.isAutoQualifier && <span className="text-[5px] font-bold text-primary ml-0.5">AQ</span>}
+                      </span>
+                      <span className="shrink-0 font-mono text-[7px] text-muted-foreground w-[16px] text-right tabular-nums pr-0.5">
+                        {team.rank}
+                      </span>
+                    </div>
+                    {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
+                      <div className="flex items-center gap-0.5 px-0.5">
+                        <div className="flex-1 border-t border-dashed border-destructive/30" />
+                        <span className="text-[5px] font-medium uppercase text-destructive/50">cut</span>
+                        <div className="flex-1 border-t border-dashed border-destructive/30" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
