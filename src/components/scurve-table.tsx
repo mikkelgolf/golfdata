@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { computeScurve, type ScurveAssignment } from "@/lib/scurve";
+import { computeScurve, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import {
@@ -11,6 +11,9 @@ import {
   ChevronUp,
   ChevronDown,
   ChevronsUpDown,
+  ChevronRight,
+  MapPin,
+  Plane,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -26,7 +29,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve";
+type ViewMode = "regional" | "scurve" | "visual";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -36,6 +39,12 @@ interface ScurveTableProps {
   womenRegionals: Regional[];
   lastUpdated: string;
 }
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const TEAMS_ADVANCING = 5; // top 5 per regional advance to nationals
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -129,9 +138,11 @@ export default function ScurveTable({
   // URL-persisted state
   const initialView = (searchParams.get("view") as ViewMode) || "regional";
   const initialGender = (searchParams.get("gender") as Gender) || "men";
+  const initialMode = (searchParams.get("mode") as ScurveMode) || "committee";
 
   const [viewMode, setViewMode] = useState<ViewMode>(initialView);
   const [gender, setGender] = useState<Gender>(initialGender);
+  const [scurveMode, setScurveMode] = useState<ScurveMode>(initialMode);
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("seed");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -140,10 +151,11 @@ export default function ScurveTable({
 
   // Persist to URL
   const updateUrl = useCallback(
-    (v: ViewMode, g: Gender) => {
+    (v: ViewMode, g: Gender, m: ScurveMode) => {
       const params = new URLSearchParams();
       params.set("view", v);
       params.set("gender", g);
+      params.set("mode", m);
       router.replace(`?${params.toString()}`, { scroll: false });
     },
     [router]
@@ -151,15 +163,19 @@ export default function ScurveTable({
 
   const handleViewChange = (v: ViewMode) => {
     setViewMode(v);
-    // Reset sort when changing view
     setSortKey("seed");
     setSortDir("asc");
-    updateUrl(v, gender);
+    updateUrl(v, gender, scurveMode);
   };
 
   const handleGenderChange = (g: Gender) => {
     setGender(g);
-    updateUrl(viewMode, g);
+    updateUrl(viewMode, g, scurveMode);
+  };
+
+  const handleModeChange = (m: ScurveMode) => {
+    setScurveMode(m);
+    updateUrl(viewMode, gender, m);
   };
 
   const handleSort = (key: SortKey) => {
@@ -173,9 +189,12 @@ export default function ScurveTable({
 
   // Compute S-curve
   const assignments = useMemo(() => {
-    if (gender === "women") return [];
-    return computeScurve(menTeams, menRegionals);
-  }, [gender, menTeams, menRegionals]);
+    if (gender === "women") {
+      if (womenTeams.length === 0 || womenRegionals.length === 0) return [];
+      return computeScurve(womenTeams, womenRegionals, scurveMode);
+    }
+    return computeScurve(menTeams, menRegionals, scurveMode);
+  }, [gender, menTeams, menRegionals, womenTeams, womenRegionals, scurveMode]);
 
   // Regional map for colors / names
   const regionalMap = useMemo(() => {
@@ -237,12 +256,10 @@ export default function ScurveTable({
       arr.push(t);
       groups.set(t.regionalId, arr);
     }
-    // Sort groups by regional ID, respect user sort within each group
     const result: { regional: Regional; teams: ScurveAssignment[] }[] = [];
     const regionals = gender === "men" ? menRegionals : womenRegionals;
     for (const r of regionals) {
       const teams = groups.get(r.id) ?? [];
-      // Don't re-sort — sorted memo already applied user's sort preference
       if (teams.length > 0) {
         result.push({ regional: r, teams });
       }
@@ -250,29 +267,72 @@ export default function ScurveTable({
     return result;
   }, [viewMode, sorted, gender, menRegionals, womenRegionals]);
 
-  // Women placeholder
-  if (gender === "women") {
+  // Women - show data if available, otherwise show timeline
+  if (gender === "women" && womenTeams.length === 0) {
     return (
       <div className="w-full">
         <FilterBar
           viewMode={viewMode}
           gender={gender}
+          scurveMode={scurveMode}
           search={search}
           resultCount={0}
           lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
           onSearchChange={setSearch}
         />
-        <div className="mt-16 flex flex-col items-center gap-3 text-center">
-          <p className="text-lg font-medium text-foreground">
-            Women&apos;s predictions coming soon
-          </p>
-          <p className="text-sm text-muted-foreground max-w-md">
-            We&apos;re working on adding women&apos;s D1 rankings and regional
-            predictions. Check back soon.
-          </p>
+        <div className="mt-12 flex flex-col items-center gap-6 text-center">
+          <div className="space-y-2">
+            <p className="text-lg font-medium text-foreground">
+              Women&apos;s Regional Predictions
+            </p>
+            <p className="text-sm text-muted-foreground max-w-md">
+              Women&apos;s S-curve predictions will be available once
+              rankings data is finalized. 72 teams across 6 regionals.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg">
+            <div className="card-gradient px-4 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Selections</p>
+              <p className="text-sm font-medium text-foreground mt-0.5">Apr 29</p>
+            </div>
+            <div className="card-gradient px-4 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Regionals</p>
+              <p className="text-sm font-medium text-foreground mt-0.5">May 11-13</p>
+            </div>
+            <div className="card-gradient px-4 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Nationals</p>
+              <p className="text-sm font-medium text-foreground mt-0.5">May 17-22</p>
+            </div>
+          </div>
         </div>
+      </div>
+    );
+  }
+
+  // Visual S-curve view
+  if (viewMode === "visual") {
+    return (
+      <div className="w-full">
+        <FilterBar
+          viewMode={viewMode}
+          gender={gender}
+          scurveMode={scurveMode}
+          search={search}
+          resultCount={filtered.length}
+          lastUpdated={lastUpdated}
+          onViewChange={handleViewChange}
+          onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
+          onSearchChange={setSearch}
+        />
+        <VisualScurve
+          assignments={assignments}
+          regionals={gender === "men" ? menRegionals : womenRegionals}
+          regionalMap={regionalMap}
+        />
       </div>
     );
   }
@@ -282,15 +342,27 @@ export default function ScurveTable({
       <FilterBar
         viewMode={viewMode}
         gender={gender}
+        scurveMode={scurveMode}
         search={search}
         resultCount={filtered.length}
         lastUpdated={lastUpdated}
         onViewChange={handleViewChange}
         onGenderChange={handleGenderChange}
+        onModeChange={handleModeChange}
         onSearchChange={setSearch}
       />
 
-      <div className="mt-3 overflow-x-auto rounded-lg border border-border">
+      {/* Mode description */}
+      <div className="mt-2 mb-1 text-[12px] text-text-tertiary">
+        {scurveMode === "committee" ? (
+          <span>Showing committee prediction - top seeds assigned by proximity, AQ geographic preference applied</span>
+        ) : (
+          <span>Showing strict mathematical S-curve - pure serpentine with host swaps only</span>
+        )}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden sm:block mt-2 overflow-x-auto rounded-lg border border-border">
         <table className="w-full border-collapse text-[13px]" aria-label="NCAA D1 Regional S-Curve Predictions">
           <thead className="sticky top-[var(--nav-height)] z-10 bg-background">
             <tr className="border-b border-border">
@@ -326,7 +398,7 @@ export default function ScurveTable({
                 currentSort={sortKey}
                 currentDir={sortDir}
                 onSort={handleSort}
-                className="w-[70px] hidden md:table-cell"
+                className="w-[70px]"
                 align="center"
               />
               <SortTh
@@ -335,7 +407,7 @@ export default function ScurveTable({
                 currentSort={sortKey}
                 currentDir={sortDir}
                 onSort={handleSort}
-                className="w-[60px] hidden sm:table-cell"
+                className="w-[60px]"
                 align="center"
               />
               <SortTh
@@ -352,7 +424,7 @@ export default function ScurveTable({
                 currentSort={sortKey}
                 currentDir={sortDir}
                 onSort={handleSort}
-                className="w-[70px] hidden sm:table-cell"
+                className="w-[70px]"
                 align="right"
               />
             </tr>
@@ -383,6 +455,32 @@ export default function ScurveTable({
           </tbody>
         </table>
       </div>
+
+      {/* Mobile card view */}
+      <div className="sm:hidden mt-2 space-y-2">
+        {filtered.length === 0 ? (
+          <div className="px-4 py-12 text-center text-[13px] text-muted-foreground">
+            No teams match your search.
+          </div>
+        ) : viewMode === "regional" && grouped ? (
+          grouped.map(({ regional, teams }) => (
+            <MobileRegionalGroup
+              key={regional.id}
+              regional={regional}
+              teams={teams}
+              regionalMap={regionalMap}
+            />
+          ))
+        ) : (
+          sorted.map((team) => (
+            <MobileTeamCard
+              key={`${team.team}-${team.seed}`}
+              team={team}
+              regionalMap={regionalMap}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 }
@@ -394,26 +492,30 @@ export default function ScurveTable({
 function FilterBar({
   viewMode,
   gender,
+  scurveMode,
   search,
   resultCount,
   lastUpdated,
   onViewChange,
   onGenderChange,
+  onModeChange,
   onSearchChange,
 }: {
   viewMode: ViewMode;
   gender: Gender;
+  scurveMode: ScurveMode;
   search: string;
   resultCount: number;
   lastUpdated: string;
   onViewChange: (v: ViewMode) => void;
   onGenderChange: (g: Gender) => void;
+  onModeChange: (m: ScurveMode) => void;
   onSearchChange: (s: string) => void;
 }) {
   return (
     <div className="flex flex-col gap-2">
       {/* Desktop */}
-      <div className="hidden sm:flex items-center gap-3">
+      <div className="hidden sm:flex items-center gap-3 flex-wrap">
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -432,9 +534,20 @@ function FilterBar({
           options={[
             { value: "regional", label: "By Regional" },
             { value: "scurve", label: "S-Curve Order" },
+            { value: "visual", label: "Visual" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
+        />
+
+        {/* Mode toggle */}
+        <SegmentedToggle
+          options={[
+            { value: "committee", label: "Committee" },
+            { value: "strict", label: "Strict" },
+          ]}
+          value={scurveMode}
+          onChange={(m) => onModeChange(m as ScurveMode)}
         />
 
         {/* Gender toggle */}
@@ -469,9 +582,20 @@ function FilterBar({
             options={[
               { value: "regional", label: "Regional" },
               { value: "scurve", label: "S-Curve" },
+              { value: "visual", label: "Visual" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <SegmentedToggle
+            options={[
+              { value: "committee", label: "Committee" },
+              { value: "strict", label: "Strict" },
+            ]}
+            value={scurveMode}
+            onChange={(m) => onModeChange(m as ScurveMode)}
           />
           <span className="ml-auto text-[11px] text-muted-foreground">
             {resultCount} teams
@@ -527,7 +651,7 @@ function SegmentedToggle({
 }
 
 // ---------------------------------------------------------------------------
-// RegionalGroup
+// RegionalGroup (Desktop)
 // ---------------------------------------------------------------------------
 
 function RegionalGroup({
@@ -539,44 +663,172 @@ function RegionalGroup({
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
+  const avgDistance = Math.round(totalDistance / teams.length);
+
   return (
     <>
       {/* Regional header row */}
       <tr>
         <td
           colSpan={7}
-          className="px-3 py-3.5 bg-card"
+          className="px-3 py-3.5 bg-card cursor-pointer hover:bg-card/80 transition-colors"
           style={{ borderLeft: `4px solid ${regional.color}` }}
+          onClick={() => setExpanded(!expanded)}
         >
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-baseline gap-2.5 flex-wrap">
-              <span className="font-semibold text-[14px] text-foreground leading-none">
-                {regional.name}
+              <span className="flex items-center gap-1.5">
+                <ChevronRight
+                  className={cn(
+                    "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                    expanded && "rotate-90"
+                  )}
+                />
+                <span className="font-semibold text-[14px] text-foreground leading-none">
+                  {regional.name}
+                </span>
               </span>
               <span className="text-[12px] text-muted-foreground leading-none">
                 {regional.host} &middot; {regional.city}
               </span>
             </div>
-            <span className="text-[11px] text-text-tertiary whitespace-nowrap">
-              {teams.length} teams
-            </span>
+            <div className="flex items-center gap-3 text-[11px] text-text-tertiary whitespace-nowrap">
+              <span className="hidden md:inline">
+                <Plane className="inline h-3 w-3 mr-0.5 opacity-60" />
+                {avgDistance.toLocaleString()} mi avg
+              </span>
+              <span>{teams.length} teams</span>
+            </div>
           </div>
         </td>
       </tr>
-      {teams.map((team) => (
-        <TeamRow
-          key={`${team.team}-${team.seed}`}
-          team={team}
-          regionalMap={regionalMap}
-          isHost={team.team === regional.host}
-        />
-      ))}
+
+      {/* Expanded detail panel */}
+      {expanded && (
+        <tr>
+          <td colSpan={7} className="p-0">
+            <RegionalDetailPanel regional={regional} teams={teams} />
+          </td>
+        </tr>
+      )}
+
+      {/* Team rows with advancement line */}
+      {teams.map((team, index) => {
+        const rows = [
+          <TeamRow
+            key={`${team.team}-${team.seed}`}
+            team={team}
+            regionalMap={regionalMap}
+            isHost={team.team === regional.host}
+          />,
+        ];
+        if (index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING) {
+          rows.push(
+            <tr key={`advancement-line-${regional.id}`}>
+              <td colSpan={7} className="p-0">
+                <div className="flex items-center gap-2 px-3 py-1">
+                  <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-red-400/80 whitespace-nowrap">
+                    Top 5 advance to nationals
+                  </span>
+                  <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
+                </div>
+              </td>
+            </tr>
+          );
+        }
+        return rows;
+      })}
     </>
   );
 }
 
 // ---------------------------------------------------------------------------
-// TeamRow
+// RegionalDetailPanel
+// ---------------------------------------------------------------------------
+
+function RegionalDetailPanel({
+  regional,
+  teams,
+}: {
+  regional: Regional;
+  teams: ScurveAssignment[];
+}) {
+  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
+  const avgDistance = Math.round(totalDistance / teams.length);
+  const maxTravel = teams.reduce((max, t) => (t.distanceMiles > max.distanceMiles ? t : max), teams[0]);
+  const minTravel = teams.reduce((min, t) => (t.distanceMiles < min.distanceMiles ? t : min), teams[0]);
+  const aqCount = teams.filter((t) => t.isAutoQualifier).length;
+  const hostTeam = teams.find((t) => t.team === regional.host);
+  const conferences = [...new Set(teams.map((t) => t.conference))];
+
+  return (
+    <div
+      className="bg-card/50 border-t border-b border-border/50 px-4 py-4"
+      style={{ borderLeft: `4px solid ${regional.color}` }}
+    >
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
+        <StatBox label="Avg Travel" value={`${avgDistance.toLocaleString()} mi`} />
+        <StatBox label="Auto Qualifiers" value={String(aqCount)} />
+        <StatBox label="Conferences" value={String(conferences.length)} />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[13px]">
+        {/* Travel extremes */}
+        <div className="space-y-1.5">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Travel</p>
+          <p className="text-foreground">
+            <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
+            <span className="font-medium">Longest:</span>{" "}
+            {maxTravel.team} ({maxTravel.distanceMiles.toLocaleString()} mi)
+          </p>
+          <p className="text-foreground">
+            <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
+            <span className="font-medium">Shortest:</span>{" "}
+            {minTravel.team} ({minTravel.distanceMiles.toLocaleString()} mi)
+          </p>
+          {hostTeam && (
+            <p className="text-foreground">
+              <span className="font-medium">Host:</span>{" "}
+              {hostTeam.team} (#{hostTeam.rank}, seed {hostTeam.seed})
+            </p>
+          )}
+        </div>
+
+        {/* Field strength */}
+        <div className="space-y-1.5">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Field Strength</p>
+          <p className="text-foreground">
+            <span className="font-medium">Highest seed:</span>{" "}
+            #{teams[0]?.seed} {teams[0]?.team}
+          </p>
+          <p className="text-foreground">
+            <span className="font-medium">Lowest seed:</span>{" "}
+            #{teams[teams.length - 1]?.seed} {teams[teams.length - 1]?.team}
+          </p>
+          <p className="text-muted-foreground">
+            {conferences.join(", ")}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md bg-secondary/50 px-3 py-2">
+      <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-[15px] font-semibold text-foreground mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// TeamRow (Desktop)
 // ---------------------------------------------------------------------------
 
 function TeamRow({
@@ -611,12 +863,12 @@ function TeamRow({
       <td className="px-2 text-center font-mono text-[13px] text-muted-foreground">
         #{team.rank}
       </td>
-      {/* Conference — hidden on mobile */}
-      <td className="px-2 text-center text-[13px] text-muted-foreground hidden md:table-cell">
+      {/* Conference */}
+      <td className="px-2 text-center text-[13px] text-muted-foreground">
         {team.conference}
       </td>
-      {/* Type — hidden on mobile */}
-      <td className="px-2 text-center hidden sm:table-cell">
+      {/* Type */}
+      <td className="px-2 text-center">
         {team.isAutoQualifier ? (
           <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-emerald-500/15 text-emerald-400">
             AQ
@@ -639,10 +891,342 @@ function TeamRow({
           {regionalLabel}
         </span>
       </td>
-      {/* Distance — hidden on mobile */}
-      <td className="px-2 text-right font-mono text-[13px] text-muted-foreground whitespace-nowrap hidden sm:table-cell">
+      {/* Distance */}
+      <td className="px-2 text-right font-mono text-[13px] text-muted-foreground whitespace-nowrap">
         {team.distanceMiles.toLocaleString()} mi
       </td>
     </tr>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Mobile Components
+// ---------------------------------------------------------------------------
+
+function MobileRegionalGroup({
+  regional,
+  teams,
+  regionalMap,
+}: {
+  regional: Regional;
+  teams: ScurveAssignment[];
+  regionalMap: Map<number, Regional>;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
+  const avgDistance = Math.round(totalDistance / teams.length);
+
+  return (
+    <div className="rounded-lg border border-border overflow-hidden">
+      {/* Regional header */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full px-3 py-3 bg-card flex items-center justify-between"
+        style={{ borderLeft: `4px solid ${regional.color}` }}
+      >
+        <div className="flex items-center gap-2">
+          <ChevronRight
+            className={cn(
+              "h-3.5 w-3.5 text-muted-foreground transition-transform",
+              expanded && "rotate-90"
+            )}
+          />
+          <div className="text-left">
+            <p className="font-semibold text-[14px] text-foreground">{regional.name}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {regional.host} &middot; {regional.city}
+            </p>
+          </div>
+        </div>
+        <div className="text-right text-[11px] text-text-tertiary">
+          <p>{teams.length} teams</p>
+          <p>{avgDistance.toLocaleString()} mi avg</p>
+        </div>
+      </button>
+
+      {/* Expanded detail */}
+      {expanded && (
+        <div className="px-3 py-3 bg-card/50 border-t border-border/50 space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
+            <StatBox label="Auto Qualifiers" value={String(teams.filter((t) => t.isAutoQualifier).length)} />
+          </div>
+        </div>
+      )}
+
+      {/* Team cards */}
+      <div className="divide-y divide-border/30">
+        {teams.map((team, index) => (
+          <div key={`${team.team}-${team.seed}`}>
+            <MobileTeamCard
+              team={team}
+              regionalMap={regionalMap}
+              isHost={team.team === regional.host}
+              showRegional={false}
+            />
+            {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
+              <div className="flex items-center gap-2 px-3 py-1.5">
+                <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
+                <span className="text-[9px] font-medium uppercase tracking-wider text-red-400/80">
+                  Advancing
+                </span>
+                <div className="flex-1 border-t-2 border-dashed border-red-500/50" />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileTeamCard({
+  team,
+  regionalMap,
+  isHost = false,
+  showRegional = true,
+}: {
+  team: ScurveAssignment;
+  regionalMap: Map<number, Regional>;
+  isHost?: boolean;
+  showRegional?: boolean;
+}) {
+  const regional = regionalMap.get(team.regionalId);
+  const color = regional?.color ?? "#888";
+  const regionalLabel = regional?.name.replace(/ Regional$/, "") ?? "";
+
+  return (
+    <div className="px-3 py-2.5 flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2.5 min-w-0">
+        <span className="font-mono text-[12px] text-muted-foreground w-5 text-center shrink-0">
+          {team.seed}
+        </span>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="font-medium text-[13px] text-foreground truncate">{team.team}</span>
+            {isHost && (
+              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-amber-500/15 text-amber-400">
+                Host
+              </span>
+            )}
+            {team.isAutoQualifier && (
+              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400">
+                AQ
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+            <span>#{team.rank}</span>
+            <span>{team.conference}</span>
+            {showRegional && (
+              <span
+                className="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium"
+                style={{ backgroundColor: `${color}20`, color }}
+              >
+                {regionalLabel}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+      <span className="font-mono text-[11px] text-muted-foreground whitespace-nowrap shrink-0">
+        {team.distanceMiles.toLocaleString()} mi
+      </span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Visual S-Curve
+// ---------------------------------------------------------------------------
+
+function VisualScurve({
+  assignments,
+  regionals,
+  regionalMap,
+}: {
+  assignments: ScurveAssignment[];
+  regionals: Regional[];
+  regionalMap: Map<number, Regional>;
+}) {
+  const numRegionals = regionals.length;
+  const numTiers = Math.ceil(assignments.length / numRegionals);
+
+  // Build the grid: tiers (rows) x regionals (columns)
+  const grid: (ScurveAssignment | null)[][] = [];
+  for (let tier = 0; tier < numTiers; tier++) {
+    const row: (ScurveAssignment | null)[] = new Array(numRegionals).fill(null);
+    grid.push(row);
+  }
+
+  // Place teams in the grid by their assigned regional
+  // Group by regional, then fill tiers top-to-bottom
+  const byRegional = new Map<number, ScurveAssignment[]>();
+  for (const r of regionals) {
+    byRegional.set(r.id, []);
+  }
+  for (const a of assignments) {
+    byRegional.get(a.regionalId)?.push(a);
+  }
+
+  // Sort teams within each regional by seed
+  for (const [, teams] of byRegional) {
+    teams.sort((a, b) => a.seed - b.seed);
+  }
+
+  // Place into grid
+  for (let colIdx = 0; colIdx < regionals.length; colIdx++) {
+    const r = regionals[colIdx];
+    const teams = byRegional.get(r.id) ?? [];
+    for (let tierIdx = 0; tierIdx < teams.length; tierIdx++) {
+      if (tierIdx < grid.length) {
+        grid[tierIdx][colIdx] = teams[tierIdx];
+      }
+    }
+  }
+
+  return (
+    <div className="mt-4">
+      {/* Legend */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        {regionals.map((r) => (
+          <div key={r.id} className="flex items-center gap-1.5 text-[12px]">
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: r.color }}
+            />
+            <span className="text-muted-foreground">{r.name.replace(/ Regional$/, "")}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Serpentine grid */}
+      <div className="overflow-x-auto">
+        <div className="min-w-[700px]">
+          {/* Regional headers */}
+          <div className="grid gap-1 mb-1" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
+            {regionals.map((r) => (
+              <div
+                key={r.id}
+                className="text-center text-[11px] font-medium uppercase tracking-wide py-1.5 rounded-t-md"
+                style={{ backgroundColor: `${r.color}20`, color: r.color }}
+              >
+                {r.name.replace(/ Regional$/, "")}
+              </div>
+            ))}
+          </div>
+
+          {/* Tiers */}
+          {grid.map((row, tierIdx) => {
+            const isReverse = tierIdx % 2 === 1;
+            const displayRow = isReverse ? [...row].reverse() : row;
+            const displayRegionals = isReverse ? [...regionals].reverse() : regionals;
+
+            return (
+              <div key={tierIdx} className="relative">
+                {/* Serpentine direction indicator */}
+                <div className="absolute -left-6 top-1/2 -translate-y-1/2 text-[10px] text-text-tertiary hidden lg:block">
+                  {isReverse ? "\u2190" : "\u2192"}
+                </div>
+
+                <div
+                  className="grid gap-1 mb-1"
+                  style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}
+                >
+                  {displayRow.map((team, colIdx) => {
+                    const r = displayRegionals[colIdx];
+                    if (!team) {
+                      return <div key={`empty-${tierIdx}-${colIdx}`} className="h-9" />;
+                    }
+
+                    const isHost = team.team === r?.host;
+                    const isAboveLine = (() => {
+                      // Check position within this regional
+                      const regionalTeams = byRegional.get(team.regionalId) ?? [];
+                      const posInRegional = regionalTeams.findIndex((t) => t.seed === team.seed);
+                      return posInRegional < TEAMS_ADVANCING;
+                    })();
+
+                    return (
+                      <div
+                        key={`${team.team}-${team.seed}`}
+                        className={cn(
+                          "h-9 px-1.5 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
+                          isAboveLine
+                            ? "bg-secondary/80 hover:bg-secondary"
+                            : "bg-secondary/30 hover:bg-secondary/50"
+                        )}
+                        style={{ borderLeft: `3px solid ${r?.color ?? "#888"}` }}
+                        title={`#${team.seed} ${team.team} (${team.conference}) - ${team.distanceMiles.toLocaleString()} mi to ${r?.name ?? ""}`}
+                      >
+                        <span className="font-mono text-[10px] text-muted-foreground mr-1.5 shrink-0 w-4">
+                          {team.seed}
+                        </span>
+                        <span className={cn(
+                          "truncate font-medium",
+                          isAboveLine ? "text-foreground" : "text-muted-foreground"
+                        )}>
+                          {team.team}
+                        </span>
+                        {isHost && (
+                          <span className="ml-auto shrink-0 text-[8px] font-bold text-amber-400 uppercase">
+                            H
+                          </span>
+                        )}
+                        {team.isAutoQualifier && !isHost && (
+                          <span className="ml-auto shrink-0 text-[8px] font-bold text-emerald-400">
+                            AQ
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Advancement line after tier containing 5th team */}
+                {tierIdx === Math.floor((TEAMS_ADVANCING - 1)) && (
+                  <div className="flex items-center gap-2 px-1 py-0.5">
+                    <div className="flex-1 border-t-2 border-dashed border-red-500/40" />
+                    <span className="text-[9px] font-medium uppercase tracking-wider text-red-400/70">
+                      Top {TEAMS_ADVANCING} advance
+                    </span>
+                    <div className="flex-1 border-t-2 border-dashed border-red-500/40" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Summary stats */}
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+        {regionals.map((r) => {
+          const teams = byRegional.get(r.id) ?? [];
+          const totalDist = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
+          const avgDist = teams.length > 0 ? Math.round(totalDist / teams.length) : 0;
+
+          return (
+            <div
+              key={r.id}
+              className="rounded-lg px-3 py-3 bg-card"
+              style={{ borderLeft: `3px solid ${r.color}` }}
+            >
+              <p className="text-[11px] font-medium text-foreground">{r.name.replace(/ Regional$/, "")}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">{r.host}</p>
+              <div className="mt-2 space-y-0.5">
+                <p className="text-[11px] text-muted-foreground">
+                  <Plane className="inline h-3 w-3 mr-0.5 opacity-60" />
+                  {avgDist.toLocaleString()} mi avg
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  {totalDist.toLocaleString()} mi total
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

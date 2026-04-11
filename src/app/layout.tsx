@@ -49,9 +49,24 @@ export const metadata: Metadata = {
   },
   description:
     "Interactive S-curve regional predictions for NCAA Division I men's and women's college golf. Based on Broadie/Clippd rankings with geographic optimization.",
+  keywords: [
+    "college golf",
+    "NCAA golf",
+    "D1 golf regionals",
+    "S-curve predictions",
+    "NCAA regional selections",
+    "college golf rankings",
+    "Broadie rankings",
+    "college golf data",
+  ],
+  authors: [
+    { name: "David Tenneson" },
+    { name: "Mikkel Bjerch-Andresen" },
+  ],
   openGraph: {
     type: "website",
     locale: "en_US",
+    url: "https://collegegolfdata.com",
     siteName: "College Golf Data",
     title: "College Golf Data — NCAA D1 Regional Predictions",
     description:
@@ -59,9 +74,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@CollegeGolfBot",
+    creator: "@CollegeGolfBot",
     title: "College Golf Data — NCAA D1 Regional Predictions",
     description:
-      "Interactive S-curve predictions for NCAA D1 college golf regionals.",
+      "Interactive S-curve predictions for NCAA D1 college golf regionals. 81 teams, 6 regionals, live rankings.",
   },
 };
 
@@ -90,12 +107,38 @@ export default function RootLayout({
             >
               College Golf Data
             </Link>
-            <Link
-              href="/about"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              About
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/timeline"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+              >
+                Timeline
+              </Link>
+              <Link
+                href="/tournaments"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+              >
+                Tournaments
+              </Link>
+              <Link
+                href="/tools"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+              >
+                Tools
+              </Link>
+              <Link
+                href="/research"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+              >
+                Research
+              </Link>
+              <Link
+                href="/about"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                About
+              </Link>
+            </div>
           </nav>
         </header>
 
