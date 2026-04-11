@@ -458,7 +458,7 @@ export default function ScurveTable({
       </div>
 
       {/* Mobile card view */}
-      <div className="sm:hidden mt-2 space-y-1.5">
+      <div className="sm:hidden mt-1 space-y-0">
         {filtered.length === 0 ? (
           <div className="px-4 py-12 text-center text-[13px] text-muted-foreground">
             No teams match your search.
@@ -924,37 +924,35 @@ function MobileRegionalGroup({
   const avgDistance = Math.round(totalDistance / teams.length);
 
   return (
-    <div className="rounded-md border border-border overflow-hidden">
-      {/* Regional header */}
+    <div className="mt-3 first:mt-0">
+      {/* Regional header - compact, no card wrapper */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-2.5 py-1.5 bg-card flex items-center justify-between"
-        style={{ borderLeft: `3px solid ${regional.color}` }}
+        className="w-full flex items-baseline justify-between border-b border-border pb-1 mb-0.5"
       >
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-baseline gap-1">
+          <span
+            className="inline-block w-[3px] h-[10px] rounded-sm self-center shrink-0"
+            style={{ backgroundColor: regional.color }}
+          />
+          <span className="font-semibold text-[12px] text-foreground">{regional.name.replace(/ Regional$/, "")}</span>
+          <span className="text-[9px] text-muted-foreground">{regional.city}</span>
           <ChevronRight
             className={cn(
-              "h-3 w-3 text-muted-foreground transition-transform",
+              "h-2.5 w-2.5 text-muted-foreground transition-transform self-center",
               expanded && "rotate-90"
             )}
           />
-          <div className="text-left">
-            <p className="font-semibold text-[13px] text-foreground leading-tight">{regional.name}</p>
-            <p className="text-[10px] text-muted-foreground leading-tight">
-              {regional.host} &middot; {regional.city}
-            </p>
-          </div>
         </div>
-        <div className="text-right text-[10px] text-text-tertiary leading-tight">
-          <p>{teams.length} teams</p>
-          <p>{avgDistance.toLocaleString()} mi avg</p>
-        </div>
+        <span className="text-[9px] text-muted-foreground tabular-nums">
+          {teams.length}t &middot; {avgDistance.toLocaleString()}mi
+        </span>
       </button>
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="px-2.5 py-2 bg-card/50 border-t border-border/50 space-y-2">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="px-1 py-1.5 mb-0.5 space-y-1.5">
+          <div className="grid grid-cols-2 gap-1.5">
             <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
             <StatBox label="Auto Qualifiers" value={String(teams.filter((t) => t.isAutoQualifier).length)} />
           </div>
@@ -964,8 +962,8 @@ function MobileRegionalGroup({
         </div>
       )}
 
-      {/* Team cards */}
-      <div className="divide-y divide-border/30">
+      {/* Team rows - plain list, no card borders */}
+      <div>
         {teams.map((team, index) => (
           <div key={`${team.team}-${team.seed}`}>
             <MobileTeamCard
@@ -975,12 +973,12 @@ function MobileRegionalGroup({
               showRegional={false}
             />
             {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5">
-                <div className="flex-1 border-t border-dashed border-destructive/40" />
-                <span className="text-[8px] font-medium uppercase tracking-wider text-destructive/60">
-                  Advancing
+              <div className="flex items-center gap-1 px-1 py-px">
+                <div className="flex-1 border-t border-dashed border-destructive/30" />
+                <span className="text-[7px] font-medium uppercase tracking-wider text-destructive/50">
+                  cut
                 </span>
-                <div className="flex-1 border-t border-dashed border-destructive/40" />
+                <div className="flex-1 border-t border-dashed border-destructive/30" />
               </div>
             )}
           </div>
@@ -1006,29 +1004,29 @@ function MobileTeamCard({
   const regionalLabel = regional?.name.replace(/ Regional$/, "") ?? "";
 
   return (
-    <div className="px-2 h-[30px] flex items-center gap-1.5">
-      <span className="font-mono text-[11px] text-muted-foreground w-5 text-right shrink-0">
+    <div className="h-[24px] flex items-center gap-0 text-[11px] leading-none px-0.5">
+      <span className="font-mono text-[10px] text-muted-foreground w-[22px] text-right shrink-0">
         {team.seed}
       </span>
-      <span className="font-medium text-[12px] text-foreground truncate min-w-0">{team.team}</span>
+      <span className="font-medium text-foreground truncate min-w-0 ml-1.5 mr-0.5">{team.team}</span>
       {isHost && (
-        <span className="shrink-0 text-[7px] font-bold uppercase text-gold">H</span>
+        <span className="shrink-0 text-[7px] font-bold uppercase text-gold mr-0.5">H</span>
       )}
       {team.isAutoQualifier && (
-        <span className="shrink-0 text-[7px] font-bold uppercase text-primary">AQ</span>
+        <span className="shrink-0 text-[7px] font-bold uppercase text-primary mr-0.5">AQ</span>
       )}
-      <span className="shrink-0 font-mono text-[10px] text-muted-foreground">#{team.rank}</span>
-      <span className="shrink-0 text-[10px] text-muted-foreground">{team.conference}</span>
+      <span className="shrink-0 font-mono text-[9px] text-muted-foreground w-[26px] text-right">#{team.rank}</span>
+      <span className="shrink-0 text-[9px] text-muted-foreground w-[38px] text-center">{team.conference}</span>
       {showRegional && (
         <span
-          className="shrink-0 text-[9px] text-muted-foreground"
-          style={{ borderLeft: `2px solid ${color}`, paddingLeft: "3px" }}
+          className="shrink-0 text-[8px] text-muted-foreground"
+          style={{ borderLeft: `2px solid ${color}`, paddingLeft: "2px" }}
         >
           {regionalLabel}
         </span>
       )}
-      <span className="ml-auto font-mono text-[10px] text-muted-foreground whitespace-nowrap shrink-0">
-        {team.distanceMiles.toLocaleString()} mi
+      <span className="font-mono text-[9px] text-muted-foreground w-[48px] text-right shrink-0 ml-auto tabular-nums">
+        {team.distanceMiles.toLocaleString()}
       </span>
     </div>
   );
