@@ -1091,10 +1091,13 @@ function MobileVisualScurve({
             </div>
 
             {/* Column headers */}
-            <div className="flex items-center text-[6px] uppercase tracking-wider text-muted-foreground/40 px-0.5 pt-px">
-              <span className="w-[14px] text-right shrink-0">#</span>
-              <span className="ml-0.5 min-w-0 flex-1">Team</span>
-              <span className="w-[16px] text-right shrink-0 pr-0.5">Rk</span>
+            <div
+              className="text-[6px] uppercase tracking-wider text-muted-foreground/40 px-0.5 pt-px"
+              style={{ display: "grid", gridTemplateColumns: "16px 1fr 20px" }}
+            >
+              <span className="text-right">#</span>
+              <span className="pl-0.5 overflow-hidden">Team</span>
+              <span className="text-right pr-0.5">Rk</span>
             </div>
 
             {/* Team rows */}
@@ -1107,19 +1110,20 @@ function MobileVisualScurve({
                   <div key={`${team.team}-${team.seed}`}>
                     <div
                       className={cn(
-                        "h-[15px] flex items-center gap-0 text-[9px] leading-none px-0.5",
+                        "h-[15px] items-center leading-none px-0.5 overflow-hidden",
                         isAboveLine ? "bg-secondary/40" : ""
                       )}
+                      style={{ display: "grid", gridTemplateColumns: "16px 1fr 20px" }}
                     >
-                      <span className="font-mono text-[7px] text-muted-foreground w-[14px] text-right shrink-0 tabular-nums">
+                      <span className="font-mono text-[7px] text-muted-foreground text-right tabular-nums">
                         {team.seed}
                       </span>
-                      <span className="font-medium text-foreground truncate min-w-0 ml-0.5 flex-1 text-[8px]">
+                      <span className="font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
                         {team.team}
                         {isHost && <span className="text-[5px] font-bold text-gold ml-0.5">H</span>}
                         {team.isAutoQualifier && <span className="text-[5px] font-bold text-primary ml-0.5">AQ</span>}
                       </span>
-                      <span className="shrink-0 font-mono text-[7px] text-muted-foreground w-[16px] text-right tabular-nums pr-0.5">
+                      <span className="font-mono text-[7px] text-muted-foreground text-right tabular-nums pr-0.5 overflow-hidden">
                         {team.rank}
                       </span>
                     </div>
