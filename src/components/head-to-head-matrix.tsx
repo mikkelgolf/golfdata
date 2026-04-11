@@ -120,8 +120,8 @@ export default function HeadToHeadMatrix({
                         key={col.team}
                         className={cn(
                           "px-1 py-1.5 text-center font-mono whitespace-nowrap",
-                          isWinning && "text-chart-1",
-                          isLosing && "text-chart-4",
+                          isWinning && "text-primary",
+                          isLosing && "text-destructive",
                           !isWinning && !isLosing && "text-muted-foreground"
                         )}
                       >
@@ -230,8 +230,8 @@ export function HeadToHeadCompact({
             <span
               className={cn(
                 "font-mono px-2 whitespace-nowrap",
-                m.wins > m.losses && "text-chart-1",
-                m.wins < m.losses && "text-chart-4",
+                m.wins > m.losses && "text-primary",
+                m.wins < m.losses && "text-destructive",
                 m.wins === m.losses && "text-muted-foreground"
               )}
             >

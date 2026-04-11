@@ -54,7 +54,7 @@ export default function Timeline({ snapshots, diffs }: TimelineProps) {
         </div>
 
         {/* Key dates */}
-        <div className="mt-8 card-gradient p-4">
+        <div className="mt-8 rounded-md border border-border bg-card p-4">
           <p className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground mb-3">
             Key Dates Ahead
           </p>
@@ -152,14 +152,14 @@ export default function Timeline({ snapshots, diffs }: TimelineProps) {
 
                   {diff.newTeams.length > 0 && (
                     <p className="text-[12px] text-muted-foreground">
-                      <span className="text-chart-1">New:</span>{" "}
+                      <span className="text-primary">New:</span>{" "}
                       {diff.newTeams.join(", ")}
                     </p>
                   )}
 
                   {diff.droppedTeams.length > 0 && (
                     <p className="text-[12px] text-muted-foreground">
-                      <span className="text-chart-4">Dropped:</span>{" "}
+                      <span className="text-destructive">Dropped:</span>{" "}
                       {diff.droppedTeams.join(", ")}
                     </p>
                   )}
@@ -177,9 +177,9 @@ function MoverRow({ change }: { change: RankChange }) {
   return (
     <p className="text-[12px] text-muted-foreground flex items-center gap-1">
       {change.delta > 0 ? (
-        <ChevronUp className="h-3 w-3 text-chart-1 shrink-0" />
+        <ChevronUp className="h-3 w-3 text-primary shrink-0" />
       ) : change.delta < 0 ? (
-        <ChevronDown className="h-3 w-3 text-chart-4 shrink-0" />
+        <ChevronDown className="h-3 w-3 text-destructive shrink-0" />
       ) : (
         <Minus className="h-3 w-3 text-muted-foreground shrink-0" />
       )}
@@ -190,7 +190,7 @@ function MoverRow({ change }: { change: RankChange }) {
       <span
         className={cn(
           "text-[10px] font-mono",
-          change.delta > 0 ? "text-chart-1" : "text-chart-4"
+          change.delta > 0 ? "text-primary" : "text-destructive"
         )}
       >
         ({change.delta > 0 ? "+" : ""}

@@ -99,42 +99,42 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <header className="sticky top-0 z-50 h-[var(--nav-height)] border-b border-border bg-background/80 backdrop-blur-sm">
+        <header className="sticky top-0 z-50 h-[var(--nav-height)] border-b border-border bg-background">
           <nav className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
             <Link
               href="/"
-              className="font-serif italic text-lg text-foreground hover:text-foreground/80 transition-colors"
+              className="text-[13px] font-semibold text-foreground hover:text-foreground/80 transition-colors tracking-tight"
             >
               College Golf Data
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link
                 href="/timeline"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+                className="text-[12px] text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
               >
                 Timeline
               </Link>
               <Link
                 href="/tournaments"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+                className="text-[12px] text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
               >
                 Tournaments
               </Link>
               <Link
                 href="/tools"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+                className="text-[12px] text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
               >
                 Tools
               </Link>
               <Link
                 href="/research"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+                className="text-[12px] text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
               >
                 Research
               </Link>
               <Link
                 href="/about"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-[12px] text-muted-foreground hover:text-foreground transition-colors"
               >
                 About
               </Link>
@@ -144,10 +144,10 @@ export default function RootLayout({
 
         <main id="main-content" className="flex-1">{children}</main>
 
-        <footer className="border-t border-border py-6">
-          <div className="mx-auto max-w-6xl px-4 text-center text-[12px] text-muted-foreground">
+        <footer className="border-t border-border py-4">
+          <div className="mx-auto max-w-6xl px-4 text-center text-[11px] text-text-tertiary">
             College Golf Data &middot; David Tenneson &amp; Mikkel
-            Bjerch-Andresen &middot; collegegolfdata.com
+            Bjerch-Andresen
           </div>
         </footer>
 

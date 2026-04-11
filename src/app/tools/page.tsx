@@ -47,7 +47,7 @@ const tools = [
 
 function StatusBadge({ status }: { status: "live" | "development" | "planned" }) {
   const styles = {
-    live: "bg-chart-1/15 text-chart-1",
+    live: "bg-primary/15 text-primary",
     development: "bg-gold/15 text-gold",
     planned: "bg-secondary text-muted-foreground",
   };
@@ -83,7 +83,7 @@ export default function ToolsPage() {
 
       <div className="mt-8 space-y-4">
         {tools.map((tool) => (
-          <div key={tool.name} className="card-gradient p-5">
+          <div key={tool.name} className="rounded-md border border-border bg-card p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">

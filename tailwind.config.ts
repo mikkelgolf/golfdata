@@ -54,22 +54,12 @@ const config: Config = {
         },
         "brand-green": "hsl(var(--brand-green))",
         "secondary-green": "hsl(var(--secondary-green))",
-        sand: "hsl(var(--sand))",
-        stone: "hsl(var(--stone))",
-        "warm-gray": "hsl(var(--warm-gray))",
         gold: "hsl(var(--gold))",
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
-        info: "hsl(var(--info))",
         "surface-raised": "hsl(var(--surface-raised))",
         "text-tertiary": "hsl(var(--text-tertiary))",
         "text-placeholder": "hsl(var(--text-placeholder))",
-        "chart-1": "hsl(var(--chart-1))",
-        "chart-2": "hsl(var(--chart-2))",
-        "chart-3": "hsl(var(--chart-3))",
-        "chart-4": "hsl(var(--chart-4))",
-        "chart-5": "hsl(var(--chart-5))",
-        "chart-6": "hsl(var(--chart-6))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -89,24 +79,8 @@ const config: Config = {
       spacing: {
         "nav-height": "var(--nav-height)",
       },
-      keyframes: {
-        "fade-in": {
-          from: { opacity: "0", transform: "translateY(8px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "slide-in": {
-          from: { opacity: "0", transform: "translateX(-8px)" },
-          to: { opacity: "1", transform: "translateX(0)" },
-        },
-      },
-      animation: {
-        "fade-in": "fade-in 0.5s ease-out forwards",
-        "slide-in": "slide-in 0.3s ease-out forwards",
-      },
       boxShadow: {
         sm: "var(--shadow-sm)",
-        md: "var(--shadow-md)",
-        lg: "var(--shadow-lg)",
       },
     },
   },

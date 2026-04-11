@@ -295,15 +295,15 @@ export default function ScurveTable({
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg">
-            <div className="card-gradient px-4 py-3">
+            <div className="rounded-md border border-border bg-card px-4 py-3">
               <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Selections</p>
               <p className="text-sm font-medium text-foreground mt-0.5">Apr 29</p>
             </div>
-            <div className="card-gradient px-4 py-3">
+            <div className="rounded-md border border-border bg-card px-4 py-3">
               <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Regionals</p>
               <p className="text-sm font-medium text-foreground mt-0.5">May 11-13</p>
             </div>
-            <div className="card-gradient px-4 py-3">
+            <div className="rounded-md border border-border bg-card px-4 py-3">
               <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Nationals</p>
               <p className="text-sm font-medium text-foreground mt-0.5">May 17-22</p>
             </div>
@@ -730,11 +730,11 @@ function RegionalGroup({
             <tr key={`advancement-line-${regional.id}`}>
               <td colSpan={7} className="p-0">
                 <div className="flex items-center gap-2 px-3 py-1">
-                  <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-chart-4/80 whitespace-nowrap">
+                  <div className="flex-1 border-t border-dashed border-destructive/40" />
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-destructive/70 whitespace-nowrap">
                     Top 5 advance to nationals
                   </span>
-                  <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
+                  <div className="flex-1 border-t border-dashed border-destructive/40" />
                 </div>
               </td>
             </tr>
@@ -852,7 +852,7 @@ function TeamRow({
   const regionalLabel = regional?.name.replace(/ Regional$/, "") ?? "";
 
   return (
-    <tr className="h-9 border-b border-border/40 hover:bg-secondary/50 transition-colors duration-150">
+    <tr className="h-8 border-b border-border/40 hover:bg-secondary/40 transition-colors duration-100">
       {/* Seed */}
       <td className="px-2 text-center font-mono text-[13px] text-muted-foreground">
         {team.seed}
@@ -877,7 +877,7 @@ function TeamRow({
       {/* Type */}
       <td className="px-2 text-center">
         {team.isAutoQualifier ? (
-          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-chart-1/15 text-chart-1">
+          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-primary/15 text-primary">
             AQ
           </span>
         ) : (
@@ -889,10 +889,10 @@ function TeamRow({
       {/* Regional */}
       <td className="px-2">
         <span
-          className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium"
+          className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground"
           style={{
-            backgroundColor: `${color}20`,
-            color: color,
+            borderLeft: `2px solid ${color}`,
+            paddingLeft: "6px",
           }}
         >
           {regionalLabel}
@@ -976,11 +976,11 @@ function MobileRegionalGroup({
             />
             {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
               <div className="flex items-center gap-2 px-3 py-1.5">
-                <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
-                <span className="text-[9px] font-medium uppercase tracking-wider text-chart-4/80">
+                <div className="flex-1 border-t border-dashed border-destructive/40" />
+                <span className="text-[9px] font-medium uppercase tracking-wider text-destructive/70">
                   Advancing
                 </span>
-                <div className="flex-1 border-t-2 border-dashed border-chart-4/50" />
+                <div className="flex-1 border-t border-dashed border-destructive/40" />
               </div>
             )}
           </div>
@@ -1020,7 +1020,7 @@ function MobileTeamCard({
               </span>
             )}
             {team.isAutoQualifier && (
-              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-chart-1/15 text-chart-1">
+              <span className="shrink-0 inline-flex items-center rounded px-1 py-0 text-[8px] font-semibold uppercase tracking-wider bg-primary/15 text-primary">
                 AQ
               </span>
             )}
@@ -1030,8 +1030,8 @@ function MobileTeamCard({
             <span>{team.conference}</span>
             {showRegional && (
               <span
-                className="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium"
-                style={{ backgroundColor: `${color}20`, color }}
+                className="inline-flex items-center rounded px-1 py-0 text-[10px] font-medium text-muted-foreground"
+                style={{ borderLeft: `2px solid ${color}`, paddingLeft: "4px" }}
               >
                 {regionalLabel}
               </span>
@@ -1098,11 +1098,11 @@ function VisualScurve({
   return (
     <div className="mt-4">
       {/* Legend */}
-      <div className="flex flex-wrap gap-3 mb-4">
+      <div className="flex flex-wrap gap-3 mb-3">
         {regionals.map((r) => (
-          <div key={r.id} className="flex items-center gap-1.5 text-[12px]">
+          <div key={r.id} className="flex items-center gap-1.5 text-[11px]">
             <div
-              className="w-3 h-3 rounded-full"
+              className="w-2 h-2 rounded-sm"
               style={{ backgroundColor: r.color }}
             />
             <span className="text-muted-foreground">{r.name.replace(/ Regional$/, "")}</span>
@@ -1118,8 +1118,8 @@ function VisualScurve({
             {regionals.map((r) => (
               <div
                 key={r.id}
-                className="text-center text-[11px] font-medium uppercase tracking-wide py-1.5 rounded-t-md"
-                style={{ backgroundColor: `${r.color}20`, color: r.color }}
+                className="text-center text-[10px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
+                style={{ borderBottom: `2px solid ${r.color}` }}
               >
                 {r.name.replace(/ Regional$/, "")}
               </div>
@@ -1146,7 +1146,7 @@ function VisualScurve({
                   {displayRow.map((team, colIdx) => {
                     const r = displayRegionals[colIdx];
                     if (!team) {
-                      return <div key={`empty-${tierIdx}-${colIdx}`} className="h-9" />;
+                      return <div key={`empty-${tierIdx}-${colIdx}`} className="h-8" />;
                     }
 
                     const isHost = team.team === r?.host;
@@ -1161,7 +1161,7 @@ function VisualScurve({
                       <div
                         key={`${team.team}-${team.seed}`}
                         className={cn(
-                          "h-9 px-2 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
+                          "h-8 px-2 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
                           isAboveLine
                             ? "bg-secondary/80 hover:bg-secondary"
                             : "bg-secondary/30 hover:bg-secondary/50"
@@ -1184,7 +1184,7 @@ function VisualScurve({
                           </span>
                         )}
                         {team.isAutoQualifier && !isHost && (
-                          <span className="ml-auto shrink-0 text-[8px] font-bold text-chart-1">
+                          <span className="ml-auto shrink-0 text-[8px] font-bold text-primary">
                             AQ
                           </span>
                         )}
@@ -1196,11 +1196,11 @@ function VisualScurve({
                 {/* Advancement line after tier containing 5th team */}
                 {tierIdx === Math.floor((TEAMS_ADVANCING - 1)) && (
                   <div className="flex items-center gap-2 px-1 py-0.5">
-                    <div className="flex-1 border-t-2 border-dashed border-chart-4/40" />
-                    <span className="text-[9px] font-medium uppercase tracking-wider text-chart-4/70">
+                    <div className="flex-1 border-t border-dashed border-destructive/40" />
+                    <span className="text-[9px] font-medium uppercase tracking-wider text-destructive/70">
                       Top {TEAMS_ADVANCING} advance
                     </span>
-                    <div className="flex-1 border-t-2 border-dashed border-chart-4/40" />
+                    <div className="flex-1 border-t border-dashed border-destructive/40" />
                   </div>
                 )}
               </div>

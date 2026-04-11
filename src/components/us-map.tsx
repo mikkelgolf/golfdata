@@ -179,11 +179,11 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                       key={`line-${team.team}`}
                       d={`M ${team.x} ${team.y} Q ${midX} ${midY} ${rPos.x} ${rPos.y}`}
                       fill="none"
-                      stroke={activeRegionalData.color}
-                      strokeWidth={isHovered ? 2.5 : 1.5}
-                      strokeDasharray={isHovered ? "none" : "4,4"}
-                      opacity={isHovered ? 0.9 : 0.4}
-                      className="transition-all duration-200"
+                      stroke="hsl(var(--foreground))"
+                      strokeWidth={isHovered ? 1.5 : 0.75}
+                      strokeDasharray={isHovered ? "none" : "3,3"}
+                      opacity={isHovered ? 0.6 : 0.2}
+                      className="transition-all duration-150"
                     />
                   );
                 });
@@ -191,8 +191,6 @@ export default function USMap({ assignments, regionals }: USMapProps) {
 
           {/* Team dots */}
           {teamPositions.map((team) => {
-            const regional = regionals.find((r) => r.id === team.regionalId);
-            const color = regional?.color ?? "#888";
             const isActive =
               activeRegional === null || team.regionalId === activeRegional;
             const isHovered = hoveredTeam === team.team;
@@ -214,10 +212,10 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                 <circle
                   cx={team.x}
                   cy={team.y}
-                  r={isHovered ? 6 : 4}
-                  fill={color}
-                  opacity={isActive ? (isHovered ? 1 : 0.7) : 0.15}
-                  className="transition-all duration-200 pointer-events-none"
+                  r={isHovered ? 5 : 3}
+                  fill="hsl(var(--foreground))"
+                  opacity={isActive ? (isHovered ? 0.9 : 0.5) : 0.1}
+                  className="transition-all duration-150 pointer-events-none"
                 />
                 {isHovered && (
                   <text
@@ -265,52 +263,16 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   r={22}
                   fill="transparent"
                 />
-                {/* Outer glow when active */}
-                {isSelected && (
-                  <circle
-                    cx={r.x}
-                    cy={r.y}
-                    r={20}
-                    fill={r.color}
-                    opacity="0.15"
-                    className="pointer-events-none"
-                  />
-                )}
-                {/* Pulse ring when active */}
-                {isSelected && (
-                  <circle
-                    cx={r.x}
-                    cy={r.y}
-                    r={18}
-                    fill="none"
-                    stroke={r.color}
-                    strokeWidth="1.5"
-                    opacity="0.3"
-                    className="animate-pulse pointer-events-none"
-                  />
-                )}
-                {/* Focus ring */}
-                <circle
-                  cx={r.x}
-                  cy={r.y}
-                  r={16}
-                  fill="none"
-                  stroke="hsl(var(--ring))"
-                  strokeWidth="2"
-                  opacity="0"
-                  className="transition-opacity duration-150 group-focus:opacity-100"
-                  style={{ opacity: 0 }}
-                />
                 {/* Main marker */}
                 <circle
                   cx={r.x}
                   cy={r.y}
-                  r={isSelected ? 12 : 10}
+                  r={isSelected ? 11 : 9}
                   fill={r.color}
                   stroke="hsl(var(--background))"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   opacity={isActive ? 1 : 0.3}
-                  className="transition-all duration-200 pointer-events-none"
+                  className="transition-all duration-150 pointer-events-none"
                 />
                 {/* Regional label */}
                 <text
@@ -341,8 +303,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
         {/* Info overlay when a regional is selected */}
         {activeRegionalData && (
           <div
-            className="absolute top-3 right-3 rounded-lg bg-background/95 border border-border p-3 max-w-[220px] backdrop-blur-sm"
-            style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
+            className="absolute top-3 right-3 rounded-md bg-background/95 border border-border-medium p-3 max-w-[200px]"
             role="status"
             aria-live="polite"
             aria-label={`${activeRegionalData.name} details`}
@@ -415,29 +376,25 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             <button
               key={r.id}
               className={cn(
-                "rounded-lg px-3 py-3 bg-card text-left transition-all",
+                "rounded-md px-2.5 py-2 bg-card border border-border text-left transition-colors",
                 activeRegional === r.id
-                  ? "ring-1 ring-offset-1 ring-offset-background"
-                  : "hover:bg-card/80"
+                  ? "border-border-medium bg-surface-raised"
+                  : "hover:bg-surface-raised"
               )}
-              style={{
-                borderLeft: `3px solid ${r.color}`,
-                ...(activeRegional === r.id ? { ringColor: r.color } : {}),
-              }}
               onClick={() =>
                 setActiveRegional(activeRegional === r.id ? null : r.id)
               }
             >
-              <p className="text-[12px] font-medium text-foreground">
+              <p className="text-[11px] font-medium text-foreground">
                 {r.name.replace(/ Regional$/, "")}
               </p>
-              <div className="mt-1.5 space-y-0.5">
-                <p className="text-[11px] text-muted-foreground">
+              <div className="mt-1 space-y-0.5">
+                <p className="text-[10px] text-muted-foreground">
                   {avgDist.toLocaleString()} mi avg
                 </p>
                 {maxTravel && (
-                  <p className="text-[10px] text-muted-foreground/70 truncate">
-                    Farthest: {maxTravel.team}
+                  <p className="text-[10px] text-text-tertiary truncate">
+                    {maxTravel.team}
                   </p>
                 )}
               </div>

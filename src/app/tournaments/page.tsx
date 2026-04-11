@@ -138,8 +138,8 @@ export default function TournamentsPage() {
                       t.gender === "Both"
                         ? "bg-primary/15 text-primary"
                         : t.gender === "Men"
-                          ? "bg-chart-2/15 text-chart-2"
-                          : "bg-chart-5/15 text-chart-5"
+                          ? "bg-secondary text-foreground"
+                          : "bg-secondary text-muted-foreground"
                     }`}
                   >
                     {t.gender}
@@ -162,7 +162,7 @@ export default function TournamentsPage() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
           {confChamps.map((c) => (
-            <div key={c.conf} className="card-gradient px-4 py-3 flex items-center justify-between">
+            <div key={c.conf} className="rounded-md border border-border bg-card px-4 py-3 flex items-center justify-between">
               <span className="text-[13px] text-foreground font-medium">{c.conf}</span>
               <span className="text-[12px] font-mono text-muted-foreground">{c.dates}</span>
             </div>

@@ -299,7 +299,7 @@ function RoadmapItem({
   description: string;
 }) {
   return (
-    <div className="card-gradient p-4">
+    <div className="rounded-md border border-border bg-card p-4">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-[14px] font-medium text-foreground">{title}</h3>
         <span className="text-[11px] font-medium text-muted-foreground whitespace-nowrap">
