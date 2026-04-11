@@ -866,7 +866,7 @@ function TeamRow({
   return (
     <tr className="h-8 border-b border-border/40 hover:bg-secondary/40 transition-colors duration-100">
       {/* Seed */}
-      <td className="px-2 text-center font-mono text-[13px] text-muted-foreground">
+      <td className="px-2 text-center font-mono tabular-nums text-[13px] text-muted-foreground">
         {team.seed}
       </td>
       {/* Team */}
@@ -879,7 +879,7 @@ function TeamRow({
         )}
       </td>
       {/* Ranking */}
-      <td className="px-2 text-center font-mono text-[13px] text-muted-foreground">
+      <td className="px-2 text-center font-mono tabular-nums text-[13px] text-muted-foreground">
         #{team.rank}
       </td>
       {/* Conference */}
@@ -911,7 +911,7 @@ function TeamRow({
         </span>
       </td>
       {/* Distance */}
-      <td className="px-2 text-right font-mono text-[13px] text-muted-foreground whitespace-nowrap">
+      <td className="px-2 text-right font-mono tabular-nums text-[13px] text-muted-foreground whitespace-nowrap">
         {team.distanceMiles.toLocaleString()} mi
       </td>
     </tr>
@@ -996,7 +996,7 @@ function MobileRegionalGroup({
               showRegional={false}
             />
             {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
-              <div className="flex items-center gap-1 px-1 py-px">
+              <div className="flex items-center gap-1 px-0.5 py-px">
                 <div className="flex-1 border-t border-dashed border-destructive/30" />
                 <span className="text-[7px] font-medium uppercase tracking-wider text-destructive/50">
                   cut
@@ -1278,7 +1278,7 @@ function VisualScurve({
                         style={{ borderLeft: `3px solid ${r?.color ?? "#888"}` }}
                         title={`#${team.seed} ${team.team} (${team.conference}) - ${team.distanceMiles.toLocaleString()} mi to ${r?.name ?? ""}`}
                       >
-                        <span className="font-mono text-[10px] text-muted-foreground mr-1.5 shrink-0 w-4">
+                        <span className="font-mono tabular-nums text-[10px] text-muted-foreground mr-1.5 shrink-0 w-4">
                           {team.seed}
                         </span>
                         <span className={cn(

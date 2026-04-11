@@ -66,7 +66,7 @@ export default function HeadToHeadMatrix({
           <table className="w-full text-[11px] border-collapse">
             <thead>
               <tr>
-                <th className="px-1.5 py-1.5 text-left text-muted-foreground font-medium w-[100px]">
+                <th className="px-1.5 py-1.5 text-left text-muted-foreground font-medium min-w-[120px] max-w-[160px]">
                   Team
                 </th>
                 {sorted.map((t) => (
@@ -84,8 +84,8 @@ export default function HeadToHeadMatrix({
             <tbody>
               {sorted.map((row) => (
                 <tr key={row.team} className="border-t border-border/30">
-                  <td className="px-1.5 py-1.5 text-foreground font-medium truncate max-w-[100px]">
-                    <span className="text-muted-foreground font-mono mr-1">
+                  <td className="px-1.5 py-1.5 text-foreground font-medium truncate max-w-[160px]">
+                    <span className="text-muted-foreground font-mono tabular-nums mr-1">
                       {row.seed}
                     </span>
                     {row.team}
@@ -119,7 +119,7 @@ export default function HeadToHeadMatrix({
                       <td
                         key={col.team}
                         className={cn(
-                          "px-1 py-1.5 text-center font-mono whitespace-nowrap",
+                          "px-1 py-1.5 text-center font-mono tabular-nums whitespace-nowrap",
                           isWinning && "text-primary",
                           isLosing && "text-destructive",
                           !isWinning && !isLosing && "text-muted-foreground"
@@ -224,12 +224,12 @@ export function HeadToHeadCompact({
             className="flex items-center justify-between text-[12px] px-2 py-1.5 rounded bg-secondary/30"
           >
             <span className="text-foreground truncate flex-1">
-              <span className="font-mono text-muted-foreground mr-1">{m.seedA}</span>
+              <span className="font-mono tabular-nums text-muted-foreground mr-1">{m.seedA}</span>
               {m.teamA}
             </span>
             <span
               className={cn(
-                "font-mono px-2 whitespace-nowrap",
+                "font-mono tabular-nums px-2 whitespace-nowrap",
                 m.wins > m.losses && "text-primary",
                 m.wins < m.losses && "text-destructive",
                 m.wins === m.losses && "text-muted-foreground"
@@ -239,7 +239,7 @@ export function HeadToHeadCompact({
             </span>
             <span className="text-foreground truncate flex-1 text-right">
               {m.teamB}
-              <span className="font-mono text-muted-foreground ml-1">{m.seedB}</span>
+              <span className="font-mono tabular-nums text-muted-foreground ml-1">{m.seedB}</span>
             </span>
           </div>
         ))}

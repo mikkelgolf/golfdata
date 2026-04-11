@@ -116,7 +116,7 @@ export default function TournamentsPage() {
                 key={t.name}
                 className="border-b border-border/40 hover:bg-secondary/50 transition-colors"
               >
-                <td className="px-3 py-2.5">
+                <td className="px-3 py-2.5 align-top">
                   <div>
                     <span className="font-medium text-foreground">{t.name}</span>
                     {t.note && (
@@ -126,13 +126,13 @@ export default function TournamentsPage() {
                     )}
                   </div>
                 </td>
-                <td className="px-3 py-2.5 text-muted-foreground whitespace-nowrap hidden sm:table-cell">
+                <td className="px-3 py-2.5 align-top text-muted-foreground whitespace-nowrap hidden sm:table-cell">
                   {t.location}
                 </td>
-                <td className="px-3 py-2.5 font-mono text-muted-foreground whitespace-nowrap">
+                <td className="px-3 py-2.5 align-top font-mono tabular-nums text-muted-foreground whitespace-nowrap">
                   {t.dates}
                 </td>
-                <td className="px-3 py-2.5 text-center hidden md:table-cell">
+                <td className="px-3 py-2.5 align-top text-center hidden md:table-cell">
                   <span
                     className={`inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium ${
                       t.gender === "Both"
