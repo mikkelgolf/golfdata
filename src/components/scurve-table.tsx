@@ -974,12 +974,15 @@ function MobileRegionalGroup({
       )}
 
       {/* Column headers */}
-      <div className="flex items-center gap-0 text-[7px] uppercase tracking-wider text-muted-foreground/50 px-0.5 pt-0.5 border-t border-border/30">
-        <span className="w-[20px] text-right shrink-0">#</span>
-        <span className="ml-1 min-w-0 flex-1">Team</span>
-        <span className="w-[24px] text-right shrink-0">Rk</span>
-        <span className="w-[32px] text-center shrink-0">Conf</span>
-        <span className="w-[42px] text-right shrink-0 pr-0.5">Dist</span>
+      <div
+        className="text-[7px] uppercase tracking-wider text-muted-foreground/50 px-0.5 pt-0.5 border-t border-border/30 items-center"
+        style={{ display: "grid", gridTemplateColumns: "20px 1fr 24px 32px 42px", gap: "0px" }}
+      >
+        <span className="text-right">#</span>
+        <span className="pl-1">Team</span>
+        <span className="text-right">Rk</span>
+        <span className="text-center">Conf</span>
+        <span className="text-right pr-0.5">Dist</span>
       </div>
 
       {/* Team rows */}
@@ -1023,27 +1026,34 @@ function MobileTeamCard({
   const color = regional?.color ?? "#888";
   const regionalLabel = regional?.name.replace(/ Regional$/, "") ?? "";
 
+  const gridColumns = showRegional
+    ? "20px 1fr 24px 32px auto 42px"
+    : "20px 1fr 24px 32px 42px";
+
   return (
-    <div className="h-[18px] flex items-center gap-0 text-[10px] leading-none px-0.5">
-      <span className="font-mono text-[9px] text-muted-foreground w-[20px] text-right shrink-0">
+    <div
+      className="h-[18px] items-center text-[10px] leading-none px-0.5 overflow-hidden"
+      style={{ display: "grid", gridTemplateColumns: gridColumns, gap: "0px" }}
+    >
+      <span className="font-mono text-[9px] text-muted-foreground text-right tabular-nums">
         {team.seed}
       </span>
-      <span className="font-medium text-foreground truncate min-w-0 ml-1 flex-1 text-[10px]">
+      <span className="font-medium text-foreground truncate pl-1 text-[10px] overflow-hidden whitespace-nowrap">
         {team.team}
         {isHost && <span className="text-[6px] font-bold uppercase text-gold ml-0.5">H</span>}
         {team.isAutoQualifier && <span className="text-[6px] font-bold uppercase text-primary ml-0.5">AQ</span>}
       </span>
-      <span className="shrink-0 font-mono text-[8px] text-muted-foreground w-[24px] text-right">#{team.rank}</span>
-      <span className="shrink-0 text-[8px] text-muted-foreground w-[32px] text-center">{team.conference}</span>
+      <span className="font-mono text-[8px] text-muted-foreground text-right tabular-nums">#{team.rank}</span>
+      <span className="text-[8px] text-muted-foreground text-center">{team.conference}</span>
       {showRegional && (
         <span
-          className="shrink-0 text-[7px] text-muted-foreground"
+          className="text-[7px] text-muted-foreground overflow-hidden whitespace-nowrap"
           style={{ borderLeft: `2px solid ${color}`, paddingLeft: "2px" }}
         >
           {regionalLabel}
         </span>
       )}
-      <span className="font-mono text-[8px] text-muted-foreground w-[42px] text-right shrink-0 tabular-nums pr-0.5">
+      <span className="font-mono text-[8px] text-muted-foreground text-right tabular-nums pr-0.5">
         {team.distanceMiles.toLocaleString()}
       </span>
     </div>
