@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
@@ -58,6 +59,13 @@ interface USMapProps {
 export default function USMap({ assignments, regionals }: USMapProps) {
   const [activeRegional, setActiveRegional] = useState<number | null>(null);
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null);
+
+  // Lookup: regional id -> Regional (for color + position)
+  const regionalById = useMemo(() => {
+    const m = new Map<number, Regional>();
+    for (const r of regionals) m.set(r.id, r);
+    return m;
+  }, [regionals]);
 
   // Group assignments by regional
   const byRegional = useMemo(() => {
@@ -160,38 +168,74 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             />
           )}
 
-          {/* Travel lines (only when a regional is selected) */}
-          {activeRegional !== null &&
-            activeRegionalData &&
-            (() => {
-              const rPos = projectPoint(
-                activeRegionalData.lat,
-                activeRegionalData.lng
-              );
-              if (!rPos) return null;
-              return teamPositions
-                .filter((t) => t.regionalId === activeRegional)
-                .map((team) => {
-                  const midX = (team.x + rPos.x) / 2;
-                  const midY = (team.y + rPos.y) / 2 - 30;
-                  const isHovered = hoveredTeam === team.team;
-                  return (
-                    <path
-                      key={`line-${team.team}`}
-                      d={`M ${team.x} ${team.y} Q ${midX} ${midY} ${rPos.x} ${rPos.y}`}
-                      fill="none"
-                      stroke="hsl(var(--foreground))"
-                      strokeWidth={isHovered ? 1.5 : 0.75}
-                      strokeDasharray={isHovered ? "none" : "3,3"}
-                      opacity={isHovered ? 0.6 : 0.2}
-                      className="transition-opacity duration-150"
-                    />
-                  );
-                });
-            })()}
+          {/* Travel lines: all teams to their assigned regional, always rendered.
+              Default very low opacity; brighten on hover/selection. When a regional
+              is activated, its lines animate (pathLength 0→1) in seed order so the
+              flights "fan out" from the host site. */}
+          {teamPositions.map((team, idx) => {
+            const r = regionalById.get(team.regionalId);
+            if (!r) return null;
+            const rPos = projectPoint(r.lat, r.lng);
+            if (!rPos) return null;
+            const midX = (team.x + rPos.x) / 2;
+            const midY = (team.y + rPos.y) / 2 - 30;
+            const isInActiveRegional =
+              activeRegional !== null && team.regionalId === activeRegional;
+            const isOtherActive =
+              activeRegional !== null && team.regionalId !== activeRegional;
+            const isHovered = hoveredTeam === team.team;
 
-          {/* Team dots */}
+            const opacity = isHovered
+              ? 0.85
+              : isInActiveRegional
+                ? 0.7
+                : isOtherActive
+                  ? 0.04
+                  : 0.18;
+            const strokeWidth = isHovered ? 1.5 : isInActiveRegional ? 1.2 : 0.5;
+            const dash = isInActiveRegional || isHovered ? "none" : "2,2";
+            const d = `M ${team.x} ${team.y} Q ${midX} ${midY} ${rPos.x} ${rPos.y}`;
+
+            // Active regional lines animate draw-on. Background lines render plain.
+            if (isInActiveRegional) {
+              return (
+                <motion.path
+                  key={`line-active-${activeRegional}-${team.team}`}
+                  d={d}
+                  fill="none"
+                  stroke={r.color}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={dash}
+                  opacity={opacity}
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{
+                    duration: 0.55,
+                    ease: "easeOut",
+                    delay: (team.seed % 14) * 0.04,
+                  }}
+                  className="pointer-events-none"
+                />
+              );
+            }
+            return (
+              <path
+                key={`line-${team.team}`}
+                d={d}
+                fill="none"
+                stroke={r.color}
+                strokeWidth={strokeWidth}
+                strokeDasharray={dash}
+                opacity={opacity}
+                className="transition-all duration-200 pointer-events-none"
+              />
+            );
+          })}
+
+          {/* Team dots: colored by destination regional */}
           {teamPositions.map((team) => {
+            const r = regionalById.get(team.regionalId);
+            const dotColor = r?.color ?? "hsl(var(--foreground))";
             const isActive =
               activeRegional === null || team.regionalId === activeRegional;
             const isHovered = hoveredTeam === team.team;
@@ -209,13 +253,15 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   onMouseLeave={() => setHoveredTeam(null)}
                   onTouchStart={() => setHoveredTeam(hoveredTeam === team.team ? null : team.team)}
                 />
-                {/* Visible dot */}
+                {/* Visible dot — colored by regional */}
                 <circle
                   cx={team.x}
                   cy={team.y}
-                  r={isHovered ? 5 : 3}
-                  fill="hsl(var(--foreground))"
-                  opacity={isActive ? (isHovered ? 0.9 : 0.5) : 0.1}
+                  r={isHovered ? 5 : 3.2}
+                  fill={dotColor}
+                  stroke="hsl(var(--background))"
+                  strokeWidth={0.6}
+                  opacity={isActive ? (isHovered ? 1 : 0.85) : 0.18}
                   className="transition-opacity duration-150 pointer-events-none"
                 />
                 {isHovered && (
@@ -224,6 +270,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                     y={team.y - 10}
                     textAnchor="middle"
                     className="text-[10px] font-medium fill-foreground pointer-events-none"
+                    style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 3, strokeLinejoin: "round" }}
                   >
                     {team.team}
                   </text>
@@ -301,13 +348,14 @@ export default function USMap({ assignments, regionals }: USMapProps) {
           })}
         </svg>
 
-        {/* Info overlay when a regional is selected */}
+        {/* Desktop info overlay (absolute, top-right) */}
         {activeRegionalData && (
           <div
-            className="absolute top-3 right-3 rounded-md bg-background border border-border-medium p-3 max-w-[200px]"
+            className="hidden sm:block absolute top-3 right-3 rounded-md bg-background border border-border-medium p-3 max-w-[220px] shadow-lg"
             role="status"
             aria-live="polite"
             aria-label={`${activeRegionalData.name} details`}
+            style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
           >
             <p className="font-semibold text-[13px] text-foreground">
               {activeRegionalData.name}
@@ -331,7 +379,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   <p
                     key={t.team}
                     className={cn(
-                      "text-[10px]",
+                      "text-[10px] cursor-pointer",
                       hoveredTeam === t.team
                         ? "text-foreground font-medium"
                         : "text-muted-foreground"
@@ -352,6 +400,81 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             >
               Clear selection
             </button>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile bottom sheet (peek drawer, no backdrop so map stays visible) */}
+      <div
+        className={cn(
+          "sm:hidden fixed inset-x-0 bottom-0 z-40 transition-transform duration-200 ease-out",
+          activeRegionalData ? "translate-y-0" : "translate-y-full pointer-events-none"
+        )}
+        aria-hidden={!activeRegionalData}
+      >
+        {activeRegionalData && (
+          <div
+            className="mx-2 mb-2 rounded-t-xl rounded-b-md bg-background border border-border-medium shadow-2xl overflow-hidden"
+            style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
+            role="dialog"
+            aria-label={`${activeRegionalData.name} details`}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center pt-2 pb-1">
+              <div className="h-1 w-10 rounded-full bg-border-medium" />
+            </div>
+            <div className="px-4 pb-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-semibold text-[14px] text-foreground truncate">
+                    {activeRegionalData.name}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {activeRegionalData.host} &middot; {activeRegionalData.city}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveRegional(null)}
+                  className="shrink-0 text-[11px] text-primary px-2 py-1 -mr-2 -mt-1"
+                  aria-label="Close"
+                >
+                  Close
+                </button>
+              </div>
+              <div className="mt-1.5 flex items-center gap-3">
+                <p className="text-[11px] text-muted-foreground">
+                  {activeTeams.length} teams
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  <Plane className="inline h-3 w-3 mr-0.5" />
+                  {activeTotalDist.toLocaleString()} mi
+                </p>
+              </div>
+              <div className="mt-2 max-h-[28vh] overflow-y-auto pr-1 -mr-1">
+                {activeTeams
+                  .sort((a, b) => a.seed - b.seed)
+                  .map((t) => (
+                    <button
+                      key={t.team}
+                      onClick={() =>
+                        setHoveredTeam(hoveredTeam === t.team ? null : t.team)
+                      }
+                      className={cn(
+                        "block w-full text-left text-[11px] py-1 border-b border-border/30 last:border-b-0",
+                        hoveredTeam === t.team
+                          ? "text-foreground font-medium"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      <span className="font-mono tabular-nums mr-1.5">#{t.seed}</span>
+                      {t.team}{" "}
+                      <span className="opacity-60 font-mono tabular-nums">
+                        ({t.distanceMiles.toLocaleString()} mi)
+                      </span>
+                    </button>
+                  ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -382,6 +505,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   ? "border-border-medium bg-surface-raised"
                   : "hover:bg-surface-raised"
               )}
+              style={{ borderLeft: `3px solid ${r.color}` }}
               onClick={() =>
                 setActiveRegional(activeRegional === r.id ? null : r.id)
               }

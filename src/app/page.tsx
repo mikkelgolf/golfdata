@@ -9,14 +9,14 @@ const LAST_UPDATED = "Apr 10, 2026";
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-4 pb-8">
+    <div className="mx-auto max-w-6xl px-3 sm:px-4 pt-2 sm:pt-4 pb-8">
       {/* Compact header */}
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+      <div className="mb-2 sm:mb-4 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
         <div>
-          <h1 className="text-lg font-semibold text-foreground">
+          <h1 className="text-[15px] sm:text-lg font-semibold text-foreground leading-tight">
             NCAA D1 Regional Predictions
           </h1>
-          <p className="text-[12px] text-text-tertiary">
+          <p className="hidden sm:block text-[12px] text-text-tertiary">
             Based on the official NCAA rankings &middot; Updated {LAST_UPDATED}
           </p>
         </div>

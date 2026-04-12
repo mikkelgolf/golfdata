@@ -10,6 +10,8 @@ import type { Regional } from "./regionals-men-2026";
  * Women's selections: April 29, 2026
  * Women's regionals: May 11-13, 2026
  */
+// Same tuned palette as men's; consistent across genders so the colors
+// keep meaning if a coach toggles between Men and Women.
 export const regionalsWomen2026: Regional[] = [
   {
     id: 1,
@@ -18,7 +20,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Stanford, CA",
     lat: 37.4275,
     lng: -122.1697,
-    color: "#5da89e",
+    color: "#5fb7b0",
   },
   {
     id: 2,
@@ -27,7 +29,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Chapel Hill, NC",
     lat: 35.9049,
     lng: -79.0469,
-    color: "#7090b5",
+    color: "#7ba8d3",
   },
   {
     id: 3,
@@ -36,7 +38,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Waco, TX",
     lat: 31.5497,
     lng: -97.1143,
-    color: "#78a878",
+    color: "#92c785",
   },
   {
     id: 4,
@@ -45,7 +47,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Ann Arbor, MI",
     lat: 42.2808,
     lng: -83.7430,
-    color: "#c2a06b",
+    color: "#d6b173",
   },
   {
     id: 5,
@@ -54,7 +56,7 @@ export const regionalsWomen2026: Regional[] = [
     city: "Tallahassee, FL",
     lat: 30.4418,
     lng: -84.2985,
-    color: "#b88585",
+    color: "#d68a8a",
   },
   {
     id: 6,
@@ -63,6 +65,6 @@ export const regionalsWomen2026: Regional[] = [
     city: "Simpsonville, KY",
     lat: 38.2226,
     lng: -85.3554,
-    color: "#9680b0",
+    color: "#a895c9",
   },
 ];

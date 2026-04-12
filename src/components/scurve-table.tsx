@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { computeScurve, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
@@ -138,7 +139,7 @@ export default function ScurveTable({
   const searchParams = useSearchParams();
 
   // URL-persisted state
-  const initialView = (searchParams.get("view") as ViewMode) || "regional";
+  const initialView = (searchParams.get("view") as ViewMode) || "map";
   const initialGender = (searchParams.get("gender") as Gender) || "men";
   const initialMode = (searchParams.get("mode") as ScurveMode) || "committee";
 
@@ -294,7 +295,7 @@ export default function ScurveTable({
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
         />
-        <div className="mt-12 flex flex-col items-center gap-6 text-center">
+        <div className="mt-6 sm:mt-10 flex flex-col items-center gap-5 text-center">
           <div className="space-y-2">
             <p className="text-lg font-medium text-foreground">
               Women&apos;s Regional Predictions
@@ -356,6 +357,11 @@ export default function ScurveTable({
             regionalMap={regionalMap}
           />
         </div>
+        <BubbleSection
+          teams={gender === "men" ? menTeams : womenTeams}
+          assignments={assignments}
+          regionalMap={regionalMap}
+        />
       </div>
     );
   }
@@ -377,12 +383,17 @@ export default function ScurveTable({
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
         />
-        <div className="mt-3">
-          <p className="text-[12px] text-text-tertiary mb-3">
-            Click a regional site to see travel lines from assigned teams. School locations are approximate.
+        <div className="mt-2 sm:mt-3">
+          <p className="hidden sm:block text-[12px] text-text-tertiary mb-2">
+            Tap a regional to focus its travel lines. Team dots are colored by their assigned regional.
           </p>
           <USMap assignments={assignments} regionals={activeRegionals} />
         </div>
+        <BubbleSection
+          teams={gender === "men" ? menTeams : womenTeams}
+          assignments={assignments}
+          regionalMap={regionalMap}
+        />
       </div>
     );
   }
@@ -402,8 +413,8 @@ export default function ScurveTable({
         onSearchChange={setSearch}
       />
 
-      {/* Mode description */}
-      <div className="mt-2 mb-1 text-[12px] text-text-tertiary">
+      {/* Mode description — desktop only to save mobile space */}
+      <div className="hidden sm:block mt-2 mb-1 text-[12px] text-text-tertiary">
         {scurveMode === "committee" ? (
           <span>Showing committee prediction - top seeds assigned by proximity, AQ geographic preference applied</span>
         ) : (
@@ -723,7 +734,8 @@ function BubbleSection({
   assignments: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
 }) {
-  const BUBBLE_WINDOW = 6;
+  const LAST_IN = 6;
+  const FIRST_OUT = 10;
   const totalInField = assignments.length;
   if (totalInField === 0) return null;
 
@@ -736,12 +748,12 @@ function BubbleSection({
   const lastIn = assignments
     .slice()
     .sort((a, b) => a.seed - b.seed)
-    .slice(-BUBBLE_WINDOW);
+    .slice(-LAST_IN);
 
-  const teamsOut = teams.filter(
-    (t) => !assignmentMap.has(t.team)
-  );
-  const firstOut = teamsOut.slice(0, BUBBLE_WINDOW);
+  const teamsOut = teams
+    .filter((t) => !assignmentMap.has(t.team))
+    .sort((a, b) => a.rank - b.rank);
+  const firstOut = teamsOut.slice(0, FIRST_OUT);
 
   if (lastIn.length === 0 && firstOut.length === 0 && ineligibleInField.length === 0) {
     return null;
@@ -750,14 +762,15 @@ function BubbleSection({
   return (
     <section className="mt-6">
       <div className="flex items-baseline gap-2 mb-2">
-        <h3 className="text-[13px] font-semibold text-foreground">Bubble Zone</h3>
+        <h3 className="text-[13px] font-semibold text-foreground">Bubble &amp; Magic Number</h3>
         <span className="text-[11px] text-text-tertiary">{totalInField} teams in field</span>
       </div>
 
       <div className="rounded-lg border border-border overflow-hidden">
         {/* Last N In */}
-        <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-          Last {lastIn.length} In
+        <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground flex items-center justify-between">
+          <span>Last {lastIn.length} In</span>
+          <span className="text-text-tertiary normal-case font-normal">predicted regional &amp; seed</span>
         </div>
         {lastIn.map((team) => {
           const regional = regionalMap.get(team.regionalId);
@@ -769,7 +782,7 @@ function BubbleSection({
                 "h-8 items-center text-[13px] px-3 border-b border-border/40",
                 isIneligibleAQ && "border-l-2 border-l-amber-500/60"
               )}
-              style={{ display: "grid", gridTemplateColumns: "40px 1fr 80px 60px" }}
+              style={{ display: "grid", gridTemplateColumns: "40px 1fr 100px 60px", gap: "6px" }}
             >
               <span className="font-mono tabular-nums text-muted-foreground text-[12px]">
                 #{team.seed}
@@ -795,13 +808,13 @@ function BubbleSection({
           );
         })}
 
-        {/* Cutoff Line */}
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/5">
-          <div className="flex-1 border-t-2 border-amber-500/40" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500/80 whitespace-nowrap">
-            Field Cutoff
+        {/* Magic Number Cutoff Line */}
+        <div className="relative flex items-center gap-2 px-3 py-2 bg-amber-500/10 border-y-2 border-amber-500/60">
+          <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 whitespace-nowrap">
+            Magic Number &middot; Field Cutoff
           </span>
-          <div className="flex-1 border-t-2 border-amber-500/40" />
+          <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
         </div>
 
         {/* First N Out */}
@@ -810,25 +823,27 @@ function BubbleSection({
             <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
               First {firstOut.length} Out
             </div>
-            {firstOut.map((team) => {
+            {firstOut.map((team, idx) => {
               const belowFiveHundred = team.wins < team.losses;
               return (
                 <div
                   key={team.team}
                   className={cn(
-                    "h-8 items-center text-[13px] px-3 border-b border-border/40 opacity-60",
-                    belowFiveHundred && "border-l-2 border-l-destructive/40"
+                    "h-8 items-center text-[13px] px-3 border-b border-border/40",
+                    idx < 3 ? "opacity-80" : idx < 6 ? "opacity-65" : "opacity-50",
+                    belowFiveHundred && "border-l-2 border-l-destructive/50",
+                    !team.eligible && !belowFiveHundred && "border-l-2 border-l-amber-500/40"
                   )}
-                  style={{ display: "grid", gridTemplateColumns: "40px 1fr 80px 60px" }}
+                  style={{ display: "grid", gridTemplateColumns: "40px 1fr 100px 60px", gap: "6px" }}
                 >
-                  <span className="font-mono tabular-nums text-muted-foreground text-[12px]">
-                    &mdash;
+                  <span className="font-mono tabular-nums text-text-tertiary text-[11px]">
+                    +{idx + 1}
                   </span>
                   <span className="text-muted-foreground truncate">
                     {team.team}
                     {belowFiveHundred && (
                       <span className="ml-1.5 text-[9px] font-semibold text-destructive/70 uppercase">
-                        Below .500
+                        Ineligible &middot; Below .500
                       </span>
                     )}
                     {!team.eligible && !belowFiveHundred && (
@@ -1349,7 +1364,14 @@ function MobileVisualScurve({
 
                 return (
                   <div key={`${team.team}-${team.seed}`}>
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, x: -4 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.18,
+                        ease: "easeOut",
+                        delay: team.seed * 0.012,
+                      }}
                       className={cn(
                         "h-[15px] items-center leading-none px-0.5 overflow-hidden",
                         isAboveLine ? "bg-secondary/40" : ""
@@ -1367,7 +1389,7 @@ function MobileVisualScurve({
                       <span className="font-mono text-[7px] text-muted-foreground text-right tabular-nums pr-0.5 overflow-hidden">
                         {team.rank}
                       </span>
-                    </div>
+                    </motion.div>
                     {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
                       <div className="flex items-center gap-0.5 px-0.5">
                         <div className="flex-1 border-t border-dashed border-destructive/30" />
@@ -1436,25 +1458,12 @@ function VisualScurve({
   }
 
   return (
-    <div className="mt-4">
-      {/* Legend */}
-      <div className="flex flex-wrap gap-3 mb-3">
-        {regionals.map((r) => (
-          <div key={r.id} className="flex items-center gap-1.5 text-[11px]">
-            <div
-              className="w-2 h-2 rounded-sm"
-              style={{ backgroundColor: r.color }}
-            />
-            <span className="text-muted-foreground">{r.name.replace(/ Regional$/, "")}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Serpentine grid */}
+    <div className="mt-3">
+      {/* Serpentine grid (legend removed — column header borders label regionals) */}
       <div className="overflow-x-auto relative">
         <div className="min-w-[700px]">
           {/* Regional headers */}
-          <div className="grid gap-1 mb-1" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
+          <div className="grid gap-0.5 mb-0.5" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
             {regionals.map((r) => (
               <div
                 key={r.id}
@@ -1480,28 +1489,34 @@ function VisualScurve({
                 </div>
 
                 <div
-                  className="grid gap-1 mb-1"
+                  className="grid gap-0.5 mb-0.5"
                   style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}
                 >
                   {displayRow.map((team, colIdx) => {
                     const r = displayRegionals[colIdx];
                     if (!team) {
-                      return <div key={`empty-${tierIdx}-${colIdx}`} className="h-8" />;
+                      return <div key={`empty-${tierIdx}-${colIdx}`} className="h-7" />;
                     }
 
                     const isHost = team.team === r?.host;
                     const isAboveLine = (() => {
-                      // Check position within this regional
                       const regionalTeams = byRegional.get(team.regionalId) ?? [];
                       const posInRegional = regionalTeams.findIndex((t) => t.seed === team.seed);
                       return posInRegional < TEAMS_ADVANCING;
                     })();
 
                     return (
-                      <div
+                      <motion.div
                         key={`${team.team}-${team.seed}`}
+                        initial={{ opacity: 0, scale: 0.92 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          duration: 0.22,
+                          ease: "easeOut",
+                          delay: team.seed * 0.018,
+                        }}
                         className={cn(
-                          "h-8 px-2 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
+                          "h-7 px-2 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
                           isAboveLine
                             ? "bg-secondary/80 hover:bg-secondary"
                             : "bg-secondary/30 hover:bg-secondary/50"
@@ -1523,7 +1538,7 @@ function VisualScurve({
                         <span className="font-mono tabular-nums text-[10px] text-muted-foreground shrink-0 ml-1">
                           #{team.rank}
                         </span>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -1544,8 +1559,8 @@ function VisualScurve({
         </div>
       </div>
 
-      {/* Summary stats */}
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+      {/* Summary stats — compact, always visible */}
+      <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
         {regionals.map((r) => {
           const teams = byRegional.get(r.id) ?? [];
           const totalDist = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
@@ -1554,20 +1569,15 @@ function VisualScurve({
           return (
             <div
               key={r.id}
-              className="rounded-lg px-3 py-3 bg-card"
+              className="rounded-md px-2.5 py-2 bg-card"
               style={{ borderLeft: `3px solid ${r.color}` }}
             >
-              <p className="text-[11px] font-medium text-foreground">{r.name.replace(/ Regional$/, "")}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{r.host}</p>
-              <div className="mt-2 space-y-0.5">
-                <p className="text-[11px] text-muted-foreground">
-                  <Plane className="inline h-3 w-3 mr-0.5 opacity-60" />
-                  {avgDist.toLocaleString()} mi avg
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {totalDist.toLocaleString()} mi total
-                </p>
-              </div>
+              <p className="text-[11px] font-medium text-foreground truncate">{r.name.replace(/ Regional$/, "")}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{r.host}</p>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                <Plane className="inline h-3 w-3 mr-0.5 opacity-60" />
+                {avgDist.toLocaleString()} mi avg
+              </p>
             </div>
           );
         })}
