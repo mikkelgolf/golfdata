@@ -8,12 +8,15 @@ export interface ChampionshipAssignment extends TeamData {
 }
 
 /**
- * Assign every ranked team to its conference championship venue and
- * compute the haversine travel distance from team home to venue.
+ * Assign every team to its conference championship venue and compute the
+ * haversine travel distance from team home to venue. Re-derives AQ status
+ * from the full field: the top-ranked team in each conference becomes the
+ * predicted automatic qualifier, regardless of how the source data flagged
+ * `isAutoQualifier`.
  *
- * Teams whose conference has no championship in the data file are skipped
- * (this happens for unranked-conference teams or for conferences whose
- * 2026 venue is genuinely TBD and excluded from the source data).
+ * Teams whose conference has no championship in the data file are skipped.
+ * Teams without coordinates (lat=0 && lng=0) and championships with TBD
+ * venues both produce distanceMiles=0 — the UI renders these as "—".
  */
 export function assignToChampionships(
   teams: TeamData[],
@@ -26,11 +29,34 @@ export function assignToChampionships(
   for (const team of teams) {
     const champ = byConference.get(team.conference);
     if (!champ) continue;
+    const teamHasCoords = team.lat !== 0 || team.lng !== 0;
+    const venueHasCoords = champ.lat !== 0 || champ.lng !== 0;
     out.push({
       ...team,
       championshipId: champ.id,
-      distanceMiles: haversineDistance(team.lat, team.lng, champ.lat, champ.lng),
+      distanceMiles:
+        teamHasCoords && venueHasCoords
+          ? haversineDistance(team.lat, team.lng, champ.lat, champ.lng)
+          : 0,
+      isAutoQualifier: false,
+      aqConference: null,
     });
   }
+
+  // Re-derive predicted AQ: top-ranked team per conference is the predicted
+  // automatic qualifier. Works for every conference regardless of how deep
+  // its top team is ranked.
+  const topByConf = new Map<string, ChampionshipAssignment>();
+  for (const a of out) {
+    const cur = topByConf.get(a.conference);
+    if (!cur || a.rank < cur.rank) topByConf.set(a.conference, a);
+  }
+  for (const a of out) {
+    if (topByConf.get(a.conference) === a) {
+      a.isAutoQualifier = true;
+      a.aqConference = a.conference;
+    }
+  }
+
   return out;
 }

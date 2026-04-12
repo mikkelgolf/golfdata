@@ -2,12 +2,20 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import ChampionshipsView from "@/components/championships-view";
 import { MapSkeleton, FilterBarSkeleton } from "@/components/skeletons";
-import { rankingsMen } from "@/data/rankings-men";
-import { rankingsWomen } from "@/data/rankings-women";
+import {
+  allTeamsMen2026,
+  ALL_TEAMS_GENERATED_AT,
+} from "@/data/all-teams-men-2026";
+import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { championshipsMen2026 } from "@/data/championships-men-2026";
 import { championshipsWomen2026 } from "@/data/championships-women-2026";
 
-const LAST_UPDATED = "Apr 12, 2026";
+function formatLastUpdated(iso: string): string {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+const LAST_UPDATED = formatLastUpdated(ALL_TEAMS_GENERATED_AT);
 
 export const metadata: Metadata = {
   title: "Conference Championships - College Golf Data",
@@ -30,8 +38,8 @@ export default function ConferenceChampionshipsPage() {
 
       <Suspense fallback={<PageSkeleton />}>
         <ChampionshipsView
-          menTeams={rankingsMen}
-          womenTeams={rankingsWomen}
+          menTeams={allTeamsMen2026}
+          womenTeams={allTeamsWomen2026}
           menChampionships={championshipsMen2026}
           womenChampionships={championshipsWomen2026}
           lastUpdated={LAST_UPDATED}

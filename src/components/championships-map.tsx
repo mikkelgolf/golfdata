@@ -116,11 +116,14 @@ export default function ChampionshipsMap({
     [mappableChampionships]
   );
 
-  // Project team positions (only those whose championship is mappable)
+  // Project team positions (only those whose championship is mappable AND
+  // which have non-zero coordinates — schools without coords still appear
+  // in card lists but get skipped on the map)
   const teamPositions = useMemo(
     () =>
       assignments
         .filter((a) => championshipById.has(a.championshipId))
+        .filter((a) => a.lat !== 0 || a.lng !== 0)
         .map((a) => {
           const pos = projectPoint(a.lat, a.lng);
           return pos ? { ...a, x: pos.x, y: pos.y } : null;

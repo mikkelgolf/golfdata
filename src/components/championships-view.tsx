@@ -474,9 +474,15 @@ function ChampionshipCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const tbd = isVenueTBD(championship);
-  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
+  const teamsWithCoords = teams.filter((t) => t.lat !== 0 || t.lng !== 0);
+  const totalDistance = teamsWithCoords.reduce(
+    (sum, t) => sum + t.distanceMiles,
+    0
+  );
   const avgDistance =
-    teams.length > 0 ? Math.round(totalDistance / teams.length) : 0;
+    teamsWithCoords.length > 0
+      ? Math.round(totalDistance / teamsWithCoords.length)
+      : 0;
   const top = teams[0];
 
   return (
@@ -613,7 +619,9 @@ function ChampionshipCard({
                       )}
                     </td>
                     <td className="px-3 py-1.5 font-mono tabular-nums text-muted-foreground text-right">
-                      {tbd ? "—" : `${t.distanceMiles.toLocaleString()} mi`}
+                      {tbd || (t.lat === 0 && t.lng === 0)
+                        ? "—"
+                        : `${t.distanceMiles.toLocaleString()} mi`}
                     </td>
                   </tr>
                 ))}

@@ -1,0 +1,8530 @@
+[
+  {
+    "unitid": 100663,
+    "school_name": "University of Alabama at Birmingham",
+    "city": "Birmingham",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 127389,
+    "school_name": "Lamar Community College",
+    "city": "Lamar",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 127556,
+    "school_name": "Colorado Mesa University",
+    "city": "Grand Junction",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101879,
+    "school_name": "University of North Alabama",
+    "city": "Florence",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101897,
+    "school_name": "Northeast Alabama Community College",
+    "city": "Rainsville",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 102049,
+    "school_name": "Samford University",
+    "city": "Birmingham",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 102067,
+    "school_name": "Shelton State Community College",
+    "city": "Tuscaloosa",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 102076,
+    "school_name": "Snead State Community College",
+    "city": "Boaz",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 102094,
+    "school_name": "University of South Alabama",
+    "city": "Mobile",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 102368,
+    "school_name": "Troy University",
+    "city": "Troy",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 104151,
+    "school_name": "Arizona State University-Tempe",
+    "city": "Tempe",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 104179,
+    "school_name": "University of Arizona",
+    "city": "Tucson",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 104577,
+    "school_name": "Eastern Arizona College",
+    "city": "Thatcher",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 106704,
+    "school_name": "University of Central Arkansas",
+    "city": "Magnolia",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 107044,
+    "school_name": "Harding University",
+    "city": "Searcy",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 127565,
+    "school_name": "Metropolitan State University of Denver",
+    "city": "Denver",
+    "state": "CO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 127732,
+    "school_name": "Northeastern Junior College",
+    "city": "Sterling",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 127741,
+    "school_name": "University of Northern Colorado",
+    "city": "Greeley",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 128106,
+    "school_name": "Colorado State University Pueblo",
+    "city": "Pueblo",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 128328,
+    "school_name": "United States Air Force Academy",
+    "city": "USAF Academy",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 128498,
+    "school_name": "Albertus Magnus College",
+    "city": "New Haven",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 146481,
+    "school_name": "Lake Forest College",
+    "city": "Lake Forest",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 107071,
+    "school_name": "Henderson State University",
+    "city": "Arkadelphia",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 107080,
+    "school_name": "Hendrix College",
+    "city": "Conway",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 107877,
+    "school_name": "Williams Baptist University",
+    "city": "Walnut Ridge",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 146612,
+    "school_name": "Lewis University",
+    "city": "Romeoville",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 146719,
+    "school_name": "Loyola University Chicago",
+    "city": "Chicago",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147013,
+    "school_name": "McKendree University",
+    "city": "Lebanon",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147244,
+    "school_name": "Millikin University",
+    "city": "Decatur",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147341,
+    "school_name": "Monmouth College",
+    "city": "Monmouth",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147660,
+    "school_name": "North Central College",
+    "city": "Naperville",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147703,
+    "school_name": "Northern Illinois University",
+    "city": "Dekalb",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147767,
+    "school_name": "Northwestern University",
+    "city": "Evanston",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147828,
+    "school_name": "Olivet Nazarene University",
+    "city": "Chicago",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 148131,
+    "school_name": "Quincy University",
+    "city": "Quincy",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 148256,
+    "school_name": "Rend Lake College",
+    "city": "Ina",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 148405,
+    "school_name": "Rockford University",
+    "city": "Rockford",
+    "state": "IL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 148487,
+    "school_name": "Roosevelt University",
+    "city": "Chicago",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 148496,
+    "school_name": "Dominican University",
+    "city": "River Forest",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 148627,
+    "school_name": "Saint Xavier University",
+    "city": "Chicago",
+    "state": "IL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 149222,
+    "school_name": "Southern Illinois University-Carbondale",
+    "city": "Muncie",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 149231,
+    "school_name": "Southern Illinois University Edwardsville",
+    "city": "Anderson",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 149772,
+    "school_name": "Western Illinois University",
+    "city": "Macomb",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 149781,
+    "school_name": "Wheaton College",
+    "city": "Wheaton",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 142328,
+    "school_name": "Lewis-Clark State College",
+    "city": "Lewiston",
+    "state": "ID",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 107983,
+    "school_name": "Southern Arkansas University Main Campus",
+    "city": "Magnolia",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 108232,
+    "school_name": "Academy of Art University",
+    "city": "San Francisco",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110097,
+    "school_name": "Biola University",
+    "city": "La Mirada",
+    "state": "CA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110361,
+    "school_name": "California Baptist University",
+    "city": "Riverside",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110413,
+    "school_name": "California Lutheran University",
+    "city": "Thousand Oaks",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110422,
+    "school_name": "California Polytechnic State University-San Luis Obispo",
+    "city": "San Luis Obispo",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110486,
+    "school_name": "California State University-Bakersfield",
+    "city": "Riverside",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110495,
+    "school_name": "California State University-Stanislaus",
+    "city": "Turlock",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 110538,
+    "school_name": "California State University-Chico",
+    "city": "Chico",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110556,
+    "school_name": "California State University-Fresno",
+    "city": "Fresno",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110565,
+    "school_name": "California State University-Fullerton",
+    "city": "Fullerton",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110574,
+    "school_name": "California State University-East Bay",
+    "city": "Arcata",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110583,
+    "school_name": "California State University-Long Beach",
+    "city": "Long Beach",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110671,
+    "school_name": "University of California-Riverside",
+    "city": "Riverside",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110680,
+    "school_name": "University of California-San Diego",
+    "city": "La Jolla",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 110705,
+    "school_name": "University of California-Santa Barbara",
+    "city": "Santa Barbara",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 111948,
+    "school_name": "Chapman University",
+    "city": "Orange",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157951,
+    "school_name": "Western Kentucky University",
+    "city": "Columbia",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 113698,
+    "school_name": "Dominican University of California",
+    "city": "San Rafael",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 117140,
+    "school_name": "University of La Verne",
+    "city": "Torrance",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 159391,
+    "school_name": "Louisiana State University",
+    "city": "Grambling",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 159416,
+    "school_name": "Louisiana State University-Shreveport",
+    "city": "Shreveport",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 159647,
+    "school_name": "Louisiana Tech University",
+    "city": "Ruston",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 159717,
+    "school_name": "McNeese State University",
+    "city": "Lake Charles",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 159939,
+    "school_name": "University of New Orleans",
+    "city": "New Orleans",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 159966,
+    "school_name": "Nicholls State University",
+    "city": "Thibodaux",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 163286,
+    "school_name": "University of Maryland-College Park",
+    "city": "College Park",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 163338,
+    "school_name": "University of Maryland Eastern Shore",
+    "city": "Princess Anne",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 163462,
+    "school_name": "Mount St. Mary's University",
+    "city": "Emmitsburg",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 163851,
+    "school_name": "Salisbury University",
+    "city": "Salisbury",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164076,
+    "school_name": "Towson University",
+    "city": "Towson",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164155,
+    "school_name": "United States Naval Academy",
+    "city": "Annapolis",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164173,
+    "school_name": "Stevenson University",
+    "city": "Owings Mills",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164216,
+    "school_name": "Washington College",
+    "city": "Chestertown",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 164465,
+    "school_name": "Amherst College",
+    "city": "Amherst",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 171137,
+    "school_name": "University of Michigan-Dearborn",
+    "city": "Dearborn",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 171456,
+    "school_name": "Northern Michigan University",
+    "city": "Marquette",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 171492,
+    "school_name": "Northwood University",
+    "city": "Midland",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 171571,
+    "school_name": "Oakland University",
+    "city": "Rochester Hills",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 171599,
+    "school_name": "The University of Olivet",
+    "city": "Olivet",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 172051,
+    "school_name": "Saginaw Valley State University",
+    "city": "University Center",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 172264,
+    "school_name": "Siena Heights University",
+    "city": "Adrian",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154493,
+    "school_name": "Upper Iowa University",
+    "city": "Fayette",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 172334,
+    "school_name": "Spring Arbor University",
+    "city": "Spring Arbor",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 118693,
+    "school_name": "Menlo College",
+    "city": "Atherton",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 120254,
+    "school_name": "Occidental College",
+    "city": "Boise",
+    "state": "ID",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 120537,
+    "school_name": "Hope International University",
+    "city": "Fullerton",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 120883,
+    "school_name": "University of the Pacific",
+    "city": "Stockton",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 121150,
+    "school_name": "Pepperdine University",
+    "city": "Malibu",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 121309,
+    "school_name": "Point Loma Nazarene University",
+    "city": "Hampton",
+    "state": "VA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 121691,
+    "school_name": "University of Redlands",
+    "city": "Redlands",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122409,
+    "school_name": "San Diego State University",
+    "city": "San Diego",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122436,
+    "school_name": "University of San Diego",
+    "city": "Rohnert Park",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122612,
+    "school_name": "University of San Francisco",
+    "city": "San Francisco",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122755,
+    "school_name": "San Jose State University",
+    "city": "Malibu",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122768,
+    "school_name": "William Jessup University",
+    "city": "Rocklin",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122931,
+    "school_name": "Santa Clara University",
+    "city": "Santa Clara",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 122977,
+    "school_name": "Vanguard University of Southern California",
+    "city": "Costa Mesa",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 123457,
+    "school_name": "Simpson University",
+    "city": "Redding",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 123554,
+    "school_name": "Saint Mary's College of California",
+    "city": "Moraga",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 123961,
+    "school_name": "University of Southern California",
+    "city": "Los Angeles",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 125727,
+    "school_name": "Westmont College",
+    "city": "Santa Barbara",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 126182,
+    "school_name": "Adams State University",
+    "city": "Alamosa",
+    "state": "CO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 126669,
+    "school_name": "Colorado Christian University",
+    "city": "Lakewood",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 126775,
+    "school_name": "Colorado School of Mines",
+    "city": "Golden",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 126818,
+    "school_name": "Colorado State University-Fort Collins",
+    "city": "Fort Collins",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 127060,
+    "school_name": "University of Denver",
+    "city": "Denver",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 127185,
+    "school_name": "Fort Lewis College",
+    "city": "Durango",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 129215,
+    "school_name": "Eastern Connecticut State University",
+    "city": "Willimantic",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 173258,
+    "school_name": "Carleton College",
+    "city": "Northfield",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 132471,
+    "school_name": "Barry University",
+    "city": "Miami",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 186584,
+    "school_name": "Seton Hall University",
+    "city": "South Orange",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 186867,
+    "school_name": "Stevens Institute of Technology",
+    "city": "Hoboken",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 187903,
+    "school_name": "New Mexico Junior College",
+    "city": "Hobbs",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 187912,
+    "school_name": "New Mexico Military Institute",
+    "city": "Roswell",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 187985,
+    "school_name": "University of New Mexico",
+    "city": "Albuquerque",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 188030,
+    "school_name": "New Mexico State University",
+    "city": "Las Cruces",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 188182,
+    "school_name": "University of the Southwest",
+    "city": "Hobbs",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 188207,
+    "school_name": "Southwestern College",
+    "city": "Chula Vista",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 188261,
+    "school_name": "Mesalands Community College",
+    "city": "Tucumcari",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 188304,
+    "school_name": "Western New Mexico University",
+    "city": "Silver City",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 188429,
+    "school_name": "Adelphi University",
+    "city": "Garden City",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 189705,
+    "school_name": "Canisius University",
+    "city": "Buffalo",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 190044,
+    "school_name": "Clarkson University",
+    "city": "Potsdam",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 190099,
+    "school_name": "Colgate University",
+    "city": "Hamilton",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 168218,
+    "school_name": "Wellesley College",
+    "city": "Wellesley",
+    "state": "MA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 190415,
+    "school_name": "Cornell University",
+    "city": "Potsdam",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 190761,
+    "school_name": "Dominican University New York",
+    "city": "Orangeburg",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 190983,
+    "school_name": "Elmira College",
+    "city": "Elmira",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 191241,
+    "school_name": "Fordham University",
+    "city": "Bronx",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 191515,
+    "school_name": "Hamilton College",
+    "city": "Clinton",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 191621,
+    "school_name": "Hilbert College",
+    "city": "Hamburg",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 191630,
+    "school_name": "Hobart William Smith Colleges",
+    "city": "Geneva",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 191649,
+    "school_name": "Hofstra University",
+    "city": "Hempstead",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 191931,
+    "school_name": "Iona University",
+    "city": "New Rochelle",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 191968,
+    "school_name": "Ithaca College",
+    "city": "Ithaca",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 192192,
+    "school_name": "Keuka College",
+    "city": "Keuka Park",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 192323,
+    "school_name": "Le Moyne College",
+    "city": "Syracuse",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 192448,
+    "school_name": "Long Island University",
+    "city": "Brookville",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 192703,
+    "school_name": "Manhattan University",
+    "city": "Riverdale",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 193292,
+    "school_name": "Molloy University",
+    "city": "Rockville Centre",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 132602,
+    "school_name": "Bethune-Cookman University",
+    "city": "Daytona Beach",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 132657,
+    "school_name": "Lynn University",
+    "city": "Boca Raton",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 132693,
+    "school_name": "Eastern Florida State College",
+    "city": "Melbourne",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 132903,
+    "school_name": "University of Central Florida",
+    "city": "Orlando",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133386,
+    "school_name": "Daytona State College",
+    "city": "Daytona Beach",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133492,
+    "school_name": "Eckerd College",
+    "city": "Saint Petersburg",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133526,
+    "school_name": "Edward Waters University",
+    "city": "Jacksonville",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 136172,
+    "school_name": "University of North Florida",
+    "city": "Boca Raton",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 136215,
+    "school_name": "Nova Southeastern University",
+    "city": "Fort Lauderdale",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 136330,
+    "school_name": "Palm Beach Atlantic University",
+    "city": "West Palm Beach",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 136358,
+    "school_name": "Palm Beach State College",
+    "city": "Lake Worth",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 136950,
+    "school_name": "Rollins College",
+    "city": "Winter Park",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 137032,
+    "school_name": "Saint Leo University",
+    "city": "Saint Leo",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 137351,
+    "school_name": "University of South Florida",
+    "city": "Tampa",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 137476,
+    "school_name": "St. Thomas University",
+    "city": "Miami Gardens",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 137546,
+    "school_name": "Stetson University",
+    "city": "Saint Leo",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 137564,
+    "school_name": "Southeastern University",
+    "city": "Lakeland",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 137847,
+    "school_name": "The University of Tampa",
+    "city": "Tampa",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 138187,
+    "school_name": "Seminole State College of Florida",
+    "city": "Sanford",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 193353,
+    "school_name": "Mount Saint Mary College",
+    "city": "Purchase",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 138293,
+    "school_name": "Webber International University",
+    "city": "Babson Park",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196176,
+    "school_name": "State University of New York at New Paltz",
+    "city": "New Paltz",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196200,
+    "school_name": "Siena College",
+    "city": "Loudonville",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 196246,
+    "school_name": "St Bonaventure University",
+    "city": "Saint Bonaventure",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196866,
+    "school_name": "Union College",
+    "city": "Schenectady",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197027,
+    "school_name": "United States Military Academy",
+    "city": "West  Point",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 197045,
+    "school_name": "Utica University",
+    "city": "Utica",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197133,
+    "school_name": "Vassar College",
+    "city": "Poughkeepsie",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197197,
+    "school_name": "Wagner College",
+    "city": "Staten Island",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197869,
+    "school_name": "Appalachian State University",
+    "city": "Boone",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197911,
+    "school_name": "Barton College",
+    "city": "Wilson",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197984,
+    "school_name": "Belmont Abbey College",
+    "city": "Belmont",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198136,
+    "school_name": "Campbell University",
+    "city": "Buies Creek",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198215,
+    "school_name": "Catawba College",
+    "city": "Salisbury",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198303,
+    "school_name": "Chowan University",
+    "city": "Murfreesboro",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198385,
+    "school_name": "Davidson College",
+    "city": "Davidson",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198419,
+    "school_name": "Duke University",
+    "city": "Durham",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198464,
+    "school_name": "East Carolina University",
+    "city": "Greenville",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179715,
+    "school_name": "North Central Missouri College",
+    "city": "Trenton",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199139,
+    "school_name": "University of North Carolina at Charlotte",
+    "city": "Charlotte",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199148,
+    "school_name": "University of North Carolina at Greensboro",
+    "city": "Rocky Mount",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199157,
+    "school_name": "North Carolina Central University",
+    "city": "Durham",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199193,
+    "school_name": "North Carolina State University at Raleigh",
+    "city": "Greensboro",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199209,
+    "school_name": "North Carolina Wesleyan University",
+    "city": "Rocky Mount",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 199218,
+    "school_name": "University of North Carolina Wilmington",
+    "city": "Charlotte",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199272,
+    "school_name": "William Peace University",
+    "city": "Raleigh",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 199281,
+    "school_name": "University of North Carolina at Pembroke",
+    "city": "Pembroke",
+    "state": "NC",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 138558,
+    "school_name": "Abraham Baldwin Agricultural College",
+    "city": "Tifton",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 138868,
+    "school_name": "Point University",
+    "city": "West Point",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139199,
+    "school_name": "Brenau University",
+    "city": "Gainesville",
+    "state": "GA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139205,
+    "school_name": "Brewton-Parker College",
+    "city": "Mount Vernon",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 139250,
+    "school_name": "College of Coastal Georgia",
+    "city": "Brunswick",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139366,
+    "school_name": "Columbus State University",
+    "city": "Columbus",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139393,
+    "school_name": "Covenant College",
+    "city": "Lookout Mountain",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 139463,
+    "school_name": "Dalton State College",
+    "city": "Dalton",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139630,
+    "school_name": "Emmanuel University",
+    "city": "Franklin Springs",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207263,
+    "school_name": "Northeastern State University",
+    "city": "Tahlequah",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207324,
+    "school_name": "Oklahoma Christian University",
+    "city": "Edmond",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 207388,
+    "school_name": "Oklahoma State University",
+    "city": "Shawnee",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139658,
+    "school_name": "Emory University",
+    "city": "Atlanta",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139755,
+    "school_name": "Georgia Institute of Technology",
+    "city": "Atlanta",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 187648,
+    "school_name": "Eastern New Mexico University",
+    "city": "Portales",
+    "state": "NM",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213349,
+    "school_name": "Kutztown University of Pennsylvania",
+    "city": "Kutztown",
+    "state": "PA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217882,
+    "school_name": "Clemson University",
+    "city": "Clemson",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139764,
+    "school_name": "Georgia Southwestern State University",
+    "city": "Americus",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 140872,
+    "school_name": "Reinhardt University",
+    "city": "Waleska",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140960,
+    "school_name": "Savannah State University",
+    "city": "Savannah",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217907,
+    "school_name": "Coker University",
+    "city": "Hartsville",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217925,
+    "school_name": "Columbia International University",
+    "city": "Columbia",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 217961,
+    "school_name": "Converse University",
+    "city": "Spartanburg",
+    "state": "SC",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217998,
+    "school_name": "Erskine College",
+    "city": "Due West",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218061,
+    "school_name": "Francis Marion University",
+    "city": "Florence",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 218070,
+    "school_name": "Furman University",
+    "city": "Greenville",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218229,
+    "school_name": "Lander University",
+    "city": "Greenwood",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218414,
+    "school_name": "Newberry College",
+    "city": "Newberry",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218441,
+    "school_name": "North Greenville University",
+    "city": "Tigerville",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218539,
+    "school_name": "Presbyterian College",
+    "city": "Clinton",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206437,
+    "school_name": "Walsh University",
+    "city": "North Canton",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206525,
+    "school_name": "Wittenberg University",
+    "city": "Springfield",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206589,
+    "school_name": "The College of Wooster",
+    "city": "Wooster",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220613,
+    "school_name": "Lee University",
+    "city": "Cleveland",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220701,
+    "school_name": "The University of Tennessee Southern",
+    "city": "Pulaski",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220710,
+    "school_name": "Maryville College",
+    "city": "Maryville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220862,
+    "school_name": "University of Memphis",
+    "city": "Memphis",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220978,
+    "school_name": "Middle Tennessee State University",
+    "city": "Murfreesboro",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221351,
+    "school_name": "Rhodes College",
+    "city": "Memphis",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221397,
+    "school_name": "Roane State Community College",
+    "city": "Harriman",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221519,
+    "school_name": "The University of the South",
+    "city": "Sewanee",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221731,
+    "school_name": "Tennessee Wesleyan University",
+    "city": "Athens",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 141237,
+    "school_name": "Truett McConnell University",
+    "city": "Cleveland",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 141264,
+    "school_name": "Valdosta State University",
+    "city": "Valdosta",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 141334,
+    "school_name": "University of West Georgia",
+    "city": "Honolulu",
+    "state": "HI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 141361,
+    "school_name": "Young Harris College",
+    "city": "Young Harris",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 141565,
+    "school_name": "University of Hawaii at Hilo",
+    "city": "Hilo",
+    "state": "HI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 141574,
+    "school_name": "University of Hawaii at Manoa",
+    "city": "Hilo",
+    "state": "HI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 141644,
+    "school_name": "Hawaii Pacific University",
+    "city": "Honolulu",
+    "state": "HI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 142115,
+    "school_name": "Boise State University",
+    "city": "Boise",
+    "state": "ID",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 142276,
+    "school_name": "Idaho State University",
+    "city": "Pocatello",
+    "state": "ID",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 142285,
+    "school_name": "University of Idaho",
+    "city": "Pocatello",
+    "state": "ID",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 142461,
+    "school_name": "Northwest Nazarene University",
+    "city": "Nampa",
+    "state": "ID",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 143084,
+    "school_name": "Augustana College",
+    "city": "Rock Island",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 143118,
+    "school_name": "Aurora University",
+    "city": "Aurora",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236452,
+    "school_name": "Saint Martin's University",
+    "city": "Lacey",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236577,
+    "school_name": "Seattle Pacific University",
+    "city": "Seattle",
+    "state": "WA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236595,
+    "school_name": "Seattle University",
+    "city": "Seattle",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236896,
+    "school_name": "Walla Walla University",
+    "city": "College Place",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237011,
+    "school_name": "Western Washington University",
+    "city": "Huntington",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237057,
+    "school_name": "Whitman College",
+    "city": "Walla Walla",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237066,
+    "school_name": "Whitworth University",
+    "city": "Spokane",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237181,
+    "school_name": "Bethany College",
+    "city": "Bethany",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 237358,
+    "school_name": "Davis & Elkins College",
+    "city": "Elkins",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237367,
+    "school_name": "Fairmont State University",
+    "city": "Fairmont",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 143288,
+    "school_name": "Blackburn College",
+    "city": "Carlinville",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 143358,
+    "school_name": "Bradley University",
+    "city": "Peoria",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 143613,
+    "school_name": "Carl Sandburg College",
+    "city": "Galesburg",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 144005,
+    "school_name": "Chicago State University",
+    "city": "Chicago",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 144564,
+    "school_name": "Danville Area Community College",
+    "city": "Danville",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 144740,
+    "school_name": "DePaul University",
+    "city": "Aurora",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 144892,
+    "school_name": "Eastern Illinois University",
+    "city": "Galesburg",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 144971,
+    "school_name": "Eureka College",
+    "city": "Eureka",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 145600,
+    "school_name": "University of Illinois Chicago",
+    "city": "Rock Island",
+    "state": "IL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 145619,
+    "school_name": "Benedictine University",
+    "city": "Lisle",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 145637,
+    "school_name": "University of Illinois Urbana-Champaign",
+    "city": "Champaign",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 145646,
+    "school_name": "Illinois Wesleyan University",
+    "city": "Bloomington",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 145813,
+    "school_name": "Illinois State University",
+    "city": "Normal",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150066,
+    "school_name": "Anderson University",
+    "city": "Anderson",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150136,
+    "school_name": "Ball State University",
+    "city": "Muncie",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150145,
+    "school_name": "Bethel University",
+    "city": "McKenzie",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150163,
+    "school_name": "Butler University",
+    "city": "Indianapolis",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150400,
+    "school_name": "DePauw University",
+    "city": "Greencastle",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150455,
+    "school_name": "Earlham College",
+    "city": "Richmond",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150604,
+    "school_name": "Franklin College",
+    "city": "Franklin",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150756,
+    "school_name": "Hanover College",
+    "city": "Hanover",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150774,
+    "school_name": "Holy Cross College",
+    "city": "Notre Dame",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150941,
+    "school_name": "Huntington University",
+    "city": "Huntington",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151111,
+    "school_name": "Indiana University-Purdue University-Indianapolis",
+    "city": "Indianapolis",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151263,
+    "school_name": "University of Indianapolis",
+    "city": "Indianapolis",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151301,
+    "school_name": "Indiana Tech",
+    "city": "Fort Wayne",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151306,
+    "school_name": "University of Southern Indiana",
+    "city": "Evansville",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151324,
+    "school_name": "Indiana State University",
+    "city": "Indianapolis",
+    "state": "IN",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151333,
+    "school_name": "Indiana University-Kokomo",
+    "city": "Kokomo",
+    "state": "IN",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151351,
+    "school_name": "Indiana University-Bloomington",
+    "city": "Greencastle",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151379,
+    "school_name": "Indiana University-Southeast",
+    "city": "New Albany",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151388,
+    "school_name": "Indiana University-East",
+    "city": "Richmond",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151786,
+    "school_name": "Marian University",
+    "city": "Fond Du Lac",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152080,
+    "school_name": "University of Notre Dame",
+    "city": "Notre Dame",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152099,
+    "school_name": "Oakland City University",
+    "city": "Oakland City",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152318,
+    "school_name": "Rose-Hulman Institute of Technology",
+    "city": "Terre Haute",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152381,
+    "school_name": "Saint Mary-of-the-Woods College",
+    "city": "Saint Mary of the Woods",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152600,
+    "school_name": "Valparaiso University",
+    "city": "Valparaiso",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153269,
+    "school_name": "Drake University",
+    "city": "Des Moines",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153278,
+    "school_name": "University of Dubuque",
+    "city": "Dubuque",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153375,
+    "school_name": "Grand View University",
+    "city": "Des Moines",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153384,
+    "school_name": "Grinnell College",
+    "city": "Grinnell",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153445,
+    "school_name": "Hawkeye Community College",
+    "city": "Waterloo",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153472,
+    "school_name": "Indian Hills Community College",
+    "city": "Ottumwa",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153524,
+    "school_name": "Iowa Central Community College",
+    "city": "Fort Dodge",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153574,
+    "school_name": "University of Saint Francis",
+    "city": "Fort Wayne",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153603,
+    "school_name": "Iowa State University",
+    "city": "Ames",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153658,
+    "school_name": "University of Iowa",
+    "city": "Iowa City",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153825,
+    "school_name": "Loras College",
+    "city": "Dubuque",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153834,
+    "school_name": "Luther College",
+    "city": "Decorah",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216366,
+    "school_name": "Thomas Jefferson University",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154004,
+    "school_name": "Morningside University",
+    "city": "Sioux City",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154013,
+    "school_name": "Mount Mercy University",
+    "city": "Cedar Rapids",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154059,
+    "school_name": "North Iowa Area Community College",
+    "city": "Mason City",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154095,
+    "school_name": "University of Northern Iowa",
+    "city": "Cedar Falls",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154235,
+    "school_name": "Saint Ambrose University",
+    "city": "Great Bend",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154350,
+    "school_name": "Simpson College",
+    "city": "Indianola",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154518,
+    "school_name": "Waldorf University",
+    "city": "Forest City",
+    "state": "IA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154527,
+    "school_name": "Wartburg College",
+    "city": "Sioux City",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154590,
+    "school_name": "William Penn University",
+    "city": "Oskaloosa",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154688,
+    "school_name": "Baker University",
+    "city": "Baldwin City",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154925,
+    "school_name": "Coffeyville Community College",
+    "city": "Coffeyville",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155061,
+    "school_name": "Fort Hays State University",
+    "city": "Hays",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155089,
+    "school_name": "Friends University",
+    "city": "Wichita",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155104,
+    "school_name": "Garden City Community College",
+    "city": "Garden City",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155195,
+    "school_name": "Hutchinson Community College",
+    "city": "Hutchinson",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 155317,
+    "school_name": "University of Kansas",
+    "city": "Manhattan",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155335,
+    "school_name": "Newman University",
+    "city": "Wichita",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155399,
+    "school_name": "Kansas State University",
+    "city": "Manhattan",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155414,
+    "school_name": "Kansas Wesleyan University",
+    "city": "Salina",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155520,
+    "school_name": "MidAmerica Nazarene University",
+    "city": "Olathe",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155681,
+    "school_name": "Pittsburg State University",
+    "city": "Pittsburg",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155973,
+    "school_name": "Tabor College",
+    "city": "Hillsboro",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 156082,
+    "school_name": "Washburn University",
+    "city": "Topeka",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156125,
+    "school_name": "Wichita State University",
+    "city": "Wichita",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156189,
+    "school_name": "Alice Lloyd College",
+    "city": "Pippa Passes",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 156213,
+    "school_name": "Asbury University",
+    "city": "Wilmore",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 156286,
+    "school_name": "Bellarmine University",
+    "city": "Louisville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156295,
+    "school_name": "Berea College",
+    "city": "Berea",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 156365,
+    "school_name": "Campbellsville University",
+    "city": "Campbellsville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156408,
+    "school_name": "Centre College",
+    "city": "Danville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156620,
+    "school_name": "Eastern Kentucky University",
+    "city": "Richmond",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164562,
+    "school_name": "Assumption University",
+    "city": "Worcester",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164580,
+    "school_name": "Babson College",
+    "city": "Worcester",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164924,
+    "school_name": "Boston College",
+    "city": "Amherst",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164988,
+    "school_name": "Boston University",
+    "city": "Boston",
+    "state": "MA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 166124,
+    "school_name": "College of the Holy Cross",
+    "city": "Worcester",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 166452,
+    "school_name": "Lesley University",
+    "city": "Cambridge",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 166850,
+    "school_name": "Merrimack College",
+    "city": "North Andover",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 167260,
+    "school_name": "Nichols College",
+    "city": "Dudley",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 167899,
+    "school_name": "Springfield College",
+    "city": "Springfield",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 167996,
+    "school_name": "Stonehill College",
+    "city": "Easton",
+    "state": "MA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 168005,
+    "school_name": "Suffolk University",
+    "city": "Boston",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 168148,
+    "school_name": "Tufts University",
+    "city": "Boston",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 168227,
+    "school_name": "Wentworth Institute of Technology",
+    "city": "Boston",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 168254,
+    "school_name": "Western New England University",
+    "city": "Springfield",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 168263,
+    "school_name": "Westfield State University",
+    "city": "Westfield",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 168342,
+    "school_name": "Williams College",
+    "city": "Williamstown",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 168430,
+    "school_name": "Worcester State University",
+    "city": "Worcester",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 168528,
+    "school_name": "Adrian College",
+    "city": "Adrian",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 168546,
+    "school_name": "Albion College",
+    "city": "Albion",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 168591,
+    "school_name": "Alma College",
+    "city": "Alma",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169080,
+    "school_name": "Calvin University",
+    "city": "Grand Rapids",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169253,
+    "school_name": "Aquinas College",
+    "city": "Grand Rapids",
+    "state": "MI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169275,
+    "school_name": "Mott Community College",
+    "city": "Flint",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169327,
+    "school_name": "Cleary University",
+    "city": "Howell",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169479,
+    "school_name": "Davenport University",
+    "city": "Grand Rapids",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169716,
+    "school_name": "University of Detroit Mercy",
+    "city": "Detroit",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169798,
+    "school_name": "Eastern Michigan University",
+    "city": "Mount Pleasant",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169910,
+    "school_name": "Ferris State University",
+    "city": "Big Rapids",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 172644,
+    "school_name": "Wayne State University",
+    "city": "Detroit",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173328,
+    "school_name": "Concordia University-Saint Paul",
+    "city": "Saint Paul",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173452,
+    "school_name": "Martin Luther College",
+    "city": "New Ulm",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174747,
+    "school_name": "College of Saint Benedict",
+    "city": "Saint Joseph",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174792,
+    "school_name": "Saint Johns University",
+    "city": "Northfield",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174862,
+    "school_name": "Crown College",
+    "city": "Saint Bonifacius",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174914,
+    "school_name": "University of Saint Thomas",
+    "city": "Saint Paul",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 175078,
+    "school_name": "Southwest Minnesota State University",
+    "city": "Marshall",
+    "state": "MN",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 175272,
+    "school_name": "Winona State University",
+    "city": "Winona",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 175421,
+    "school_name": "Belhaven University",
+    "city": "Jackson",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 175430,
+    "school_name": "Blue Mountain Christian University",
+    "city": "Blue Mountain",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 175616,
+    "school_name": "Delta State University",
+    "city": "Cleveland",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 175856,
+    "school_name": "Jackson State University",
+    "city": "Jackson",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176239,
+    "school_name": "Pearl River Community College",
+    "city": "Poplarville",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176372,
+    "school_name": "University of Southern Mississippi",
+    "city": "Hattiesburg",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176479,
+    "school_name": "William Carey University",
+    "city": "Hattiesburg",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177117,
+    "school_name": "Cottey College",
+    "city": "Nevada",
+    "state": "MO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177135,
+    "school_name": "Crowder College",
+    "city": "Neosho",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177144,
+    "school_name": "Culver-Stockton College",
+    "city": "Canton",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 177214,
+    "school_name": "Drury University",
+    "city": "Springfield",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177339,
+    "school_name": "Evangel University",
+    "city": "Springfield",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177418,
+    "school_name": "Fontbonne University",
+    "city": "Saint Louis",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177542,
+    "school_name": "Hannibal-LaGrange University",
+    "city": "Hannibal",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 177940,
+    "school_name": "Lincoln University",
+    "city": "Jefferson City",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177968,
+    "school_name": "Lindenwood University",
+    "city": "Saint Charles",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178059,
+    "school_name": "Maryville University of Saint Louis",
+    "city": "Saint Louis",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178244,
+    "school_name": "Missouri Baptist University",
+    "city": "Saint Louis",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100654,
+    "school_name": "Alabama A & M University",
+    "city": "Normal",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 110510,
+    "school_name": "California State University-San Bernardino",
+    "city": "San Bernardino",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 129020,
+    "school_name": "University of Connecticut",
+    "city": "Storrs",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 186371,
+    "school_name": "Rutgers University-Camden",
+    "city": "Lawrenceville",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 193399,
+    "school_name": "University of Mount Saint Vincent",
+    "city": "Bronx",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196168,
+    "school_name": "SUNY Old Westbury",
+    "city": "Old Westbury",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 200156,
+    "school_name": "University of Jamestown",
+    "city": "Jamestown",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201195,
+    "school_name": "Baldwin Wallace University",
+    "city": "Berea",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207351,
+    "school_name": "Oklahoma Panhandle State University",
+    "city": "Goodwell",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 209506,
+    "school_name": "Oregon Institute of Technology",
+    "city": "Klamath Falls",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221768,
+    "school_name": "The University of Tennessee-Martin",
+    "city": "Martin",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 221838,
+    "school_name": "Tennessee State University",
+    "city": "Nashville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221847,
+    "school_name": "Tennessee Technological University",
+    "city": "Cookeville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221892,
+    "school_name": "Trevecca Nazarene University",
+    "city": "Nashville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221953,
+    "school_name": "Tusculum University",
+    "city": "Greeneville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133669,
+    "school_name": "Florida Atlantic University",
+    "city": "Boca Raton",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133711,
+    "school_name": "Flagler College",
+    "city": "Saint Augustine",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133809,
+    "school_name": "Florida College",
+    "city": "Temple Terrace",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 133951,
+    "school_name": "Florida International University",
+    "city": "Saint Petersburg",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 134079,
+    "school_name": "Florida Southern College",
+    "city": "Lakeland",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 134097,
+    "school_name": "Florida State University",
+    "city": "Saint Augustine",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 169248,
+    "school_name": "Central Michigan University",
+    "city": "Mount Pleasant",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176910,
+    "school_name": "Central Christian College of the Bible",
+    "city": "Moberly",
+    "state": "MO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178341,
+    "school_name": "Missouri Southern State University",
+    "city": "Columbia",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178369,
+    "school_name": "Missouri Valley College",
+    "city": "Marshall",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178387,
+    "school_name": "Missouri Western State University",
+    "city": "Saint Joseph",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178396,
+    "school_name": "University of Missouri-Columbia",
+    "city": "Columbia",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178411,
+    "school_name": "Missouri University of Science and Technology",
+    "city": "Rolla",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 178420,
+    "school_name": "University of Missouri-St Louis",
+    "city": "Springfield",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178615,
+    "school_name": "Truman State University",
+    "city": "Kirksville",
+    "state": "MO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178624,
+    "school_name": "Northwest Missouri State University",
+    "city": "Maryville",
+    "state": "MO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178721,
+    "school_name": "Park University",
+    "city": "Parkville",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179159,
+    "school_name": "Saint Louis University",
+    "city": "Saint Louis",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179867,
+    "school_name": "Washington University in St Louis",
+    "city": "St. Louis",
+    "state": "MO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179894,
+    "school_name": "Webster University",
+    "city": "Saint Louis",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 179955,
+    "school_name": "William Jewell College",
+    "city": "Liberty",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179964,
+    "school_name": "William Woods University",
+    "city": "Fulton",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180106,
+    "school_name": "Carroll College",
+    "city": "Helena",
+    "state": "MT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180179,
+    "school_name": "Montana State University Billings",
+    "city": "Billings",
+    "state": "MT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224527,
+    "school_name": "East Texas Baptist University",
+    "city": "Marshall",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224545,
+    "school_name": "Texas A&M University-Texarkana",
+    "city": "McKinney",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224554,
+    "school_name": "East Texas A&M University",
+    "city": "Commerce",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 225247,
+    "school_name": "Hardin-Simmons University",
+    "city": "Abilene",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 225399,
+    "school_name": "Houston Christian University",
+    "city": "Houston",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 225511,
+    "school_name": "University of Houston",
+    "city": "Houston",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 225548,
+    "school_name": "Howard Payne University",
+    "city": "Brownwood",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 101587,
+    "school_name": "University of West Alabama",
+    "city": "Livingston",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 129525,
+    "school_name": "University of Hartford",
+    "city": "West Hartford",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 131469,
+    "school_name": "George Washington University",
+    "city": "Washington",
+    "state": "DC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 134130,
+    "school_name": "University of Florida",
+    "city": "Jacksonville",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 134945,
+    "school_name": "Jacksonville University",
+    "city": "Jacksonville",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 135058,
+    "school_name": "Keiser University-Ft Lauderdale",
+    "city": "Fort Lauderdale",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 135160,
+    "school_name": "Florida Gateway College",
+    "city": "Lake City",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 135188,
+    "school_name": "Lake-Sumter State College",
+    "city": "Leesburg",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 135726,
+    "school_name": "University of Miami",
+    "city": "Coral Gables",
+    "state": "FL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 138761,
+    "school_name": "Andrew College",
+    "city": "Cuthbert",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 180416,
+    "school_name": "Montana Technological University",
+    "city": "Butte",
+    "state": "MT",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181330,
+    "school_name": "Midland University",
+    "city": "Fremont",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 181394,
+    "school_name": "University of Nebraska at Omaha",
+    "city": "Omaha",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181421,
+    "school_name": "Mid-Plains Community College",
+    "city": "North Platte",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181446,
+    "school_name": "Nebraska Wesleyan University",
+    "city": "Lincoln",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181604,
+    "school_name": "College of Saint Mary",
+    "city": "Omaha",
+    "state": "NE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 186380,
+    "school_name": "Rutgers University-New Brunswick",
+    "city": "New Brunswick",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 193584,
+    "school_name": "Nazareth University",
+    "city": "Rochester",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 193878,
+    "school_name": "Saint Joseph's University-New York",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 193900,
+    "school_name": "New York University",
+    "city": "New York",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 193973,
+    "school_name": "Niagara University",
+    "city": "Niagara University",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 194578,
+    "school_name": "Pratt Institute",
+    "city": "Brooklyn",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 194824,
+    "school_name": "Rensselaer Polytechnic Institute",
+    "city": "Troy",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 195030,
+    "school_name": "University of Rochester",
+    "city": "Rochester",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 195128,
+    "school_name": "Russell Sage College",
+    "city": "Troy",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 195243,
+    "school_name": "St. Thomas Aquinas College",
+    "city": "Sparkill",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 195526,
+    "school_name": "Skidmore College",
+    "city": "Rochester",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 195720,
+    "school_name": "St. John Fisher University",
+    "city": "Rochester",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 196042,
+    "school_name": "Farmingdale State College",
+    "city": "Farmingdale",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196060,
+    "school_name": "University at Albany",
+    "city": "Brockport",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 196079,
+    "school_name": "Binghamton University",
+    "city": "Vestal",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196103,
+    "school_name": "SUNY College of Environmental Science and Forestry",
+    "city": "Syracuse",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 196112,
+    "school_name": "SUNY Polytechnic Institute",
+    "city": "Utica",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 196121,
+    "school_name": "SUNY Brockport",
+    "city": "Brockport",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220631,
+    "school_name": "Lincoln Memorial University",
+    "city": "Harrogate",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 225627,
+    "school_name": "University of the Incarnate Word",
+    "city": "San Antonio",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 225876,
+    "school_name": "Jacksonville College",
+    "city": "Jacksonville",
+    "state": "TX",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 226091,
+    "school_name": "Lamar University",
+    "city": "Beaumont",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 226231,
+    "school_name": "LeTourneau University",
+    "city": "Longview",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 226383,
+    "school_name": "Lubbock Christian University",
+    "city": "Lubbock",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 102234,
+    "school_name": "Spring Hill College",
+    "city": "Mobile",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 126614,
+    "school_name": "University of Colorado Boulder",
+    "city": "Fort Collins",
+    "state": "CO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139144,
+    "school_name": "Berry College",
+    "city": "Mount Berry",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139861,
+    "school_name": "Georgia College & State University",
+    "city": "Milledgeville",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 139931,
+    "school_name": "Georgia Southern University",
+    "city": "Statesboro",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139940,
+    "school_name": "Georgia State University",
+    "city": "Statesboro",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 139959,
+    "school_name": "University of Georgia",
+    "city": "Athens",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140234,
+    "school_name": "LaGrange College",
+    "city": "Lagrange",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140447,
+    "school_name": "Mercer University",
+    "city": "Macon",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140696,
+    "school_name": "Oglethorpe University",
+    "city": "Atlanta",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140818,
+    "school_name": "Piedmont University",
+    "city": "Demorest",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140988,
+    "school_name": "Shorter University",
+    "city": "Rome",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 144962,
+    "school_name": "Elmhurst University",
+    "city": "Elmhurst",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 147679,
+    "school_name": "North Park University",
+    "city": "Elgin",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180662,
+    "school_name": "Montana Technological University",
+    "city": "Butte",
+    "state": "MT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 180948,
+    "school_name": "Chadron State College",
+    "city": "Chadron",
+    "state": "NE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180984,
+    "school_name": "Concordia University-Nebraska",
+    "city": "Seward",
+    "state": "NE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181002,
+    "school_name": "Creighton University",
+    "city": "Omaha",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181020,
+    "school_name": "Doane University",
+    "city": "Crete",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181127,
+    "school_name": "Hastings College",
+    "city": "Hastings",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181215,
+    "school_name": "University of Nebraska at Kearney",
+    "city": "Lincoln",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237215,
+    "school_name": "Bluefield State University",
+    "city": "Bluefield",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106713,
+    "school_name": "Central Baptist College",
+    "city": "Conway",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 138354,
+    "school_name": "University of West Florida",
+    "city": "Pensacola",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 146205,
+    "school_name": "John A Logan College",
+    "city": "Carterville",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 146339,
+    "school_name": "Judson University",
+    "city": "Elgin",
+    "state": "IL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 146427,
+    "school_name": "Knox College",
+    "city": "Galesburg",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196173,
+    "school_name": "SUNY Oswego",
+    "city": "Oswego",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196185,
+    "school_name": "SUNY Oneonta",
+    "city": "Oneonta",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198507,
+    "school_name": "Elizabeth City State University",
+    "city": "Belmont",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198516,
+    "school_name": "Elon University",
+    "city": "Elon",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198543,
+    "school_name": "Fayetteville State University",
+    "city": "Fayetteville",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198561,
+    "school_name": "Gardner-Webb University",
+    "city": "Boiling Springs",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198598,
+    "school_name": "Greensboro College",
+    "city": "Greensboro",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198613,
+    "school_name": "Guilford College",
+    "city": "Greensboro",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198695,
+    "school_name": "High Point University",
+    "city": "High Point",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198862,
+    "school_name": "Livingstone College",
+    "city": "Salisbury",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 198899,
+    "school_name": "Mars Hill University",
+    "city": "Mars Hill",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198950,
+    "school_name": "Meredith College",
+    "city": "Raleigh",
+    "state": "NC",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198969,
+    "school_name": "Methodist University",
+    "city": "Fayetteville",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199032,
+    "school_name": "Montreat College",
+    "city": "Montreat",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199069,
+    "school_name": "University of Mount Olive",
+    "city": "Mount Olive",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199102,
+    "school_name": "North Carolina A & T State University",
+    "city": "Greensboro",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199111,
+    "school_name": "University of North Carolina Asheville",
+    "city": "Asheville",
+    "state": "NC",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199120,
+    "school_name": "University of North Carolina at Chapel Hill",
+    "city": "Greenville",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199412,
+    "school_name": "Queens University of Charlotte",
+    "city": "Norfolk",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199582,
+    "school_name": "Saint Augustine's University",
+    "city": "Raleigh",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 199847,
+    "school_name": "Wake Forest University",
+    "city": "Mount Olive",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199962,
+    "school_name": "Wingate University",
+    "city": "Wingate",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199999,
+    "school_name": "Winston-Salem State University",
+    "city": "Winston-Salem",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 200004,
+    "school_name": "Western Carolina University",
+    "city": "Cullowhee",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200059,
+    "school_name": "Dickinson State University",
+    "city": "Dickinson",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200217,
+    "school_name": "University of Mary",
+    "city": "Bismarck",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200226,
+    "school_name": "Mayville State University",
+    "city": "Mayville",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200253,
+    "school_name": "Minot State University",
+    "city": "Minot",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200280,
+    "school_name": "University of North Dakota",
+    "city": "Dickinson",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200332,
+    "school_name": "North Dakota State University",
+    "city": "Fargo",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 200572,
+    "school_name": "Valley City State University",
+    "city": "Valley City",
+    "state": "ND",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 200800,
+    "school_name": "University of Akron Main Campus",
+    "city": "Berea",
+    "state": "OH",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204185,
+    "school_name": "University of Mount Union",
+    "city": "Alliance",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204194,
+    "school_name": "Mount Vernon Nazarene University",
+    "city": "Mount Vernon",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204617,
+    "school_name": "Ohio Dominican University",
+    "city": "Columbus",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204635,
+    "school_name": "Ohio Northern University",
+    "city": "Ada",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204796,
+    "school_name": "Ohio State University",
+    "city": "Columbus",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204857,
+    "school_name": "Ohio University",
+    "city": "Athens",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 204909,
+    "school_name": "Ohio Wesleyan University",
+    "city": "Delaware",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204936,
+    "school_name": "Otterbein University",
+    "city": "Westerville",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 205203,
+    "school_name": "University of Rio Grande",
+    "city": "Rio Grande",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 205443,
+    "school_name": "Shawnee State University",
+    "city": "Portsmouth",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110547,
+    "school_name": "California State University-Dominguez Hills",
+    "city": "Carson",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 226471,
+    "school_name": "University of Mary Hardin-Baylor",
+    "city": "Belton",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 226578,
+    "school_name": "McLennan Community College",
+    "city": "Waco",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 226587,
+    "school_name": "McMurry University",
+    "city": "Abilene",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 226806,
+    "school_name": "Midland College",
+    "city": "Midland",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 226833,
+    "school_name": "Midwestern State University",
+    "city": "Wichita Falls",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 227216,
+    "school_name": "University of North Texas",
+    "city": "Denton",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 227304,
+    "school_name": "Odessa College",
+    "city": "Odessa",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237932,
+    "school_name": "West Liberty University",
+    "city": "West Liberty",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 117946,
+    "school_name": "Loyola Marymount University",
+    "city": "Los Angeles",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 152390,
+    "school_name": "Saint Mary's College",
+    "city": "Notre Dame",
+    "state": "IN",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152530,
+    "school_name": "Taylor University",
+    "city": "Upland",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152673,
+    "school_name": "Wabash College",
+    "city": "Crawfordsville",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 152992,
+    "school_name": "Briar Cliff University",
+    "city": "Sioux City",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153108,
+    "school_name": "Central College",
+    "city": "Pella",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153126,
+    "school_name": "Clarke University",
+    "city": "Dubuque",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153144,
+    "school_name": "Coe College",
+    "city": "Cedar Rapids",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153214,
+    "school_name": "Des Moines Area Community College",
+    "city": "Ankeny",
+    "state": "IA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153250,
+    "school_name": "Dordt University",
+    "city": "Sioux Center",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181464,
+    "school_name": "University of Nebraska-Lincoln",
+    "city": "Lincoln",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181534,
+    "school_name": "Peru State College",
+    "city": "Peru",
+    "state": "NE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181654,
+    "school_name": "Southeast Community College Area",
+    "city": "Lincoln",
+    "state": "NE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181783,
+    "school_name": "Wayne State College",
+    "city": "Wayne",
+    "state": "NE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 181853,
+    "school_name": "York University",
+    "city": "York",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 182281,
+    "school_name": "University of Nevada-Las Vegas",
+    "city": "Las Vegas",
+    "state": "NV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 182290,
+    "school_name": "University of Nevada-Reno",
+    "city": "Reno",
+    "state": "NV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 182670,
+    "school_name": "Dartmouth College",
+    "city": "Hanover",
+    "state": "NH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206048,
+    "school_name": "Tiffin University",
+    "city": "Tiffin",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206084,
+    "school_name": "University of Toledo",
+    "city": "Toledo",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206349,
+    "school_name": "Ursuline College",
+    "city": "Pepper Pike",
+    "state": "OH",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206622,
+    "school_name": "Xavier University",
+    "city": "Cincinnati",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206695,
+    "school_name": "Youngstown State University",
+    "city": "Alliance",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206862,
+    "school_name": "Southern Nazarene University",
+    "city": "Bethany",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206914,
+    "school_name": "Cameron University",
+    "city": "Lawton",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 131283,
+    "school_name": "The Catholic University of America",
+    "city": "Washington",
+    "state": "DC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 142294,
+    "school_name": "The College of Idaho",
+    "city": "Caldwell",
+    "state": "ID",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 227331,
+    "school_name": "Our Lady of the Lake University",
+    "city": "San Antonio",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 227368,
+    "school_name": "The University of Texas Rio Grande Valley",
+    "city": "Edinburg",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 227687,
+    "school_name": "Ranger College",
+    "city": "Ranger",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 227757,
+    "school_name": "Rice University",
+    "city": "Houston",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 227863,
+    "school_name": "University of St Thomas",
+    "city": "Houston",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 227881,
+    "school_name": "Sam Houston State University",
+    "city": "Huntsville",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228042,
+    "school_name": "Schreiner University",
+    "city": "Kerrville",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228246,
+    "school_name": "Southern Methodist University",
+    "city": "Dallas",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228343,
+    "school_name": "Southwestern University",
+    "city": "Dallas",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228431,
+    "school_name": "Stephen F Austin State University",
+    "city": "Prairie View",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228459,
+    "school_name": "Texas State University",
+    "city": "San Marcos",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240268,
+    "school_name": "University of Wisconsin-Eau Claire",
+    "city": "Eau Claire",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 145691,
+    "school_name": "Illinois College",
+    "city": "Jacksonville",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156745,
+    "school_name": "Georgetown College",
+    "city": "Georgetown",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157058,
+    "school_name": "Kentucky State University",
+    "city": "Frankfort",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 157076,
+    "school_name": "Kentucky Wesleyan College",
+    "city": "Owensboro",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157085,
+    "school_name": "University of Kentucky",
+    "city": "Frankfort",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157100,
+    "school_name": "Kentucky Christian University",
+    "city": "Grayson",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 157289,
+    "school_name": "University of Louisville",
+    "city": "Louisville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157377,
+    "school_name": "Midway University",
+    "city": "Midway",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157401,
+    "school_name": "Murray State University",
+    "city": "Louisville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157447,
+    "school_name": "Northern Kentucky University",
+    "city": "Highland Heights",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157535,
+    "school_name": "University of Pikeville",
+    "city": "Pikeville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157757,
+    "school_name": "Spalding University",
+    "city": "Louisville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157809,
+    "school_name": "Thomas More University",
+    "city": "Crestview Hills",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157818,
+    "school_name": "Transylvania University",
+    "city": "Lexington",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 206941,
+    "school_name": "University of Central Oklahoma",
+    "city": "Edmond",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207041,
+    "school_name": "East Central University",
+    "city": "Ada",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207236,
+    "school_name": "Murray State College",
+    "city": "Tishomingo",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207403,
+    "school_name": "Oklahoma Baptist University",
+    "city": "Shawnee",
+    "state": "OK",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228529,
+    "school_name": "Tarleton State University",
+    "city": "Huntsville",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207458,
+    "school_name": "Oklahoma City University",
+    "city": "Oklahoma City",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207500,
+    "school_name": "University of Oklahoma-Norman Campus",
+    "city": "Stillwater",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 131496,
+    "school_name": "Georgetown University",
+    "city": "Washington",
+    "state": "DC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228705,
+    "school_name": "Texas A&M University-Kingsville",
+    "city": "Beeville",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228796,
+    "school_name": "The University of Texas at El Paso",
+    "city": "El Paso",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 251260,
+    "school_name": "Southern Union State Community College",
+    "city": "Wadley",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 160612,
+    "school_name": "Southeastern Louisiana University",
+    "city": "Hammond",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 160621,
+    "school_name": "Southern University and A & M College",
+    "city": "Lake Charles",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 160658,
+    "school_name": "University of Louisiana at Lafayette",
+    "city": "Lafayette",
+    "state": "LA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 160755,
+    "school_name": "Tulane University of Louisiana",
+    "city": "New Orleans",
+    "state": "LA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 160977,
+    "school_name": "Bates College",
+    "city": "Lewiston",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 161004,
+    "school_name": "Bowdoin College",
+    "city": "Brunswick",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 161086,
+    "school_name": "Colby College",
+    "city": "Waterville",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 161299,
+    "school_name": "Maine Maritime Academy",
+    "city": "Castine",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 161457,
+    "school_name": "University of New England",
+    "city": "Farmington",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 161518,
+    "school_name": "Saint Joseph's College of Maine",
+    "city": "Standish",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 161554,
+    "school_name": "University of Southern Maine",
+    "city": "Portland",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 161563,
+    "school_name": "Thomas College",
+    "city": "Waterville",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 162007,
+    "school_name": "Bowie State University",
+    "city": "Bowie",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 162584,
+    "school_name": "Frostburg State University",
+    "city": "La Plata",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 162654,
+    "school_name": "Goucher College",
+    "city": "Baltimore",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 162760,
+    "school_name": "Hood College",
+    "city": "Frederick",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 163046,
+    "school_name": "Loyola University Maryland",
+    "city": "Baltimore",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 164447,
+    "school_name": "American International College",
+    "city": "Springfield",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 207582,
+    "school_name": "Oral Roberts University",
+    "city": "Tulsa",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207600,
+    "school_name": "Northwestern Oklahoma State University",
+    "city": "Alva",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207661,
+    "school_name": "Rogers State University",
+    "city": "Claremore",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207722,
+    "school_name": "University of Science and Arts of Oklahoma",
+    "city": "Chickasha",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207740,
+    "school_name": "Seminole State College",
+    "city": "Seminole",
+    "state": "OK",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207847,
+    "school_name": "Southeastern Oklahoma State University",
+    "city": "Durant",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207856,
+    "school_name": "Southwestern Christian University",
+    "city": "Bethany",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207865,
+    "school_name": "Southwestern Oklahoma State University",
+    "city": "Weatherford",
+    "state": "OK",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207971,
+    "school_name": "University of Tulsa",
+    "city": "Tulsa",
+    "state": "OK",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 208822,
+    "school_name": "George Fox University",
+    "city": "Newberg",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 209056,
+    "school_name": "Lewis & Clark College",
+    "city": "Portland",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 140553,
+    "school_name": "Morehouse College",
+    "city": "Atlanta",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 186399,
+    "school_name": "William Paterson University of New Jersey",
+    "city": "Wayne",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 186432,
+    "school_name": "Saint Peter's University",
+    "city": "Jersey City",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 209065,
+    "school_name": "Linfield University",
+    "city": "McMinnville",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 209409,
+    "school_name": "Bushnell University",
+    "city": "Eugene",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 209542,
+    "school_name": "Oregon State University",
+    "city": "Corvallis",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 209551,
+    "school_name": "University of Oregon",
+    "city": "Newberg",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 209807,
+    "school_name": "Portland State University",
+    "city": "Bethlehem",
+    "state": "PA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 165574,
+    "school_name": "Dean College",
+    "city": "Chicopee",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 165644,
+    "school_name": "Eastern Nazarene College",
+    "city": "Quincy",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 165671,
+    "school_name": "Emmanuel College",
+    "city": "Boston",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 165699,
+    "school_name": "Endicott College",
+    "city": "Beverly",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 165936,
+    "school_name": "Gordon College",
+    "city": "Wenham",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 166027,
+    "school_name": "Harvard University",
+    "city": "Cambridge",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 167729,
+    "school_name": "Salem State University",
+    "city": "Salem",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 182795,
+    "school_name": "Franklin Pierce University",
+    "city": "Rindge",
+    "state": "NH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 182980,
+    "school_name": "New England College",
+    "city": "Henniker",
+    "state": "NH",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 183026,
+    "school_name": "Southern New Hampshire University",
+    "city": "Manchester",
+    "state": "NH",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 183062,
+    "school_name": "Keene State College",
+    "city": "Keene",
+    "state": "NH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 183974,
+    "school_name": "Centenary University",
+    "city": "Hackettstown",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 184348,
+    "school_name": "Drew University",
+    "city": "Madison",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 184612,
+    "school_name": "Felician University",
+    "city": "Lodi",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 184630,
+    "school_name": "Fairleigh Dickinson University-College at Florham",
+    "city": "Madison",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 184694,
+    "school_name": "Fairleigh Dickinson University-Metropolitan Campus",
+    "city": "Teaneck",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 185262,
+    "school_name": "Kean University",
+    "city": "Union",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 185572,
+    "school_name": "Monmouth University",
+    "city": "West Long Branch",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 186131,
+    "school_name": "Princeton University",
+    "city": "Princeton",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 209825,
+    "school_name": "University of Portland",
+    "city": "Portland",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 210146,
+    "school_name": "Southern Oregon University",
+    "city": "Ashland",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229799,
+    "school_name": "Weatherford College",
+    "city": "Weatherford",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229832,
+    "school_name": "Western Texas College",
+    "city": "Snyder",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230038,
+    "school_name": "Brigham Young University",
+    "city": "Provo",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230171,
+    "school_name": "Utah Tech University",
+    "city": "Saint George",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230603,
+    "school_name": "Southern Utah University",
+    "city": "Cedar City",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230728,
+    "school_name": "Utah State University",
+    "city": "Logan",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 230737,
+    "school_name": "Utah Valley University",
+    "city": "Orem",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 448882,
+    "school_name": "Ottawa University-Surprise",
+    "city": "Surprise",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110635,
+    "school_name": "University of California-Berkeley",
+    "city": "Berkeley",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 150534,
+    "school_name": "University of Evansville",
+    "city": "Evansville",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230764,
+    "school_name": "University of Utah",
+    "city": "Salt Lake City",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 230782,
+    "school_name": "Weber State University",
+    "city": "Ogden",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230807,
+    "school_name": "Westminster University",
+    "city": "Ogden",
+    "state": "UT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230959,
+    "school_name": "Middlebury College",
+    "city": "Middlebury",
+    "state": "VT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 230995,
+    "school_name": "Norwich University",
+    "city": "Northfield",
+    "state": "VT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 231095,
+    "school_name": "Sterling College",
+    "city": "Craftsbury Common",
+    "state": "VT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 231165,
+    "school_name": "Vermont State University",
+    "city": "Randolph",
+    "state": "VT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 231420,
+    "school_name": "Averett University",
+    "city": "Danville",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 231554,
+    "school_name": "Bluefield University",
+    "city": "Bluefield",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164739,
+    "school_name": "Bentley University",
+    "city": "Springfield",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170037,
+    "school_name": "Cornerstone University",
+    "city": "Grand Rapids",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170082,
+    "school_name": "Grand Valley State University",
+    "city": "Allendale",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170286,
+    "school_name": "Hillsdale College",
+    "city": "Hillsdale",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 170301,
+    "school_name": "Hope College",
+    "city": "Holland",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170532,
+    "school_name": "Kalamazoo College",
+    "city": "Kalamazoo",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170639,
+    "school_name": "Lake Superior State University",
+    "city": "Holland",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170675,
+    "school_name": "Lawrence Technological University",
+    "city": "Southfield",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170806,
+    "school_name": "Madonna University",
+    "city": "Livonia",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170967,
+    "school_name": "Rochester University",
+    "city": "Rochester Hills",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 170976,
+    "school_name": "University of Michigan-Ann Arbor",
+    "city": "Ann Arbor",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 171100,
+    "school_name": "Michigan State University",
+    "city": "East Lansing",
+    "state": "MI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 172699,
+    "school_name": "Western Michigan University",
+    "city": "Kalamazoo",
+    "state": "MI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173124,
+    "school_name": "Bemidji State University",
+    "city": "Bemidji",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173142,
+    "school_name": "Bethany Lutheran College",
+    "city": "Mankato",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 210331,
+    "school_name": "Corban University",
+    "city": "Salem",
+    "state": "OR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 210401,
+    "school_name": "Willamette University",
+    "city": "Meadville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 210571,
+    "school_name": "Albright College",
+    "city": "Reading",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 210669,
+    "school_name": "Allegheny College",
+    "city": "Meadville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 210739,
+    "school_name": "DeSales University",
+    "city": "Center Valley",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 210775,
+    "school_name": "Alvernia University",
+    "city": "Reading",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211088,
+    "school_name": "Arcadia University",
+    "city": "Glenside",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211243,
+    "school_name": "Bloomsburg University of Pennsylvania",
+    "city": "Bloomsburg",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211291,
+    "school_name": "Bucknell University",
+    "city": "Lewisburg",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 151777,
+    "school_name": "Manchester University",
+    "city": "North Manchester",
+    "state": "IN",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213020,
+    "school_name": "Indiana University of Pennsylvania",
+    "city": "Indiana",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 218238,
+    "school_name": "Limestone University",
+    "city": "Gaffney",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 231581,
+    "school_name": "Bridgewater College",
+    "city": "Bridgewater",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 231624,
+    "school_name": "College of William and Mary",
+    "city": "Williamsburg",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 231712,
+    "school_name": "Christopher Newport University",
+    "city": "Newport News",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 232089,
+    "school_name": "Ferrum College",
+    "city": "Ferrum",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 232186,
+    "school_name": "George Mason University",
+    "city": "Fairfax",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 232256,
+    "school_name": "Hampden-Sydney College",
+    "city": "Hampden-Sydney",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 232423,
+    "school_name": "James Madison University",
+    "city": "Danville",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 232557,
+    "school_name": "Liberty University",
+    "city": "Harrisonburg",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 153630,
+    "school_name": "Iowa Western Community College",
+    "city": "Council Bluffs",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164270,
+    "school_name": "McDaniel College",
+    "city": "Westminster",
+    "state": "MD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 167288,
+    "school_name": "Massachusetts College of Liberal Arts",
+    "city": "North Adams",
+    "state": "MA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 173045,
+    "school_name": "Augsburg University",
+    "city": "Minneapolis",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173647,
+    "school_name": "Gustavus Adolphus College",
+    "city": "Saint Peter",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173902,
+    "school_name": "Macalester College",
+    "city": "Bemidji",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 173920,
+    "school_name": "Minnesota State University-Mankato",
+    "city": "Saint Joseph",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174066,
+    "school_name": "University of Minnesota-Twin Cities",
+    "city": "Minneapolis",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174233,
+    "school_name": "University of Minnesota-Duluth",
+    "city": "Northfield",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174251,
+    "school_name": "University of Minnesota-Morris",
+    "city": "Morris",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174358,
+    "school_name": "Minnesota State University Moorhead",
+    "city": "Moorhead",
+    "state": "MN",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174437,
+    "school_name": "North Central University",
+    "city": "Minneapolis",
+    "state": "MN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 178402,
+    "school_name": "University of Missouri-Kansas City",
+    "city": "Kansas City",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 180814,
+    "school_name": "Bellevue University",
+    "city": "Bellevue",
+    "state": "NE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 197708,
+    "school_name": "Yeshiva University",
+    "city": "Staten Island",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 204200,
+    "school_name": "Mount St. Joseph University",
+    "city": "Cincinnati",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207069,
+    "school_name": "Redlands Community College",
+    "city": "El Reno",
+    "state": "OK",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211431,
+    "school_name": "Carlow University",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211440,
+    "school_name": "Carnegie Mellon University",
+    "city": "Lewisburg",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211583,
+    "school_name": "Chestnut Hill College",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 211981,
+    "school_name": "Delaware Valley University",
+    "city": "Doylestown",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 212009,
+    "school_name": "Dickinson College",
+    "city": "Carlisle",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217819,
+    "school_name": "College of Charleston",
+    "city": "Charleston",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 232566,
+    "school_name": "Longwood University",
+    "city": "Emory",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 232609,
+    "school_name": "University of Lynchburg",
+    "city": "Lynchburg",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 232982,
+    "school_name": "Old Dominion University",
+    "city": "Bridgewater",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233277,
+    "school_name": "Radford University",
+    "city": "Radford",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233295,
+    "school_name": "Randolph-Macon College",
+    "city": "Ashland",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233374,
+    "school_name": "University of Richmond",
+    "city": "Staunton",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233426,
+    "school_name": "Roanoke College",
+    "city": "Salem",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233541,
+    "school_name": "Shenandoah University",
+    "city": "Winchester",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 152567,
+    "school_name": "Trine University",
+    "city": "Angola",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 175980,
+    "school_name": "Millsaps College",
+    "city": "Jackson",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176017,
+    "school_name": "University of Mississippi",
+    "city": "University",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176035,
+    "school_name": "Mississippi University for Women",
+    "city": "Columbus",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176053,
+    "school_name": "Mississippi College",
+    "city": "Clinton",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176080,
+    "school_name": "Mississippi State University",
+    "city": "Mississippi State",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176169,
+    "school_name": "Northeast Mississippi Community College",
+    "city": "Booneville",
+    "state": "MS",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176178,
+    "school_name": "Northwest Mississippi Community College",
+    "city": "Senatobia",
+    "state": "MS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 176965,
+    "school_name": "University of Central Missouri",
+    "city": "Warrensburg",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 190150,
+    "school_name": "Columbia University in the City of New York",
+    "city": "New York",
+    "state": "NY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 198835,
+    "school_name": "Lenoir-Rhyne University",
+    "city": "Hickory",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 199306,
+    "school_name": "Pfeiffer University",
+    "city": "Misenheimer",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212054,
+    "school_name": "Drexel University",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 212106,
+    "school_name": "Duquesne University",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212115,
+    "school_name": "East Stroudsburg University of Pennsylvania",
+    "city": "East Stroudsburg",
+    "state": "PA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212133,
+    "school_name": "Eastern University",
+    "city": "Saint Davids",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212197,
+    "school_name": "Elizabethtown College",
+    "city": "Elizabethtown",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212577,
+    "school_name": "Franklin and Marshall College",
+    "city": "Lancaster",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212601,
+    "school_name": "Gannon University",
+    "city": "Erie",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212656,
+    "school_name": "Geneva College",
+    "city": "Beaver Falls",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212674,
+    "school_name": "Gettysburg College",
+    "city": "Gettysburg",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 212805,
+    "school_name": "Grove City College",
+    "city": "Grove City",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213011,
+    "school_name": "Immaculata University",
+    "city": "Immaculata",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213251,
+    "school_name": "Juniata College",
+    "city": "Huntingdon",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213321,
+    "school_name": "King's College",
+    "city": "Wilkes-Barre",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213358,
+    "school_name": "La Roche University",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 215743,
+    "school_name": "Saint Francis University",
+    "city": "Loretto",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 215770,
+    "school_name": "Saint Joseph's University-Philadelphia",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 215798,
+    "school_name": "Saint Vincent College",
+    "city": "Latrobe",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 190664,
+    "school_name": "St. John's University (New York)",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204264,
+    "school_name": "Muskingum University",
+    "city": "New Concord",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 211352,
+    "school_name": "Cabrini University",
+    "city": "Radnor",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213826,
+    "school_name": "Marywood University",
+    "city": "Scranton",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100724,
+    "school_name": "Alabama State University",
+    "city": "Montgomery",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 215929,
+    "school_name": "University of Scranton",
+    "city": "Greenville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 215947,
+    "school_name": "Seton Hill University",
+    "city": "Greensburg",
+    "state": "PA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216278,
+    "school_name": "Susquehanna University",
+    "city": "Selinsgrove",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216287,
+    "school_name": "Swarthmore College",
+    "city": "Swarthmore",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 216339,
+    "school_name": "Temple University",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 216357,
+    "school_name": "Thiel College",
+    "city": "Greenville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100751,
+    "school_name": "The University of Alabama",
+    "city": "Tuscaloosa",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100760,
+    "school_name": "Central Alabama Community College",
+    "city": "Alexander City",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100830,
+    "school_name": "Auburn University at Montgomery",
+    "city": "Montgomery",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100858,
+    "school_name": "Auburn University",
+    "city": "Auburn",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 100937,
+    "school_name": "Birmingham-Southern College",
+    "city": "Birmingham",
+    "state": "AL",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101295,
+    "school_name": "George C Wallace State Community College-Hanceville",
+    "city": "Hanceville",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101435,
+    "school_name": "Huntingdon College",
+    "city": "Montgomery",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101480,
+    "school_name": "Jacksonville State University",
+    "city": "Jacksonville",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101505,
+    "school_name": "Jefferson State Community College",
+    "city": "Birmingham",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101675,
+    "school_name": "Miles College",
+    "city": "Fairfield",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 101693,
+    "school_name": "University of Mobile",
+    "city": "Mobile",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 101709,
+    "school_name": "University of Montevallo",
+    "city": "Montevallo",
+    "state": "AL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216524,
+    "school_name": "Ursinus College",
+    "city": "Collegeville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216597,
+    "school_name": "Villanova University",
+    "city": "Swarthmore",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 216667,
+    "school_name": "Washington & Jefferson College",
+    "city": "Washington",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153001,
+    "school_name": "Buena Vista University",
+    "city": "Storm Lake",
+    "state": "IA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 183239,
+    "school_name": "Saint Anselm College",
+    "city": "Manchester",
+    "state": "NH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 186283,
+    "school_name": "Rider University",
+    "city": "Lawrenceville",
+    "state": "NJ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 196130,
+    "school_name": "SUNY Geneseo",
+    "city": "Buffalo",
+    "state": "NY",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203757,
+    "school_name": "Lourdes University",
+    "city": "Sylvania",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216694,
+    "school_name": "Waynesburg University",
+    "city": "Greenville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216931,
+    "school_name": "Wilkes University",
+    "city": "Wilkes-Barre",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217013,
+    "school_name": "Wilson College",
+    "city": "Chambersburg",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 217059,
+    "school_name": "York College of Pennsylvania",
+    "city": "York",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217156,
+    "school_name": "Brown University",
+    "city": "Providence",
+    "state": "RI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217165,
+    "school_name": "Bryant University",
+    "city": "Smithfield",
+    "state": "RI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217402,
+    "school_name": "Providence College",
+    "city": "Providence",
+    "state": "RI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217420,
+    "school_name": "Rhode Island College",
+    "city": "Providence",
+    "state": "RI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217484,
+    "school_name": "University of Rhode Island",
+    "city": "Kingston",
+    "state": "RI",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 217518,
+    "school_name": "Roger Williams University",
+    "city": "Bristol",
+    "state": "RI",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 217688,
+    "school_name": "Charleston Southern University",
+    "city": "Charleston",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217749,
+    "school_name": "Bob Jones University",
+    "city": "Greenville",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 217776,
+    "school_name": "Southern Wesleyan University",
+    "city": "Central",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233611,
+    "school_name": "Southern Virginia University",
+    "city": "Buena Vista",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233718,
+    "school_name": "Sweet Briar College",
+    "city": "Sweet Briar",
+    "state": "VA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 234207,
+    "school_name": "Washington and Lee University",
+    "city": "Lexington",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 235097,
+    "school_name": "Eastern Washington University",
+    "city": "Cheney",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 235316,
+    "school_name": "Gonzaga University",
+    "city": "Spokane",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236230,
+    "school_name": "Pacific Lutheran University",
+    "city": "Tacoma",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236328,
+    "school_name": "University of Puget Sound",
+    "city": "Tacoma",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 104717,
+    "school_name": "Grand Canyon University",
+    "city": "Phoenix",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 105154,
+    "school_name": "Mesa Community College",
+    "city": "Mesa",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 105330,
+    "school_name": "Northern Arizona University",
+    "city": "Flagstaff",
+    "state": "AZ",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 105468,
+    "school_name": "Embry-Riddle Aeronautical University-Prescott",
+    "city": "Prescott",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 105792,
+    "school_name": "South Mountain Community College",
+    "city": "Phoenix",
+    "state": "AZ",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 105899,
+    "school_name": "Arizona Christian University",
+    "city": "Glendale",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106245,
+    "school_name": "University of Arkansas at Little Rock",
+    "city": "Little Rock",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106342,
+    "school_name": "Lyon College",
+    "city": "Batesville",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106397,
+    "school_name": "University of Arkansas",
+    "city": "Fayetteville",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106412,
+    "school_name": "University of Arkansas at Pine Bluff",
+    "city": "Pine Bluff",
+    "state": "AR",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106458,
+    "school_name": "Arkansas State University",
+    "city": "Jonesboro",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106467,
+    "school_name": "Arkansas Tech University",
+    "city": "Russellville",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 106485,
+    "school_name": "University of Arkansas at Monticello",
+    "city": "Monticello",
+    "state": "AR",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 154998,
+    "school_name": "Dodge City Community College",
+    "city": "Dodge City",
+    "state": "KS",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156356,
+    "school_name": "Brescia University",
+    "city": "Owensboro",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 179043,
+    "school_name": "Rockhurst University",
+    "city": "Kansas City",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214766,
+    "school_name": "Pennsylvania State University-Penn State Erie-Behrend College",
+    "city": "Erie",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 217864,
+    "school_name": "Citadel Military College of South Carolina",
+    "city": "Charleston",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 218645,
+    "school_name": "University of South Carolina Aiken",
+    "city": "Aiken",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 218654,
+    "school_name": "University of South Carolina Beaufort",
+    "city": "Bluffton",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218663,
+    "school_name": "University of South Carolina-Columbia",
+    "city": "Columbia",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218706,
+    "school_name": "University of South Carolina-Union",
+    "city": "Union",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 218724,
+    "school_name": "Coastal Carolina University",
+    "city": "Clarksville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218742,
+    "school_name": "University of South Carolina-Upstate",
+    "city": "Spartanburg",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218821,
+    "school_name": "Spartanburg Methodist College",
+    "city": "Spartanburg",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218964,
+    "school_name": "Winthrop University",
+    "city": "Rock Hill",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 218973,
+    "school_name": "Wofford College",
+    "city": "Rock Hill",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219000,
+    "school_name": "Augustana University",
+    "city": "Sioux Falls",
+    "state": "SD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219046,
+    "school_name": "Black Hills State University",
+    "city": "Spearfish",
+    "state": "SD",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236939,
+    "school_name": "Washington State University",
+    "city": "Pullman",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110592,
+    "school_name": "California State University-Los Angeles",
+    "city": "Los Angeles",
+    "state": "CA",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 236948,
+    "school_name": "University of Washington-Seattle Campus",
+    "city": "Seattle",
+    "state": "WA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110608,
+    "school_name": "California State University-Northridge",
+    "city": "Northridge",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110617,
+    "school_name": "California State University-Sacramento",
+    "city": "Sacramento",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110644,
+    "school_name": "University of California-Davis",
+    "city": "Davis",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110653,
+    "school_name": "University of California-Irvine",
+    "city": "Irvine",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 110662,
+    "school_name": "University of California-Los Angeles",
+    "city": "Los Angeles",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 156541,
+    "school_name": "University of the Cumberlands",
+    "city": "Williamsburg",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 157386,
+    "school_name": "Morehead State University",
+    "city": "Danville",
+    "state": "KY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179265,
+    "school_name": "University of Health Sciences and Pharmacy in St. Louis",
+    "city": "Saint Louis",
+    "state": "MO",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 179566,
+    "school_name": "Missouri State University-Springfield",
+    "city": "Springfield",
+    "state": "MO",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180461,
+    "school_name": "Montana State University",
+    "city": "Bozeman",
+    "state": "MT",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180489,
+    "school_name": "The University of Montana",
+    "city": "Bozeman",
+    "state": "MT",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 180595,
+    "school_name": "Rocky Mountain College",
+    "city": "Billings",
+    "state": "MT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 216764,
+    "school_name": "West Chester University of Pennsylvania",
+    "city": "West Chester",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219091,
+    "school_name": "Dakota Wesleyan University",
+    "city": "Mitchell",
+    "state": "SD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219198,
+    "school_name": "Mount Marty University",
+    "city": "Yankton",
+    "state": "SD",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219356,
+    "school_name": "South Dakota State University",
+    "city": "Brookings",
+    "state": "SD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219383,
+    "school_name": "University of Sioux Falls",
+    "city": "Sioux Falls",
+    "state": "SD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219471,
+    "school_name": "University of South Dakota",
+    "city": "Chattanooga",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219602,
+    "school_name": "Austin Peay State University",
+    "city": "Clarksville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219709,
+    "school_name": "Belmont University",
+    "city": "Sioux Falls",
+    "state": "SD",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219806,
+    "school_name": "Carson-Newman University",
+    "city": "Jefferson City",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219833,
+    "school_name": "Christian Brothers University",
+    "city": "Memphis",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 219835,
+    "school_name": "University of South Carolina Sumter",
+    "city": "Sumter",
+    "state": "SC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 219949,
+    "school_name": "Cumberland University",
+    "city": "Lebanon",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220075,
+    "school_name": "East Tennessee State University",
+    "city": "Johnson City",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220181,
+    "school_name": "Fisk University",
+    "city": "Nashville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 220215,
+    "school_name": "Freed-Hardeman University",
+    "city": "Henderson",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 220473,
+    "school_name": "Johnson University",
+    "city": "Knoxville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 220516,
+    "school_name": "King University",
+    "city": "Bristol",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221740,
+    "school_name": "The University of Tennessee-Chattanooga",
+    "city": "Chattanooga",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221759,
+    "school_name": "The University of Tennessee-Knoxville",
+    "city": "Murfreesboro",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221971,
+    "school_name": "Union University",
+    "city": "Jackson",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 221999,
+    "school_name": "Vanderbilt University",
+    "city": "Memphis",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 222178,
+    "school_name": "Abilene Christian University",
+    "city": "Abilene",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 222831,
+    "school_name": "Angelo State University",
+    "city": "San Angelo",
+    "state": "TX",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 223232,
+    "school_name": "Baylor University",
+    "city": "Waco",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224004,
+    "school_name": "Concordia University Texas",
+    "city": "Waco",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224110,
+    "school_name": "North Central Texas College",
+    "city": "Gainesville",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233897,
+    "school_name": "University of Virginia's College at Wise",
+    "city": "Wise",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 233921,
+    "school_name": "Virginia Polytechnic Institute and State University",
+    "city": "Blacksburg",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 234030,
+    "school_name": "Virginia Commonwealth University",
+    "city": "Richmond",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 234076,
+    "school_name": "University of Virginia",
+    "city": "Wise",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237330,
+    "school_name": "Concord University",
+    "city": "Athens",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237385,
+    "school_name": "Glenville State University",
+    "city": "Glenville",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237525,
+    "school_name": "Marshall University",
+    "city": "Huntington",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237899,
+    "school_name": "West Virginia State University",
+    "city": "Glenville",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237950,
+    "school_name": "West Virginia University Institute of Technology",
+    "city": "Beckley",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 237969,
+    "school_name": "West Virginia Wesleyan College",
+    "city": "Buckhannon",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 238032,
+    "school_name": "West Virginia University",
+    "city": "Kenosha",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 238078,
+    "school_name": "Wheeling University",
+    "city": "Wheeling",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 155177,
+    "school_name": "Hesston College",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 164901,
+    "school_name": "Elms College",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 174020,
+    "school_name": "University of Minnesota, Morris",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 177065,
+    "school_name": "Columbia College - Missouri",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 207697,
+    "school_name": "Southwestern Oklahoma State",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 481792,
+    "school_name": "Texas A & M University San Antonio",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 489937,
+    "school_name": "Mesa Benedictine University",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 9000001,
+    "school_name": "Simon Fraser University",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 9000002,
+    "school_name": "University of British Columbia",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 129242,
+    "school_name": "Fairfield University",
+    "city": "Fairfield",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 129774,
+    "school_name": "Mitchell College",
+    "city": "New London",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 9000003,
+    "school_name": "University of Victoria",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 129941,
+    "school_name": "University of New Haven",
+    "city": "West Haven",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130183,
+    "school_name": "Post University",
+    "city": "Waterbury",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 130226,
+    "school_name": "Quinnipiac University",
+    "city": "Hamden",
+    "state": "CT",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130253,
+    "school_name": "Sacred Heart University",
+    "city": "Waterbury",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130590,
+    "school_name": "Trinity College",
+    "city": "Hartford",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130697,
+    "school_name": "Wesleyan University",
+    "city": "Middletown",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130776,
+    "school_name": "Western Connecticut State University",
+    "city": "Danbury",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 130794,
+    "school_name": "Yale University",
+    "city": "New Haven",
+    "state": "CT",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130934,
+    "school_name": "Delaware State University",
+    "city": "Dover",
+    "state": "DE",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130943,
+    "school_name": "University of Delaware",
+    "city": "Newark",
+    "state": "DE",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 130989,
+    "school_name": "Goldey-Beacom College",
+    "city": "Wilmington",
+    "state": "DE",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 131113,
+    "school_name": "Wilmington University",
+    "city": "New Castle",
+    "state": "DE",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 131520,
+    "school_name": "Howard University",
+    "city": "Washington",
+    "state": "DC",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 161341,
+    "school_name": "University of Maine at Presque Isle",
+    "city": "Presque Isle",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 204486,
+    "school_name": "University of Northwestern Ohio",
+    "city": "Lima",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 486840,
+    "school_name": "Kennesaw State University",
+    "city": "Kennesaw",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 486901,
+    "school_name": "Milligan University",
+    "city": "Milligan",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 487524,
+    "school_name": "Husson University",
+    "city": "Bangor",
+    "state": "ME",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 490805,
+    "school_name": "Purdue University Northwest",
+    "city": "Hammond",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 105064,
+    "school_name": "South Mountain Community College",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 153288,
+    "school_name": "Iowa Lakes Community College",
+    "city": null,
+    "state": null,
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 238193,
+    "school_name": "Alverno College",
+    "city": "Milwaukee",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 238458,
+    "school_name": "Carroll University",
+    "city": "Waukesha",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 238476,
+    "school_name": "Carthage College",
+    "city": "Kenosha",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 238616,
+    "school_name": "Concordia University-Wisconsin",
+    "city": "Mequon",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 238980,
+    "school_name": "Lakeland University",
+    "city": "Plymouth",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 239105,
+    "school_name": "Marquette University",
+    "city": "Milwaukee",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 239318,
+    "school_name": "Milwaukee School of Engineering",
+    "city": "Milwaukee",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 239512,
+    "school_name": "Northland College",
+    "city": "Ashland",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240107,
+    "school_name": "Viterbo University",
+    "city": "La Crosse",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240189,
+    "school_name": "University of Wisconsin-Whitewater",
+    "city": "Whitewater",
+    "state": "WI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240277,
+    "school_name": "University of Wisconsin-Green Bay",
+    "city": "Milwaukee",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240329,
+    "school_name": "University of Wisconsin-La Crosse",
+    "city": "La Crosse",
+    "state": "WI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240338,
+    "school_name": "Wisconsin Lutheran College",
+    "city": "Milwaukee",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201104,
+    "school_name": "Ashland University",
+    "city": "Ashland",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201371,
+    "school_name": "Bluffton University",
+    "city": "Bluffton",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201441,
+    "school_name": "Bowling Green State University",
+    "city": "Bowling Green",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201548,
+    "school_name": "Capital University",
+    "city": "Columbus",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201654,
+    "school_name": "Cedarville University",
+    "city": "Cedarville",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201690,
+    "school_name": "Central State University",
+    "city": "Wilberforce",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201885,
+    "school_name": "University of Cincinnati",
+    "city": "Cleveland",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 201964,
+    "school_name": "Ohio Christian University",
+    "city": "Circleville",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 202134,
+    "school_name": "Cleveland State University",
+    "city": "Cleveland",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 202480,
+    "school_name": "University of Dayton",
+    "city": "Kent",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 202514,
+    "school_name": "Defiance College",
+    "city": "Defiance",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 202523,
+    "school_name": "Denison University",
+    "city": "Granville",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 202763,
+    "school_name": "The University of Findlay",
+    "city": "Findlay",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203085,
+    "school_name": "Heidelberg University",
+    "city": "Tiffin",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203128,
+    "school_name": "Hiram College",
+    "city": "Hiram",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203368,
+    "school_name": "John Carroll University",
+    "city": "Steubenville",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203535,
+    "school_name": "Kenyon College",
+    "city": "Gambier",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203775,
+    "school_name": "Malone University",
+    "city": "Canton",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 203845,
+    "school_name": "Marietta College",
+    "city": "Marietta",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 204024,
+    "school_name": "Miami University-Oxford",
+    "city": "Oxford",
+    "state": "OH",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213385,
+    "school_name": "Lafayette College",
+    "city": "Easton",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 213400,
+    "school_name": "Lancaster Bible College",
+    "city": "Lancaster",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 213507,
+    "school_name": "Lebanon Valley College",
+    "city": "Annville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213543,
+    "school_name": "Lehigh University",
+    "city": "Bethlehem",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 213668,
+    "school_name": "Lycoming College",
+    "city": "Williamsport",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 213987,
+    "school_name": "Mercyhurst University",
+    "city": "Erie",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214041,
+    "school_name": "Millersville University of Pennsylvania",
+    "city": "Millersville",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214069,
+    "school_name": "Misericordia University",
+    "city": "Dallas",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214157,
+    "school_name": "Moravian University",
+    "city": "Bethlehem",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214166,
+    "school_name": "Mount Aloysius College",
+    "city": "Cresson",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214175,
+    "school_name": "Muhlenberg College",
+    "city": "Allentown",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214686,
+    "school_name": "Pennsylvania State University-Penn State Abington",
+    "city": "Abington",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 214713,
+    "school_name": "Pennsylvania State University-Penn State Harrisburg",
+    "city": "Middletown",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 214732,
+    "school_name": "Pennsylvania State University-Penn State Berks",
+    "city": "Reading",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 214759,
+    "school_name": "Pennsylvania State University-Penn State Fayette- Eberly",
+    "city": "Media",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 214777,
+    "school_name": "Pennsylvania State University",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 215062,
+    "school_name": "University of Pennsylvania",
+    "city": "Philadelphia",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 215284,
+    "school_name": "University of Pittsburgh-Johnstown",
+    "city": "Johnstown",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 215442,
+    "school_name": "Point Park University",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 215655,
+    "school_name": "Robert Morris University",
+    "city": "Moon Township",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 215691,
+    "school_name": "Rosemont College",
+    "city": "Rosemont",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 219976,
+    "school_name": "Lipscomb University",
+    "city": "Nashville",
+    "state": "TN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224147,
+    "school_name": "Texas A & M University-Corpus Christi",
+    "city": "Corpus Christi",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224226,
+    "school_name": "Dallas Baptist University",
+    "city": "Dallas",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 224323,
+    "school_name": "University of Dallas",
+    "city": "Irving",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228723,
+    "school_name": "Texas A & M University-College Station",
+    "city": "College Station",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228769,
+    "school_name": "The University of Texas at Arlington",
+    "city": "Arlington",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228778,
+    "school_name": "The University of Texas at Austin",
+    "city": "Austin",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228787,
+    "school_name": "The University of Texas at Dallas",
+    "city": "Richardson",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228802,
+    "school_name": "The University of Texas at Tyler",
+    "city": "Lubbock",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228875,
+    "school_name": "Texas Christian University",
+    "city": "Fort Worth",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228936,
+    "school_name": "Texas A&M International University",
+    "city": "Laredo",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 228981,
+    "school_name": "Texas Lutheran University",
+    "city": "Seguin",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229018,
+    "school_name": "The University of Texas Permian Basin",
+    "city": "Odessa",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229027,
+    "school_name": "The University of Texas at San Antonio",
+    "city": "San Antonio",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229063,
+    "school_name": "Texas Southern University",
+    "city": "Houston",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229115,
+    "school_name": "Texas Tech University",
+    "city": "Fort Worth",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229160,
+    "school_name": "Texas Wesleyan University",
+    "city": "Fort Worth",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229179,
+    "school_name": "Texas Woman's University",
+    "city": "Denton",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229267,
+    "school_name": "Trinity University",
+    "city": "San Antonio",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229355,
+    "school_name": "Tyler Junior College",
+    "city": "Tyler",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 229780,
+    "school_name": "Wayland Baptist University",
+    "city": "Plainview",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 234155,
+    "school_name": "Virginia State University",
+    "city": "Petersburg",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 234164,
+    "school_name": "Virginia Union University",
+    "city": "Richmond",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 234173,
+    "school_name": "Virginia Wesleyan University",
+    "city": "Virginia Beach",
+    "state": "VA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 237792,
+    "school_name": "Shepherd University",
+    "city": "Shepherdstown",
+    "state": "WV",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240365,
+    "school_name": "University of Wisconsin-Oshkosh",
+    "city": "Oshkosh",
+    "state": "WI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240417,
+    "school_name": "University of Wisconsin-Stout",
+    "city": "Menomonie",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240426,
+    "school_name": "University of Wisconsin-Superior",
+    "city": "Superior",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240444,
+    "school_name": "University of Wisconsin-Madison",
+    "city": "Madison",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240462,
+    "school_name": "University of Wisconsin-Platteville",
+    "city": "Platteville",
+    "state": "WI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240471,
+    "school_name": "University of Wisconsin-River Falls",
+    "city": "River Falls",
+    "state": "WI",
+    "has_mens_golf": false,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240480,
+    "school_name": "University of Wisconsin-Stevens Point",
+    "city": "Milwaukee",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240514,
+    "school_name": "Central Wyoming College",
+    "city": "Riverton",
+    "state": "WY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240596,
+    "school_name": "Eastern Wyoming College",
+    "city": "Torrington",
+    "state": "WY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 240727,
+    "school_name": "University of Wyoming",
+    "city": "Laramie",
+    "state": "WY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 241140,
+    "school_name": "St Norbert College",
+    "city": "De Pere",
+    "state": "WI",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 243744,
+    "school_name": "Stanford University",
+    "city": "Powell",
+    "state": "WY",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 243780,
+    "school_name": "Purdue University",
+    "city": "West Lafayette",
+    "state": "IN",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 260992,
+    "school_name": "Northwestern College",
+    "city": "Oak Lawn",
+    "state": "IL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 262129,
+    "school_name": "New College of Florida",
+    "city": "Sarasota",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 364016,
+    "school_name": "Paradise Valley Community College",
+    "city": "Phoenix",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 366252,
+    "school_name": "Pennsylvania College of Technology",
+    "city": "Williamsport",
+    "state": "PA",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 366711,
+    "school_name": "California State University-San Marcos",
+    "city": "San Marcos",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 384333,
+    "school_name": "Estrella Mountain Community College",
+    "city": "Avondale",
+    "state": "AZ",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 409698,
+    "school_name": "California State University-Monterey Bay",
+    "city": "Seaside",
+    "state": "CA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 431421,
+    "school_name": "Johnson & Wales University-Charlotte",
+    "city": "Charlotte",
+    "state": "NC",
+    "has_mens_golf": true,
+    "has_womens_golf": false
+  },
+  {
+    "unitid": 433660,
+    "school_name": "Florida Gulf Coast University",
+    "city": "Fort Myers",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 446048,
+    "school_name": "Ave Maria University",
+    "city": "Ave Maria",
+    "state": "FL",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 459949,
+    "school_name": "Texas A&M University-San Antonio",
+    "city": "San Antonio",
+    "state": "TX",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 482149,
+    "school_name": "Augusta University",
+    "city": "Augusta",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  },
+  {
+    "unitid": 482680,
+    "school_name": "University of North Georgia",
+    "city": "Dahlonega",
+    "state": "GA",
+    "has_mens_golf": true,
+    "has_womens_golf": true
+  }
+]
