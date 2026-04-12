@@ -43,6 +43,7 @@ export default function ConferenceChampionshipsPage() {
           menChampionships={championshipsMen2026}
           womenChampionships={championshipsWomen2026}
           lastUpdated={LAST_UPDATED}
+          todayISO={new Date().toISOString().slice(0, 10)}
         />
       </Suspense>
     </div>

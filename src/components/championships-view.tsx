@@ -15,8 +15,9 @@ import {
 } from "@/lib/championships";
 import type { TeamData } from "@/data/rankings-men";
 import type { Championship } from "@/data/championships-men-2026";
-import { Search, ChevronRight, Plane } from "lucide-react";
+import { Search, ChevronRight, Plane, Calendar } from "lucide-react";
 import ChampionshipsMap from "@/components/championships-map";
+import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
 
 // ---------------------------------------------------------------------------
@@ -32,6 +33,7 @@ interface ChampionshipsViewProps {
   menChampionships: Championship[];
   womenChampionships: Championship[];
   lastUpdated: string;
+  todayISO: string; // YYYY-MM-DD passed from server to avoid hydration mismatch
 }
 
 // ---------------------------------------------------------------------------
@@ -55,6 +57,24 @@ function formatDateRange(start: string, end: string): string {
 
 function isVenueTBD(c: Championship): boolean {
   return c.lat === 0 && c.lng === 0;
+}
+
+function daysBetween(a: Date, b: Date): number {
+  const ms = b.getTime() - a.getTime();
+  return Math.round(ms / (24 * 60 * 60 * 1000));
+}
+
+function classifyByDate(
+  championship: Championship,
+  today: Date
+): "inProgress" | "thisWeek" | "later" | "past" {
+  const start = parseISO(championship.startDate);
+  const end = parseISO(championship.endDate);
+  if (today >= start && today <= end) return "inProgress";
+  if (today > end) return "past";
+  const daysUntilStart = daysBetween(today, start);
+  if (daysUntilStart <= 7 && daysUntilStart >= 0) return "thisWeek";
+  return "later";
 }
 
 // ---------------------------------------------------------------------------
@@ -100,7 +120,9 @@ export default function ChampionshipsView({
   menChampionships,
   womenChampionships,
   lastUpdated,
+  todayISO,
 }: ChampionshipsViewProps) {
+  const today = useMemo(() => parseISO(todayISO), [todayISO]);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -252,6 +274,10 @@ export default function ChampionshipsView({
       data-pending={isPending}
       data-stale={isStale}
     >
+      <ThisWeekBanner
+        championships={activeChampionships}
+        today={today}
+      />
       <FilterBar
         viewMode={viewMode}
         gender={gender}
@@ -275,6 +301,14 @@ export default function ChampionshipsView({
               championships={activeChampionships}
             />
           </div>
+          {assignments.length > 0 && (
+            <div className="mt-3 sm:mt-4">
+              <ChampionshipsBeeswarm
+                assignments={assignments}
+                championshipMap={championshipMap}
+              />
+            </div>
+          )}
           <PredictedAQSection
             grouped={groupedChronological}
             assignments={assignments}
@@ -287,6 +321,7 @@ export default function ChampionshipsView({
           groups={groupedAlphabetical}
           mode="alphabetical"
           totalShown={filtered.length}
+          today={today}
         />
       )}
 
@@ -295,6 +330,7 @@ export default function ChampionshipsView({
           groups={groupedChronological}
           mode="chronological"
           totalShown={filtered.length}
+          today={today}
         />
       )}
     </div>
@@ -419,6 +455,85 @@ function FilterBar({
 }
 
 // ---------------------------------------------------------------------------
+// ThisWeekBanner
+// ---------------------------------------------------------------------------
+
+function ThisWeekBanner({
+  championships,
+  today,
+}: {
+  championships: Championship[];
+  today: Date;
+}) {
+  const { inProgress, thisWeek } = useMemo(() => {
+    const ip: Championship[] = [];
+    const tw: Championship[] = [];
+    for (const c of championships) {
+      const status = classifyByDate(c, today);
+      if (status === "inProgress") ip.push(c);
+      else if (status === "thisWeek") tw.push(c);
+    }
+    ip.sort(
+      (a, b) =>
+        parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+    );
+    tw.sort(
+      (a, b) =>
+        parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+    );
+    return { inProgress: ip, thisWeek: tw };
+  }, [championships, today]);
+
+  if (inProgress.length === 0 && thisWeek.length === 0) return null;
+
+  return (
+    <div className="mb-2 sm:mb-3 rounded-lg border border-border bg-card/40 px-3 py-2">
+      <div className="flex items-start gap-2">
+        <Calendar className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+        <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-4 min-w-0 flex-1">
+          {inProgress.length > 0 && (
+            <div className="text-[12px] text-foreground">
+              <span className="text-[10px] uppercase tracking-wide font-semibold text-primary mr-1.5">
+                In progress
+              </span>
+              {inProgress.map((c, i) => (
+                <span key={c.id}>
+                  <span className="font-medium">{c.conference}</span>
+                  <span className="text-text-tertiary ml-1 font-mono tabular-nums text-[11px]">
+                    {formatDateRange(c.startDate, c.endDate)}
+                  </span>
+                  {i < inProgress.length - 1 && (
+                    <span className="text-text-tertiary mx-1.5">·</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+          {thisWeek.length > 0 && (
+            <div className="text-[12px] text-foreground">
+              <span className="text-[10px] uppercase tracking-wide font-semibold text-amber-400/80 mr-1.5">
+                This week
+              </span>
+              {thisWeek.map((c, i) => (
+                <span key={c.id}>
+                  <span className="font-medium">{c.conference}</span>
+                  <span className="text-text-tertiary ml-1 font-mono tabular-nums text-[11px]">
+                    {formatDateRange(c.startDate, c.endDate)}
+                  </span>
+                  {i < thisWeek.length - 1 && (
+                    <span className="text-text-tertiary mx-1.5">·</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // ChampionshipGroupView (used by byChampionship + chronological)
 // ---------------------------------------------------------------------------
 
@@ -426,10 +541,12 @@ function ChampionshipGroupView({
   groups,
   mode,
   totalShown,
+  today,
 }: {
   groups: { championship: Championship; teams: ChampionshipAssignment[] }[];
   mode: "alphabetical" | "chronological";
   totalShown: number;
+  today: Date;
 }) {
   if (groups.length === 0) {
     return (
@@ -453,6 +570,7 @@ function ChampionshipGroupView({
           championship={championship}
           teams={teams}
           showDate={mode === "chronological"}
+          status={classifyByDate(championship, today)}
         />
       ))}
     </div>
@@ -467,10 +585,12 @@ function ChampionshipCard({
   championship,
   teams,
   showDate,
+  status,
 }: {
   championship: Championship;
   teams: ChampionshipAssignment[];
   showDate: boolean;
+  status: "inProgress" | "thisWeek" | "later" | "past";
 }) {
   const [expanded, setExpanded] = useState(false);
   const tbd = isVenueTBD(championship);
@@ -485,9 +605,19 @@ function ChampionshipCard({
       : 0;
   const top = teams[0];
 
+  const ringClass =
+    status === "inProgress"
+      ? "ring-1 ring-primary/40"
+      : status === "thisWeek"
+        ? "ring-1 ring-amber-500/30"
+        : "";
+
   return (
     <div
-      className="rounded-lg border border-border overflow-hidden"
+      className={cn(
+        "rounded-lg border border-border overflow-hidden",
+        ringClass
+      )}
       style={{ borderLeft: `3px solid ${championship.color}` }}
     >
       <button
@@ -512,6 +642,16 @@ function ChampionshipCard({
                     championship.startDate,
                     championship.endDate
                   )}
+                </span>
+              )}
+              {status === "inProgress" && (
+                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider bg-primary/15 text-primary leading-none">
+                  Live
+                </span>
+              )}
+              {status === "thisWeek" && (
+                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider bg-amber-500/15 text-amber-400 leading-none">
+                  This week
                 </span>
               )}
             </div>
