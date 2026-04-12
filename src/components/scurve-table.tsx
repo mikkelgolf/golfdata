@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useTransition, useDeferredValue } from "react";
+import { Fragment, useState, useMemo, useCallback, useEffect, useTransition, useDeferredValue } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -387,6 +387,42 @@ export default function ScurveTable({
             regionalSeeds={regionalSeeds}
           />
         </div>
+        <BubbleSection
+          teams={gender === "men" ? menTeams : womenTeams}
+          assignments={assignments}
+          regionalMap={regionalMap}
+        />
+      </div>
+    );
+  }
+
+  // S-Curve snake table view
+  if (viewMode === "scurve") {
+    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
+    return (
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
+        <FilterBar
+          viewMode={viewMode}
+          gender={gender}
+          scurveMode={scurveMode}
+          search={search}
+          resultCount={filtered.length}
+          lastUpdated={lastUpdated}
+          onViewChange={handleViewChange}
+          onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
+          onSearchChange={setSearch}
+        />
+        <ScurveSnakeTable
+          assignments={assignments}
+          regionals={activeRegionals}
+          regionalMap={regionalMap}
+          regionalSeeds={regionalSeeds}
+        />
         <BubbleSection
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
@@ -1472,6 +1508,147 @@ function MobileVisualScurve({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// S-Curve Snake Table
+// ---------------------------------------------------------------------------
+
+function ScurveSnakeTable({
+  assignments,
+  regionals,
+  regionalMap,
+  regionalSeeds,
+}: {
+  assignments: ScurveAssignment[];
+  regionals: Regional[];
+  regionalMap: Map<number, Regional>;
+  regionalSeeds: Map<number, number>;
+}) {
+  const orderedRegionals = useMemo(() => {
+    return [...regionals].sort((a, b) => {
+      return (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99);
+    });
+  }, [regionals, regionalSeeds]);
+
+  const numRegionals = orderedRegionals.length;
+
+  const byRegional = useMemo(() => {
+    const map = new Map<number, ScurveAssignment[]>();
+    for (const r of orderedRegionals) map.set(r.id, []);
+    for (const a of assignments) map.get(a.regionalId)?.push(a);
+    for (const [, teams] of map) teams.sort((a, b) => a.seed - b.seed);
+    return map;
+  }, [assignments, orderedRegionals]);
+
+  const numTiers = useMemo(() => {
+    return Math.max(...[...byRegional.values()].map(t => t.length), 0);
+  }, [byRegional]);
+
+  const grid = useMemo(() => {
+    const rows: (ScurveAssignment | null)[][] = [];
+    for (let tier = 0; tier < numTiers; tier++) {
+      rows.push(orderedRegionals.map(r => {
+        const teams = byRegional.get(r.id) ?? [];
+        return teams[tier] ?? null;
+      }));
+    }
+    return rows;
+  }, [orderedRegionals, byRegional, numTiers]);
+
+  return (
+    <div className="mt-3 overflow-x-auto">
+      <div style={{ minWidth: `${numRegionals * 105 + 28}px` }}>
+        {/* Regional headers */}
+        <div
+          className="grid gap-0.5"
+          style={{ gridTemplateColumns: `24px repeat(${numRegionals}, 1fr)` }}
+        >
+          <div />
+          {orderedRegionals.map((r) => (
+            <div
+              key={r.id}
+              className="text-center text-[9px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
+              style={{ borderBottom: `2px solid ${r.color}` }}
+            >
+              {r.name.replace(/ Regional$/, "")}
+            </div>
+          ))}
+        </div>
+
+        {/* Tier rows */}
+        {grid.map((row, tierIdx) => {
+          const isSnakeBack = tierIdx % 2 === 1;
+          const displayRow = isSnakeBack ? [...row].reverse() : row;
+          const displayRegionals = isSnakeBack ? [...orderedRegionals].reverse() : orderedRegionals;
+
+          return (
+            <Fragment key={tierIdx}>
+              <div
+                className="grid gap-0.5 mt-0.5"
+                style={{ gridTemplateColumns: `24px repeat(${numRegionals}, 1fr)` }}
+              >
+                <div className="flex items-center justify-center text-[9px] font-mono tabular-nums text-muted-foreground">
+                  {tierIdx + 1}
+                  <span className="ml-px text-[7px] text-text-tertiary">{isSnakeBack ? "\u2190" : "\u2192"}</span>
+                </div>
+                {displayRow.map((team, colIdx) => {
+                  if (!team) {
+                    return <div key={`empty-${tierIdx}-${colIdx}`} className="h-6" />;
+                  }
+
+                  const r = displayRegionals[colIdx];
+                  const isAboveLine = tierIdx < TEAMS_ADVANCING;
+
+                  return (
+                    <motion.div
+                      key={`${team.team}-${team.seed}`}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.25,
+                        ease: "easeOut",
+                        delay: team.seed * 0.02,
+                      }}
+                      className={cn(
+                        "h-6 px-1 flex items-center text-[10px] rounded-sm",
+                        isAboveLine ? "bg-secondary/70" : "bg-secondary/25"
+                      )}
+                      style={{ borderLeft: `2px solid ${r?.color ?? "#888"}` }}
+                      title={`#${team.seed} ${team.team} - Rank ${team.rank}`}
+                    >
+                      <span className="font-mono tabular-nums text-[8px] text-muted-foreground shrink-0 w-3.5 text-right mr-1">
+                        {team.seed}
+                      </span>
+                      <span className={cn(
+                        "truncate font-medium min-w-0",
+                        isAboveLine ? "text-foreground" : "text-muted-foreground"
+                      )}>
+                        {team.team}
+                      </span>
+                      <span className="ml-auto pl-1 font-mono tabular-nums text-[8px] text-muted-foreground shrink-0">
+                        {team.rank}
+                      </span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {tierIdx === TEAMS_ADVANCING - 1 && grid.length > TEAMS_ADVANCING && (
+                <div className="flex items-center gap-2 px-1 py-0.5">
+                  <div className="flex-1 border-t border-dashed border-destructive/40" />
+                  <span className="text-[8px] font-medium uppercase tracking-wider text-destructive/70">
+                    Advancing
+                  </span>
+                  <div className="flex-1 border-t border-dashed border-destructive/40" />
+                </div>
+              )}
+            </Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 }
