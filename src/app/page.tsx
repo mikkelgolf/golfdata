@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import ScurveTable from "@/components/scurve-table";
+import { MapSkeleton, FilterBarSkeleton } from "@/components/skeletons";
 import { rankingsMen } from "@/data/rankings-men";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { rankingsWomen } from "@/data/rankings-women";
@@ -13,7 +14,7 @@ export default function Home() {
       {/* Compact header */}
       <div className="mb-2 sm:mb-4 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
         <div>
-          <h1 className="text-[15px] sm:text-lg font-semibold text-foreground leading-tight">
+          <h1 className="text-[15px] sm:text-lg font-semibold text-foreground leading-tight tracking-tight">
             NCAA D1 Regional Predictions
           </h1>
           <p className="hidden sm:block text-[12px] text-text-tertiary">
@@ -22,8 +23,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* S-Curve Table */}
-      <Suspense fallback={<TableSkeleton />}>
+      {/* S-Curve Table — split Suspense so map paints first */}
+      <Suspense fallback={<HomeSkeleton />}>
         <ScurveTable
           menTeams={rankingsMen}
           womenTeams={rankingsWomen}
@@ -36,11 +37,11 @@ export default function Home() {
   );
 }
 
-function TableSkeleton() {
+function HomeSkeleton() {
   return (
-    <div className="space-y-3">
-      <div className="h-8 w-full rounded-md bg-secondary/50" />
-      <div className="h-[400px] w-full rounded-lg bg-secondary/30" />
+    <div className="space-y-4">
+      <FilterBarSkeleton />
+      <MapSkeleton />
     </div>
   );
 }

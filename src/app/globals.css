@@ -4,6 +4,14 @@
 
 @layer base {
   :root {
+    /* Ambient background base — deeper than the previous --background so the
+       radial gradient stops have somewhere to fall to. Cards still derive
+       from --background below. */
+    --bg-base: #05060a;
+    --bg-accent-1: oklch(0.55 0.17 250 / 0.18); /* cobalt — top-left */
+    --bg-accent-2: oklch(0.60 0.14 180 / 0.10); /* teal — top-right */
+    --bg-accent-3: oklch(0.30 0.08 260 / 0.20); /* deep — bottom */
+
     --background: 240 6% 7%;
     --foreground: 0 0% 98%;
     --card: 240 5% 8%;
@@ -33,20 +41,84 @@
     --text-placeholder: 240 5% 30%;
     --radius: 0.375rem;
     --nav-height: 40px;
+
+    /* Depth system — three tiers with inset top highlights */
+    --shadow-flat: 0 0 0 1px rgb(255 255 255 / 0.04);
+    --shadow-raised:
+      0 0 0 1px rgb(255 255 255 / 0.06),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.04),
+      0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-overlay:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.05),
+      0 12px 40px -12px rgb(0 0 0 / 0.6),
+      0 2px 4px -2px rgb(0 0 0 / 0.4);
   }
 
   * {
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+  /* Geist + feature settings — disambiguated 1/I/l, single-story a */
+  html {
+    font-feature-settings: "ss01", "cv11";
+    font-optical-sizing: auto;
   }
 
+  body {
+    @apply text-foreground;
+    background-color: var(--bg-base);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 0%, var(--bg-accent-1), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 10%, var(--bg-accent-2), transparent 70%),
+      radial-gradient(ellipse 100% 60% at 50% 100%, var(--bg-accent-3), transparent 70%);
+    background-attachment: fixed;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01", "cv11";
+  }
+
+  /* Subliminal noise overlay — 5% opacity, mix-blend overlay.
+     Above 8% reads as "noise"; below 4% disappears on OLED. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* Tabular numerics on every monospace surface */
   .font-mono,
-  [class*="font-mono"] {
+  [class*="font-mono"],
+  th,
+  td.numeric {
     font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum", "ss01";
+  }
+
+  /* Display numerics for hero stat tiles — slashed zero reads as "data product" */
+  .display-num {
+    font-variant-numeric: tabular-nums slashed-zero;
+    letter-spacing: -0.02em;
+    font-feature-settings: "tnum", "ss01", "zero";
+  }
+
+  /* Focus ring system — double-shadow for the macOS/iOS "outside" look */
+  *:focus-visible {
+    outline: none;
+  }
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--bg-base),
+      0 0 0 4px oklch(0.75 0.15 250 / 0.55);
+    border-radius: var(--radius);
+    outline: none;
   }
 }
 
@@ -58,6 +130,90 @@
   .label-caps {
     @apply text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))];
   }
+
+  /* Mask-composite gradient hover ring (Linear's signature) */
+  .ring-card {
+    position: relative;
+    background: hsl(var(--card));
+    border-radius: var(--radius);
+    isolation: isolate;
+  }
+  .ring-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.10),
+      rgb(255 255 255 / 0.025) 35%,
+      rgb(255 255 255 / 0.10)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: background 200ms ease;
+  }
+  .ring-card:hover::before,
+  .ring-card[data-active="true"]::before {
+    background: linear-gradient(
+      135deg,
+      oklch(0.85 0.10 250 / 0.55),
+      rgb(255 255 255 / 0.06) 40%,
+      oklch(0.85 0.10 180 / 0.45)
+    );
+  }
+
+  /* Button lift — 0.5px lift, cobalt-tinted shadow, fast snap-back */
+  .btn-lift {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--secondary) / 0.85),
+      hsl(var(--card))
+    );
+    box-shadow: var(--shadow-raised);
+    transition:
+      transform 180ms cubic-bezier(0.32, 0.72, 0, 1),
+      box-shadow 180ms,
+      background 180ms;
+  }
+  .btn-lift:hover {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--surface-raised)),
+      hsl(var(--secondary) / 0.6)
+    );
+    transform: translateY(-0.5px);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.10),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.10),
+      0 8px 20px -8px oklch(0.55 0.17 250 / 0.30);
+  }
+  .btn-lift:active {
+    transform: translateY(0);
+    transition-duration: 80ms;
+  }
+
+  /* Shimmer skeleton — 2.4s premium, not animate-pulse */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.025) 0%,
+      rgb(255 255 255 / 0.06) 50%,
+      rgb(255 255 255 / 0.025) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 svg g[role="button"]:focus-visible {
@@ -77,4 +233,5 @@ svg g[role="button"]:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .skeleton { animation: none; background: rgb(255 255 255 / 0.04); }
 }

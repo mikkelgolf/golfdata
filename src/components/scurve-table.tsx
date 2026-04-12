@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useTransition, useDeferredValue } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,10 @@ import {
 } from "lucide-react";
 import HeadToHeadMatrix, { HeadToHeadCompact } from "@/components/head-to-head-matrix";
 import USMap from "@/components/us-map";
+import { Sparkline } from "@/components/sparkline";
+import { AnimatedNumber } from "@/components/animated-number";
+import { BeeswarmTravel } from "@/components/beeswarm-travel";
+import { getRankHistory } from "@/lib/rank-history";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -150,7 +154,14 @@ export default function ScurveTable({
   const [sortKey, setSortKey] = useState<SortKey>("seed");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
-  const debouncedSearch = useDebounce(search, 300);
+  // useTransition lets the old view stay on screen at reduced opacity
+  // while React computes the new one — no flash, no skeleton on swap.
+  const [isPending, startTransition] = useTransition();
+
+  // useDeferredValue dims the table while a filter resolves — premium
+  // alternative to a debounce + spinner.
+  const deferredSearch = useDeferredValue(search);
+  const isStale = deferredSearch !== search;
 
   // Persist to URL
   const updateUrl = useCallback(
@@ -165,20 +176,26 @@ export default function ScurveTable({
   );
 
   const handleViewChange = (v: ViewMode) => {
-    setViewMode(v);
-    setSortKey("seed");
-    setSortDir("asc");
-    updateUrl(v, gender, scurveMode);
+    startTransition(() => {
+      setViewMode(v);
+      setSortKey("seed");
+      setSortDir("asc");
+      updateUrl(v, gender, scurveMode);
+    });
   };
 
   const handleGenderChange = (g: Gender) => {
-    setGender(g);
-    updateUrl(viewMode, g, scurveMode);
+    startTransition(() => {
+      setGender(g);
+      updateUrl(viewMode, g, scurveMode);
+    });
   };
 
   const handleModeChange = (m: ScurveMode) => {
-    setScurveMode(m);
-    updateUrl(viewMode, gender, m);
+    startTransition(() => {
+      setScurveMode(m);
+      updateUrl(viewMode, gender, m);
+    });
   };
 
   const handleSort = (key: SortKey) => {
@@ -207,17 +224,18 @@ export default function ScurveTable({
     return map;
   }, [gender, menRegionals, womenRegionals]);
 
-  // Filter
+  // Filter — uses deferredSearch so React can keep the old result up
+  // while typing and dim the table to indicate "computing"
   const filtered = useMemo(() => {
-    if (!debouncedSearch) return assignments;
-    const q = debouncedSearch.toLowerCase();
+    if (!deferredSearch) return assignments;
+    const q = deferredSearch.toLowerCase();
     return assignments.filter(
       (t) =>
         t.team.toLowerCase().includes(q) ||
         t.conference.toLowerCase().includes(q) ||
         (regionalMap.get(t.regionalId)?.name ?? "").toLowerCase().includes(q)
     );
-  }, [assignments, debouncedSearch, regionalMap]);
+  }, [assignments, deferredSearch, regionalMap]);
 
   // Sort
   const sorted = useMemo(() => {
@@ -282,7 +300,11 @@ export default function ScurveTable({
   // Women - show data if available, otherwise show timeline
   if (gender === "women" && womenTeams.length === 0) {
     return (
-      <div className="w-full">
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
         <FilterBar
           viewMode={viewMode}
           gender={gender}
@@ -328,7 +350,11 @@ export default function ScurveTable({
   if (viewMode === "visual") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
     return (
-      <div className="w-full">
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
         <FilterBar
           viewMode={viewMode}
           gender={gender}
@@ -370,7 +396,11 @@ export default function ScurveTable({
   if (viewMode === "map") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
     return (
-      <div className="w-full">
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
         <FilterBar
           viewMode={viewMode}
           gender={gender}
@@ -389,6 +419,11 @@ export default function ScurveTable({
           </p>
           <USMap assignments={assignments} regionals={activeRegionals} />
         </div>
+        {assignments.length > 0 && (
+          <div className="mt-3 sm:mt-4">
+            <BeeswarmTravel assignments={assignments} regionalMap={regionalMap} />
+          </div>
+        )}
         <BubbleSection
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
@@ -399,7 +434,11 @@ export default function ScurveTable({
   }
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+      data-pending={isPending}
+      data-stale={isStale}
+    >
       <FilterBar
         viewMode={viewMode}
         gender={gender}
@@ -504,6 +543,7 @@ export default function ScurveTable({
                     regional={regional}
                     teams={teams}
                     regionalMap={regionalMap}
+                    gender={gender}
                   />
                 ))
               : sorted.map((team) => {
@@ -514,6 +554,7 @@ export default function ScurveTable({
                       key={`${team.team}-${team.seed}`}
                       team={team}
                       regionalMap={regionalMap}
+                      gender={gender}
                     />,
                   ];
                   if (team.seed === cutSeed && sorted.length > cutSeed) {
@@ -665,7 +706,9 @@ function FilterBar({
 
         {/* Result count + last updated */}
         <div className="ml-auto flex items-center gap-3 text-[12px] text-muted-foreground">
-          <span>{resultCount} teams</span>
+          <span className="tabular-nums">
+            <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
+          </span>
           <span className="text-text-tertiary">Updated {lastUpdated}</span>
         </div>
       </div>
@@ -701,8 +744,8 @@ function FilterBar({
             value={scurveMode}
             onChange={(m) => onModeChange(m as ScurveMode)}
           />
-          <span className="ml-auto text-[11px] text-muted-foreground">
-            {resultCount} teams
+          <span className="ml-auto text-[11px] text-muted-foreground tabular-nums">
+            <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
         </div>
         <div className="relative">
@@ -763,7 +806,9 @@ function BubbleSection({
     <section className="mt-6">
       <div className="flex items-baseline gap-2 mb-2">
         <h3 className="text-[13px] font-semibold text-foreground">Bubble &amp; Magic Number</h3>
-        <span className="text-[11px] text-text-tertiary">{totalInField} teams in field</span>
+        <span className="text-[11px] text-text-tertiary tabular-nums">
+          <AnimatedNumber value={totalInField} className="!font-normal !tracking-normal text-text-tertiary" /> teams in field
+        </span>
       </div>
 
       <div className="rounded-lg border border-border overflow-hidden">
@@ -893,17 +938,16 @@ function SegmentedToggle({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="inline-flex h-8 items-center rounded-md border border-border bg-secondary/50 p-0.5">
-      {options.map((opt, i) => (
+    <div className="inline-flex h-8 items-center rounded-md border border-white/[0.06] bg-secondary/40 p-0.5 shadow-flat">
+      {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
           className={cn(
-            "h-7 min-w-[44px] px-2.5 text-[12px] font-medium rounded-[4px] transition-colors whitespace-nowrap",
+            "h-7 min-w-[44px] px-2.5 text-[12px] font-medium rounded-[4px] whitespace-nowrap transition-colors",
             value === opt.value
-              ? "bg-background text-foreground"
-              : "text-muted-foreground hover:text-foreground",
-            i > 0 && "border-l border-border/0"
+              ? "btn-lift text-foreground"
+              : "text-muted-foreground hover:text-foreground"
           )}
         >
           {opt.label}
@@ -921,10 +965,12 @@ function RegionalGroup({
   regional,
   teams,
   regionalMap,
+  gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
+  gender?: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
   const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
@@ -984,6 +1030,7 @@ function RegionalGroup({
             key={`${team.team}-${team.seed}`}
             team={team}
             regionalMap={regionalMap}
+            gender={gender}
             isHost={team.team === regional.host}
           />,
         ];
@@ -1089,9 +1136,9 @@ function RegionalDetailPanel({
 
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md bg-secondary/50 px-3 py-2">
+    <div className="ring-card px-3 py-2">
       <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="text-[15px] font-semibold text-foreground mt-0.5">{value}</p>
+      <p className="text-[15px] font-semibold text-foreground mt-0.5 display-num">{value}</p>
     </div>
   );
 }
@@ -1103,18 +1150,21 @@ function StatBox({ label, value }: { label: string; value: string }) {
 function TeamRow({
   team,
   regionalMap,
+  gender = "men",
   isHost = false,
 }: {
   team: ScurveAssignment;
   regionalMap: Map<number, Regional>;
+  gender?: Gender;
   isHost?: boolean;
 }) {
   const regional = regionalMap.get(team.regionalId);
   const color = regional?.color ?? "#888";
   const regionalLabel = regional?.name.replace(/ Regional$/, "") ?? "";
+  const history = getRankHistory(team.team, team.rank, gender);
 
   return (
-    <tr className="h-8 border-b border-border/40 hover:bg-secondary/40 transition-colors duration-100">
+    <tr className="h-8 border-b border-border/40 hover:bg-white/[0.02] transition-colors duration-100">
       {/* Seed */}
       <td className="px-2 text-center font-mono tabular-nums text-[13px] text-muted-foreground">
         {team.seed}
@@ -1128,9 +1178,12 @@ function TeamRow({
           </span>
         )}
       </td>
-      {/* Ranking */}
+      {/* Ranking + sparkline */}
       <td className="px-2 text-center font-mono tabular-nums text-[13px] text-muted-foreground">
-        #{team.rank}
+        <span className="inline-flex items-center gap-1.5">
+          <span>#{team.rank}</span>
+          <Sparkline data={history} />
+        </span>
       </td>
       {/* Conference */}
       <td className="px-2 text-center text-[13px] text-foreground/60">
@@ -1569,12 +1622,12 @@ function VisualScurve({
           return (
             <div
               key={r.id}
-              className="rounded-md px-2.5 py-2 bg-card"
-              style={{ borderLeft: `3px solid ${r.color}` }}
+              className="ring-card px-2.5 py-2"
+              style={{ borderLeft: `3px solid ${r.color}`, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
             >
               <p className="text-[11px] font-medium text-foreground truncate">{r.name.replace(/ Regional$/, "")}</p>
               <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{r.host}</p>
-              <p className="text-[10px] text-muted-foreground mt-1">
+              <p className="text-[10px] text-muted-foreground mt-1 tabular-nums">
                 <Plane className="inline h-3 w-3 mr-0.5 opacity-60" />
                 {avgDist.toLocaleString()} mi avg
               </p>

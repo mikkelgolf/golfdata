@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { ScurveAssignment } from "@/lib/scurve";
@@ -59,6 +59,14 @@ interface USMapProps {
 export default function USMap({ assignments, regionals }: USMapProps) {
   const [activeRegional, setActiveRegional] = useState<number | null>(null);
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null);
+
+  // Blur-up: dots + lines start blurred & invisible, fade in over 600ms
+  // after hydration. State outline + regional markers paint instantly.
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 60);
+    return () => clearTimeout(t);
+  }, []);
 
   // Lookup: regional id -> Regional (for color + position)
   const regionalById = useMemo(() => {
@@ -167,6 +175,16 @@ export default function USMap({ assignments, regionals }: USMapProps) {
               opacity="0.4"
             />
           )}
+
+          {/* Blur-up wrapper: dots + lines fade in over 600ms after hydration.
+              State outline + regional markers paint instantly. */}
+          <g
+            style={{
+              opacity: loaded ? 1 : 0,
+              filter: loaded ? "blur(0px)" : "blur(8px)",
+              transition: "opacity 600ms ease-out, filter 600ms ease-out",
+            }}
+          >
 
           {/* Travel lines: all teams to their assigned regional, always rendered.
               Default very low opacity; brighten on hover/selection. When a regional
@@ -278,6 +296,8 @@ export default function USMap({ assignments, regionals }: USMapProps) {
               </g>
             );
           })}
+          </g>
+          {/* /blur-up wrapper */}
 
           {/* Regional site markers */}
           {regionalPositions.map((r) => {
@@ -351,7 +371,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
         {/* Desktop info overlay (absolute, top-right) */}
         {activeRegionalData && (
           <div
-            className="hidden sm:block absolute top-3 right-3 rounded-md bg-background border border-border-medium p-3 max-w-[220px] shadow-lg"
+            className="hidden sm:block absolute top-3 right-3 rounded-md bg-background/85 backdrop-blur-xl backdrop-saturate-150 p-3 max-w-[220px] shadow-overlay"
             role="status"
             aria-live="polite"
             aria-label={`${activeRegionalData.name} details`}
@@ -414,7 +434,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
       >
         {activeRegionalData && (
           <div
-            className="mx-2 mb-2 rounded-t-xl rounded-b-md bg-background border border-border-medium shadow-2xl overflow-hidden"
+            className="mx-2 mb-2 rounded-t-xl rounded-b-md bg-background/85 backdrop-blur-xl backdrop-saturate-150 shadow-overlay overflow-hidden"
             style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
             role="dialog"
             aria-label={`${activeRegionalData.name} details`}
@@ -499,13 +519,9 @@ export default function USMap({ assignments, regionals }: USMapProps) {
           return (
             <button
               key={r.id}
-              className={cn(
-                "rounded-md px-2.5 py-2 bg-card border border-border text-left transition-colors",
-                activeRegional === r.id
-                  ? "border-border-medium bg-surface-raised"
-                  : "hover:bg-surface-raised"
-              )}
-              style={{ borderLeft: `3px solid ${r.color}` }}
+              data-active={activeRegional === r.id}
+              className="ring-card text-left transition-colors px-2.5 py-2 hover:bg-surface-raised/40 data-[active=true]:bg-surface-raised/60"
+              style={{ borderLeft: `3px solid ${r.color}`, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
               onClick={() =>
                 setActiveRegional(activeRegional === r.id ? null : r.id)
               }
@@ -514,7 +530,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                 {r.name.replace(/ Regional$/, "")}
               </p>
               <div className="mt-1 space-y-0.5">
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground tabular-nums">
                   {avgDist.toLocaleString()} mi avg
                 </p>
                 {maxTravel && (

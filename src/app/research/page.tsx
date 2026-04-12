@@ -44,8 +44,8 @@ export default function ResearchPage() {
             { label: "Player Records", value: "120K+" },
             { label: "Coverage", value: "D1/D2/D3" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-md border border-border bg-card px-4 py-3 text-center">
-              <p className="text-lg font-semibold text-foreground font-mono">
+            <div key={stat.label} className="ring-card px-4 py-3 text-center">
+              <p className="text-lg font-semibold text-foreground display-num">
                 {stat.value}
               </p>
               <p className="text-[11px] uppercase tracking-wide text-muted-foreground mt-0.5">

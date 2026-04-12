@@ -1,31 +1,9 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import Link from "next/link";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/react";
-import MobileNav from "@/components/mobile-nav";
+import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
-
-const inter = localFont({
-  src: [
-    {
-      path: "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
-      style: "normal",
-    },
-  ],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const jetbrainsMono = localFont({
-  src: [
-    {
-      path: "../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
-      style: "normal",
-    },
-  ],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://collegegolfdata.com"),
@@ -74,10 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark h-full">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-full flex flex-col bg-background text-foreground`}
-      >
+    <html lang="en" className={`dark h-full ${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className="font-sans antialiased min-h-full flex flex-col text-foreground">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:text-sm"
@@ -85,28 +61,11 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <header className="sticky top-0 z-50 h-[var(--nav-height)] border-b border-border bg-background">
-          <nav className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
-            <Link
-              href="/"
-              className="text-[13px] font-semibold text-foreground hover:text-foreground/80 transition-colors tracking-tight"
-            >
-              College Golf Data
-            </Link>
-            <div className="hidden sm:flex items-center gap-3">
-              <Link href="/timeline" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Timeline</Link>
-              <Link href="/tournaments" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Tournaments</Link>
-              <Link href="/tools" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Tools</Link>
-              <Link href="/research" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Research</Link>
-              <Link href="/about" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">About</Link>
-            </div>
-            <MobileNav />
-          </nav>
-        </header>
+        <SiteHeader />
 
-        <main id="main-content" className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1 relative z-[1]">{children}</main>
 
-        <footer className="border-t border-border py-4">
+        <footer className="border-t border-border/60 py-4 relative z-[1]">
           <div className="mx-auto max-w-6xl px-4 text-center text-[11px] text-text-tertiary">
             College Golf Data &middot; Mikkel Bjerch-Andresen &amp; David
             Tenneson
