@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 const links = [
   { href: "/", label: "Predictions" },
   { href: "/timeline", label: "Timeline" },
+  { href: "/conference-championships", label: "Conference Championships" },
   { href: "/tournaments", label: "Tournaments" },
   { href: "/tools", label: "Tools" },
   { href: "/research", label: "Research" },
