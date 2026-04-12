@@ -4,6 +4,7 @@ import {
   useState,
   useMemo,
   useCallback,
+  useRef,
   useTransition,
   useDeferredValue,
 } from "react";
@@ -248,6 +249,16 @@ export default function ChampionshipsView({
 
   // Lifted state: which championship is focused (shared between map + table)
   const [activeChampionship, setActiveChampionship] = useState<number | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Selecting from the list below the map: scroll the map into view so the
+  // info box (which renders over the map) is actually visible.
+  const selectFromList = useCallback((id: number | null) => {
+    setActiveChampionship(id);
+    if (id !== null) {
+      mapContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
   // Empty-state for genders/datasets without data
   if (activeChampionships.length === 0) {
@@ -294,7 +305,7 @@ export default function ChampionshipsView({
 
       {viewMode === "map" && (
         <>
-          <div className="mt-2 sm:mt-3">
+          <div ref={mapContainerRef} className="mt-2 sm:mt-3 scroll-mt-[var(--nav-height)]">
             <p className="hidden sm:block text-[12px] text-text-tertiary mb-2">
               Tap a championship to focus its travel lines. Team dots are
               colored by their conference championship.
@@ -318,7 +329,7 @@ export default function ChampionshipsView({
             grouped={groupedChronological}
             assignments={assignments}
             activeChampionship={activeChampionship}
-            onActiveChampionshipChange={setActiveChampionship}
+            onActiveChampionshipChange={selectFromList}
           />
         </>
       )}
@@ -750,7 +761,7 @@ function ChampionshipCard({
                       {t.team}
                       {!t.eligible && (
                         <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
-                          Ineligible
+                          Below .500
                         </span>
                       )}
                     </td>
@@ -844,17 +855,14 @@ function PredictedAQSection({
           const top = teams[0] ?? null;
           const tbd = isVenueTBD(championship);
           const isSelected = activeChampionship === championship.id;
-          const isMappable = !tbd;
           return (
             <button
               key={championship.id}
-              onClick={() => {
-                if (!isMappable) return;
-                onActiveChampionshipChange(isSelected ? null : championship.id);
-              }}
+              onClick={() =>
+                onActiveChampionshipChange(isSelected ? null : championship.id)
+              }
               className={cn(
-                "w-full h-9 items-center text-[12px] px-3 border-b border-border/40 last:border-b-0 text-left transition-colors",
-                isMappable ? "cursor-pointer hover:bg-white/[0.03]" : "cursor-default",
+                "w-full h-9 items-center text-[12px] px-3 border-b border-border/40 last:border-b-0 text-left transition-colors cursor-pointer hover:bg-white/[0.03]",
                 isSelected && "bg-white/[0.04]"
               )}
               style={{

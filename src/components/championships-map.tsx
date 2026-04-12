@@ -138,13 +138,19 @@ export default function ChampionshipsMap({
     [assignments, championshipById]
   );
 
+  // Look up the active championship from the FULL list (including TBD venues)
+  // so the info overlay opens even when a TBD row is clicked from the list below.
   const activeChampionshipData =
     activeChampionship !== null
-      ? mappableChampionships.find((c) => c.id === activeChampionship)
+      ? championships.find((c) => c.id === activeChampionship) ?? null
       : null;
+  const activeChampionshipTbd =
+    activeChampionshipData !== null &&
+    activeChampionshipData.lat === 0 &&
+    activeChampionshipData.lng === 0;
   const activeTeams =
     activeChampionship !== null
-      ? byChampionship.get(activeChampionship) ?? []
+      ? assignments.filter((a) => a.championshipId === activeChampionship)
       : [];
   const activeTotalDist = activeTeams.reduce(
     (sum, t) => sum + t.distanceMiles,
@@ -409,9 +415,11 @@ export default function ChampionshipsMap({
             <p className="text-[11px] text-muted-foreground">
               {activeChampionshipData.courseName}
             </p>
-            <p className="text-[11px] text-muted-foreground">
-              {activeChampionshipData.city}
-            </p>
+            {!activeChampionshipTbd && (
+              <p className="text-[11px] text-muted-foreground">
+                {activeChampionshipData.city}
+              </p>
+            )}
             <p className="text-[11px] text-muted-foreground mt-1 font-mono">
               {formatDateRange(
                 activeChampionshipData.startDate,
@@ -422,10 +430,12 @@ export default function ChampionshipsMap({
               <p className="text-[11px] text-muted-foreground">
                 {activeTeams.length} teams
               </p>
-              <p className="text-[11px] text-muted-foreground">
-                <Plane className="inline h-3 w-3 mr-0.5" />
-                {activeTotalDist.toLocaleString()} mi total travel
-              </p>
+              {!activeChampionshipTbd && (
+                <p className="text-[11px] text-muted-foreground">
+                  <Plane className="inline h-3 w-3 mr-0.5" />
+                  {activeTotalDist.toLocaleString()} mi total travel
+                </p>
+              )}
             </div>
             <div className="mt-2 space-y-0.5 max-h-[200px] overflow-y-auto">
               {activeTeams
@@ -443,10 +453,15 @@ export default function ChampionshipsMap({
                     onMouseEnter={() => setHoveredTeam(t.team)}
                     onMouseLeave={() => setHoveredTeam(null)}
                   >
-                    #{t.rank} {t.team}{" "}
-                    <span className="opacity-60">
-                      ({t.distanceMiles.toLocaleString()} mi)
-                    </span>
+                    #{t.rank} {t.team}
+                    {!activeChampionshipTbd && (
+                      <>
+                        {" "}
+                        <span className="opacity-60">
+                          ({t.distanceMiles.toLocaleString()} mi)
+                        </span>
+                      </>
+                    )}
                   </p>
                 ))}
             </div>
@@ -490,7 +505,7 @@ export default function ChampionshipsMap({
                     {activeChampionshipData.courseName}
                   </p>
                   <p className="text-[11px] text-muted-foreground truncate">
-                    {activeChampionshipData.city} ·{" "}
+                    {!activeChampionshipTbd && `${activeChampionshipData.city} · `}
                     {formatDateRange(
                       activeChampionshipData.startDate,
                       activeChampionshipData.endDate
@@ -509,10 +524,12 @@ export default function ChampionshipsMap({
                 <p className="text-[11px] text-muted-foreground">
                   {activeTeams.length} teams
                 </p>
-                <p className="text-[11px] text-muted-foreground">
-                  <Plane className="inline h-3 w-3 mr-0.5" />
-                  {activeTotalDist.toLocaleString()} mi
-                </p>
+                {!activeChampionshipTbd && (
+                  <p className="text-[11px] text-muted-foreground">
+                    <Plane className="inline h-3 w-3 mr-0.5" />
+                    {activeTotalDist.toLocaleString()} mi
+                  </p>
+                )}
               </div>
               <div className="mt-2 max-h-[28vh] overflow-y-auto pr-1 -mr-1">
                 {activeTeams
@@ -534,10 +551,15 @@ export default function ChampionshipsMap({
                       <span className="font-mono tabular-nums mr-1.5">
                         #{t.rank}
                       </span>
-                      {t.team}{" "}
-                      <span className="opacity-60 font-mono tabular-nums">
-                        ({t.distanceMiles.toLocaleString()} mi)
-                      </span>
+                      {t.team}
+                      {!activeChampionshipTbd && (
+                        <>
+                          {" "}
+                          <span className="opacity-60 font-mono tabular-nums">
+                            ({t.distanceMiles.toLocaleString()} mi)
+                          </span>
+                        </>
+                      )}
                     </button>
                   ))}
               </div>

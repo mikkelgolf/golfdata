@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useTransition, useDeferredVa
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { computeScurve, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
+import { computeScurve, computeRegionalSeeds, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import {
@@ -224,6 +224,8 @@ export default function ScurveTable({
     return map;
   }, [gender, menRegionals, womenRegionals]);
 
+  const regionalSeeds = useMemo(() => computeRegionalSeeds(assignments), [assignments]);
+
   // Filter — uses deferredSearch so React can keep the old result up
   // while typing and dim the table to indicate "computing"
   const filtered = useMemo(() => {
@@ -373,6 +375,7 @@ export default function ScurveTable({
             assignments={assignments}
             regionals={activeRegionals}
             regionalMap={regionalMap}
+            regionalSeeds={regionalSeeds}
           />
         </div>
         {/* Mobile */}
@@ -381,6 +384,7 @@ export default function ScurveTable({
             assignments={assignments}
             regionals={activeRegionals}
             regionalMap={regionalMap}
+            regionalSeeds={regionalSeeds}
           />
         </div>
         <BubbleSection
@@ -417,7 +421,7 @@ export default function ScurveTable({
           <p className="hidden sm:block text-[12px] text-text-tertiary mb-2">
             Tap a regional to focus its travel lines. Team dots are colored by their assigned regional.
           </p>
-          <USMap assignments={assignments} regionals={activeRegionals} />
+          <USMap assignments={assignments} regionals={activeRegionals} regionalSeeds={regionalSeeds} />
         </div>
         {assignments.length > 0 && (
           <div className="mt-3 sm:mt-4">
@@ -543,6 +547,7 @@ export default function ScurveTable({
                     regional={regional}
                     teams={teams}
                     regionalMap={regionalMap}
+                    regionalSeed={regionalSeeds.get(regional.id)}
                     gender={gender}
                   />
                 ))
@@ -591,6 +596,7 @@ export default function ScurveTable({
               regional={regional}
               teams={teams}
               regionalMap={regionalMap}
+              regionalSeed={regionalSeeds.get(regional.id)}
             />
           ))
         ) : (
@@ -785,7 +791,7 @@ function BubbleSection({
   const assignmentMap = new Map<string, ScurveAssignment>();
   for (const a of assignments) assignmentMap.set(a.team, a);
 
-  const ineligibleInField = assignments.filter(
+  const subFiveHundredAqs = assignments.filter(
     (a) => !a.eligible && a.isAutoQualifier
   );
   const lastIn = assignments
@@ -798,14 +804,14 @@ function BubbleSection({
     .sort((a, b) => a.rank - b.rank);
   const firstOut = teamsOut.slice(0, FIRST_OUT);
 
-  if (lastIn.length === 0 && firstOut.length === 0 && ineligibleInField.length === 0) {
+  if (lastIn.length === 0 && firstOut.length === 0 && subFiveHundredAqs.length === 0) {
     return null;
   }
 
   return (
     <section className="mt-6">
       <div className="flex items-baseline gap-2 mb-2">
-        <h3 className="text-[13px] font-semibold text-foreground">Bubble &amp; Magic Number</h3>
+        <h3 className="text-[13px] font-semibold text-foreground">Bubble Line</h3>
         <span className="text-[11px] text-text-tertiary tabular-nums">
           <AnimatedNumber value={totalInField} className="!font-normal !tracking-normal text-text-tertiary" /> teams in field
         </span>
@@ -819,13 +825,13 @@ function BubbleSection({
         </div>
         {lastIn.map((team) => {
           const regional = regionalMap.get(team.regionalId);
-          const isIneligibleAQ = !team.eligible && team.isAutoQualifier;
+          const isSubFiveHundredAq = !team.eligible && team.isAutoQualifier;
           return (
             <div
               key={team.team}
               className={cn(
                 "h-8 items-center text-[13px] px-3 border-b border-border/40",
-                isIneligibleAQ && "border-l-2 border-l-amber-500/60"
+                isSubFiveHundredAq && "border-l-2 border-l-amber-500/60"
               )}
               style={{ display: "grid", gridTemplateColumns: "40px 1fr 100px 60px", gap: "6px" }}
             >
@@ -834,9 +840,9 @@ function BubbleSection({
               </span>
               <span className="font-medium text-foreground truncate">
                 {team.team}
-                {isIneligibleAQ && (
+                {isSubFiveHundredAq && (
                   <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
-                    Ineligible AQ
+                    Sub-.500 AQ
                   </span>
                 )}
               </span>
@@ -853,11 +859,10 @@ function BubbleSection({
           );
         })}
 
-        {/* Magic Number Cutoff Line */}
         <div className="relative flex items-center gap-2 px-3 py-2 bg-amber-500/10 border-y-2 border-amber-500/60">
           <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
           <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 whitespace-nowrap">
-            Magic Number &middot; Field Cutoff
+            Bubble Line &middot; Field Cutoff
           </span>
           <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
         </div>
@@ -876,8 +881,7 @@ function BubbleSection({
                   className={cn(
                     "h-8 items-center text-[13px] px-3 border-b border-border/40",
                     idx < 3 ? "opacity-80" : idx < 6 ? "opacity-65" : "opacity-50",
-                    belowFiveHundred && "border-l-2 border-l-destructive/50",
-                    !team.eligible && !belowFiveHundred && "border-l-2 border-l-amber-500/40"
+                    belowFiveHundred && "border-l-2 border-l-destructive/50"
                   )}
                   style={{ display: "grid", gridTemplateColumns: "40px 1fr 100px 60px", gap: "6px" }}
                 >
@@ -888,12 +892,7 @@ function BubbleSection({
                     {team.team}
                     {belowFiveHundred && (
                       <span className="ml-1.5 text-[9px] font-semibold text-destructive/70 uppercase">
-                        Ineligible &middot; Below .500
-                      </span>
-                    )}
-                    {!team.eligible && !belowFiveHundred && (
-                      <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
-                        Ineligible
+                        Below .500
                       </span>
                     )}
                   </span>
@@ -909,13 +908,12 @@ function BubbleSection({
           </>
         )}
 
-        {/* Ineligible AQs in field */}
-        {ineligibleInField.length > 0 && (
+        {subFiveHundredAqs.length > 0 && (
           <div className="px-3 py-2 bg-card/50 border-t border-border">
             <p className="text-[11px] text-text-tertiary">
-              <span className="font-medium text-amber-500/80">{ineligibleInField.length} ineligible AQ{ineligibleInField.length > 1 ? "s" : ""}</span>
+              <span className="font-medium text-amber-500/80">{subFiveHundredAqs.length} sub-.500 AQ{subFiveHundredAqs.length > 1 ? "s" : ""}</span>
               {" "}in field (below .500 but won conference auto-qualifier):{" "}
-              {ineligibleInField.map((t) => t.team).join(", ")}
+              {subFiveHundredAqs.map((t) => t.team).join(", ")}
             </p>
           </div>
         )}
@@ -965,11 +963,13 @@ function RegionalGroup({
   regional,
   teams,
   regionalMap,
+  regionalSeed,
   gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
+  regionalSeed: number | undefined;
   gender?: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -996,6 +996,9 @@ function RegionalGroup({
                   )}
                 />
                 <span className="font-semibold text-[14px] text-foreground leading-none">
+                  {regionalSeed !== undefined && (
+                    <span className="font-mono tabular-nums text-muted-foreground mr-1.5">#{regionalSeed}</span>
+                  )}
                   {regional.name}
                 </span>
               </span>
@@ -1229,10 +1232,12 @@ function MobileRegionalGroup({
   regional,
   teams,
   regionalMap,
+  regionalSeed,
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
+  regionalSeed: number | undefined;
 }) {
   const [expanded, setExpanded] = useState(false);
   const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
@@ -1252,7 +1257,12 @@ function MobileRegionalGroup({
             expanded && "rotate-90"
           )}
         />
-        <span className="font-semibold text-[11px] text-foreground">{regional.name.replace(/ Regional$/, "")}</span>
+        <span className="font-semibold text-[11px] text-foreground">
+          {regionalSeed !== undefined && (
+            <span className="font-mono tabular-nums text-muted-foreground mr-1">#{regionalSeed}</span>
+          )}
+          {regional.name.replace(/ Regional$/, "")}
+        </span>
         <span className="text-[8px] text-muted-foreground">{regional.city}</span>
         <span className="ml-auto text-[8px] text-muted-foreground tabular-nums shrink-0">
           {teams.length}t
@@ -1367,10 +1377,12 @@ function MobileVisualScurve({
   assignments,
   regionals,
   regionalMap,
+  regionalSeeds,
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
+  regionalSeeds: Map<number, number>;
 }) {
   // Group teams by regional
   const byRegional = useMemo(() => {
@@ -1396,6 +1408,9 @@ function MobileVisualScurve({
               className="px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60"
               style={{ borderBottom: `1px solid ${r.color}30` }}
             >
+              {regionalSeeds.get(r.id) !== undefined && (
+                <span className="mr-0.5">#{regionalSeeds.get(r.id)}</span>
+              )}
               {r.name.replace(/ Regional$/, "")}
             </div>
 
@@ -1469,10 +1484,12 @@ function VisualScurve({
   assignments,
   regionals,
   regionalMap,
+  regionalSeeds,
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
+  regionalSeeds: Map<number, number>;
 }) {
   const numRegionals = regionals.length;
   const numTiers = Math.ceil(assignments.length / numRegionals);
@@ -1523,6 +1540,9 @@ function VisualScurve({
                 className="text-center text-[10px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
                 style={{ borderBottom: `2px solid ${r.color}` }}
               >
+                {regionalSeeds.get(r.id) !== undefined && (
+                  <span className="mr-1 font-mono tabular-nums">#{regionalSeeds.get(r.id)}</span>
+                )}
                 {r.name.replace(/ Regional$/, "")}
               </div>
             ))}

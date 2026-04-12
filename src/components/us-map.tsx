@@ -54,9 +54,10 @@ function projectPoint(
 interface USMapProps {
   assignments: ScurveAssignment[];
   regionals: Regional[];
+  regionalSeeds: Map<number, number>;
 }
 
-export default function USMap({ assignments, regionals }: USMapProps) {
+export default function USMap({ assignments, regionals, regionalSeeds }: USMapProps) {
   const [activeRegional, setActiveRegional] = useState<number | null>(null);
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null);
 
@@ -352,7 +353,9 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                     isActive ? "fill-foreground" : "fill-muted-foreground"
                   )}
                 >
-                  {r.name.replace(/ Regional$/, "")}
+                  {regionalSeeds.get(r.id) !== undefined
+                    ? `#${regionalSeeds.get(r.id)} ${r.name.replace(/ Regional$/, "")}`
+                    : r.name.replace(/ Regional$/, "")}
                 </text>
                 {/* Team count inside marker */}
                 <text
@@ -378,6 +381,11 @@ export default function USMap({ assignments, regionals }: USMapProps) {
             style={{ borderLeft: `3px solid ${activeRegionalData.color}` }}
           >
             <p className="font-semibold text-[13px] text-foreground">
+              {regionalSeeds.get(activeRegionalData.id) !== undefined && (
+                <span className="font-mono tabular-nums text-muted-foreground mr-1">
+                  #{regionalSeeds.get(activeRegionalData.id)}
+                </span>
+              )}
               {activeRegionalData.name}
             </p>
             <p className="text-[11px] text-muted-foreground">
@@ -447,6 +455,11 @@ export default function USMap({ assignments, regionals }: USMapProps) {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-semibold text-[14px] text-foreground truncate">
+                    {regionalSeeds.get(activeRegionalData.id) !== undefined && (
+                      <span className="font-mono tabular-nums text-muted-foreground mr-1">
+                        #{regionalSeeds.get(activeRegionalData.id)}
+                      </span>
+                    )}
                     {activeRegionalData.name}
                   </p>
                   <p className="text-[11px] text-muted-foreground truncate">
@@ -527,6 +540,11 @@ export default function USMap({ assignments, regionals }: USMapProps) {
               }
             >
               <p className="text-[11px] font-medium text-foreground">
+                {regionalSeeds.get(r.id) !== undefined && (
+                  <span className="font-mono tabular-nums text-muted-foreground mr-1">
+                    #{regionalSeeds.get(r.id)}
+                  </span>
+                )}
                 {r.name.replace(/ Regional$/, "")}
               </p>
               <div className="mt-1 space-y-0.5">

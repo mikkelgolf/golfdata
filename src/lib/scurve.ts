@@ -11,6 +11,30 @@ export interface ScurveAssignment extends TeamData {
 export type ScurveMode = "strict" | "committee";
 
 /**
+ * Compute regional strength seeds (1..N) from S-curve assignments.
+ * The regional whose best team has the lowest overall seed is Regional 1,
+ * next is 2, etc. Matches NCAA convention for announcing regionals.
+ */
+export function computeRegionalSeeds(
+  assignments: ScurveAssignment[]
+): Map<number, number> {
+  const map = new Map<number, number>();
+  if (assignments.length === 0) return map;
+  const minSeedByRegional = new Map<number, number>();
+  for (const a of assignments) {
+    const current = minSeedByRegional.get(a.regionalId);
+    if (current === undefined || a.seed < current) {
+      minSeedByRegional.set(a.regionalId, a.seed);
+    }
+  }
+  const ordered = [...minSeedByRegional.entries()]
+    .sort((a, b) => a[1] - b[1])
+    .map(([id]) => id);
+  ordered.forEach((id, idx) => map.set(id, idx + 1));
+  return map;
+}
+
+/**
  * Compute the S-curve (serpentine) regional assignment for NCAA D1 golf.
  *
  * Two modes:

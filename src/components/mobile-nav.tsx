@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 const links = [
-  { href: "/", label: "Predictions" },
+  { href: "/", label: "Regional Predictions" },
   { href: "/timeline", label: "Timeline" },
   { href: "/conference-championships", label: "Conference Championships" },
   { href: "/tournaments", label: "Tournaments" },

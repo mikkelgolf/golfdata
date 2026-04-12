@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import USMap from "@/components/us-map";
-import { computeScurve } from "@/lib/scurve";
+import { computeScurve, computeRegionalSeeds } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 
@@ -17,5 +17,7 @@ export default function MapSection({ menTeams, menRegionals }: MapSectionProps) 
     [menTeams, menRegionals]
   );
 
-  return <USMap assignments={assignments} regionals={menRegionals} />;
+  const regionalSeeds = useMemo(() => computeRegionalSeeds(assignments), [assignments]);
+
+  return <USMap assignments={assignments} regionals={menRegionals} regionalSeeds={regionalSeeds} />;
 }
