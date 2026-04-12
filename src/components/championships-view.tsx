@@ -246,6 +246,9 @@ export default function ChampionshipsView({
     [groupedByChampionship]
   );
 
+  // Lifted state: which championship is focused (shared between map + table)
+  const [activeChampionship, setActiveChampionship] = useState<number | null>(null);
+
   // Empty-state for genders/datasets without data
   if (activeChampionships.length === 0) {
     return (
@@ -299,6 +302,8 @@ export default function ChampionshipsView({
             <ChampionshipsMap
               assignments={assignments}
               championships={activeChampionships}
+              activeChampionship={activeChampionship}
+              onActiveChampionshipChange={setActiveChampionship}
             />
           </div>
           {assignments.length > 0 && (
@@ -312,6 +317,8 @@ export default function ChampionshipsView({
           <PredictedAQSection
             grouped={groupedChronological}
             assignments={assignments}
+            activeChampionship={activeChampionship}
+            onActiveChampionshipChange={setActiveChampionship}
           />
         </>
       )}
@@ -781,9 +788,13 @@ function ChampionshipCard({
 function PredictedAQSection({
   grouped,
   assignments,
+  activeChampionship,
+  onActiveChampionshipChange,
 }: {
   grouped: { championship: Championship; teams: ChampionshipAssignment[] }[];
   assignments: ChampionshipAssignment[];
+  activeChampionship: number | null;
+  onActiveChampionshipChange: (id: number | null) => void;
 }) {
   const totalChampionships = grouped.length;
   const championshipsWithTeams = grouped.filter((g) => g.teams.length > 0);
@@ -832,10 +843,20 @@ function PredictedAQSection({
         {grouped.map(({ championship, teams }) => {
           const top = teams[0] ?? null;
           const tbd = isVenueTBD(championship);
+          const isSelected = activeChampionship === championship.id;
+          const isMappable = !tbd;
           return (
-            <div
+            <button
               key={championship.id}
-              className="h-9 items-center text-[12px] px-3 border-b border-border/40 last:border-b-0"
+              onClick={() => {
+                if (!isMappable) return;
+                onActiveChampionshipChange(isSelected ? null : championship.id);
+              }}
+              className={cn(
+                "w-full h-9 items-center text-[12px] px-3 border-b border-border/40 last:border-b-0 text-left transition-colors",
+                isMappable ? "cursor-pointer hover:bg-white/[0.03]" : "cursor-default",
+                isSelected && "bg-white/[0.04]"
+              )}
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr 90px 60px",
@@ -844,7 +865,7 @@ function PredictedAQSection({
                 paddingLeft: "8px",
               }}
             >
-              <span className="text-foreground truncate font-medium">
+              <span className="truncate font-medium text-foreground">
                 {championship.conference}
                 {tbd && (
                   <span className="ml-1.5 text-[9px] text-amber-500/80 uppercase">
@@ -861,7 +882,7 @@ function PredictedAQSection({
               <span className="font-mono tabular-nums text-[11px] text-muted-foreground text-right">
                 {top ? `#${top.rank}` : "—"}
               </span>
-            </div>
+            </button>
           );
         })}
         {championshipsWithTeams.length < totalChampionships && (

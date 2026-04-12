@@ -938,13 +938,13 @@ function SegmentedToggle({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="inline-flex h-8 items-center rounded-md border border-white/[0.06] bg-secondary/40 p-0.5 shadow-flat">
+    <div className="inline-flex h-6 items-center rounded border border-white/[0.06] bg-secondary/40 p-0.5 shadow-flat">
       {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
           className={cn(
-            "h-7 min-w-[44px] px-2.5 text-[12px] font-medium rounded-[4px] whitespace-nowrap transition-colors",
+            "h-5 min-w-[32px] px-1.5 text-[10px] font-medium rounded-[3px] whitespace-nowrap transition-colors",
             value === opt.value
               ? "btn-lift text-foreground"
               : "text-muted-foreground hover:text-foreground"

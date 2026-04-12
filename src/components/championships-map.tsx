@@ -62,13 +62,16 @@ function formatDateRange(start: string, end: string): string {
 interface ChampionshipsMapProps {
   assignments: ChampionshipAssignment[];
   championships: Championship[];
+  activeChampionship: number | null;
+  onActiveChampionshipChange: (id: number | null) => void;
 }
 
 export default function ChampionshipsMap({
   assignments,
   championships,
+  activeChampionship,
+  onActiveChampionshipChange,
 }: ChampionshipsMapProps) {
-  const [activeChampionship, setActiveChampionship] = useState<number | null>(null);
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null);
 
   // Blur-up animation on first paint
@@ -348,12 +351,12 @@ export default function ChampionshipsMap({
                 aria-label={`${c.name}: ${c.courseName}, ${c.city} - ${teams.length} teams${isSelected ? " (selected)" : ""}`}
                 aria-pressed={isSelected}
                 onClick={() =>
-                  setActiveChampionship(isSelected ? null : c.id)
+                  onActiveChampionshipChange(isSelected ? null : c.id)
                 }
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    setActiveChampionship(isSelected ? null : c.id);
+                    onActiveChampionshipChange(isSelected ? null : c.id);
                   }
                 }}
               >
@@ -448,7 +451,7 @@ export default function ChampionshipsMap({
                 ))}
             </div>
             <button
-              onClick={() => setActiveChampionship(null)}
+              onClick={() => onActiveChampionshipChange(null)}
               className="mt-2 text-[10px] text-primary hover:underline transition-colors"
             >
               Clear selection
@@ -495,7 +498,7 @@ export default function ChampionshipsMap({
                   </p>
                 </div>
                 <button
-                  onClick={() => setActiveChampionship(null)}
+                  onClick={() => onActiveChampionshipChange(null)}
                   className="shrink-0 text-[11px] text-primary px-2 py-1 -mr-2 -mt-1"
                   aria-label="Close"
                 >
