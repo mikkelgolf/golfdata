@@ -11,7 +11,7 @@ const tools = [
   {
     name: "S-Curve Regional Predictions",
     description:
-      "Interactive serpentine distribution model predicting which 81 men's teams (72 women's) land at which of the 6 NCAA regional sites. Based on Broadie/Clippd rankings with auto-qualifier handling, host school swaps, and travel distance calculations. Updated every time new rankings drop.",
+      "Interactive serpentine distribution model predicting which 81 men's teams (72 women's) land at which of the 6 NCAA regional sites. Based on the official NCAA rankings with auto-qualifier handling, host school swaps, and travel distance calculations. Updated every time new rankings drop.",
     status: "live" as const,
     href: "/",
   },
@@ -48,7 +48,7 @@ const tools = [
 function StatusBadge({ status }: { status: "live" | "development" | "planned" }) {
   const styles = {
     live: "bg-primary/15 text-primary",
-    development: "bg-gold/15 text-gold",
+    development: "bg-secondary text-muted-foreground",
     planned: "bg-secondary text-muted-foreground",
   };
   const labels = {
@@ -69,7 +69,7 @@ function StatusBadge({ status }: { status: "live" | "development" | "planned" })
 export default function ToolsPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="font-serif italic text-3xl text-foreground">Tools</h1>
+      <h1 className="text-lg font-semibold text-foreground">Tools</h1>
       <p className="mt-3 text-[15px] text-muted-foreground">
         Data-driven tools for NCAA college golf. Built by{" "}
         <Link

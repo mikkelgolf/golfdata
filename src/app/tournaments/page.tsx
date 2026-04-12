@@ -94,7 +94,7 @@ const confChamps = [
 export default function TournamentsPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
-      <h1 className="font-serif italic text-3xl text-foreground">Tournaments</h1>
+      <h1 className="text-lg font-semibold text-foreground">Tournaments</h1>
       <p className="mt-3 text-[15px] text-muted-foreground max-w-lg">
         Notable NCAA D1 events for the 2025-26 season. Full tournament pages
         with historical data, record books, and analysis are coming.
@@ -137,9 +137,7 @@ export default function TournamentsPage() {
                     className={`inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium ${
                       t.gender === "Both"
                         ? "bg-primary/15 text-primary"
-                        : t.gender === "Men"
-                          ? "bg-secondary text-foreground"
-                          : "bg-secondary text-muted-foreground"
+                        : "bg-secondary text-foreground"
                     }`}
                   >
                     {t.gender}

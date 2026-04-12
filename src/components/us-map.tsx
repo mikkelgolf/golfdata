@@ -122,12 +122,13 @@ export default function USMap({ assignments, regionals }: USMapProps) {
           <desc>Interactive map showing team assignments to regional sites with travel distances</desc>
 
           {/* State fills */}
-          {statesGeo.features.map((feat, i) => {
+          {statesGeo.features.map((feat) => {
             const d = pathGen(feat);
             if (!d) return null;
+            const featureId = feat.id ?? feat.properties?.name ?? d.slice(0, 20);
             return (
               <path
-                key={`state-${i}`}
+                key={`state-${featureId}`}
                 d={d}
                 fill="hsl(var(--secondary))"
                 stroke="none"
@@ -183,7 +184,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                       strokeWidth={isHovered ? 1.5 : 0.75}
                       strokeDasharray={isHovered ? "none" : "3,3"}
                       opacity={isHovered ? 0.6 : 0.2}
-                      className="transition-all duration-150"
+                      className="transition-opacity duration-150"
                     />
                   );
                 });
@@ -215,7 +216,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   r={isHovered ? 5 : 3}
                   fill="hsl(var(--foreground))"
                   opacity={isActive ? (isHovered ? 0.9 : 0.5) : 0.1}
-                  className="transition-all duration-150 pointer-events-none"
+                  className="transition-opacity duration-150 pointer-events-none"
                 />
                 {isHovered && (
                   <text
@@ -272,7 +273,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
                   stroke="hsl(var(--background))"
                   strokeWidth="2"
                   opacity={isActive ? 1 : 0.3}
-                  className="transition-all duration-150 pointer-events-none"
+                  className="transition-opacity duration-150 pointer-events-none"
                 />
                 {/* Regional label */}
                 <text
@@ -303,7 +304,7 @@ export default function USMap({ assignments, regionals }: USMapProps) {
         {/* Info overlay when a regional is selected */}
         {activeRegionalData && (
           <div
-            className="absolute top-3 right-3 rounded-md bg-background/95 border border-border-medium p-3 max-w-[200px]"
+            className="absolute top-3 right-3 rounded-md bg-background border border-border-medium p-3 max-w-[200px]"
             role="status"
             aria-live="polite"
             aria-label={`${activeRegionalData.name} details`}

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="font-serif italic text-3xl text-foreground">About</h1>
+      <h1 className="text-lg font-semibold text-foreground">About</h1>
 
       <section className="mt-8 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">
@@ -136,7 +136,7 @@ export default function AboutPage() {
           <RoadmapItem
             title="Weekly Ranking Snapshots"
             timing="This month"
-            description="Track how S-curve predictions change each week as new Broadie/Clippd rankings drop. See which tournaments shifted the picture."
+            description="Track how S-curve predictions change each week as new NCAA rankings drop. See which tournaments shifted the picture."
           />
           <RoadmapItem
             title="Head-to-Head Records"
@@ -210,6 +210,39 @@ export default function AboutPage() {
 
         <div className="space-y-2">
           <h3 className="text-base font-medium text-foreground">
+            Mikkel Bjerch-Andresen
+          </h3>
+          <p>
+            Mikkel is a golf coach, data analyst, and former college golf coach
+            with seven years on staff at Stephen F. Austin, Texas Tech, and
+            Baylor. He played college golf at Baylor (2011-2015) and now coaches
+            at WANG Toppidrett in Oslo while building data tools for the sport.
+            He writes about coaching and analytics at{" "}
+            <a
+              href="https://mikkelgolf.substack.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary-hover underline underline-offset-2 transition-colors"
+            >
+              mikkelgolf on Substack
+            </a>{" "}
+            and built the automated{" "}
+            <a
+              href="https://twitter.com/collegegolfdail"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:text-primary-hover underline underline-offset-2 transition-colors"
+            >
+              @collegegolfdail
+            </a>{" "}
+            daily briefing on X. Mikkel handles data infrastructure, web
+            development, automation, and the technical pipeline from scraping
+            through BigQuery to the live site.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-base font-medium text-foreground">
             David Tenneson
           </h3>
           <p>
@@ -240,39 +273,6 @@ export default function AboutPage() {
             and historical precedent forms the analytical backbone of this
             project. David handles research, data verification, the S-curve
             methodology, and the SGT+ metric development.
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <h3 className="text-base font-medium text-foreground">
-            Mikkel Bjerch-Andresen
-          </h3>
-          <p>
-            Mikkel is a golf coach, data analyst, and former college golf coach
-            with seven years on staff at Stephen F. Austin, Texas Tech, and
-            Baylor. He played college golf at Baylor (2011-2015) and now coaches
-            at WANG Toppidrett in Oslo while building data tools for the sport.
-            He writes about coaching and analytics at{" "}
-            <a
-              href="https://mikkelgolf.substack.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary-hover underline underline-offset-2 transition-colors"
-            >
-              mikkelgolf on Substack
-            </a>{" "}
-            and built the automated{" "}
-            <a
-              href="https://twitter.com/collegegolfdail"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary-hover underline underline-offset-2 transition-colors"
-            >
-              @collegegolfdail
-            </a>{" "}
-            daily briefing on X. Mikkel handles data infrastructure, web
-            development, automation, and the technical pipeline from scraping
-            through BigQuery to the live site.
           </p>
         </div>
       </section>

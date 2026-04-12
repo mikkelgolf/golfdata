@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function ResearchPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="font-serif italic text-3xl text-foreground">Research</h1>
+      <h1 className="text-lg font-semibold text-foreground">Research</h1>
       <p className="mt-3 text-[15px] text-muted-foreground max-w-lg">
         We maintain one of the most complete NCAA college golf datasets in
         existence. Research requests, data verification, and custom analysis

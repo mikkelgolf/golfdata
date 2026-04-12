@@ -48,7 +48,7 @@ export default function Timeline({ snapshots, diffs }: TimelineProps) {
             </p>
             <p className="text-[12px] text-text-tertiary mt-0.5">
               New rankings typically drop on Wednesdays. Check back after the
-              next Broadie/Clippd update to see how the S-curve changes.
+              next NCAA rankings update to see how the S-curve changes.
             </p>
           </div>
         </div>

@@ -3,7 +3,6 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
@@ -54,9 +53,7 @@ const config: Config = {
         },
         "brand-green": "hsl(var(--brand-green))",
         "secondary-green": "hsl(var(--secondary-green))",
-        gold: "hsl(var(--gold))",
         success: "hsl(var(--success))",
-        warning: "hsl(var(--warning))",
         "surface-raised": "hsl(var(--surface-raised))",
         "text-tertiary": "hsl(var(--text-tertiary))",
         "text-placeholder": "hsl(var(--text-placeholder))",
@@ -68,23 +65,14 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        serif: ["var(--font-serif)", "ui-serif", "Georgia", "Cambria", "serif"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
-      },
-      fontSize: {
-        "data-sm": ["12px", { lineHeight: "1.3" }],
-        "data-base": ["13px", { lineHeight: "1.4" }],
-        "data-lg": ["14px", { lineHeight: "1.4" }],
       },
       spacing: {
         "nav-height": "var(--nav-height)",
       },
-      boxShadow: {
-        sm: "var(--shadow-sm)",
-      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 };
 
 export default config;

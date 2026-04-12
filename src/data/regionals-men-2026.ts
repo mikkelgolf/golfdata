@@ -27,7 +27,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Corvallis, OR",
     lat: 44.5646,
     lng: -123.2620,
-    color: "#4a9070",
+    color: "#5da89e",
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Athens, GA",
     lat: 33.9519,
     lng: -83.3576,
-    color: "#2e7d5a",
+    color: "#b88585",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Marana, AZ",
     lat: 32.4367,
     lng: -111.2257,
-    color: "#7cb896",
+    color: "#c2a06b",
   },
   {
     id: 4,
@@ -54,7 +54,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Bermuda Run, NC",
     lat: 36.0048,
     lng: -80.4218,
-    color: "#888888",
+    color: "#9680b0",
   },
   {
     id: 5,
@@ -63,7 +63,7 @@ export const regionalsMen2026: Regional[] = [
     city: "Bryan, TX",
     lat: 30.6744,
     lng: -96.3698,
-    color: "#5c5c5c",
+    color: "#7090b5",
   },
   {
     id: 6,
@@ -72,6 +72,6 @@ export const regionalsMen2026: Regional[] = [
     city: "Columbus, OH",
     lat: 40.0067,
     lng: -83.0305,
-    color: "#aaaaaa",
+    color: "#78a878",
   },
 ];

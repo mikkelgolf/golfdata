@@ -16,6 +16,7 @@ import {
   Plane,
 } from "lucide-react";
 import HeadToHeadMatrix, { HeadToHeadCompact } from "@/components/head-to-head-matrix";
+import USMap from "@/components/us-map";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -30,7 +31,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual";
+type ViewMode = "regional" | "scurve" | "visual" | "map";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -265,8 +266,17 @@ export default function ScurveTable({
         result.push({ regional: r, teams });
       }
     }
+    if (scurveMode === "strict") {
+      result.sort((a, b) => a.regional.name.localeCompare(b.regional.name));
+    } else {
+      result.sort((a, b) => {
+        const aTop = Math.min(...a.teams.map((t) => t.seed));
+        const bTop = Math.min(...b.teams.map((t) => t.seed));
+        return aTop - bTop;
+      });
+    }
     return result;
-  }, [viewMode, sorted, gender, menRegionals, womenRegionals]);
+  }, [viewMode, sorted, gender, menRegionals, womenRegionals, scurveMode]);
 
   // Women - show data if available, otherwise show timeline
   if (gender === "women" && womenTeams.length === 0) {
@@ -350,6 +360,33 @@ export default function ScurveTable({
     );
   }
 
+  // Map view
+  if (viewMode === "map") {
+    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
+    return (
+      <div className="w-full">
+        <FilterBar
+          viewMode={viewMode}
+          gender={gender}
+          scurveMode={scurveMode}
+          search={search}
+          resultCount={filtered.length}
+          lastUpdated={lastUpdated}
+          onViewChange={handleViewChange}
+          onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
+          onSearchChange={setSearch}
+        />
+        <div className="mt-3">
+          <p className="text-[12px] text-text-tertiary mb-3">
+            Click a regional site to see travel lines from assigned teams. School locations are approximate.
+          </p>
+          <USMap assignments={assignments} regionals={activeRegionals} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <FilterBar
@@ -375,9 +412,9 @@ export default function ScurveTable({
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block mt-2 overflow-x-auto rounded-lg border border-border">
+      <div className="hidden sm:block mt-2 overflow-x-clip rounded-lg border border-border">
         <table className="w-full border-collapse text-[13px]" aria-label="NCAA D1 Regional S-Curve Predictions">
-          <thead className="sticky top-[var(--nav-height)] z-10 bg-background">
+          <thead className="sticky top-[var(--nav-height)] z-10 bg-background shadow-[0_1px_0_hsl(var(--border))]">
             <tr className="border-b border-border">
               <SortTh
                 label="Seed"
@@ -458,13 +495,33 @@ export default function ScurveTable({
                     regionalMap={regionalMap}
                   />
                 ))
-              : sorted.map((team) => (
-                  <TeamRow
-                    key={`${team.team}-${team.seed}`}
-                    team={team}
-                    regionalMap={regionalMap}
-                  />
-                ))}
+              : sorted.map((team) => {
+                  const numRegionals = (gender === "men" ? menRegionals : womenRegionals).length;
+                  const cutSeed = TEAMS_ADVANCING * numRegionals;
+                  const rows = [
+                    <TeamRow
+                      key={`${team.team}-${team.seed}`}
+                      team={team}
+                      regionalMap={regionalMap}
+                    />,
+                  ];
+                  if (team.seed === cutSeed && sorted.length > cutSeed) {
+                    rows.push(
+                      <tr key="scurve-advancement-line">
+                        <td colSpan={7} className="p-0">
+                          <div className="flex items-center gap-2 px-3 py-1">
+                            <div className="flex-1 border-t border-dashed border-destructive/40" />
+                            <span className="text-[9px] font-medium uppercase tracking-wider text-destructive/70 whitespace-nowrap">
+                              Advancing
+                            </span>
+                            <div className="flex-1 border-t border-dashed border-destructive/40" />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return rows;
+                })}
           </tbody>
         </table>
       </div>
@@ -485,15 +542,36 @@ export default function ScurveTable({
             />
           ))
         ) : (
-          sorted.map((team) => (
-            <MobileTeamCard
-              key={`${team.team}-${team.seed}`}
-              team={team}
-              regionalMap={regionalMap}
-            />
-          ))
+          sorted.map((team) => {
+            const numRegionals = (gender === "men" ? menRegionals : womenRegionals).length;
+            const cutSeed = TEAMS_ADVANCING * numRegionals;
+            return (
+              <div key={`${team.team}-${team.seed}`}>
+                <MobileTeamCard
+                  team={team}
+                  regionalMap={regionalMap}
+                />
+                {team.seed === cutSeed && sorted.length > cutSeed && (
+                  <div className="flex items-center gap-1 px-0.5 py-px">
+                    <div className="flex-1 border-t border-dashed border-destructive/30" />
+                    <span className="text-[7px] font-medium uppercase tracking-wider text-destructive/50">
+                      Advancing
+                    </span>
+                    <div className="flex-1 border-t border-dashed border-destructive/30" />
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
+
+      {/* Bubble Zone */}
+      <BubbleSection
+        teams={gender === "men" ? menTeams : womenTeams}
+        assignments={assignments}
+        regionalMap={regionalMap}
+      />
     </div>
   );
 }
@@ -548,6 +626,7 @@ function FilterBar({
             { value: "regional", label: "By Regional" },
             { value: "scurve", label: "S-Curve Order" },
             { value: "visual", label: "Visual" },
+            { value: "map", label: "Map" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -596,6 +675,7 @@ function FilterBar({
               { value: "regional", label: "Regional" },
               { value: "scurve", label: "S-Curve" },
               { value: "visual", label: "Visual" },
+              { value: "map", label: "Map" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
@@ -621,11 +701,166 @@ function FilterBar({
             placeholder="Search teams..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
+            aria-label="Search teams"
             className="h-8 w-full rounded-md border border-border bg-background pl-8 pr-3 text-[13px] text-foreground placeholder:text-text-placeholder focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
       </div>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// BubbleSection
+// ---------------------------------------------------------------------------
+
+function BubbleSection({
+  teams,
+  assignments,
+  regionalMap,
+}: {
+  teams: TeamData[];
+  assignments: ScurveAssignment[];
+  regionalMap: Map<number, Regional>;
+}) {
+  const BUBBLE_WINDOW = 6;
+  const totalInField = assignments.length;
+  if (totalInField === 0) return null;
+
+  const assignmentMap = new Map<string, ScurveAssignment>();
+  for (const a of assignments) assignmentMap.set(a.team, a);
+
+  const ineligibleInField = assignments.filter(
+    (a) => !a.eligible && a.isAutoQualifier
+  );
+  const lastIn = assignments
+    .slice()
+    .sort((a, b) => a.seed - b.seed)
+    .slice(-BUBBLE_WINDOW);
+
+  const teamsOut = teams.filter(
+    (t) => !assignmentMap.has(t.team)
+  );
+  const firstOut = teamsOut.slice(0, BUBBLE_WINDOW);
+
+  if (lastIn.length === 0 && firstOut.length === 0 && ineligibleInField.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="mt-6">
+      <div className="flex items-baseline gap-2 mb-2">
+        <h3 className="text-[13px] font-semibold text-foreground">Bubble Zone</h3>
+        <span className="text-[11px] text-text-tertiary">{totalInField} teams in field</span>
+      </div>
+
+      <div className="rounded-lg border border-border overflow-hidden">
+        {/* Last N In */}
+        <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          Last {lastIn.length} In
+        </div>
+        {lastIn.map((team) => {
+          const regional = regionalMap.get(team.regionalId);
+          const isIneligibleAQ = !team.eligible && team.isAutoQualifier;
+          return (
+            <div
+              key={team.team}
+              className={cn(
+                "h-8 items-center text-[13px] px-3 border-b border-border/40",
+                isIneligibleAQ && "border-l-2 border-l-amber-500/60"
+              )}
+              style={{ display: "grid", gridTemplateColumns: "40px 1fr 80px 60px" }}
+            >
+              <span className="font-mono tabular-nums text-muted-foreground text-[12px]">
+                #{team.seed}
+              </span>
+              <span className="font-medium text-foreground truncate">
+                {team.team}
+                {isIneligibleAQ && (
+                  <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                    Ineligible AQ
+                  </span>
+                )}
+              </span>
+              <span
+                className="text-[11px] text-muted-foreground truncate"
+                style={{ borderLeft: `2px solid ${regional?.color ?? "#888"}`, paddingLeft: "6px" }}
+              >
+                {regional?.name.replace(/ Regional$/, "")}
+              </span>
+              <span className="font-mono tabular-nums text-[12px] text-muted-foreground text-right">
+                Rk {team.rank}
+              </span>
+            </div>
+          );
+        })}
+
+        {/* Cutoff Line */}
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/5">
+          <div className="flex-1 border-t-2 border-amber-500/40" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500/80 whitespace-nowrap">
+            Field Cutoff
+          </span>
+          <div className="flex-1 border-t-2 border-amber-500/40" />
+        </div>
+
+        {/* First N Out */}
+        {firstOut.length > 0 && (
+          <>
+            <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+              First {firstOut.length} Out
+            </div>
+            {firstOut.map((team) => {
+              const belowFiveHundred = team.wins < team.losses;
+              return (
+                <div
+                  key={team.team}
+                  className={cn(
+                    "h-8 items-center text-[13px] px-3 border-b border-border/40 opacity-60",
+                    belowFiveHundred && "border-l-2 border-l-destructive/40"
+                  )}
+                  style={{ display: "grid", gridTemplateColumns: "40px 1fr 80px 60px" }}
+                >
+                  <span className="font-mono tabular-nums text-muted-foreground text-[12px]">
+                    &mdash;
+                  </span>
+                  <span className="text-muted-foreground truncate">
+                    {team.team}
+                    {belowFiveHundred && (
+                      <span className="ml-1.5 text-[9px] font-semibold text-destructive/70 uppercase">
+                        Below .500
+                      </span>
+                    )}
+                    {!team.eligible && !belowFiveHundred && (
+                      <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                        Ineligible
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-[11px] text-text-tertiary truncate">
+                    {team.conference}
+                  </span>
+                  <span className="font-mono tabular-nums text-[12px] text-muted-foreground text-right">
+                    Rk {team.rank}
+                  </span>
+                </div>
+              );
+            })}
+          </>
+        )}
+
+        {/* Ineligible AQs in field */}
+        {ineligibleInField.length > 0 && (
+          <div className="px-3 py-2 bg-card/50 border-t border-border">
+            <p className="text-[11px] text-text-tertiary">
+              <span className="font-medium text-amber-500/80">{ineligibleInField.length} ineligible AQ{ineligibleInField.length > 1 ? "s" : ""}</span>
+              {" "}in field (below .500 but won conference auto-qualifier):{" "}
+              {ineligibleInField.map((t) => t.team).join(", ")}
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -643,15 +878,15 @@ function SegmentedToggle({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="inline-flex h-7 items-center rounded-md border border-border bg-secondary/50 p-0.5">
+    <div className="inline-flex h-8 items-center rounded-md border border-border bg-secondary/50 p-0.5">
       {options.map((opt, i) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
           className={cn(
-            "h-6 px-2.5 text-[12px] font-medium rounded-[4px] transition-colors whitespace-nowrap",
+            "h-7 min-w-[44px] px-2.5 text-[12px] font-medium rounded-[4px] transition-colors whitespace-nowrap",
             value === opt.value
-              ? "bg-background text-foreground shadow-sm"
+              ? "bg-background text-foreground"
               : "text-muted-foreground hover:text-foreground",
             i > 0 && "border-l border-border/0"
           )}
@@ -744,7 +979,7 @@ function RegionalGroup({
                 <div className="flex items-center gap-2 px-3 py-1">
                   <div className="flex-1 border-t border-dashed border-destructive/40" />
                   <span className="text-[10px] font-medium uppercase tracking-wider text-destructive/70 whitespace-nowrap">
-                    Top 5 advance to nationals
+                    Advancing
                   </span>
                   <div className="flex-1 border-t border-dashed border-destructive/40" />
                 </div>
@@ -873,7 +1108,7 @@ function TeamRow({
       <td className="px-2 text-left text-[13px] text-foreground whitespace-nowrap">
         <span className="font-medium">{team.team}</span>
         {isHost && (
-          <span className="ml-1.5 inline-flex items-center rounded px-1 py-0 text-[9px] font-semibold uppercase tracking-wider bg-gold/15 text-gold">
+          <span className="ml-1.5 inline-flex items-center rounded px-1 py-0 text-[9px] font-semibold uppercase tracking-wider bg-secondary text-muted-foreground">
             Host
           </span>
         )}
@@ -883,7 +1118,7 @@ function TeamRow({
         #{team.rank}
       </td>
       {/* Conference */}
-      <td className="px-2 text-center text-[13px] text-muted-foreground">
+      <td className="px-2 text-center text-[13px] text-foreground/60">
         {team.conference}
       </td>
       {/* Type */}
@@ -936,33 +1171,29 @@ function MobileRegionalGroup({
   const avgDistance = Math.round(totalDistance / teams.length);
 
   return (
-    <div
-      className="mt-2 first:mt-0 rounded border border-border/60 overflow-hidden"
-      style={{ borderLeftColor: regional.color, borderLeftWidth: "2px" }}
-    >
-      {/* Regional header */}
+    <div className="mt-1 first:mt-0">
+      {/* Regional header - single line, bottom border only, no background */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-2 py-1 bg-card/60"
+        className="w-full flex items-center gap-1.5 px-0.5 py-0.5 border-b border-border/40"
+        style={{ borderLeftColor: regional.color, borderLeftWidth: "2px", paddingLeft: "4px" }}
       >
-        <div className="flex items-center gap-1.5">
-          <span className="font-semibold text-[11px] text-foreground">{regional.name.replace(/ Regional$/, "")}</span>
-          <span className="text-[8px] text-muted-foreground">{regional.city}</span>
-          <ChevronRight
-            className={cn(
-              "h-2.5 w-2.5 text-muted-foreground transition-transform",
-              expanded && "rotate-90"
-            )}
-          />
-        </div>
-        <span className="text-[8px] text-muted-foreground tabular-nums">
-          {teams.length}t &middot; {avgDistance.toLocaleString()}mi
+        <ChevronRight
+          className={cn(
+            "h-2.5 w-2.5 text-muted-foreground shrink-0 transition-transform",
+            expanded && "rotate-90"
+          )}
+        />
+        <span className="font-semibold text-[11px] text-foreground">{regional.name.replace(/ Regional$/, "")}</span>
+        <span className="text-[8px] text-muted-foreground">{regional.city}</span>
+        <span className="ml-auto text-[8px] text-muted-foreground tabular-nums shrink-0">
+          {teams.length}t
         </span>
       </button>
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="px-1.5 py-1.5 border-t border-border/40 space-y-1.5">
+        <div className="px-1.5 py-1.5 border-b border-border/40 space-y-1.5">
           <div className="grid grid-cols-2 gap-1.5">
             <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
             <StatBox label="Auto Qualifiers" value={String(teams.filter((t) => t.isAutoQualifier).length)} />
@@ -975,7 +1206,7 @@ function MobileRegionalGroup({
 
       {/* Column headers */}
       <div
-        className="text-[7px] uppercase tracking-wider text-muted-foreground/50 px-0.5 pt-0.5 border-t border-border/30 items-center"
+        className="text-[7px] uppercase tracking-wider text-muted-foreground/50 px-0.5 pt-0.5 items-center"
         style={{ display: "grid", gridTemplateColumns: "20px 1fr 24px 32px 42px", gap: "0px" }}
       >
         <span className="text-right">#</span>
@@ -999,7 +1230,7 @@ function MobileRegionalGroup({
               <div className="flex items-center gap-1 px-0.5 py-px">
                 <div className="flex-1 border-t border-dashed border-destructive/30" />
                 <span className="text-[7px] font-medium uppercase tracking-wider text-destructive/50">
-                  cut
+                  Advancing
                 </span>
                 <div className="flex-1 border-t border-dashed border-destructive/30" />
               </div>
@@ -1027,27 +1258,27 @@ function MobileTeamCard({
   const regionalLabel = regional?.name.replace(/ Regional$/, "") ?? "";
 
   const gridColumns = showRegional
-    ? "20px 1fr 24px 32px auto 42px"
-    : "20px 1fr 24px 32px 42px";
+    ? "20px 1fr 24px 38px auto 42px"
+    : "20px 1fr 24px 38px 42px";
 
   return (
     <div
       className="h-[18px] items-center text-[10px] leading-none px-0.5 overflow-hidden"
-      style={{ display: "grid", gridTemplateColumns: gridColumns, gap: "0px" }}
+      style={{ display: "grid", gridTemplateColumns: gridColumns, gap: "2px" }}
     >
       <span className="font-mono text-[9px] text-muted-foreground text-right tabular-nums">
         {team.seed}
       </span>
       <span className="font-medium text-foreground truncate pl-1 text-[10px] overflow-hidden whitespace-nowrap">
         {team.team}
-        {isHost && <span className="text-[6px] font-bold uppercase text-gold ml-0.5">H</span>}
+        {isHost && <span className="text-[6px] font-bold uppercase text-muted-foreground ml-0.5">H</span>}
         {team.isAutoQualifier && <span className="text-[6px] font-bold uppercase text-primary ml-0.5">AQ</span>}
       </span>
       <span className="font-mono text-[8px] text-muted-foreground text-right tabular-nums">#{team.rank}</span>
-      <span className="text-[8px] text-muted-foreground text-center">{team.conference}</span>
+      <span className="text-[8px] text-foreground/50 text-center truncate min-w-0">{team.conference}</span>
       {showRegional && (
         <span
-          className="text-[7px] text-muted-foreground overflow-hidden whitespace-nowrap"
+          className="text-[7px] text-muted-foreground overflow-hidden whitespace-nowrap min-w-0 text-ellipsis"
           style={{ borderLeft: `2px solid ${color}`, paddingLeft: "2px" }}
         >
           {regionalLabel}
@@ -1130,7 +1361,7 @@ function MobileVisualScurve({
                       </span>
                       <span className="font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
                         {team.team}
-                        {isHost && <span className="text-[5px] font-bold text-gold ml-0.5">H</span>}
+                        {isHost && <span className="text-[5px] font-bold text-muted-foreground ml-0.5">H</span>}
                         {team.isAutoQualifier && <span className="text-[5px] font-bold text-primary ml-0.5">AQ</span>}
                       </span>
                       <span className="font-mono text-[7px] text-muted-foreground text-right tabular-nums pr-0.5 overflow-hidden">
@@ -1140,7 +1371,7 @@ function MobileVisualScurve({
                     {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
                       <div className="flex items-center gap-0.5 px-0.5">
                         <div className="flex-1 border-t border-dashed border-destructive/30" />
-                        <span className="text-[5px] font-medium uppercase text-destructive/50">cut</span>
+                        <span className="text-[5px] font-medium uppercase text-destructive/50">Advancing</span>
                         <div className="flex-1 border-t border-dashed border-destructive/30" />
                       </div>
                     )}
@@ -1220,7 +1451,7 @@ function VisualScurve({
       </div>
 
       {/* Serpentine grid */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
         <div className="min-w-[700px]">
           {/* Regional headers */}
           <div className="grid gap-1 mb-1" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
@@ -1282,32 +1513,27 @@ function VisualScurve({
                           {team.seed}
                         </span>
                         <span className={cn(
-                          "truncate font-medium",
+                          "truncate font-medium flex-1 min-w-0",
                           isAboveLine ? "text-foreground" : "text-muted-foreground"
                         )}>
                           {team.team}
+                          {isHost && <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">H</span>}
+                          {team.isAutoQualifier && !isHost && <span className="text-[8px] font-bold text-primary ml-1">AQ</span>}
                         </span>
-                        {isHost && (
-                          <span className="ml-auto shrink-0 text-[8px] font-bold text-gold uppercase">
-                            H
-                          </span>
-                        )}
-                        {team.isAutoQualifier && !isHost && (
-                          <span className="ml-auto shrink-0 text-[8px] font-bold text-primary">
-                            AQ
-                          </span>
-                        )}
+                        <span className="font-mono tabular-nums text-[10px] text-muted-foreground shrink-0 ml-1">
+                          #{team.rank}
+                        </span>
                       </div>
                     );
                   })}
                 </div>
 
                 {/* Advancement line after tier containing 5th team */}
-                {tierIdx === Math.floor((TEAMS_ADVANCING - 1)) && (
+                {tierIdx === TEAMS_ADVANCING - 1 && (
                   <div className="flex items-center gap-2 px-1 py-0.5">
                     <div className="flex-1 border-t border-dashed border-destructive/40" />
                     <span className="text-[9px] font-medium uppercase tracking-wider text-destructive/70">
-                      Top {TEAMS_ADVANCING} advance
+                      Advancing
                     </span>
                     <div className="flex-1 border-t border-dashed border-destructive/40" />
                   </div>

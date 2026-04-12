@@ -26,10 +26,12 @@ export function computeScurve(
   regionals: Regional[],
   mode: ScurveMode = "committee"
 ): ScurveAssignment[] {
+  // Filter out ineligible teams, but keep auto-qualifiers (AQ wins conference regardless)
+  const eligible = teams.filter((t) => t.eligible || t.isAutoQualifier);
   if (mode === "strict") {
-    return computeStrictScurve(teams, regionals);
+    return computeStrictScurve(eligible, regionals);
   }
-  return computeCommitteeScurve(teams, regionals);
+  return computeCommitteeScurve(eligible, regionals);
 }
 
 /**
