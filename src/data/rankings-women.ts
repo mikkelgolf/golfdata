@@ -91,4 +91,20 @@ export const rankingsWomen: TeamData[] = [
   { rank: 77, team: "Brigham Young", conference: "B12", events: 9, wins: 60, losses: 58, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 40.2519, lng: -111.6493, avgPoints: 24.3564 },
   { rank: 78, team: "Sacramento State", conference: "BSKY", events: 8, wins: 69, losses: 39, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 38.5811, lng: -121.4939, avgPoints: 24.3069 },
   { rank: 79, team: "Santa Clara", conference: "WCC", events: 8, wins: 78, losses: 20, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 37.3541, lng: -121.9552, avgPoints: 24.0648 },
+  // --- AQ conference champions from smaller conferences (predicted) ---
+  // These teams are outside the normal field cutoff but earn automatic bids
+  // by winning their conference championship. AQs bypass the .500 rule.
+  { rank: 80, team: "Xavier", conference: "BEAST", events: 8, wins: 80, losses: 32, ties: 4, eligible: true, isAutoQualifier: true, aqConference: "BEAST", lat: 39.1015, lng: -84.5125 },
+  { rank: 97, team: "Abilene Christian", conference: "WAC", events: 8, wins: 61, losses: 45, ties: 2, eligible: true, isAutoQualifier: true, aqConference: "WAC", lat: 32.4465, lng: -99.7476 },
+  { rank: 102, team: "Western Kentucky", conference: "CUSA", events: 9, wins: 48, losses: 63, ties: 2, eligible: false, isAutoQualifier: true, aqConference: "CUSA", lat: 37.1028, lng: -85.3060 },
+  { rank: 116, team: "Denver", conference: "SUMMIT", events: 7, wins: 33, losses: 68, ties: 1, eligible: false, isAutoQualifier: true, aqConference: "SUMMIT", lat: 39.6780, lng: -104.9618 },
+  { rank: 132, team: "Houston Christian", conference: "SOUTHLAND", events: 11, wins: 78, losses: 46, ties: 2, eligible: true, isAutoQualifier: true, aqConference: "SOUTHLAND", lat: 29.7589, lng: -95.3677 },
+  { rank: 139, team: "Richmond", conference: "A10", events: 9, wins: 48, losses: 56, ties: 0, eligible: false, isAutoQualifier: true, aqConference: "A10", lat: 38.1496, lng: -79.0726 },
+  { rank: 153, team: "Bradley", conference: "MVC", events: 8, wins: 69, losses: 31, ties: 3, eligible: true, isAutoQualifier: true, aqConference: "MVC", lat: 40.6939, lng: -89.5891 },
+  { rank: 158, team: "Youngstown State", conference: "HORIZON", events: 10, wins: 59, losses: 11, ties: 1, eligible: true, isAutoQualifier: true, aqConference: "HORIZON", lat: 40.9153, lng: -81.1059 },
+  { rank: 168, team: "Morehead State", conference: "OVC", events: 9, wins: 60, losses: 41, ties: 1, eligible: true, isAutoQualifier: true, aqConference: "OVC", lat: 37.6456, lng: -84.7722 },
+  { rank: 170, team: "Navy", conference: "PATRIOT", events: 9, wins: 55, losses: 45, ties: 2, eligible: true, isAutoQualifier: true, aqConference: "PATRIOT", lat: 38.9844, lng: -76.4870 },
+  { rank: 185, team: "Quinnipiac", conference: "MAAC", events: 8, wins: 54, losses: 34, ties: 0, eligible: true, isAutoQualifier: true, aqConference: "MAAC", lat: 41.3836, lng: -72.9020 },
+  { rank: 192, team: "Howard", conference: "NEC", events: 9, wins: 60, losses: 23, ties: 0, eligible: true, isAutoQualifier: true, aqConference: "NEC", lat: 38.8950, lng: -77.0365 },
+  { rank: 242, team: "Alabama State", conference: "SWAC", events: 9, wins: 22, losses: 48, ties: 0, eligible: false, isAutoQualifier: true, aqConference: "SWAC", lat: 32.3777, lng: -86.3091 },
 ];

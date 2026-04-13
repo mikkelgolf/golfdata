@@ -36,6 +36,26 @@ export function computeRegionalSeeds(
 }
 
 /**
+ * Derive predicted auto-qualifiers from a team list: the top-ranked team
+ * in each conference is the predicted conference champion and earns an AQ.
+ * Mirrors the logic in championships.ts so conference + regional pages agree.
+ */
+function deriveAutoQualifiers(teams: TeamData[]): TeamData[] {
+  const topByConf = new Map<string, number>();
+  for (let i = 0; i < teams.length; i++) {
+    const cur = topByConf.get(teams[i].conference);
+    if (cur === undefined || teams[i].rank < teams[cur].rank) {
+      topByConf.set(teams[i].conference, i);
+    }
+  }
+  return teams.map((t, i) => ({
+    ...t,
+    isAutoQualifier: topByConf.get(t.conference) === i,
+    aqConference: topByConf.get(t.conference) === i ? t.conference : null,
+  }));
+}
+
+/**
  * Compute the S-curve (serpentine) regional assignment for NCAA D1 golf.
  *
  * Two modes:
@@ -52,8 +72,9 @@ export function computeScurve(
   mode: ScurveMode = "committee",
   gender: "men" | "women" = "men"
 ): ScurveAssignment[] {
+  const teamsWithAqs = deriveAutoQualifiers(teams);
   const fieldSize = CHAMPIONSHIP_STRUCTURE.totalFieldSize[gender];
-  const allEligible = teams.filter((t) => t.eligible || t.isAutoQualifier);
+  const allEligible = teamsWithAqs.filter((t) => t.eligible || t.isAutoQualifier);
 
   // AQs are guaranteed spots; fill remaining with top at-large by ranking
   const aqs = allEligible.filter((t) => t.isAutoQualifier);

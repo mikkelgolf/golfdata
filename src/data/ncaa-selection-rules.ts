@@ -132,11 +132,17 @@ export const ELIGIBILITY_RULES = {
     conferences: {
       men: [
         "SEC", "ACC", "B12", "B10", "WCC", "MWC", "AAC", "CAA",
-        "BWEST", "BEAST", "SUNBELT", "ASUN", "SOCON", "CUSA", "OVC",
+        "BWEST", "BE", "SUNBELT", "ASUN", "SOCON", "CUSA", "OVC",
+        "IVY", "PATRIOT", "NEC", "HORIZON", "BIGSOUTH", "MVC",
+        "A10", "WAC", "BIGSKY", "MAAC", "SUMMIT", "MAC",
+        "SWAC", "SOUTHLAND",
       ],
       women: [
         "SEC", "ACC", "B12", "B10", "WCC", "MWC", "AAC", "CAA",
-        "BWEST", "BEAST", "SUNBELT", "ASUN", "SOCON", "CUSA",
+        "BWEST", "BEAST", "SUNBELT", "ASUN", "SOCON", "CUSA", "OVC",
+        "IVY", "PATRIOT", "NEC", "HORIZON", "BSOUTH", "BSKY", "MVC",
+        "A10", "WAC", "MAAC", "SUMMIT", "MAC",
+        "SWAC", "SOUTHLAND",
       ],
     },
   },

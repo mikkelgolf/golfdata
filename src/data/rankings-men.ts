@@ -100,4 +100,21 @@ export const rankingsMen: TeamData[] = [
   { rank: 82, team: "Michigan", conference: "B10", events: 8, wins: 54, losses: 47, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 42.2780, lng: -83.7382, avgPoints: 33.9970 },
   { rank: 83, team: "San Jose State", conference: "MWC", events: 9, wins: 76, losses: 70, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 37.3382, lng: -121.8863, avgPoints: 33.7600 },
   { rank: 84, team: "Minnesota", conference: "B10", events: 9, wins: 64, losses: 60, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 44.9740, lng: -93.2277, avgPoints: 33.5701 },
+  // --- AQ conference champions from smaller conferences (predicted) ---
+  // These teams are outside the normal field cutoff but earn automatic bids
+  // by winning their conference championship. AQs bypass the .500 rule.
+  { rank: 92, team: "Princeton", conference: "IVY", events: 8, wins: 38, losses: 43, ties: 3, eligible: false, isAutoQualifier: true, aqConference: "IVY", lat: 40.3497, lng: -74.6597 },
+  { rank: 97, team: "Oral Roberts", conference: "SUMMIT", events: 9, wins: 67, losses: 71, ties: 0, eligible: false, isAutoQualifier: true, aqConference: "SUMMIT", lat: 36.1563, lng: -95.9928 },
+  { rank: 101, team: "Eastern Michigan", conference: "MAC", events: 11, wins: 67, losses: 82, ties: 1, eligible: false, isAutoQualifier: true, aqConference: "MAC", lat: 43.5976, lng: -84.7668 },
+  { rank: 104, team: "Southern Illinois", conference: "MVC", events: 10, wins: 92, losses: 59, ties: 1, eligible: true, isAutoQualifier: true, aqConference: "MVC", lat: 37.7099, lng: -89.2186 },
+  { rank: 106, team: "VCU", conference: "A10", events: 10, wins: 95, losses: 44, ties: 1, eligible: true, isAutoQualifier: true, aqConference: "A10", lat: 37.5385, lng: -77.4343 },
+  { rank: 108, team: "Tarleton State", conference: "WAC", events: 11, wins: 87, losses: 66, ties: 1, eligible: true, isAutoQualifier: true, aqConference: "WAC", lat: 30.7235, lng: -95.5508 },
+  { rank: 132, team: "Loyola Maryland", conference: "PATRIOT", events: 9, wins: 67, losses: 52, ties: 1, eligible: true, isAutoQualifier: true, aqConference: "PATRIOT", lat: 39.2909, lng: -76.6108 },
+  { rank: 133, team: "Idaho", conference: "BIGSKY", events: 9, wins: 89, losses: 45, ties: 0, eligible: true, isAutoQualifier: true, aqConference: "BIGSKY", lat: 42.8620, lng: -112.4506 },
+  { rank: 160, team: "Lamar", conference: "SOUTHLAND", events: 10, wins: 49, losses: 84, ties: 2, eligible: false, isAutoQualifier: true, aqConference: "SOUTHLAND", lat: 30.0829, lng: -94.0984 },
+  { rank: 177, team: "Longwood", conference: "BIGSOUTH", events: 9, wins: 80, losses: 39, ties: 2, eligible: true, isAutoQualifier: true, aqConference: "BIGSOUTH", lat: 36.7729, lng: -81.8362 },
+  { rank: 190, team: "Howard", conference: "NEC", events: 11, wins: 47, losses: 70, ties: 1, eligible: false, isAutoQualifier: true, aqConference: "NEC", lat: 38.8950, lng: -77.0365 },
+  { rank: 194, team: "Fairfield", conference: "MAAC", events: 7, wins: 58, losses: 23, ties: 3, eligible: true, isAutoQualifier: true, aqConference: "MAAC", lat: 41.1412, lng: -73.2637 },
+  { rank: 198, team: "Wright State", conference: "HORIZON", events: 10, wins: 60, losses: 53, ties: 4, eligible: true, isAutoQualifier: true, aqConference: "HORIZON", lat: 39.7805, lng: -84.0639 },
+  { rank: 232, team: "Florida A&M", conference: "SWAC", events: 10, wins: 39, losses: 54, ties: 1, eligible: false, isAutoQualifier: true, aqConference: "SWAC", lat: 30.4239, lng: -84.2876 },
 ];
