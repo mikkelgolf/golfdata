@@ -887,23 +887,36 @@ function BubbleSection({
   const subFiveHundredAqs = assignments.filter(
     (a) => !a.eligible && a.isAutoQualifier
   );
-  const lastIn = assignments
+
+  // Only at-large teams are actually on the bubble. AQs are locked in by
+  // their conference finish regardless of rank, so they can't be "last in".
+  const atLargeInField = assignments.filter((a) => !a.isAutoQualifier);
+
+  const lastIn = atLargeInField
     .slice()
-    .sort((a, b) => a.seed - b.seed)
+    .sort((a, b) => a.rank - b.rank)
     .slice(-LAST_IN);
 
-  const magicNumberRank = Math.max(...assignments.map((a) => a.rank));
+  // "Magic Number" = worst-ranked at-large that still made the field.
+  const magicNumberRank =
+    atLargeInField.length > 0
+      ? Math.max(...atLargeInField.map((a) => a.rank))
+      : 0;
 
   const teamsOut = teams
     .filter((t) => !assignmentMap.has(t.team))
     .sort((a, b) => a.rank - b.rank);
 
+  // Teams ranked above the at-large cutoff but sub-.500 — they'd make it on
+  // rank alone. Shown in their own watch section, separate from firstOut.
   const fiveHundredWatch = teamsOut.filter(
-    (t) => t.rank <= magicNumberRank && t.wins < t.losses && !t.isAutoQualifier
+    (t) => t.rank <= magicNumberRank && !t.eligible && !t.isAutoQualifier
   );
-  const fiveHundredWatchSet = new Set(fiveHundredWatch.map((t) => t.team));
+
+  // First Out = top at-large candidates that just missed the cutoff. Must be
+  // above .500 — sub-.500 teams can't be at-large regardless of rank.
   const firstOut = teamsOut
-    .filter((t) => !fiveHundredWatchSet.has(t.team))
+    .filter((t) => t.eligible && !t.isAutoQualifier)
     .slice(0, FIRST_OUT);
 
   if (lastIn.length === 0 && firstOut.length === 0 && fiveHundredWatch.length === 0 && subFiveHundredAqs.length === 0) {
@@ -945,14 +958,10 @@ function BubbleSection({
         </div>
         {lastIn.map((team) => {
           const regional = regionalMap.get(team.regionalId);
-          const isSubFiveHundredAq = !team.eligible && team.isAutoQualifier;
           return (
             <div
               key={team.team}
-              className={cn(
-                "h-7 items-center text-[10px] px-3 border-b border-border/40 tabular-nums",
-                isSubFiveHundredAq && "border-l-2 border-l-amber-500/60"
-              )}
+              className="h-7 items-center text-[10px] px-3 border-b border-border/40 tabular-nums"
               style={{ display: "grid", gridTemplateColumns: "40px 1fr 50px 50px 100px", gap: "6px" }}
             >
               <span className="font-mono text-muted-foreground">
@@ -960,14 +969,6 @@ function BubbleSection({
               </span>
               <span className="font-medium text-foreground truncate">
                 {team.team}
-                {isSubFiveHundredAq && (
-                  <span
-                    className="ml-1 text-[8px] font-semibold text-amber-500/80 uppercase"
-                    title="Sub-.500 record but won conference championship — still earns the automatic bid"
-                  >
-                    Sub-.500 AQ
-                  </span>
-                )}
               </span>
               <span className="font-mono text-foreground/80 text-right">
                 {fmtAwp(team.avgPoints)}
@@ -1123,24 +1124,32 @@ function BreakdownView({
   const assignmentMap = new Map<string, ScurveAssignment>();
   for (const a of assignments) assignmentMap.set(a.team, a);
 
-  // Last N In: lowest-seeded teams currently in the field
-  const lastIn = assignments
+  // Last N In: worst-ranked at-large teams in the field. AQs are locked in
+  // by their conference finish, so they can't be "last in" even when their
+  // rank is low — filter them out.
+  const atLargeInField = assignments.filter((a) => !a.isAutoQualifier);
+
+  const lastIn = atLargeInField
     .slice()
-    .sort((a, b) => a.seed - b.seed)
+    .sort((a, b) => a.rank - b.rank)
     .slice(-LAST_IN);
 
-  const magicNumberRank = Math.max(...assignments.map((a) => a.rank));
+  // "Magic Number" = worst-ranked at-large that still made the field.
+  const magicNumberRank =
+    atLargeInField.length > 0
+      ? Math.max(...atLargeInField.map((a) => a.rank))
+      : 0;
 
   const teamsOut = teams
     .filter((t) => !assignmentMap.has(t.team))
     .sort((a, b) => a.rank - b.rank);
 
   const fiveHundredWatch = teamsOut.filter(
-    (t) => t.rank <= magicNumberRank && t.wins < t.losses && !t.isAutoQualifier
+    (t) => t.rank <= magicNumberRank && !t.eligible && !t.isAutoQualifier
   );
-  const fiveHundredWatchSet = new Set(fiveHundredWatch.map((t) => t.team));
+
   const firstOut = teamsOut
-    .filter((t) => !fiveHundredWatchSet.has(t.team))
+    .filter((t) => t.eligible && !t.isAutoQualifier)
     .slice(0, FIRST_OUT);
 
   const subFiveHundredAqs = assignments.filter((a) => !a.eligible && a.isAutoQualifier);
@@ -1190,14 +1199,10 @@ function BreakdownView({
           const regional = regionalMap.get(team.regionalId);
           const regionalSeed = regionalSeeds.get(team.regionalId);
           const diff = fmtDiff(team.wins, team.losses);
-          const isSubFiveHundredAq = !team.eligible && team.isAutoQualifier;
           return (
             <div
               key={team.team}
-              className={cn(
-                "h-8 items-center text-[10px] px-3 border-b border-border/40 tabular-nums grid grid-cols-[30px_1fr_35px_45px_70px] md:grid-cols-[32px_1fr_50px_70px_60px_60px_110px] gap-1 md:gap-2",
-                isSubFiveHundredAq && "border-l-2 border-l-amber-500/60"
-              )}
+              className="h-8 items-center text-[10px] px-3 border-b border-border/40 tabular-nums grid grid-cols-[30px_1fr_35px_45px_70px] md:grid-cols-[32px_1fr_50px_70px_60px_60px_110px] gap-1 md:gap-2"
             >
               <span className="font-mono text-muted-foreground text-center">
                 <span className="md:hidden">#{team.rank}</span>
@@ -1205,11 +1210,6 @@ function BreakdownView({
               </span>
               <span className="font-medium text-foreground truncate">
                 {team.team}
-                {isSubFiveHundredAq && (
-                  <span className="ml-1.5 text-[8px] font-semibold text-amber-500/80 uppercase">
-                    Sub-.500 AQ
-                  </span>
-                )}
               </span>
               <div className="hidden md:contents">
                 <span className="font-mono text-muted-foreground text-right">
