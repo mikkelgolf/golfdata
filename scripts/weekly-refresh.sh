@@ -87,13 +87,29 @@ if ! node scripts/build-all-teams.mjs 2>&1; then
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Early exit if the generated TS files didn't change
-#    (data/clippd/*.json is intentionally untracked — raw Clippd pulls live
-#    on local disk only; the generated all-teams TS files are the only
-#    canonical output we commit.)
+# 4. Early exit if none of the tracked outputs changed
+#    Tracked outputs from the weekly pipeline:
+#      - src/data/all-teams-{men,women}-2026.ts  (from build-all-teams.mjs)
+#      - src/data/head-to-head-2526.json         (from mikkel-system head_to_head_build.py)
+#    The raw Clippd JSON stays untracked (local-only).
 # ---------------------------------------------------------------------------
-if git diff --quiet src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts 2>/dev/null; then
-    log "no ranking changes detected — skipping commit + deploy"
+H2H_PATH="src/data/head-to-head-2526.json"
+H2H_EXISTS=0
+[ -f "$H2H_PATH" ] && H2H_EXISTS=1
+
+H2H_DIRTY=0
+if [ "$H2H_EXISTS" = "1" ]; then
+    if ! git ls-files --error-unmatch "$H2H_PATH" >/dev/null 2>&1; then
+        # Untracked file (new)
+        H2H_DIRTY=1
+    elif ! git diff --quiet "$H2H_PATH" 2>/dev/null; then
+        H2H_DIRTY=1
+    fi
+fi
+
+if git diff --quiet src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts 2>/dev/null && \
+   [ "$H2H_DIRTY" = "0" ]; then
+    log "no tracked output changes — skipping commit + deploy"
     exit 0
 fi
 
@@ -106,6 +122,11 @@ git diff --stat src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts 
 log "step 5: staging + committing"
 if ! git add src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts 2>&1; then
     abort_soft "git add failed"
+fi
+if [ "$H2H_DIRTY" = "1" ]; then
+    if ! git add "$H2H_PATH" 2>&1; then
+        log "git add head-to-head failed (non-fatal)"
+    fi
 fi
 
 if ! git commit -m "rankings: weekly Clippd refresh $(date -u +%Y-%m-%d)" 2>&1; then

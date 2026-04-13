@@ -20,6 +20,12 @@ import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Ca
 import ChampionshipsMap from "@/components/championships-map";
 import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
+import {
+  computeFieldRecord,
+  formatRecord,
+  formatStrokeDiff,
+  type FieldRecord,
+} from "@/lib/head-to-head";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -341,6 +347,7 @@ export default function ChampionshipsView({
           mode="alphabetical"
           totalShown={filtered.length}
           today={today}
+          gender={gender}
         />
       )}
 
@@ -350,6 +357,7 @@ export default function ChampionshipsView({
           mode="chronological"
           totalShown={filtered.length}
           today={today}
+          gender={gender}
         />
       )}
     </div>
@@ -561,11 +569,13 @@ function ChampionshipGroupView({
   mode,
   totalShown,
   today,
+  gender,
 }: {
   groups: { championship: Championship; teams: ChampionshipAssignment[] }[];
   mode: "alphabetical" | "chronological";
   totalShown: number;
   today: Date;
+  gender: Gender;
 }) {
   if (groups.length === 0) {
     return (
@@ -590,6 +600,7 @@ function ChampionshipGroupView({
           teams={teams}
           showDate={mode === "chronological"}
           status={classifyByDate(championship, today)}
+          gender={gender}
         />
       ))}
     </div>
@@ -605,11 +616,13 @@ function ChampionshipCard({
   teams,
   showDate,
   status,
+  gender,
 }: {
   championship: Championship;
   teams: ChampionshipAssignment[];
   showDate: boolean;
   status: "inProgress" | "thisWeek" | "later" | "past";
+  gender: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
   const tbd = isVenueTBD(championship);
@@ -623,6 +636,19 @@ function ChampionshipCard({
       ? Math.round(totalDistance / teamsWithCoords.length)
       : 0;
   const top = teams[0];
+
+  // Precompute each team's head-to-head record against the rest of the field
+  // (other teams in this same championship). Only computed when the card is
+  // expanded to avoid work for collapsed cards.
+  const fieldRecords = useMemo(() => {
+    if (!expanded) return new Map<string, FieldRecord | null>();
+    const names = teams.map((t) => t.team);
+    const m = new Map<string, FieldRecord | null>();
+    for (const t of teams) {
+      m.set(t.team, computeFieldRecord(t.team, names, gender));
+    }
+    return m;
+  }, [expanded, teams, gender]);
 
   const ringClass =
     status === "inProgress"
@@ -761,46 +787,86 @@ function ChampionshipCard({
                   <th className="px-3 py-1 text-center font-medium w-[60px]">
                     Type
                   </th>
+                  <th className="px-3 py-1 text-right font-medium w-[100px]" title="Record vs other teams in this field across all 25-26 shared events">
+                    H2H in field
+                  </th>
+                  <th className="px-3 py-1 text-right font-medium w-[70px]" title="Average stroke differential per meeting vs field (negative = better than field)">
+                    Δ strokes
+                  </th>
                   <th className="px-3 py-1 text-right font-medium w-[80px]">
                     Distance
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {teams.map((t) => (
-                  <tr
-                    key={t.team}
-                    className="border-b border-border/20 last:border-b-0 hover:bg-white/[0.02]"
-                  >
-                    <td className="px-3 py-1.5 font-mono tabular-nums text-muted-foreground">
-                      #{t.rank}
-                    </td>
-                    <td className="px-3 py-1.5 text-foreground">
-                      {t.team}
-                      {!t.eligible && (
-                        <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
-                          Below .500
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-3 py-1.5 text-center">
-                      {t.isAutoQualifier ? (
-                        <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
-                          AQ
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">
-                          AL
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-3 py-1.5 font-mono tabular-nums text-muted-foreground text-right">
-                      {tbd || (t.lat === 0 && t.lng === 0)
-                        ? "—"
-                        : `${t.distanceMiles.toLocaleString()} mi`}
-                    </td>
-                  </tr>
-                ))}
+                {teams.map((t) => {
+                  const fr = fieldRecords.get(t.team);
+                  return (
+                    <tr
+                      key={t.team}
+                      className="border-b border-border/20 last:border-b-0 hover:bg-white/[0.02]"
+                    >
+                      <td className="px-3 py-1.5 font-mono tabular-nums text-muted-foreground">
+                        #{t.rank}
+                      </td>
+                      <td className="px-3 py-1.5 text-foreground">
+                        {t.team}
+                        {!t.eligible && (
+                          <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                            Below .500
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-3 py-1.5 text-center">
+                        {t.isAutoQualifier ? (
+                          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
+                            AQ
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">
+                            AL
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-3 py-1.5 font-mono tabular-nums text-right">
+                        {fr ? (
+                          <span
+                            className={cn(
+                              "text-muted-foreground",
+                              fr.wins > fr.losses && "text-primary",
+                              fr.wins < fr.losses && "text-destructive/80"
+                            )}
+                            title={`${fr.meetings} meetings vs ${fr.opponentsPlayed} opponents in the field`}
+                          >
+                            {formatRecord(fr)}
+                          </span>
+                        ) : (
+                          <span className="text-text-tertiary">—</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-1.5 font-mono tabular-nums text-right">
+                        {fr ? (
+                          <span
+                            className={cn(
+                              "text-muted-foreground",
+                              fr.avgStrokeDiff < 0 && "text-primary",
+                              fr.avgStrokeDiff > 0 && "text-destructive/80"
+                            )}
+                          >
+                            {formatStrokeDiff(fr.avgStrokeDiff)}
+                          </span>
+                        ) : (
+                          <span className="text-text-tertiary">—</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-1.5 font-mono tabular-nums text-muted-foreground text-right">
+                        {tbd || (t.lat === 0 && t.lng === 0)
+                          ? "—"
+                          : `${t.distanceMiles.toLocaleString()} mi`}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
