@@ -6,7 +6,7 @@ import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { rankingsWomen } from "@/data/rankings-women";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
 
-const LAST_UPDATED = "Apr 10, 2026";
+const LAST_UPDATED = "Apr 13, 2026";
 
 export default function Home() {
   return (

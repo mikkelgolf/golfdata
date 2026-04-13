@@ -31,13 +31,9 @@ export function SiteHeader() {
         >
           College Golf Data
         </Link>
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-4">
           <Link href="/" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Regional Predictions</Link>
-          <Link href="/timeline" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Timeline</Link>
           <Link href="/conference-championships" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Conf Champs</Link>
-          <Link href="/tournaments" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Tournaments</Link>
-          <Link href="/tools" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Tools</Link>
-          <Link href="/research" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Research</Link>
           <Link href="/about" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">About</Link>
         </div>
         <MobileNav />

@@ -8,10 +8,35 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  // ============================================================
+  // EDITING GUIDE FOR DAVID
+  // ------------------------------------------------------------
+  // Sections below are clearly labelled with comment headers like
+  // // === SECTION: What Is College Golf Data? ===
+  //
+  // To edit your bio or any specific section: find the section
+  // header, edit only the text inside that <section>...</section>
+  // block, and commit. Don't touch anything outside of <section>
+  // elements unless you want to restructure the layout.
+  //
+  // Sections you'll most likely want to edit:
+  //   - "What Is College Golf Data?" (project pitch)
+  //   - "Why Geography Matters"
+  //   - "What We're Building Next" (roadmap items in RoadmapItem props)
+  //   - "Key Dates" (the dates table)
+  //   - "The Team" (your bio, Mikkel's bio)
+  //
+  // Mikkel maintains the technical sections:
+  //   - "How the S-Curve Works"
+  //
+  // Before you ship, please WhatsApp Mikkel so he can pull your
+  // changes — avoids merge conflicts during the launch sprint.
+  // ============================================================
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
       <h1 className="text-lg font-semibold text-foreground">About</h1>
 
+      {/* === SECTION: What Is College Golf Data? (David — project pitch) === */}
       <section className="mt-8 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">
           What Is College Golf Data?
@@ -43,6 +68,7 @@ export default function AboutPage() {
         </p>
       </section>
 
+      {/* === SECTION: How the S-Curve Works (Mikkel — technical methodology) === */}
       <section className="mt-10 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">
           How the S-Curve Works
@@ -108,6 +134,7 @@ export default function AboutPage() {
         </p>
       </section>
 
+      {/* === SECTION: Why Geography Matters (David — narrative) === */}
       <section className="mt-10 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">
           Why Geography Matters
@@ -123,7 +150,7 @@ export default function AboutPage() {
         </p>
       </section>
 
-      {/* Roadmap */}
+      {/* === SECTION: Roadmap / What We're Building Next (David — edit RoadmapItem props below) === */}
       <section className="mt-10 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">
           What We&apos;re Building Next
@@ -171,6 +198,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* === SECTION: Key Dates 2026 Postseason (David — edit the rows array below) === */}
       <section className="mt-10 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">
           Key Dates - 2026 Postseason
@@ -205,9 +233,11 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* === SECTION: The Team (Mikkel + David bios) === */}
       <section className="mt-10 space-y-4 text-[15px] leading-relaxed text-muted-foreground">
         <h2 className="text-xl font-semibold text-foreground">The Team</h2>
 
+        {/* === BIO: Mikkel === */}
         <div className="space-y-2">
           <h3 className="text-base font-medium text-foreground">
             Mikkel Bjerch-Andresen
@@ -241,6 +271,7 @@ export default function AboutPage() {
           </p>
         </div>
 
+        {/* === BIO: David — edit your section here === */}
         <div className="space-y-2">
           <h3 className="text-base font-medium text-foreground">
             David Tenneson

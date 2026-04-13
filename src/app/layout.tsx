@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: "College Golf Data - NCAA D1 Regional Predictions",
   },
   description:
-    "Interactive S-curve regional predictions for NCAA Division I men's and women's college golf. Based on the official NCAA rankings with geographic optimization.",
+    "Interactive S-curve regional predictions and conference championship coverage for NCAA Division I men's and women's college golf. Based on the official rankings with geographic optimization.",
   keywords: [
     "college golf",
     "NCAA golf",
@@ -21,6 +21,8 @@ export const metadata: Metadata = {
     "NCAA regional selections",
     "college golf rankings",
     "NCAA rankings",
+    "conference championships",
+    "magic number",
     "college golf data",
   ],
   authors: [
@@ -34,7 +36,7 @@ export const metadata: Metadata = {
     siteName: "College Golf Data",
     title: "College Golf Data - NCAA D1 Regional Predictions",
     description:
-      "Interactive S-curve predictions for NCAA D1 college golf regionals. See which 81 teams go to which of 6 regional sites.",
+      "Interactive S-curve predictions for NCAA D1 college golf regionals + every conference championship. 81 men's teams, 72 women's, 6 regionals, live rankings.",
   },
   twitter: {
     card: "summary_large_image",
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
     creator: "@CollegeGolfBot",
     title: "College Golf Data - NCAA D1 Regional Predictions",
     description:
-      "Interactive S-curve predictions for NCAA D1 college golf regionals. 81 teams, 6 regionals, live rankings.",
+      "Interactive S-curve predictions for NCAA D1 college golf regionals + every conference championship.",
   },
 };
 

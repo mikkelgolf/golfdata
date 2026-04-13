@@ -16,7 +16,7 @@ import {
 } from "@/lib/championships";
 import type { TeamData } from "@/data/rankings-men";
 import type { Championship } from "@/data/championships-men-2026";
-import { Search, ChevronRight, Plane, Calendar } from "lucide-react";
+import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink } from "lucide-react";
 import ChampionshipsMap from "@/components/championships-map";
 import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
@@ -330,6 +330,7 @@ export default function ChampionshipsView({
             assignments={assignments}
             activeChampionship={activeChampionship}
             onActiveChampionshipChange={selectFromList}
+            today={today}
           />
         </>
       )}
@@ -628,7 +629,9 @@ function ChampionshipCard({
       ? "ring-1 ring-primary/40"
       : status === "thisWeek"
         ? "ring-1 ring-amber-500/30"
-        : "";
+        : status === "past"
+          ? "opacity-75"
+          : "";
 
   return (
     <div
@@ -672,19 +675,34 @@ function ChampionshipCard({
                   This week
                 </span>
               )}
+              {status === "past" && (
+                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider bg-secondary text-text-tertiary leading-none">
+                  Completed
+                </span>
+              )}
             </div>
             <div className="mt-1.5 ml-5 text-[12px] text-muted-foreground leading-tight">
               {tbd ? (
                 <span className="italic">Venue TBD</span>
-              ) : (
-                <>
+              ) : championship.sourceUrl ? (
+                <a
+                  href={championship.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-0.5 hover:text-foreground transition-colors underline-offset-2 hover:underline"
+                  title="View on conference site"
+                >
                   {championship.courseName}
-                  {championship.host && championship.host !== "TBD" && (
-                    <>
-                      <span className="opacity-50"> · </span>
-                      <span>Host: {championship.host}</span>
-                    </>
-                  )}
+                  <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                </a>
+              ) : (
+                championship.courseName
+              )}
+              {!tbd && championship.host && championship.host !== "TBD" && (
+                <>
+                  <span className="opacity-50"> · </span>
+                  <span>Host: {championship.host}</span>
                 </>
               )}
               {!tbd && (
@@ -796,19 +814,71 @@ function ChampionshipCard({
 // PredictedAQSection
 // ---------------------------------------------------------------------------
 
+type AqSortKey = "championship" | "date" | "rank" | "status";
+type AqSortDir = "asc" | "desc";
+
 function PredictedAQSection({
   grouped,
   assignments,
   activeChampionship,
   onActiveChampionshipChange,
+  today,
 }: {
   grouped: { championship: Championship; teams: ChampionshipAssignment[] }[];
   assignments: ChampionshipAssignment[];
   activeChampionship: number | null;
   onActiveChampionshipChange: (id: number | null) => void;
+  today: Date;
 }) {
   const totalChampionships = grouped.length;
   const championshipsWithTeams = grouped.filter((g) => g.teams.length > 0);
+
+  const [sortKey, setSortKey] = useState<AqSortKey>("date");
+  const [sortDir, setSortDir] = useState<AqSortDir>("asc");
+
+  const sortedGrouped = useMemo(() => {
+    const arr = [...grouped];
+    const dir = sortDir === "asc" ? 1 : -1;
+    const statusOrder: Record<string, number> = {
+      inProgress: 0,
+      thisWeek: 1,
+      later: 2,
+      past: 3,
+    };
+    arr.sort((a, b) => {
+      switch (sortKey) {
+        case "championship":
+          return a.championship.conference.localeCompare(b.championship.conference) * dir;
+        case "date":
+          return (
+            (parseISO(a.championship.startDate).getTime() -
+              parseISO(b.championship.startDate).getTime()) *
+            dir
+          );
+        case "rank": {
+          const ar = a.teams[0]?.rank ?? Number.POSITIVE_INFINITY;
+          const br = b.teams[0]?.rank ?? Number.POSITIVE_INFINITY;
+          return (ar - br) * dir;
+        }
+        case "status":
+          return (
+            (statusOrder[classifyByDate(a.championship, today)] -
+              statusOrder[classifyByDate(b.championship, today)]) *
+            dir
+          );
+      }
+    });
+    return arr;
+  }, [grouped, sortKey, sortDir, today]);
+
+  const handleSort = (key: AqSortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir(key === "date" ? "asc" : "asc");
+    }
+  };
 
   if (totalChampionships === 0) return null;
 
@@ -832,29 +902,33 @@ function PredictedAQSection({
         </span>
       </div>
       <p className="text-[11px] text-text-tertiary mb-2">
-        The top-ranked team in each conference based on the current rankings.
-        Conference championship winners earn an automatic NCAA regional bid
-        regardless of season record.
+        The top-ranked team in each conference based on the current rankings is shown
+        with a <span className="font-semibold">P</span> pill (Predicted). Once a championship
+        plays, the row dims and the actual winner can be filled in.
       </p>
 
       <div className="rounded-lg border border-border overflow-hidden">
+        {/* Sortable header row */}
         <div
           className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 90px 60px",
+            gridTemplateColumns: "1fr 90px 1fr 60px",
             gap: "6px",
           }}
         >
-          <span>Championship</span>
-          <span>Predicted AQ</span>
-          <span>Dates</span>
-          <span className="text-right">Rank</span>
+          <SortHeader label="Championship" sortKey="championship" current={sortKey} dir={sortDir} onSort={handleSort} />
+          <SortHeader label="Dates" sortKey="date" current={sortKey} dir={sortDir} onSort={handleSort} />
+          <SortHeader label="Predicted AQ" sortKey="status" current={sortKey} dir={sortDir} onSort={handleSort} />
+          <SortHeader label="Rank" sortKey="rank" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
         </div>
-        {grouped.map(({ championship, teams }) => {
+        {sortedGrouped.map(({ championship, teams }) => {
           const top = teams[0] ?? null;
           const tbd = isVenueTBD(championship);
           const isSelected = activeChampionship === championship.id;
+          const status = classifyByDate(championship, today);
+          const isPast = status === "past";
+          const isLive = status === "inProgress";
           return (
             <button
               key={championship.id}
@@ -863,11 +937,13 @@ function PredictedAQSection({
               }
               className={cn(
                 "w-full h-9 items-center text-[12px] px-3 border-b border-border/40 last:border-b-0 text-left transition-colors cursor-pointer hover:bg-white/[0.03]",
-                isSelected && "bg-white/[0.04]"
+                isSelected && "bg-white/[0.04]",
+                isPast && "bg-white/[0.015] opacity-70",
+                isLive && "bg-primary/[0.04]"
               )}
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr 90px 60px",
+                gridTemplateColumns: "1fr 90px 1fr 60px",
                 gap: "6px",
                 borderLeft: `2px solid ${championship.color}`,
                 paddingLeft: "8px",
@@ -880,12 +956,32 @@ function PredictedAQSection({
                     TBD
                   </span>
                 )}
-              </span>
-              <span className="text-foreground/90 truncate">
-                {top ? top.team : <span className="text-text-tertiary">—</span>}
+                {isLive && (
+                  <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">Live</span>
+                )}
+                {isPast && (
+                  <span className="ml-1.5 text-[9px] font-semibold text-text-tertiary uppercase">Completed</span>
+                )}
               </span>
               <span className="font-mono tabular-nums text-[11px] text-muted-foreground">
                 {formatDateRange(championship.startDate, championship.endDate)}
+              </span>
+              <span className="text-foreground/90 truncate flex items-center gap-1.5 min-w-0">
+                {top ? (
+                  <>
+                    <span className="truncate">{top.team}</span>
+                    {!isPast && (
+                      <span
+                        title="Predicted winner — top-ranked team in this conference"
+                        className="inline-flex items-center justify-center text-[9px] font-semibold text-primary bg-primary/15 rounded px-1 py-px shrink-0"
+                      >
+                        P
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-text-tertiary">—</span>
+                )}
               </span>
               <span className="font-mono tabular-nums text-[11px] text-muted-foreground text-right">
                 {top ? `#${top.rank}` : "—"}
@@ -904,5 +1000,45 @@ function PredictedAQSection({
         )}
       </div>
     </section>
+  );
+}
+
+function SortHeader({
+  label,
+  sortKey,
+  current,
+  dir,
+  onSort,
+  align = "left",
+}: {
+  label: string;
+  sortKey: AqSortKey;
+  current: AqSortKey;
+  dir: AqSortDir;
+  onSort: (k: AqSortKey) => void;
+  align?: "left" | "right";
+}) {
+  const active = current === sortKey;
+  return (
+    <button
+      type="button"
+      onClick={() => onSort(sortKey)}
+      className={cn(
+        "inline-flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer select-none",
+        active && "text-foreground",
+        align === "right" && "justify-end"
+      )}
+    >
+      <span>{label}</span>
+      {active ? (
+        dir === "asc" ? (
+          <ChevronUp className="h-3 w-3" />
+        ) : (
+          <ChevronDown className="h-3 w-3" />
+        )
+      ) : (
+        <ChevronsUpDown className="h-3 w-3 opacity-40" />
+      )}
+    </button>
   );
 }
