@@ -512,54 +512,24 @@ export default function USMap({ assignments, regionals, regionalSeeds }: USMapPr
         )}
       </div>
 
-      {/* Regional travel summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-        {regionals.map((r) => {
-          const teams = byRegional.get(r.id) ?? [];
-          const totalDist = teams.reduce(
-            (sum, t) => sum + t.distanceMiles,
-            0
-          );
-          const avgDist =
-            teams.length > 0 ? Math.round(totalDist / teams.length) : 0;
-          const maxTravel = teams.length > 0
-            ? teams.reduce(
-                (max, t) => (t.distanceMiles > max.distanceMiles ? t : max),
-                teams[0]
-              )
-            : null;
-
-          return (
-            <button
-              key={r.id}
-              data-active={activeRegional === r.id}
-              className="ring-card text-left transition-colors px-2.5 py-2 hover:bg-surface-raised/40 data-[active=true]:bg-surface-raised/60"
-              style={{ borderLeft: `3px solid ${r.color}`, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-              onClick={() =>
-                setActiveRegional(activeRegional === r.id ? null : r.id)
-              }
-            >
-              <p className="text-[11px] font-medium text-foreground">
-                {regionalSeeds.get(r.id) !== undefined && (
-                  <span className="font-mono tabular-nums text-muted-foreground mr-1">
-                    #{regionalSeeds.get(r.id)}
-                  </span>
-                )}
-                {r.name.replace(/ Regional$/, "")}
-              </p>
-              <div className="mt-1 space-y-0.5">
-                <p className="text-[10px] text-muted-foreground tabular-nums">
-                  {avgDist.toLocaleString()} mi avg
-                </p>
-                {maxTravel && (
-                  <p className="text-[10px] text-text-tertiary truncate">
-                    {maxTravel.team}
-                  </p>
-                )}
-              </div>
-            </button>
-          );
-        })}
+      {/* Regional filter buttons */}
+      <div className="flex flex-wrap gap-1.5">
+        {regionals.map((r) => (
+          <button
+            key={r.id}
+            onClick={() =>
+              setActiveRegional(activeRegional === r.id ? null : r.id)
+            }
+            className={cn(
+              "h-6 px-2 text-[10px] font-medium rounded-[4px] whitespace-nowrap border transition-colors",
+              activeRegional === r.id
+                ? "btn-lift text-foreground border-white/[0.12]"
+                : "border-white/[0.10] text-muted-foreground hover:text-foreground hover:border-white/[0.18] bg-secondary/30"
+            )}
+          >
+            {r.name.replace(/ Regional$/, "")}
+          </button>
+        ))}
       </div>
     </div>
   );

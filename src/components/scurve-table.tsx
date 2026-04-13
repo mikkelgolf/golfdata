@@ -236,9 +236,9 @@ export default function ScurveTable({
   const assignments = useMemo(() => {
     if (gender === "women") {
       if (womenTeams.length === 0 || womenRegionals.length === 0) return [];
-      return computeScurve(womenTeams, womenRegionals, scurveMode);
+      return computeScurve(womenTeams, womenRegionals, scurveMode, "women");
     }
-    return computeScurve(menTeams, menRegionals, scurveMode);
+    return computeScurve(menTeams, menRegionals, scurveMode, "men");
   }, [gender, menTeams, menRegionals, womenTeams, womenRegionals, scurveMode]);
 
   // Regional map for colors / names
@@ -877,7 +877,7 @@ function BubbleSection({
   regionalMap: Map<number, Regional>;
 }) {
   const LAST_IN = 6;
-  const FIRST_OUT = 10;
+  const FIRST_OUT = 6;
   const totalInField = assignments.length;
   if (totalInField === 0) return null;
 
@@ -892,19 +892,28 @@ function BubbleSection({
     .sort((a, b) => a.seed - b.seed)
     .slice(-LAST_IN);
 
+  const magicNumberRank = Math.max(...assignments.map((a) => a.rank));
+
   const teamsOut = teams
     .filter((t) => !assignmentMap.has(t.team))
     .sort((a, b) => a.rank - b.rank);
-  const firstOut = teamsOut.slice(0, FIRST_OUT);
 
-  if (lastIn.length === 0 && firstOut.length === 0 && subFiveHundredAqs.length === 0) {
+  const fiveHundredWatch = teamsOut.filter(
+    (t) => t.rank <= magicNumberRank && t.wins < t.losses && !t.isAutoQualifier
+  );
+  const fiveHundredWatchSet = new Set(fiveHundredWatch.map((t) => t.team));
+  const firstOut = teamsOut
+    .filter((t) => !fiveHundredWatchSet.has(t.team))
+    .slice(0, FIRST_OUT);
+
+  if (lastIn.length === 0 && firstOut.length === 0 && fiveHundredWatch.length === 0 && subFiveHundredAqs.length === 0) {
     return null;
   }
 
   return (
     <section className="mt-6">
       <div className="flex items-baseline gap-2 mb-2">
-        <h3 className="text-[13px] font-semibold text-foreground inline-flex items-center">
+        <h3 className="text-[11px] font-semibold text-foreground inline-flex items-center">
           Magic Number
           <InfoTooltip>
             <strong>Magic Number</strong> = the lowest-ranked at-large team that still made the field.
@@ -912,16 +921,27 @@ function BubbleSection({
             Coaches watch this line to know who&apos;s on the bubble.
           </InfoTooltip>
         </h3>
-        <span className="text-[11px] text-text-tertiary tabular-nums">
+        <span className="text-[9px] text-text-tertiary tabular-nums">
           <AnimatedNumber value={totalInField} className="!font-normal !tracking-normal text-text-tertiary" /> teams in field
         </span>
       </div>
 
       <div className="rounded-lg border border-border overflow-hidden">
+        {/* Column headers */}
+        <div
+          className="h-7 items-center px-3 bg-card text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
+          style={{ display: "grid", gridTemplateColumns: "40px 1fr 50px 50px 100px", gap: "6px" }}
+        >
+          <span>Rank</span>
+          <span>Team</span>
+          <span className="text-right">AWP</span>
+          <span className="text-right">vs .500</span>
+          <span>Regional</span>
+        </div>
+
         {/* Last N In */}
-        <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground flex items-center justify-between">
-          <span>Last {lastIn.length} In</span>
-          <span className="text-text-tertiary normal-case font-normal">rank · AWP · regional</span>
+        <div className="px-3 py-1 bg-card/60 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground border-t border-border">
+          Last {lastIn.length} In
         </div>
         {lastIn.map((team) => {
           const regional = regionalMap.get(team.regionalId);
@@ -930,33 +950,33 @@ function BubbleSection({
             <div
               key={team.team}
               className={cn(
-                "h-8 items-center text-[13px] px-3 border-b border-border/40 tabular-nums",
+                "h-7 items-center text-[10px] px-3 border-b border-border/40 tabular-nums",
                 isSubFiveHundredAq && "border-l-2 border-l-amber-500/60"
               )}
               style={{ display: "grid", gridTemplateColumns: "40px 1fr 50px 50px 100px", gap: "6px" }}
             >
-              <span className="font-mono text-muted-foreground text-[12px]">
+              <span className="font-mono text-muted-foreground">
                 #{team.rank}
               </span>
               <span className="font-medium text-foreground truncate">
                 {team.team}
                 {isSubFiveHundredAq && (
                   <span
-                    className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase"
+                    className="ml-1 text-[8px] font-semibold text-amber-500/80 uppercase"
                     title="Sub-.500 record but won conference championship — still earns the automatic bid"
                   >
                     Sub-.500 AQ
                   </span>
                 )}
               </span>
-              <span className="font-mono text-foreground/80 text-right text-[12px]">
+              <span className="font-mono text-foreground/80 text-right">
                 {fmtAwp(team.avgPoints)}
               </span>
-              <span className={cn("font-mono text-right text-[12px]", team.wins - team.losses >= 0 ? "text-muted-foreground" : "text-destructive/80")}>
+              <span className={cn("font-mono text-right", team.wins - team.losses >= 0 ? "text-muted-foreground" : "text-destructive/80")}>
                 {team.wins - team.losses >= 0 ? "+" : ""}{team.wins - team.losses}
               </span>
               <span
-                className="text-[11px] text-muted-foreground truncate"
+                className="text-muted-foreground truncate"
                 style={{ borderLeft: `2px solid ${regional?.color ?? "#888"}`, paddingLeft: "6px" }}
               >
                 {regional?.name.replace(/ Regional$/, "")}
@@ -973,53 +993,82 @@ function BubbleSection({
           <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
         </div>
 
+        {/* .500 Watch */}
+        {fiveHundredWatch.length > 0 && (
+          <>
+            <div className="px-3 py-1 bg-card/60 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground border-t border-border">
+              .500 Watch
+              <span className="ml-1 font-normal text-text-tertiary">
+                — ranked in field, excluded by .500 rule
+              </span>
+            </div>
+            {fiveHundredWatch.map((team) => (
+              <div
+                key={team.team}
+                className="h-7 items-center text-[10px] px-3 border-b border-border/40 tabular-nums border-l-2 border-l-amber-500/60"
+                style={{ display: "grid", gridTemplateColumns: "40px 1fr 50px 50px 100px", gap: "6px" }}
+              >
+                <span className="font-mono text-muted-foreground">
+                  #{team.rank}
+                </span>
+                <span className="text-muted-foreground truncate">
+                  {team.team}
+                  <span className="ml-1 text-[8px] font-semibold text-amber-500/70 uppercase">
+                    {team.wins}-{team.losses}
+                  </span>
+                </span>
+                <span className="font-mono text-foreground/70 text-right">
+                  {fmtAwp(team.avgPoints)}
+                </span>
+                <span className="font-mono text-right text-destructive/80">
+                  {team.wins - team.losses}
+                </span>
+                <span className="text-text-tertiary truncate">
+                  {team.conference}
+                </span>
+              </div>
+            ))}
+          </>
+        )}
+
         {/* First N Out */}
         {firstOut.length > 0 && (
           <>
-            <div className="px-3 py-1.5 bg-card text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="px-3 py-1 bg-card/60 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground border-t border-border">
               First {firstOut.length} Out
             </div>
-            {firstOut.map((team, idx) => {
-              const belowFiveHundred = team.wins < team.losses;
-              return (
-                <div
-                  key={team.team}
-                  className={cn(
-                    "h-8 items-center text-[13px] px-3 border-b border-border/40 tabular-nums",
-                    idx < 3 ? "opacity-85" : idx < 6 ? "opacity-70" : "opacity-55",
-                    belowFiveHundred && "border-l-2 border-l-destructive/50"
-                  )}
-                  style={{ display: "grid", gridTemplateColumns: "40px 1fr 50px 50px 100px", gap: "6px" }}
-                >
-                  <span className="font-mono text-muted-foreground text-[12px]">
-                    #{team.rank}
-                  </span>
-                  <span className="text-muted-foreground truncate">
-                    {team.team}
-                    {belowFiveHundred && (
-                      <span className="ml-1.5 text-[9px] font-semibold text-destructive/70 uppercase">
-                        Below .500
-                      </span>
-                    )}
-                  </span>
-                  <span className="font-mono text-foreground/70 text-right text-[12px]">
-                    {fmtAwp(team.avgPoints)}
-                  </span>
-                  <span className={cn("font-mono text-right text-[12px]", team.wins - team.losses >= 0 ? "text-muted-foreground" : "text-destructive/80")}>
-                    {team.wins - team.losses >= 0 ? "+" : ""}{team.wins - team.losses}
-                  </span>
-                  <span className="text-[11px] text-text-tertiary truncate">
-                    {team.conference}
-                  </span>
-                </div>
-              );
-            })}
+            {firstOut.map((team, idx) => (
+              <div
+                key={team.team}
+                className={cn(
+                  "h-7 items-center text-[10px] px-3 border-b border-border/40 tabular-nums",
+                  idx < 3 ? "opacity-85" : "opacity-70"
+                )}
+                style={{ display: "grid", gridTemplateColumns: "40px 1fr 50px 50px 100px", gap: "6px" }}
+              >
+                <span className="font-mono text-muted-foreground">
+                  #{team.rank}
+                </span>
+                <span className="text-muted-foreground truncate">
+                  {team.team}
+                </span>
+                <span className="font-mono text-foreground/70 text-right">
+                  {fmtAwp(team.avgPoints)}
+                </span>
+                <span className={cn("font-mono text-right", team.wins - team.losses >= 0 ? "text-muted-foreground" : "text-destructive/80")}>
+                  {team.wins - team.losses >= 0 ? "+" : ""}{team.wins - team.losses}
+                </span>
+                <span className="text-text-tertiary truncate">
+                  {team.conference}
+                </span>
+              </div>
+            ))}
           </>
         )}
 
         {subFiveHundredAqs.length > 0 && (
           <div className="px-3 py-2 bg-card/50 border-t border-border">
-            <p className="text-[11px] text-text-tertiary">
+            <p className="text-[10px] text-text-tertiary">
               <span className="font-medium text-amber-500/80">{subFiveHundredAqs.length} sub-.500 AQ{subFiveHundredAqs.length > 1 ? "s" : ""}</span>
               {" "}in field (below .500 but won conference auto-qualifier):{" "}
               {subFiveHundredAqs.map((t) => t.team).join(", ")}
@@ -1080,10 +1129,18 @@ function BreakdownView({
     .sort((a, b) => a.seed - b.seed)
     .slice(-LAST_IN);
 
-  // First N Out: teams not in the field, sorted by rank
-  const firstOut = teams
+  const magicNumberRank = Math.max(...assignments.map((a) => a.rank));
+
+  const teamsOut = teams
     .filter((t) => !assignmentMap.has(t.team))
-    .sort((a, b) => a.rank - b.rank)
+    .sort((a, b) => a.rank - b.rank);
+
+  const fiveHundredWatch = teamsOut.filter(
+    (t) => t.rank <= magicNumberRank && t.wins < t.losses && !t.isAutoQualifier
+  );
+  const fiveHundredWatchSet = new Set(fiveHundredWatch.map((t) => t.team));
+  const firstOut = teamsOut
+    .filter((t) => !fiveHundredWatchSet.has(t.team))
     .slice(0, FIRST_OUT);
 
   const subFiveHundredAqs = assignments.filter((a) => !a.eligible && a.isAutoQualifier);
@@ -1109,16 +1166,20 @@ function BreakdownView({
       <div className="rounded-lg border border-border overflow-hidden">
         {/* Column header row */}
         <div
-          className="px-3 py-1.5 bg-card text-[10px] font-medium uppercase tracking-wide text-muted-foreground items-center"
-          style={{ display: "grid", gridTemplateColumns: "32px 1fr 50px 70px 60px 60px 110px", gap: "8px" }}
+          className="px-3 py-1.5 bg-card text-[10px] font-medium uppercase tracking-wide text-muted-foreground items-center grid grid-cols-[30px_1fr_35px_45px_70px] md:grid-cols-[32px_1fr_50px_70px_60px_60px_110px] gap-1 md:gap-2"
         >
-          <span className="text-center">Reg</span>
+          <span className="text-center">
+            <span className="md:hidden">#</span>
+            <span className="hidden md:inline">Reg</span>
+          </span>
           <span>Team</span>
-          <span className="text-right">Rank</span>
-          <span className="text-center">W-L-T</span>
-          <span className="text-right">±.500</span>
+          <div className="hidden md:contents">
+            <span className="text-right">Rank</span>
+            <span className="text-center">W-L-T</span>
+          </div>
+          <span className="text-right">+/&minus;</span>
           <span className="text-right">AWP</span>
-          <span className="hidden md:block">Predicted Regional</span>
+          <span className="truncate">Regional</span>
         </div>
 
         {/* Last N In */}
@@ -1134,28 +1195,30 @@ function BreakdownView({
             <div
               key={team.team}
               className={cn(
-                "h-9 items-center text-[12px] px-3 border-b border-border/40 tabular-nums",
+                "h-8 items-center text-[10px] px-3 border-b border-border/40 tabular-nums grid grid-cols-[30px_1fr_35px_45px_70px] md:grid-cols-[32px_1fr_50px_70px_60px_60px_110px] gap-1 md:gap-2",
                 isSubFiveHundredAq && "border-l-2 border-l-amber-500/60"
               )}
-              style={{ display: "grid", gridTemplateColumns: "32px 1fr 50px 70px 60px 60px 110px", gap: "8px" }}
             >
               <span className="font-mono text-muted-foreground text-center">
-                {regionalSeed ?? "—"}
+                <span className="md:hidden">#{team.rank}</span>
+                <span className="hidden md:inline">{regionalSeed ?? "—"}</span>
               </span>
               <span className="font-medium text-foreground truncate">
                 {team.team}
                 {isSubFiveHundredAq && (
-                  <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                  <span className="ml-1.5 text-[8px] font-semibold text-amber-500/80 uppercase">
                     Sub-.500 AQ
                   </span>
                 )}
               </span>
-              <span className="font-mono text-muted-foreground text-right">
-                #{team.rank}
-              </span>
-              <span className="font-mono text-muted-foreground text-center">
-                {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
-              </span>
+              <div className="hidden md:contents">
+                <span className="font-mono text-muted-foreground text-right">
+                  #{team.rank}
+                </span>
+                <span className="font-mono text-muted-foreground text-center">
+                  {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
+                </span>
+              </div>
               <span className={cn("font-mono text-right", diff.positive ? "text-foreground/80" : "text-destructive/80")}>
                 {diff.label}
               </span>
@@ -1163,7 +1226,7 @@ function BreakdownView({
                 {fmtAwp(team.avgPoints)}
               </span>
               <span
-                className="text-[11px] text-muted-foreground truncate hidden md:block"
+                className="text-muted-foreground truncate"
                 style={{ borderLeft: `2px solid ${regional?.color ?? "#888"}`, paddingLeft: "6px" }}
               >
                 {regional?.name.replace(/ Regional$/, "") ?? "—"}
@@ -1181,6 +1244,53 @@ function BreakdownView({
           <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
         </div>
 
+        {/* .500 Watch */}
+        {fiveHundredWatch.length > 0 && (
+          <>
+            <div className="px-3 py-1 bg-card/60 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              .500 Watch
+              <span className="ml-1 font-normal text-text-tertiary">
+                — ranked in field, excluded by .500 rule
+              </span>
+            </div>
+            {fiveHundredWatch.map((team) => {
+              const diff = fmtDiff(team.wins, team.losses);
+              return (
+                <div
+                  key={team.team}
+                  className="h-8 items-center text-[10px] px-3 border-b border-border/40 tabular-nums border-l-2 border-l-amber-500/60 grid grid-cols-[30px_1fr_35px_45px_70px] md:grid-cols-[32px_1fr_50px_70px_60px_60px_110px] gap-1 md:gap-2"
+                >
+                  <span className="font-mono text-muted-foreground text-center">
+                    <span className="md:hidden">#{team.rank}</span>
+                    <span className="hidden md:inline">—</span>
+                  </span>
+                  <span className="text-muted-foreground truncate">
+                    {team.team}
+                    <span className="ml-1.5 text-[8px] font-semibold text-amber-500/70 uppercase">
+                      {team.wins}-{team.losses}
+                    </span>
+                  </span>
+                  <div className="hidden md:contents">
+                    <span className="font-mono text-muted-foreground text-right">#{team.rank}</span>
+                    <span className="font-mono text-muted-foreground text-center">
+                      {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
+                    </span>
+                  </div>
+                  <span className="font-mono text-right text-destructive/80">
+                    {diff.label}
+                  </span>
+                  <span className="font-mono text-muted-foreground text-right">
+                    {fmtAwp(team.avgPoints)}
+                  </span>
+                  <span className="text-text-tertiary truncate">
+                    {team.conference}
+                  </span>
+                </div>
+              );
+            })}
+          </>
+        )}
+
         {/* First N Out */}
         {firstOut.length > 0 && (
           <>
@@ -1189,37 +1299,34 @@ function BreakdownView({
             </div>
             {firstOut.map((team, idx) => {
               const diff = fmtDiff(team.wins, team.losses);
-              const belowFiveHundred = team.wins < team.losses;
               return (
                 <div
                   key={team.team}
                   className={cn(
-                    "h-9 items-center text-[12px] px-3 border-b border-border/40 tabular-nums",
-                    idx < 3 ? "opacity-90" : "opacity-75",
-                    belowFiveHundred && "border-l-2 border-l-destructive/50"
+                    "h-8 items-center text-[10px] px-3 border-b border-border/40 tabular-nums grid grid-cols-[30px_1fr_35px_45px_70px] md:grid-cols-[32px_1fr_50px_70px_60px_60px_110px] gap-1 md:gap-2",
+                    idx < 3 ? "opacity-90" : "opacity-75"
                   )}
-                  style={{ display: "grid", gridTemplateColumns: "32px 1fr 50px 70px 60px 60px 110px", gap: "8px" }}
                 >
-                  <span className="font-mono text-text-tertiary text-center">+{idx + 1}</span>
+                  <span className="font-mono text-text-tertiary text-center">
+                    <span className="md:hidden">#{team.rank}</span>
+                    <span className="hidden md:inline">+{idx + 1}</span>
+                  </span>
                   <span className="text-muted-foreground truncate">
                     {team.team}
-                    {belowFiveHundred && (
-                      <span className="ml-1.5 text-[9px] font-semibold text-destructive/70 uppercase">
-                        Below .500
-                      </span>
-                    )}
                   </span>
-                  <span className="font-mono text-muted-foreground text-right">#{team.rank}</span>
-                  <span className="font-mono text-muted-foreground text-center">
-                    {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
-                  </span>
+                  <div className="hidden md:contents">
+                    <span className="font-mono text-muted-foreground text-right">#{team.rank}</span>
+                    <span className="font-mono text-muted-foreground text-center">
+                      {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
+                    </span>
+                  </div>
                   <span className={cn("font-mono text-right", diff.positive ? "text-muted-foreground" : "text-destructive/80")}>
                     {diff.label}
                   </span>
                   <span className="font-mono text-muted-foreground text-right">
                     {fmtAwp(team.avgPoints)}
                   </span>
-                  <span className="text-[11px] text-text-tertiary truncate hidden md:block">
+                  <span className="text-text-tertiary truncate">
                     {team.conference}
                   </span>
                 </div>
@@ -1230,7 +1337,7 @@ function BreakdownView({
 
         {subFiveHundredAqs.length > 0 && (
           <div className="px-3 py-2 bg-card/50 border-t border-border">
-            <p className="text-[11px] text-text-tertiary">
+            <p className="text-[10px] text-text-tertiary">
               <span className="font-medium text-amber-500/80">{subFiveHundredAqs.length} sub-.500 AQ{subFiveHundredAqs.length > 1 ? "s" : ""}</span>
               {" "}in field (below .500 but won conference auto-qualifier):{" "}
               {subFiveHundredAqs.map((t) => t.team).join(", ")}

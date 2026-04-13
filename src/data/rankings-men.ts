@@ -97,4 +97,7 @@ export const rankingsMen: TeamData[] = [
   { rank: 79, team: "Liberty", conference: "CUSA", events: 9, wins: 70, losses: 55, ties: 0, eligible: true, isAutoQualifier: true, aqConference: "CUSA", lat: 37.3528, lng: -79.1726, avgPoints: 34.7405 },
   { rank: 80, team: "East Tennessee State", conference: "SOCON", events: 9, wins: 64, losses: 65, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 36.3024, lng: -82.3688, avgPoints: 34.1287 },
   { rank: 81, team: "Pacific", conference: "WCC", events: 10, wins: 79, losses: 73, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 37.9796, lng: -121.3110, avgPoints: 34.1194 },
+  { rank: 82, team: "Michigan", conference: "B10", events: 8, wins: 54, losses: 47, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 42.2780, lng: -83.7382, avgPoints: 33.9970 },
+  { rank: 83, team: "San Jose State", conference: "MWC", events: 9, wins: 76, losses: 70, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 37.3382, lng: -121.8863, avgPoints: 33.7600 },
+  { rank: 84, team: "Minnesota", conference: "B10", events: 9, wins: 64, losses: 60, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 44.9740, lng: -93.2277, avgPoints: 33.5701 },
 ];

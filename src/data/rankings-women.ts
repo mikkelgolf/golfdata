@@ -84,4 +84,11 @@ export const rankingsWomen: TeamData[] = [
   { rank: 70, team: "Maryland", conference: "B10", events: 10, wins: 58, losses: 83, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 38.9869, lng: -76.9426, avgPoints: 25.8364 },
   { rank: 71, team: "Minnesota", conference: "B10", events: 9, wins: 58, losses: 54, ties: 4, eligible: true, isAutoQualifier: false, aqConference: null, lat: 44.9740, lng: -93.2277, avgPoints: 25.5589 },
   { rank: 72, team: "Northern Arizona", conference: "BSKY", events: 8, wins: 85, losses: 33, ties: 2, eligible: true, isAutoQualifier: true, aqConference: "BSKY", lat: 35.1847, lng: -111.6558, avgPoints: 25.2719 },
+  { rank: 73, team: "Miami", conference: "ACC", events: 9, wins: 47, losses: 77, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 25.7174, lng: -80.2792, avgPoints: 25.2417 },
+  { rank: 74, team: "Louisville", conference: "ACC", events: 10, wins: 70, losses: 48, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 38.2116, lng: -85.7585, avgPoints: 25.2050 },
+  { rank: 75, team: "Nebraska", conference: "B10", events: 9, wins: 70, losses: 54, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 40.8202, lng: -96.7005, avgPoints: 24.8540 },
+  { rank: 76, team: "Penn State", conference: "B10", events: 9, wins: 74, losses: 52, ties: 4, eligible: true, isAutoQualifier: false, aqConference: null, lat: 40.7982, lng: -77.8599, avgPoints: 24.6025 },
+  { rank: 77, team: "Brigham Young", conference: "B12", events: 9, wins: 60, losses: 58, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 40.2519, lng: -111.6493, avgPoints: 24.3564 },
+  { rank: 78, team: "Sacramento State", conference: "BSKY", events: 8, wins: 69, losses: 39, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 38.5811, lng: -121.4939, avgPoints: 24.3069 },
+  { rank: 79, team: "Santa Clara", conference: "WCC", events: 8, wins: 78, losses: 20, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 37.3541, lng: -121.9552, avgPoints: 24.0648 },
 ];

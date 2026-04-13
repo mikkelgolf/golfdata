@@ -1,6 +1,7 @@
 import { haversineDistance } from "@/lib/geo";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
+import { CHAMPIONSHIP_STRUCTURE } from "@/data/ncaa-selection-rules";
 
 export interface ScurveAssignment extends TeamData {
   seed: number;
@@ -48,10 +49,21 @@ export function computeRegionalSeeds(
 export function computeScurve(
   teams: TeamData[],
   regionals: Regional[],
-  mode: ScurveMode = "committee"
+  mode: ScurveMode = "committee",
+  gender: "men" | "women" = "men"
 ): ScurveAssignment[] {
-  // Filter out ineligible teams, but keep auto-qualifiers (AQ wins conference regardless)
-  const eligible = teams.filter((t) => t.eligible || t.isAutoQualifier);
+  const fieldSize = CHAMPIONSHIP_STRUCTURE.totalFieldSize[gender];
+  const allEligible = teams.filter((t) => t.eligible || t.isAutoQualifier);
+
+  // AQs are guaranteed spots; fill remaining with top at-large by ranking
+  const aqs = allEligible.filter((t) => t.isAutoQualifier);
+  const atLarge = allEligible
+    .filter((t) => !t.isAutoQualifier)
+    .sort((a, b) => a.rank - b.rank)
+    .slice(0, Math.max(0, fieldSize - aqs.length));
+
+  const eligible = [...aqs, ...atLarge].sort((a, b) => a.rank - b.rank);
+
   if (mode === "strict") {
     return computeStrictScurve(eligible, regionals);
   }
