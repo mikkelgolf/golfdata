@@ -83,10 +83,10 @@ function deriveAutoQualifiers(teams: TeamData[]): TeamData[] {
  * Two modes:
  * - "strict": Pure mathematical serpentine with host swaps only.
  * - "committee": Replicates how the NCAA committee actually assigns regionals:
- *   1. Top seeds (1-6) assigned to closest regional site (not strict serpentine)
- *   2. Host schools guaranteed their home regional
- *   3. Auto-qualifiers (seeds ~12-13) get geographic preference
- *   4. Standard serpentine for remaining seeds
+ *   1. #1 seed assigned to closest regional site
+ *   2. Seeds 2-9: pure serpentine
+ *   3. Host schools guaranteed their home regional (all tiers)
+ *   4. Seeds 10+: geographic preference swaps (>1200 mi threshold)
  */
 export function computeScurve(
   teams: TeamData[],
@@ -153,10 +153,10 @@ function computeStrictScurve(
  * COMMITTEE S-CURVE: Replicates the NCAA selection committee's approach.
  *
  * Key differences from strict:
- * 1. Top 6 seeds assigned to closest available regional (not serpentine order)
- * 2. Host schools guaranteed home regional
- * 3. AQs seeded 12+ get geographic preference (won't be shipped cross-country)
- * 4. Standard serpentine fills remaining slots
+ * 1. #1 overall seed placed at closest regional
+ * 2. Seeds 2-9: pure serpentine, no geographic optimization
+ * 3. Host schools guaranteed home regional (all tiers)
+ * 4. Seeds 10+: geographic preference swaps for teams >1200 mi from regional
  */
 function computeCommitteeScurve(
   teams: TeamData[],
@@ -164,122 +164,82 @@ function computeCommitteeScurve(
 ): ScurveAssignment[] {
   const numRegionals = regionals.length;
 
-  // Build regional map for distance lookups
   const regionalMap = new Map<number, Regional>();
   for (const r of regionals) {
     regionalMap.set(r.id, r);
   }
 
-  // Initialize all assignments with seeds
-  const assignments: ScurveAssignment[] = teams.map((team, index) => ({
-    ...team,
-    seed: index + 1,
-    regionalId: -1, // will be assigned
-    distanceMiles: 0,
-  }));
-
-  // Track which regional slots are taken per tier
-  // Each regional can hold ceil(teams.length / numRegionals) teams
-  const regionalCounts = new Map<number, number>();
-  const maxPerRegional = Math.ceil(teams.length / numRegionals);
-  for (const r of regionals) {
-    regionalCounts.set(r.id, 0);
-  }
-
-  // Identify host schools
   const hostToRegional = new Map<string, number>();
   for (const r of regionals) {
     hostToRegional.set(r.host, r.id);
   }
 
-  // -------------------------------------------------------------------
-  // PHASE 1: Assign top seeds (1-6) to closest regional
-  // The committee looks at which regional site is closest to each 1-seed,
-  // rather than doing strict serpentine for the top line.
-  // -------------------------------------------------------------------
-  const topSeeds = assignments.slice(0, numRegionals);
-  const availableRegionals = new Set(regionals.map((r) => r.id));
-
-  // First, lock in any host school that's a top seed
-  for (const team of topSeeds) {
-    const homeRegionalId = hostToRegional.get(team.team);
-    if (homeRegionalId !== undefined && availableRegionals.has(homeRegionalId)) {
-      team.regionalId = homeRegionalId;
-      availableRegionals.delete(homeRegionalId);
-      regionalCounts.set(homeRegionalId, (regionalCounts.get(homeRegionalId) ?? 0) + 1);
-    }
-  }
-
-  // Then assign remaining top seeds by proximity (closest available regional)
-  const unassignedTopSeeds = topSeeds.filter((t) => t.regionalId === -1);
-
-  // Sort by seed to give higher seeds first pick
-  unassignedTopSeeds.sort((a, b) => a.seed - b.seed);
-
-  for (const team of unassignedTopSeeds) {
-    let bestRegionalId = -1;
-    let bestDist = Infinity;
-
-    for (const rId of availableRegionals) {
-      const r = regionalMap.get(rId)!;
-      const dist = haversineDistance(team.lat, team.lng, r.lat, r.lng);
-      if (dist < bestDist) {
-        bestDist = dist;
-        bestRegionalId = rId;
-      }
-    }
-
-    team.regionalId = bestRegionalId;
-    availableRegionals.delete(bestRegionalId);
-    regionalCounts.set(bestRegionalId, (regionalCounts.get(bestRegionalId) ?? 0) + 1);
-  }
-
-  // -------------------------------------------------------------------
-  // PHASE 2: Standard serpentine for seeds 7+ (tier 1 onwards)
-  // -------------------------------------------------------------------
-  const remainingTeams = assignments.slice(numRegionals);
-
-  for (let i = 0; i < remainingTeams.length; i++) {
-    const overallIndex = numRegionals + i;
-    const tier = Math.floor(overallIndex / numRegionals);
-    const posInTier = overallIndex % numRegionals;
+  // Start with pure serpentine for all teams
+  const assignments: ScurveAssignment[] = teams.map((team, index) => {
+    const tier = Math.floor(index / numRegionals);
+    const posInTier = index % numRegionals;
     const isReverseTier = tier % 2 === 1;
     const regionalIndex = isReverseTier
       ? numRegionals - 1 - posInTier
       : posInTier;
 
-    remainingTeams[i].regionalId = regionals[regionalIndex].id;
-    regionalCounts.set(
-      regionals[regionalIndex].id,
-      (regionalCounts.get(regionals[regionalIndex].id) ?? 0) + 1
-    );
+    return {
+      ...team,
+      seed: index + 1,
+      regionalId: regionals[regionalIndex].id,
+      distanceMiles: 0,
+    };
+  });
+
+  // -------------------------------------------------------------------
+  // PHASE 1: Lock #1 seed to closest regional
+  // -------------------------------------------------------------------
+  if (assignments.length > 0) {
+    const topSeed = assignments[0];
+    let closestId = topSeed.regionalId;
+    let closestDist = Infinity;
+
+    for (const r of regionals) {
+      const d = haversineDistance(topSeed.lat, topSeed.lng, r.lat, r.lng);
+      if (d < closestDist) {
+        closestDist = d;
+        closestId = r.id;
+      }
+    }
+
+    if (closestId !== topSeed.regionalId) {
+      const swapIdx = assignments
+        .slice(0, numRegionals)
+        .findIndex((a) => a.regionalId === closestId);
+      if (swapIdx !== -1) {
+        assignments[swapIdx].regionalId = topSeed.regionalId;
+      }
+      topSeed.regionalId = closestId;
+    }
   }
 
   // -------------------------------------------------------------------
-  // PHASE 3: Host school swaps for seeds 7+
+  // PHASE 2: Host school swaps (all tiers)
   // -------------------------------------------------------------------
-  applyHostSwaps(assignments, regionals, numRegionals);
+  applyHostSwaps(assignments, regionals);
 
   // -------------------------------------------------------------------
-  // PHASE 4: AQ geographic preference
-  // Auto-qualifiers seeded 12+ shouldn't be shipped cross-country.
-  // If an AQ is >1200 miles from its regional, try to swap with a
-  // non-AQ in the same tier that's closer to that regional.
+  // PHASE 3: Geographic preference for seeds 10+
+  // Teams seeded 10+ that are >1200 miles from their regional can be
+  // swapped with a same-tier team if it meaningfully reduces travel.
   // -------------------------------------------------------------------
-  const AQ_DISTANCE_THRESHOLD = 1200; // miles
+  const GEO_DISTANCE_THRESHOLD = 1200;
 
-  for (let i = numRegionals; i < assignments.length; i++) {
+  for (let i = 0; i < assignments.length; i++) {
     const team = assignments[i];
-    if (!team.isAutoQualifier) continue;
-    if (team.seed < 12) continue; // only for lower-seeded AQs
+    if (team.seed < 10) continue;
 
     const regional = regionalMap.get(team.regionalId)!;
     const dist = haversineDistance(team.lat, team.lng, regional.lat, regional.lng);
 
-    if (dist <= AQ_DISTANCE_THRESHOLD) continue;
+    if (dist <= GEO_DISTANCE_THRESHOLD) continue;
 
-    // Find a better regional for this AQ
-    const tier = Math.floor((team.seed - 1) / numRegionals);
+    const tier = Math.floor(i / numRegionals);
     const tierStart = tier * numRegionals;
     const tierEnd = Math.min(tierStart + numRegionals, assignments.length);
 
@@ -290,23 +250,19 @@ function computeCommitteeScurve(
       if (j === i) continue;
       const other = assignments[j];
 
-      // Don't swap with hosts or other AQs
       if (hostToRegional.has(other.team) && hostToRegional.get(other.team) === other.regionalId) continue;
 
       const otherRegional = regionalMap.get(other.regionalId)!;
 
-      // Calculate distances if they swapped
       const teamToOtherRegional = haversineDistance(team.lat, team.lng, otherRegional.lat, otherRegional.lng);
       const otherToTeamRegional = haversineDistance(other.lat, other.lng, regional.lat, regional.lng);
 
-      // Only swap if it meaningfully improves the AQ's distance
-      // and doesn't make the other team's situation dramatically worse
-      const aqImprovement = dist - teamToOtherRegional;
-      const otherPenalty = otherToTeamRegional - haversineDistance(other.lat, other.lng, otherRegional.lat, otherRegional.lng);
+      const improvement = dist - teamToOtherRegional;
+      const penalty = otherToTeamRegional - haversineDistance(other.lat, other.lng, otherRegional.lat, otherRegional.lng);
 
-      if (aqImprovement > 200 && aqImprovement > otherPenalty && aqImprovement > bestImprovement) {
+      if (improvement > 200 && improvement > penalty && improvement > bestImprovement) {
         bestSwapIdx = j;
-        bestImprovement = aqImprovement;
+        bestImprovement = improvement;
       }
     }
 
@@ -318,7 +274,7 @@ function computeCommitteeScurve(
   }
 
   // -------------------------------------------------------------------
-  // PHASE 5: Calculate final distances
+  // PHASE 4: Calculate final distances
   // -------------------------------------------------------------------
   calculateDistances(assignments, regionals);
 
