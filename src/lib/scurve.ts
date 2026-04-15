@@ -83,10 +83,10 @@ function deriveAutoQualifiers(teams: TeamData[]): TeamData[] {
  * Two modes:
  * - "strict": Pure mathematical serpentine with host swaps only.
  * - "committee": Replicates how the NCAA committee actually assigns regionals:
- *   1. #1 seed assigned to closest regional site
- *   2. Seeds 2-9: pure serpentine
+ *   1. Top 6 seeds assigned to closest available regional (greedy by seed order)
+ *   2. Seeds 7+ serpentine by regional strength order (competitive balance)
  *   3. Host schools guaranteed their home regional (all tiers)
- *   4. Seeds 10+: geographic preference swaps (>1200 mi threshold)
+ *   4. Seeds 7+: geographic preference swaps (>1200 mi threshold)
  */
 export function computeScurve(
   teams: TeamData[],
@@ -152,11 +152,11 @@ function computeStrictScurve(
 /**
  * COMMITTEE S-CURVE: Replicates the NCAA selection committee's approach.
  *
- * Key differences from strict:
- * 1. #1 overall seed placed at closest regional
- * 2. Seeds 2-9: pure serpentine, no geographic optimization
- * 3. Host schools guaranteed home regional (all tiers)
- * 4. Seeds 10+: geographic preference swaps for teams >1200 mi from regional
+ * 1. Top 6 seeds assigned to closest available regional (greedy by seed order)
+ * 2. Seeds 7+ serpentine by REGIONAL STRENGTH ORDER (weakest regional gets
+ *    best 2-seed, strongest gets worst 2-seed — the core balancing mechanism)
+ * 3. Host schools guaranteed home regional (within-tier swaps)
+ * 4. Seeds 7+: geographic preference swaps for teams >1200 mi from regional
  */
 function computeCommitteeScurve(
   teams: TeamData[],
@@ -174,65 +174,85 @@ function computeCommitteeScurve(
     hostToRegional.set(r.host, r.id);
   }
 
-  // Start with pure serpentine for all teams
-  const assignments: ScurveAssignment[] = teams.map((team, index) => {
-    const tier = Math.floor(index / numRegionals);
-    const posInTier = index % numRegionals;
-    const isReverseTier = tier % 2 === 1;
-    const regionalIndex = isReverseTier
-      ? numRegionals - 1 - posInTier
-      : posInTier;
-
-    return {
-      ...team,
-      seed: index + 1,
-      regionalId: regionals[regionalIndex].id,
-      distanceMiles: 0,
-    };
-  });
+  const assignments: ScurveAssignment[] = teams.map((team, index) => ({
+    ...team,
+    seed: index + 1,
+    regionalId: -1,
+    distanceMiles: 0,
+  }));
 
   // -------------------------------------------------------------------
-  // PHASE 1: Lock #1 seed to closest regional
+  // PHASE 1: Assign top 6 seeds to closest available regional
+  // Host schools in the top 6 are locked to their home regional first,
+  // then remaining top seeds pick closest available in seed order.
   // -------------------------------------------------------------------
-  if (assignments.length > 0) {
-    const topSeed = assignments[0];
-    let closestId = topSeed.regionalId;
-    let closestDist = Infinity;
+  const availableRegionals = new Set(regionals.map((r) => r.id));
 
-    for (const r of regionals) {
-      const d = haversineDistance(topSeed.lat, topSeed.lng, r.lat, r.lng);
-      if (d < closestDist) {
-        closestDist = d;
-        closestId = r.id;
-      }
-    }
-
-    if (closestId !== topSeed.regionalId) {
-      const swapIdx = assignments
-        .slice(0, numRegionals)
-        .findIndex((a) => a.regionalId === closestId);
-      if (swapIdx !== -1) {
-        assignments[swapIdx].regionalId = topSeed.regionalId;
-      }
-      topSeed.regionalId = closestId;
+  for (let i = 0; i < numRegionals && i < assignments.length; i++) {
+    const homeId = hostToRegional.get(assignments[i].team);
+    if (homeId !== undefined && availableRegionals.has(homeId)) {
+      assignments[i].regionalId = homeId;
+      availableRegionals.delete(homeId);
     }
   }
 
+  const unassigned = assignments
+    .slice(0, numRegionals)
+    .filter((a) => a.regionalId === -1);
+  unassigned.sort((a, b) => a.seed - b.seed);
+
+  for (const team of unassigned) {
+    let bestId = -1;
+    let bestDist = Infinity;
+    for (const rId of availableRegionals) {
+      const r = regionalMap.get(rId)!;
+      const d = haversineDistance(team.lat, team.lng, r.lat, r.lng);
+      if (d < bestDist) {
+        bestDist = d;
+        bestId = rId;
+      }
+    }
+    team.regionalId = bestId;
+    availableRegionals.delete(bestId);
+  }
+
   // -------------------------------------------------------------------
-  // PHASE 2: Host school swaps (all tiers)
+  // PHASE 2: Serpentine seeds 7+ by REGIONAL STRENGTH ORDER
+  // Strength = order of the top seed placed there in Phase 1.
+  // strengthOrder[0] = regional ID of the strongest (has #1 overall seed)
+  // strengthOrder[5] = regional ID of the weakest (has #6 overall seed)
+  // -------------------------------------------------------------------
+  const strengthOrder = assignments
+    .slice(0, numRegionals)
+    .sort((a, b) => a.seed - b.seed)
+    .map((a) => a.regionalId);
+
+  for (let i = numRegionals; i < assignments.length; i++) {
+    const tier = Math.floor(i / numRegionals);
+    const posInTier = i % numRegionals;
+    const isReverseTier = tier % 2 === 1;
+    const strengthIdx = isReverseTier
+      ? numRegionals - 1 - posInTier
+      : posInTier;
+    assignments[i].regionalId = strengthOrder[strengthIdx];
+  }
+
+  // -------------------------------------------------------------------
+  // PHASE 3: Host school swaps (all tiers, including top 6)
   // -------------------------------------------------------------------
   applyHostSwaps(assignments, regionals);
 
   // -------------------------------------------------------------------
-  // PHASE 3: Geographic preference for seeds 10+
-  // Teams seeded 10+ that are >1200 miles from their regional can be
-  // swapped with a same-tier team if it meaningfully reduces travel.
+  // PHASE 4: Geographic preference for seeds 7+
+  // Teams below the 1-seed line that are >1200 miles from their regional
+  // can be swapped with a same-tier team if it meaningfully reduces travel.
   // -------------------------------------------------------------------
   const GEO_DISTANCE_THRESHOLD = 1200;
 
   for (let i = 0; i < assignments.length; i++) {
     const team = assignments[i];
-    if (team.seed < 10) continue;
+    if (team.seed <= numRegionals) continue;
+    if (team.lat === 0 && team.lng === 0) continue;
 
     const regional = regionalMap.get(team.regionalId)!;
     const dist = haversineDistance(team.lat, team.lng, regional.lat, regional.lng);
@@ -251,6 +271,7 @@ function computeCommitteeScurve(
       const other = assignments[j];
 
       if (hostToRegional.has(other.team) && hostToRegional.get(other.team) === other.regionalId) continue;
+      if (other.lat === 0 && other.lng === 0) continue;
 
       const otherRegional = regionalMap.get(other.regionalId)!;
 
@@ -274,7 +295,7 @@ function computeCommitteeScurve(
   }
 
   // -------------------------------------------------------------------
-  // PHASE 4: Calculate final distances
+  // PHASE 5: Calculate final distances
   // -------------------------------------------------------------------
   calculateDistances(assignments, regionals);
 
