@@ -1896,9 +1896,18 @@ function MobileVisualScurve({
     return map;
   }, [assignments, regionals]);
 
+  // Strength-ordered regionals so columns read #1..#6, matching ScurveSnakeTable
+  const orderedRegionals = useMemo(
+    () =>
+      [...regionals].sort(
+        (a, b) => (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99)
+      ),
+    [regionals, regionalSeeds]
+  );
+
   return (
     <div className="mt-3 grid grid-cols-2 gap-1.5">
-      {regionals.map((r) => {
+      {orderedRegionals.map((r) => {
         const teams = byRegional.get(r.id) ?? [];
         return (
           <div
@@ -2136,6 +2145,11 @@ function VisualScurve({
   const numRegionals = regionals.length;
   const numTiers = Math.ceil(assignments.length / numRegionals);
 
+  // Strength-ordered regionals so columns read #1..#6, matching ScurveSnakeTable
+  const orderedRegionals = [...regionals].sort(
+    (a, b) => (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99)
+  );
+
   // Build the grid: tiers (rows) x regionals (columns)
   const grid: (ScurveAssignment | null)[][] = [];
   for (let tier = 0; tier < numTiers; tier++) {
@@ -2146,7 +2160,7 @@ function VisualScurve({
   // Place teams in the grid by their assigned regional
   // Group by regional, then fill tiers top-to-bottom
   const byRegional = new Map<number, ScurveAssignment[]>();
-  for (const r of regionals) {
+  for (const r of orderedRegionals) {
     byRegional.set(r.id, []);
   }
   for (const a of assignments) {
@@ -2159,8 +2173,8 @@ function VisualScurve({
   }
 
   // Place into grid
-  for (let colIdx = 0; colIdx < regionals.length; colIdx++) {
-    const r = regionals[colIdx];
+  for (let colIdx = 0; colIdx < orderedRegionals.length; colIdx++) {
+    const r = orderedRegionals[colIdx];
     const teams = byRegional.get(r.id) ?? [];
     for (let tierIdx = 0; tierIdx < teams.length; tierIdx++) {
       if (tierIdx < grid.length) {
@@ -2176,7 +2190,7 @@ function VisualScurve({
         <div className="min-w-[700px]">
           {/* Regional headers */}
           <div className="grid gap-0.5 mb-0.5" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
-            {regionals.map((r) => (
+            {orderedRegionals.map((r) => (
               <div
                 key={r.id}
                 className="text-center text-[10px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
@@ -2194,7 +2208,7 @@ function VisualScurve({
           {grid.map((row, tierIdx) => {
             const isReverse = tierIdx % 2 === 1;
             const displayRow = isReverse ? [...row].reverse() : row;
-            const displayRegionals = isReverse ? [...regionals].reverse() : regionals;
+            const displayRegionals = isReverse ? [...orderedRegionals].reverse() : orderedRegionals;
 
             return (
               <div key={tierIdx} className="relative">
@@ -2276,7 +2290,7 @@ function VisualScurve({
 
       {/* Summary stats — compact, always visible */}
       <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
-        {regionals.map((r) => {
+        {orderedRegionals.map((r) => {
           const teams = byRegional.get(r.id) ?? [];
           const totalDist = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
           const avgDist = teams.length > 0 ? Math.round(totalDist / teams.length) : 0;
