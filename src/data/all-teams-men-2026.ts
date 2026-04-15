@@ -140,7 +140,7 @@ export const allTeamsMen2026: TeamData[] = [
   { rank: 126, team: "Miami (OH)", conference: "MAC", events: 10, wins: 43, losses: 72, ties: 3, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.507, lng: -84.735 },
   { rank: 127, team: "Abilene Christian", conference: "WAC", events: 11, wins: 83, losses: 60, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 32.44645, lng: -99.7475905 },
   { rank: 128, team: "Harvard", conference: "IVY", events: 6, wins: 43, losses: 25, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 42.3656347, lng: -71.1040018 },
-  { rank: 129, team: "UTRGV", conference: "WAC", events: 10, wins: 71, losses: 54, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 26.3013982, lng: -98.1624501 },
+  { rank: 129, team: "UTRGV", conference: "SOUTHLAND", events: 10, wins: 71, losses: 54, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 26.3013982, lng: -98.1624501 },
   { rank: 130, team: "Penn State", conference: "B10", events: 8, wins: 45, losses: 72, ties: 4, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.7982, lng: -77.8599 },
   { rank: 131, team: "North Florida", conference: "ASUN", events: 11, wins: 39, losses: 122, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 26.3586885, lng: -80.0830984 },
   { rank: 132, team: "UTSA", conference: "AAC", events: 10, wins: 64, losses: 65, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 29.4246002, lng: -98.4951405 },
