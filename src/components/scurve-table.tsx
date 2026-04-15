@@ -4,7 +4,7 @@ import { Fragment, useState, useMemo, useCallback, useEffect, useTransition, use
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { computeScurve, computeRegionalSeeds, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
+import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import {
@@ -250,6 +250,7 @@ export default function ScurveTable({
   }, [gender, menRegionals, womenRegionals]);
 
   const regionalSeeds = useMemo(() => computeRegionalSeeds(assignments), [assignments]);
+  const regionalPositions = useMemo(() => computeRegionalPositions(assignments), [assignments]);
 
   // Filter — uses deferredSearch so React can keep the old result up
   // while typing and dim the table to indicate "computing"
@@ -446,6 +447,7 @@ export default function ScurveTable({
           assignments={assignments}
           regionalMap={regionalMap}
           regionalSeeds={regionalSeeds}
+          regionalPositions={regionalPositions}
         />
       </div>
     );
@@ -1104,11 +1106,13 @@ function BreakdownView({
   assignments,
   regionalMap,
   regionalSeeds,
+  regionalPositions,
 }: {
   teams: TeamData[];
   assignments: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  regionalPositions: Map<string, number>;
 }) {
   const LAST_IN = 6;
   const FIRST_OUT = 6;
@@ -1197,7 +1201,7 @@ function BreakdownView({
         </div>
         {lastIn.map((team) => {
           const regional = regionalMap.get(team.regionalId);
-          const regionalSeed = regionalSeeds.get(team.regionalId);
+          const posInRegional = regionalPositions.get(team.team);
           const diff = fmtDiff(team.wins, team.losses);
           return (
             <div
@@ -1206,7 +1210,7 @@ function BreakdownView({
             >
               <span className="font-mono text-muted-foreground text-center">
                 <span className="md:hidden">#{team.rank}</span>
-                <span className="hidden md:inline">{regionalSeed ?? "—"}</span>
+                <span className="hidden md:inline">{posInRegional ?? "—"}</span>
               </span>
               <span className="font-medium text-foreground truncate">
                 {team.team}
@@ -1349,23 +1353,22 @@ function BreakdownView({
       {/* Full S-curve breakdown table */}
       <div className="mt-6">
         <div className="flex items-baseline gap-2 mb-2">
-          <h3 className="text-[13px] font-semibold text-foreground">Full Field Breakdown</h3>
+          <h3 className="text-[13px] font-semibold text-foreground scroll-mt-[var(--nav-height)]">Full Field Breakdown</h3>
           <span className="text-[11px] text-text-tertiary">
             All <AnimatedNumber value={assignments.length} className="text-foreground !font-normal !tracking-normal" /> teams &middot; sorted by seed
           </span>
         </div>
-        <div className="overflow-x-auto rounded-lg border border-border">
+        <div className="overflow-x-clip rounded-lg border border-border">
           <table className="w-full text-[12px] tabular-nums">
             <thead className="bg-card sticky top-[var(--nav-height)] z-10">
               <tr className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
                 <th className="px-2 py-2 text-center w-[40px]">Seed</th>
-                <th className="px-2 py-2 text-center w-[40px]">Reg</th>
+                <th className="px-2 py-2 text-center w-[40px] hidden md:table-cell">Reg</th>
                 <th className="px-2 py-2 text-left">Team</th>
-                <th className="px-2 py-2 text-center w-[60px]">Conf</th>
+                <th className="px-2 py-2 text-center w-[60px] hidden md:table-cell">Conf</th>
                 <th className="px-2 py-2 text-right w-[50px]">Rank</th>
                 <th className="px-2 py-2 text-center w-[80px]">W-L-T</th>
                 <th className="px-2 py-2 text-right w-[60px]">±.500</th>
-                <th className="px-2 py-2 text-right w-[70px]">AWP</th>
                 <th className="px-2 py-2 text-left w-[120px] hidden md:table-cell">Regional</th>
               </tr>
             </thead>
@@ -1373,6 +1376,7 @@ function BreakdownView({
               {allSorted.map((team) => {
                 const regional = regionalMap.get(team.regionalId);
                 const regionalSeed = regionalSeeds.get(team.regionalId);
+                const posInRegional = regionalPositions.get(team.team);
                 const diff = fmtDiff(team.wins, team.losses);
                 const isSubFiveHundredAq = !team.eligible && team.isAutoQualifier;
                 return (
@@ -1383,8 +1387,8 @@ function BreakdownView({
                       isSubFiveHundredAq && "bg-amber-500/[0.04]"
                     )}
                   >
-                    <td className="px-2 text-center font-mono text-muted-foreground">{team.seed}</td>
-                    <td className="px-2 text-center font-mono text-muted-foreground">{regionalSeed ?? "—"}</td>
+                    <td className="px-2 text-center font-mono text-muted-foreground">{posInRegional ?? "—"}</td>
+                    <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">{regionalSeed ?? "—"}</td>
                     <td className="px-2 text-foreground">
                       <span className="font-medium">{team.team}</span>
                       {isSubFiveHundredAq && (
@@ -1396,7 +1400,7 @@ function BreakdownView({
                         <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
                       )}
                     </td>
-                    <td className="px-2 text-center text-muted-foreground">{team.conference}</td>
+                    <td className="px-2 text-center text-muted-foreground hidden md:table-cell">{team.conference}</td>
                     <td className="px-2 text-right font-mono text-muted-foreground">#{team.rank}</td>
                     <td className="px-2 text-center font-mono text-muted-foreground">
                       {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
@@ -1404,7 +1408,6 @@ function BreakdownView({
                     <td className={cn("px-2 text-right font-mono", diff.positive ? "text-muted-foreground" : "text-destructive/80")}>
                       {diff.label}
                     </td>
-                    <td className="px-2 text-right font-mono text-foreground">{fmtAwp(team.avgPoints)}</td>
                     <td
                       className="px-2 text-left text-muted-foreground hidden md:table-cell"
                       style={{ borderLeft: `2px solid ${regional?.color ?? "#888"}`, paddingLeft: "6px" }}

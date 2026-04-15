@@ -36,6 +36,28 @@ export function computeRegionalSeeds(
 }
 
 /**
+ * Map of teamName -> position within the team's own regional (1..N).
+ * Distinct from computeRegionalSeeds, which ranks regionals by strength.
+ * The 6th-best seed in Regional 2 returns 6, not 33.
+ */
+export function computeRegionalPositions(
+  assignments: ScurveAssignment[]
+): Map<string, number> {
+  const byRegional = new Map<number, ScurveAssignment[]>();
+  for (const a of assignments) {
+    const arr = byRegional.get(a.regionalId) ?? [];
+    arr.push(a);
+    byRegional.set(a.regionalId, arr);
+  }
+  const out = new Map<string, number>();
+  for (const arr of byRegional.values()) {
+    arr.sort((a, b) => a.seed - b.seed);
+    arr.forEach((t, i) => out.set(t.team, i + 1));
+  }
+  return out;
+}
+
+/**
  * Derive predicted auto-qualifiers from a team list: the top-ranked team
  * in each conference is the predicted conference champion and earns an AQ.
  * Mirrors the logic in championships.ts so conference + regional pages agree.

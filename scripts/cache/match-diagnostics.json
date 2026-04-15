@@ -13,12 +13,6 @@
   ],
   "schoolUnmatched": [
     {
-      "team": "Southern Illinois",
-      "schoolName": "Southern Illinois University at Carbondale",
-      "conference": "Missouri Valley Conference",
-      "normalized": "southern illinois at carbondale"
-    },
-    {
       "team": "Maryland",
       "schoolName": "University of Maryland",
       "conference": "Big Ten Conference",
@@ -29,6 +23,18 @@
       "schoolName": "University of Nevada",
       "conference": "Mountain West Conference",
       "normalized": "nevada"
+    },
+    {
+      "team": "UNCG",
+      "schoolName": "UNCG",
+      "conference": "Southern Conference",
+      "normalized": "uncg"
+    },
+    {
+      "team": "Southern Illinois",
+      "schoolName": "Southern Illinois University at Carbondale",
+      "conference": "Missouri Valley Conference",
+      "normalized": "southern illinois at carbondale"
     },
     {
       "team": "Louisiana",
@@ -43,10 +49,10 @@
       "normalized": "virginia tech"
     },
     {
-      "team": "UNCG",
-      "schoolName": "UNCG",
-      "conference": "Southern Conference",
-      "normalized": "uncg"
+      "team": "Miami (OH)",
+      "schoolName": "Miami University (Ohio)",
+      "conference": "Mid-American Conference",
+      "normalized": "miami ohio"
     },
     {
       "team": "William & Mary",
@@ -61,22 +67,10 @@
       "normalized": "colorado state"
     },
     {
-      "team": "Miami (OH)",
-      "schoolName": "Miami University (Ohio)",
-      "conference": "Mid-American Conference",
-      "normalized": "miami ohio"
-    },
-    {
       "team": "Sam Houston",
       "schoolName": "Sam Houston",
       "conference": "Conference USA",
       "normalized": "sam houston"
-    },
-    {
-      "team": "Fresno State",
-      "schoolName": "Fresno State",
-      "conference": "Mountain West Conference",
-      "normalized": "fresno state"
     },
     {
       "team": "Cal Poly",
@@ -85,22 +79,10 @@
       "normalized": "california polytechnic state"
     },
     {
-      "team": "UT Martin",
-      "schoolName": "University of Tennessee at Martin",
-      "conference": "Ohio Valley Conference",
-      "normalized": "tennessee at martin"
-    },
-    {
-      "team": "Navy",
-      "schoolName": "U.S. Naval Academy",
-      "conference": "Patriot League",
-      "normalized": "u s naval academy"
-    },
-    {
-      "team": "St. John's",
-      "schoolName": "St. John's University (New York)",
-      "conference": "Big East Conference",
-      "normalized": "st john s new york"
+      "team": "Fresno State",
+      "schoolName": "Fresno State",
+      "conference": "Mountain West Conference",
+      "normalized": "fresno state"
     },
     {
       "team": "St. Thomas (MN)",
@@ -109,16 +91,34 @@
       "normalized": "st thomas minnesota"
     },
     {
-      "team": "ULM",
-      "schoolName": "University of Louisiana Monroe",
-      "conference": "Sun Belt Conference",
-      "normalized": "louisiana monroe"
-    },
-    {
       "team": "Wright State",
       "schoolName": "Wright State University",
       "conference": "Horizon League",
       "normalized": "wright state"
+    },
+    {
+      "team": "UT Martin",
+      "schoolName": "University of Tennessee at Martin",
+      "conference": "Ohio Valley Conference",
+      "normalized": "tennessee at martin"
+    },
+    {
+      "team": "St. John's",
+      "schoolName": "St. John's University (New York)",
+      "conference": "Big East Conference",
+      "normalized": "st john s new york"
+    },
+    {
+      "team": "Navy",
+      "schoolName": "U.S. Naval Academy",
+      "conference": "Patriot League",
+      "normalized": "u s naval academy"
+    },
+    {
+      "team": "ULM",
+      "schoolName": "University of Louisiana Monroe",
+      "conference": "Sun Belt Conference",
+      "normalized": "louisiana monroe"
     },
     {
       "team": "Army West Point",
@@ -133,16 +133,16 @@
       "normalized": "north carolina a&t"
     },
     {
-      "team": "LaSalle",
-      "schoolName": "LaSalle University",
-      "conference": "Atlantic 10 Conference",
-      "normalized": "lasalle"
-    },
-    {
       "team": "Florida A&M",
       "schoolName": "Florida A&M University",
       "conference": "Southwestern Athletic Conference",
       "normalized": "florida a&m"
+    },
+    {
+      "team": "LaSalle",
+      "schoolName": "LaSalle University",
+      "conference": "Atlantic 10 Conference",
+      "normalized": "lasalle"
     },
     {
       "team": "Saint Joseph's (PA)",
@@ -157,16 +157,16 @@
       "normalized": "columbia"
     },
     {
-      "team": "Purdue Fort Wayne",
-      "schoolName": "Purdue University, Fort Wayne",
-      "conference": "Horizon League",
-      "normalized": "purdue fort wayne"
-    },
-    {
       "team": "FDU",
       "schoolName": "Fairleigh Dickinson University",
       "conference": "Northeast Conference",
       "normalized": "fairleigh dickinson"
+    },
+    {
+      "team": "Purdue Fort Wayne",
+      "schoolName": "Purdue University, Fort Wayne",
+      "conference": "Horizon League",
+      "normalized": "purdue fort wayne"
     },
     {
       "team": "IU Indy",
@@ -217,16 +217,16 @@
       "normalized": "virginia tech"
     },
     {
-      "team": "ULM",
-      "schoolName": "University of Louisiana Monroe",
-      "conference": "Sun Belt Conference",
-      "normalized": "louisiana monroe"
-    },
-    {
       "team": "Maryland",
       "schoolName": "University of Maryland",
       "conference": "Big Ten Conference",
       "normalized": "maryland"
+    },
+    {
+      "team": "ULM",
+      "schoolName": "University of Louisiana Monroe",
+      "conference": "Sun Belt Conference",
+      "normalized": "louisiana monroe"
     },
     {
       "team": "Miami",
@@ -289,16 +289,16 @@
       "normalized": "u s naval academy"
     },
     {
-      "team": "Akron",
-      "schoolName": "University of Akron",
-      "conference": "Mid-American Conference",
-      "normalized": "akron"
-    },
-    {
       "team": "St. Thomas (MN)",
       "schoolName": "University of St. Thomas - Minnesota",
       "conference": "The Summit League",
       "normalized": "st thomas minnesota"
+    },
+    {
+      "team": "Akron",
+      "schoolName": "University of Akron",
+      "conference": "Mid-American Conference",
+      "normalized": "akron"
     },
     {
       "team": "St. John's",
@@ -331,16 +331,16 @@
       "normalized": "of william & mary"
     },
     {
-      "team": "Southern Illinois",
-      "schoolName": "Southern Illinois University at Carbondale",
-      "conference": "Missouri Valley Conference",
-      "normalized": "southern illinois at carbondale"
-    },
-    {
       "team": "Purdue Fort Wayne",
       "schoolName": "Purdue University, Fort Wayne",
       "conference": "Horizon League",
       "normalized": "purdue fort wayne"
+    },
+    {
+      "team": "Southern Illinois",
+      "schoolName": "Southern Illinois University at Carbondale",
+      "conference": "Missouri Valley Conference",
+      "normalized": "southern illinois at carbondale"
     },
     {
       "team": "Prairie View A&M",

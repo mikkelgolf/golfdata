@@ -321,6 +321,7 @@ export default function ChampionshipsView({
               championships={activeChampionships}
               activeChampionship={activeChampionship}
               onActiveChampionshipChange={setActiveChampionship}
+              gender={gender}
             />
           </div>
           {assignments.length > 0 && (

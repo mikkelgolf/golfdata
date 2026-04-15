@@ -5,12 +5,20 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { ChampionshipAssignment } from "@/lib/championships";
 import type { Championship } from "@/data/championships-men-2026";
+import {
+  computeFieldRecord,
+  formatRecord,
+  formatStrokeDiff,
+  type FieldRecord,
+} from "@/lib/head-to-head";
 import { Plane } from "lucide-react";
 import { geoAlbersUsa, geoPath } from "d3-geo";
 import { feature, mesh } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection } from "geojson";
 import usTopology from "@/data/us-states-10m.json";
+
+type Gender = "men" | "women";
 
 // ---------------------------------------------------------------------------
 // Albers USA projection (standard for US maps - handles AK/HI insets)
@@ -64,6 +72,7 @@ interface ChampionshipsMapProps {
   championships: Championship[];
   activeChampionship: number | null;
   onActiveChampionshipChange: (id: number | null) => void;
+  gender: Gender;
 }
 
 export default function ChampionshipsMap({
@@ -71,6 +80,7 @@ export default function ChampionshipsMap({
   championships,
   activeChampionship,
   onActiveChampionshipChange,
+  gender,
 }: ChampionshipsMapProps) {
   const [hoveredTeam, setHoveredTeam] = useState<string | null>(null);
 
@@ -148,14 +158,27 @@ export default function ChampionshipsMap({
     activeChampionshipData !== null &&
     activeChampionshipData.lat === 0 &&
     activeChampionshipData.lng === 0;
-  const activeTeams =
-    activeChampionship !== null
-      ? assignments.filter((a) => a.championshipId === activeChampionship)
-      : [];
+  const activeTeams = useMemo(
+    () =>
+      activeChampionship !== null
+        ? assignments.filter((a) => a.championshipId === activeChampionship)
+        : [],
+    [activeChampionship, assignments]
+  );
   const activeTotalDist = activeTeams.reduce(
     (sum, t) => sum + t.distanceMiles,
     0
   );
+
+  const fieldRecords = useMemo(() => {
+    const m = new Map<string, FieldRecord | null>();
+    if (activeChampionship === null) return m;
+    const names = activeTeams.map((t) => t.team);
+    for (const t of activeTeams) {
+      m.set(t.team, computeFieldRecord(t.team, names, gender));
+    }
+    return m;
+  }, [activeChampionship, activeTeams, gender]);
 
   return (
     <div className="space-y-4">
@@ -403,7 +426,7 @@ export default function ChampionshipsMap({
         {/* Desktop info overlay */}
         {activeChampionshipData && (
           <div
-            className="hidden sm:block absolute top-3 right-3 rounded-md bg-background/85 backdrop-blur-xl backdrop-saturate-150 p-3 max-w-[260px] shadow-overlay"
+            className="hidden sm:block absolute top-3 right-3 rounded-md bg-background/85 backdrop-blur-xl backdrop-saturate-150 p-3 max-w-[320px] shadow-overlay"
             role="status"
             aria-live="polite"
             aria-label={`${activeChampionshipData.name} details`}
@@ -437,33 +460,66 @@ export default function ChampionshipsMap({
                 </p>
               )}
             </div>
-            <div className="mt-2 space-y-0.5 max-h-[200px] overflow-y-auto">
-              {activeTeams
-                .slice()
-                .sort((a, b) => a.rank - b.rank)
-                .map((t) => (
-                  <p
-                    key={t.team}
-                    className={cn(
-                      "text-[10px] cursor-pointer",
-                      hoveredTeam === t.team
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground"
-                    )}
-                    onMouseEnter={() => setHoveredTeam(t.team)}
-                    onMouseLeave={() => setHoveredTeam(null)}
-                  >
-                    #{t.rank} {t.team}
-                    {!activeChampionshipTbd && (
-                      <>
-                        {" "}
-                        <span className="opacity-60">
-                          ({t.distanceMiles.toLocaleString()} mi)
-                        </span>
-                      </>
-                    )}
-                  </p>
-                ))}
+            <div className="mt-2 max-h-[240px] overflow-y-auto">
+              <table className="w-full text-[10px] tabular-nums">
+                <thead className="sticky top-0 bg-background/90 backdrop-blur">
+                  <tr className="text-[9px] font-medium uppercase tracking-wide text-text-tertiary">
+                    <th className="text-left py-1 pr-2 whitespace-nowrap">Team</th>
+                    <th className="text-right py-1 px-1.5 w-[60px] whitespace-nowrap">H2H</th>
+                    <th className="text-right py-1 px-1.5 w-[42px] whitespace-nowrap">Δ</th>
+                    <th className="text-right py-1 pl-1.5 w-[48px] whitespace-nowrap">Miles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeTeams
+                    .slice()
+                    .sort((a, b) => a.rank - b.rank)
+                    .map((t) => {
+                      const fr = fieldRecords.get(t.team);
+                      return (
+                        <tr
+                          key={t.team}
+                          onMouseEnter={() => setHoveredTeam(t.team)}
+                          onMouseLeave={() => setHoveredTeam(null)}
+                          className={cn(
+                            "cursor-pointer",
+                            hoveredTeam === t.team
+                              ? "text-foreground font-medium"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          <td className="text-left py-0.5 pr-2 truncate max-w-[140px]">
+                            <span className="font-mono opacity-60 mr-1">#{t.rank}</span>
+                            {t.team}
+                          </td>
+                          <td
+                            className={cn(
+                              "text-right font-mono py-0.5 px-1.5 whitespace-nowrap",
+                              fr && fr.wins > fr.losses && "text-primary",
+                              fr && fr.wins < fr.losses && "text-destructive/80"
+                            )}
+                          >
+                            {fr ? formatRecord(fr) : "—"}
+                          </td>
+                          <td
+                            className={cn(
+                              "text-right font-mono py-0.5 px-1.5 whitespace-nowrap",
+                              fr && fr.avgStrokeDiff < 0 && "text-primary",
+                              fr && fr.avgStrokeDiff > 0 && "text-destructive/80"
+                            )}
+                          >
+                            {fr ? formatStrokeDiff(fr.avgStrokeDiff) : "—"}
+                          </td>
+                          <td className="text-right font-mono opacity-60 py-0.5 pl-1.5 whitespace-nowrap">
+                            {!activeChampionshipTbd
+                              ? t.distanceMiles.toLocaleString()
+                              : "—"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
             </div>
             <button
               onClick={() => onActiveChampionshipChange(null)}
@@ -531,37 +587,71 @@ export default function ChampionshipsMap({
                   </p>
                 )}
               </div>
-              <div className="mt-2 max-h-[28vh] overflow-y-auto pr-1 -mr-1">
-                {activeTeams
-                  .slice()
-                  .sort((a, b) => a.rank - b.rank)
-                  .map((t) => (
-                    <button
-                      key={t.team}
-                      onClick={() =>
-                        setHoveredTeam(hoveredTeam === t.team ? null : t.team)
-                      }
-                      className={cn(
-                        "block w-full text-left text-[11px] py-1 border-b border-border/30 last:border-b-0",
-                        hoveredTeam === t.team
-                          ? "text-foreground font-medium"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      <span className="font-mono tabular-nums mr-1.5">
-                        #{t.rank}
-                      </span>
-                      {t.team}
-                      {!activeChampionshipTbd && (
-                        <>
-                          {" "}
-                          <span className="opacity-60 font-mono tabular-nums">
-                            ({t.distanceMiles.toLocaleString()} mi)
-                          </span>
-                        </>
-                      )}
-                    </button>
-                  ))}
+              <div className="mt-2 max-h-[34vh] overflow-y-auto pr-1 -mr-1">
+                <table className="w-full text-[11px] tabular-nums">
+                  <thead className="sticky top-0 bg-background/90 backdrop-blur">
+                    <tr className="text-[9px] font-medium uppercase tracking-wide text-text-tertiary">
+                      <th className="text-left py-1.5 pr-2 whitespace-nowrap">Team</th>
+                      <th className="text-right py-1.5 px-2 w-[64px] whitespace-nowrap">H2H</th>
+                      <th className="text-right py-1.5 px-2 w-[48px] whitespace-nowrap">Δ</th>
+                      <th className="text-right py-1.5 pl-2 w-[56px] whitespace-nowrap">Miles</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activeTeams
+                      .slice()
+                      .sort((a, b) => a.rank - b.rank)
+                      .map((t) => {
+                        const fr = fieldRecords.get(t.team);
+                        return (
+                          <tr
+                            key={t.team}
+                            onClick={() =>
+                              setHoveredTeam(
+                                hoveredTeam === t.team ? null : t.team
+                              )
+                            }
+                            className={cn(
+                              "border-b border-border/30 last:border-b-0 cursor-pointer",
+                              hoveredTeam === t.team
+                                ? "text-foreground font-medium"
+                                : "text-muted-foreground"
+                            )}
+                          >
+                            <td className="text-left py-1 pr-2 truncate max-w-[160px]">
+                              <span className="font-mono opacity-60 mr-1">
+                                #{t.rank}
+                              </span>
+                              {t.team}
+                            </td>
+                            <td
+                              className={cn(
+                                "text-right font-mono py-1 px-2 whitespace-nowrap",
+                                fr && fr.wins > fr.losses && "text-primary",
+                                fr && fr.wins < fr.losses && "text-destructive/80"
+                              )}
+                            >
+                              {fr ? formatRecord(fr) : "—"}
+                            </td>
+                            <td
+                              className={cn(
+                                "text-right font-mono py-1 px-2 whitespace-nowrap",
+                                fr && fr.avgStrokeDiff < 0 && "text-primary",
+                                fr && fr.avgStrokeDiff > 0 && "text-destructive/80"
+                              )}
+                            >
+                              {fr ? formatStrokeDiff(fr.avgStrokeDiff) : "—"}
+                            </td>
+                            <td className="text-right font-mono opacity-60 py-1 pl-2 whitespace-nowrap">
+                              {!activeChampionshipTbd
+                                ? t.distanceMiles.toLocaleString()
+                                : "—"}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

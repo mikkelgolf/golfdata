@@ -9,15 +9,41 @@ import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import type { TeamData } from "@/data/rankings-men";
 
+// Team names in rankings-*.ts (sourced from Clippd) occasionally disagree with
+// the canonical names in all-teams-*.ts. Normalize punctuation and fall back
+// to an alias map so AWP still merges for schools like BYU, USF, UCF, and
+// St Mary's (CA).
+const AWP_NAME_ALIASES: Record<string, string> = {
+  "byu": "brigham young",
+  "south florida": "usf",
+  "central florida": "ucf",
+};
+
+function normalizeTeamName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[.'()&]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function canonicalKey(name: string): string {
+  const n = normalizeTeamName(name);
+  return AWP_NAME_ALIASES[n] ?? n;
+}
+
 function enrichWithAwp(allTeams: TeamData[], rankings: TeamData[]): TeamData[] {
   const awp = new Map<string, number>();
   for (const r of rankings) {
-    if (r.avgPoints != null) awp.set(r.team, r.avgPoints);
+    if (r.avgPoints != null) awp.set(canonicalKey(r.team), r.avgPoints);
   }
-  return allTeams.map((t) => (awp.has(t.team) ? { ...t, avgPoints: awp.get(t.team) } : t));
+  return allTeams.map((t) => {
+    const pts = awp.get(canonicalKey(t.team));
+    return pts != null ? { ...t, avgPoints: pts } : t;
+  });
 }
 
-const LAST_UPDATED = "Apr 13, 2026";
+const LAST_UPDATED = "Apr 15, 2026";
 
 export default function Home() {
   return (

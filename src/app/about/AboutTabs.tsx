@@ -188,28 +188,6 @@ function ExplanationsPanel() {
         </p>
       </Term>
 
-      <Term title="Average Weighted Points (AWP)">
-        <p>
-          The underlying ranking score from Clippd, weighted by field strength.
-          This is the same engine behind the official Golfstat/Clippd rankings
-          you see during the season. Stronger fields produce more points per
-          finish, so a 3rd at a major counts for more than a 3rd at a light
-          invitational.
-        </p>
-      </Term>
-
-      <Term title="Why geography matters">
-        <p>
-          Travel distance is one of the most underappreciated factors in
-          regional performance. Teams that fly across the country face jet
-          lag, unfamiliar course conditions, and altitude or climate changes.
-          The selection committee considers geography when finalizing
-          placements, but competitive balance takes priority. Our distance
-          calculations and interactive travel map help fans and coaches see
-          which teams drew favorable or unfavorable travel and how that might
-          influence results.
-        </p>
-      </Term>
     </div>
   );
 }

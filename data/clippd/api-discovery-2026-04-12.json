@@ -1,0 +1,67 @@
+[
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams?season=2026",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams?division=NCAA+Division+I&gender=Men&season=2026",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/rankings",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/rankings?rankingType=Team&gender=Men&division=NCAA+Division+I&season=2026",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/rankings/leaderboard?rankingType=Team&gender=Men&division=NCAA+Division+I&season=2026",
+    "status": 200,
+    "preview": "{\"result\":\"success\",\"size\":311,\"results\":[{\"gender\":\"Men\",\"division\":\"NCAA Division I\",\"schoolId\":\"3537\",\"schoolName\":\"Auburn University\",\"schoolLogo\":\"1671136916auburn-tigers-logo.webp\",\"schoolLogoTh..."
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/tournaments?season=2026&limit=5",
+    "status": 200,
+    "preview": "{\"results\":[{\"tournamentId\":\"244302\",\"tournamentName\":\"Dr Edwin B Cottrell Invitational\",\"gender\":\"Women\",\"division\":\"NCAA Division II\",\"eventType\":\"Stroke Play\",\"startDate\":\"2027-04-05\",\"endDate\":\"20..."
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams/1",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams/100",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams/1000",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams/1/schedule",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/teams/1/results",
+    "status": 404,
+    "preview": ""
+  },
+  {
+    "endpoint": "https://scoreboard.clippd.com/api/tournaments?season=2026&limit=1&offset=0",
+    "status": 200,
+    "preview": "{\"results\":[{\"tournamentId\":\"244302\",\"tournamentName\":\"Dr Edwin B Cottrell Invitational\",\"gender\":\"Women\",\"division\":\"NCAA Division II\",\"eventType\":\"Stroke Play\",\"startDate\":\"2027-04-05\",\"endDate\":\"20..."
+  }
+]

@@ -36,7 +36,7 @@ export function assignToChampionships(
       championshipId: champ.id,
       distanceMiles:
         teamHasCoords && venueHasCoords
-          ? haversineDistance(team.lat, team.lng, champ.lat, champ.lng)
+          ? Math.round(haversineDistance(team.lat, team.lng, champ.lat, champ.lng))
           : 0,
       isAutoQualifier: false,
       aqConference: null,
