@@ -147,42 +147,53 @@ function computeCommitteeScurve(
     available.delete(bestId);
   }
 
-  // Phase 2: Serpentine for seeds 7+
-  for (let i = numR; i < assignments.length; i++) {
-    const tier = Math.floor(i / numR);
-    const pos = i % numR;
-    const rev = tier % 2 === 1;
-    const idx = rev ? numR - 1 - pos : pos;
-    assignments[i].regionalId = regionals[idx].id;
-  }
+  // Phase 2: Serpentine for seeds 7+ (hosts placed first, rest fill in S-curve order)
+  const strengthOrder = assignments
+    .slice(0, numR)
+    .sort((a, b) => a.seed - b.seed)
+    .map((a) => a.regionalId);
 
-  // Phase 3: Host swaps for seeds 7+
-  for (let i = numR; i < assignments.length; i++) {
-    const team = assignments[i];
-    const homeId = hostToRegional.get(team.team);
-    if (homeId !== undefined && team.regionalId !== homeId) {
-      const tier = Math.floor(i / numR);
-      const tStart = tier * numR;
-      const tEnd = Math.min(tStart + numR, assignments.length);
-      for (let j = tStart; j < tEnd; j++) {
-        if (assignments[j].regionalId === homeId) {
-          assignments[j].regionalId = team.regionalId;
-          team.regionalId = homeId;
-          break;
-        }
+  for (let tier = 1; tier * numR < assignments.length; tier++) {
+    const tierStart = tier * numR;
+    const tierEnd = Math.min(tierStart + numR, assignments.length);
+    const isReverseTier = tier % 2 === 1;
+
+    const tierRegionalOrder: number[] = [];
+    for (let p = 0; p < numR; p++) {
+      const idx = isReverseTier ? numR - 1 - p : p;
+      tierRegionalOrder.push(strengthOrder[idx]);
+    }
+
+    const hostAssignedRegionals = new Set<number>();
+    for (let i = tierStart; i < tierEnd; i++) {
+      const homeId = hostToRegional.get(assignments[i].team);
+      if (homeId !== undefined) {
+        assignments[i].regionalId = homeId;
+        hostAssignedRegionals.add(homeId);
       }
+    }
+
+    const remainingRegionals = tierRegionalOrder.filter(
+      (r) => !hostAssignedRegionals.has(r)
+    );
+    let rIdx = 0;
+    for (let i = tierStart; i < tierEnd; i++) {
+      if (assignments[i].regionalId !== -1) continue;
+      assignments[i].regionalId = remainingRegionals[rIdx++];
     }
   }
 
-  // Phase 4: AQ geographic preference
+  // Phase 4: Geographic preference for regional position 12+
   for (let i = numR; i < assignments.length; i++) {
     const team = assignments[i];
-    if (!team.isAutoQualifier || team.seed < 12) continue;
+    const tier = Math.floor(i / numR);
+    const regionalPosition = tier + 1;
+    if (regionalPosition < 12) continue;
+    if (team.lat === 0 && team.lng === 0) continue;
     const r = regionalMap.get(team.regionalId)!;
     const dist = haversineDistance(team.lat, team.lng, r.lat, r.lng);
     if (dist <= 1200) continue;
 
-    const tier = Math.floor((team.seed - 1) / numR);
     const tStart = tier * numR;
     const tEnd = Math.min(tStart + numR, assignments.length);
     let bestJ = -1;

@@ -227,20 +227,35 @@ function computeCommitteeScurve(
     .sort((a, b) => a.seed - b.seed)
     .map((a) => a.regionalId);
 
-  for (let i = numRegionals; i < assignments.length; i++) {
-    const tier = Math.floor(i / numRegionals);
-    const posInTier = i % numRegionals;
+  for (let tier = 1; tier * numRegionals < assignments.length; tier++) {
+    const tierStart = tier * numRegionals;
+    const tierEnd = Math.min(tierStart + numRegionals, assignments.length);
     const isReverseTier = tier % 2 === 1;
-    const strengthIdx = isReverseTier
-      ? numRegionals - 1 - posInTier
-      : posInTier;
-    assignments[i].regionalId = strengthOrder[strengthIdx];
-  }
 
-  // -------------------------------------------------------------------
-  // PHASE 3: Host school swaps (all tiers, including top 6)
-  // -------------------------------------------------------------------
-  applyHostSwaps(assignments, regionals);
+    const tierRegionalOrder: number[] = [];
+    for (let p = 0; p < numRegionals; p++) {
+      const strengthIdx = isReverseTier ? numRegionals - 1 - p : p;
+      tierRegionalOrder.push(strengthOrder[strengthIdx]);
+    }
+
+    const hostAssignedRegionals = new Set<number>();
+    for (let i = tierStart; i < tierEnd; i++) {
+      const homeId = hostToRegional.get(assignments[i].team);
+      if (homeId !== undefined) {
+        assignments[i].regionalId = homeId;
+        hostAssignedRegionals.add(homeId);
+      }
+    }
+
+    const remainingRegionals = tierRegionalOrder.filter(
+      (r) => !hostAssignedRegionals.has(r)
+    );
+    let rIdx = 0;
+    for (let i = tierStart; i < tierEnd; i++) {
+      if (assignments[i].regionalId !== -1) continue;
+      assignments[i].regionalId = remainingRegionals[rIdx++];
+    }
+  }
 
   // -------------------------------------------------------------------
   // PHASE 4: Geographic preference for regional position 12+

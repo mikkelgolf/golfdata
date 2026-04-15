@@ -5,58 +5,92 @@
 
 | Seed | Team | Rank | Conf | Distance |
 |------|------|------|------|----------|
-| 5 | Oregon | #5 | B10 | 1967 mi |
-| 9 | Wake Forest | #9 | ACC | 463 mi |
+| 5 | Texas | #5 | SEC | 1135 mi |
+| 7 | Oregon | #7 | B10 | 1967 mi |
 | 16 | Mississippi State | #16 | SEC | 669 mi |
-| 21 | Oklahoma State | #21 | B12 | 829 mi |
-| 28 | Northwestern | #28 | B10 | 202 mi |
-| 33 | Virginia | #33 | ACC | 403 mi |
-| 40 | Virginia Tech | #40 | ACC | 391 mi |
-| 45 | Oregon State | #45 | WCC | 1970 mi |
-| 52 | Texas Tech | #52 | B12 | 1151 mi |
-| 57 | South Florida | #60 | AAC | 985 mi |
-| 64 | Princeton (AQ) | #69 | IVY | 489 mi |
+| 20 | Arizona State | #20 | B12 | 1645 mi |
+| 29 | Arizona | #29 | B12 | 1640 mi |
+| 32 | LSU | #32 | SEC | 918 mi |
+| 41 | CSU Fullerton (AQ) | #41 | BWEST | 1933 mi |
+| 44 | Purdue | #44 | B10 | 209 mi |
+| 53 | Texas State (AQ) | #54 | SUNBELT | 1164 mi |
+| 56 | UNCW | #59 | CAA | 641 mi |
+| 64 | ULM | #69 | SUNBELT | 813 mi |
+| 68 | Rutgers | #74 | B10 | 497 mi |
+| 74 | Xavier (AQ) | #80 | BEAST | 223 mi |
+| 80 | Charlotte | #92 | AAC | 508 mi |
+| 85 | Cincinnati | #99 | B12 | 221 mi |
+| 95 | CSU Northridge | #120 | BWEST | 1179 mi |
+| 101 | Kennesaw State | #129 | CUSA | 571 mi |
+| 106 | North Dakota State | #137 | SUMMIT | 715 mi |
+| 113 | Samford | #154 | SOCON | 628 mi |
+| 116 | Missouri State | #157 | CUSA | 616 mi |
+| 125 | Wofford | #169 | SOCON | 529 mi |
+| 132 | Akron | #185 | MAC | 142 mi |
+| 133 | UAlbany (AQ) | #186 | MAAC | 301 mi |
+| 140 | North Carolina A&T | #211 | CAA | 479 mi |
 
 ## Advancement Projections
 
 **Advancing to Nationals (Top 5):**
-- 5. Oregon (#5) - B10
-- 9. Wake Forest (#9) - ACC
+- 5. Texas (#5) - SEC
+- 7. Oregon (#7) - B10
 - 16. Mississippi State (#16) - SEC
-- 21. Oklahoma State (#21) - B12
-- 28. Northwestern (#28) - B10
+- 20. Arizona State (#20) - B12
+- 29. Arizona (#29) - B12
 
 **Eliminated:**
-- 33. Virginia (#33) - ACC
-- 40. Virginia Tech (#40) - ACC
-- 45. Oregon State (#45) - WCC
-- 52. Texas Tech (#52) - B12
-- 57. South Florida (#60) - AAC
-- 64. Princeton (#69) - IVY [AQ]
+- 32. LSU (#32) - SEC
+- 41. CSU Fullerton (#41) - BWEST [AQ]
+- 44. Purdue (#44) - B10
+- 53. Texas State (#54) - SUNBELT [AQ]
+- 56. UNCW (#59) - CAA
+- 64. ULM (#69) - SUNBELT
+- 68. Rutgers (#74) - B10
+- 74. Xavier (#80) - BEAST [AQ]
+- 80. Charlotte (#92) - AAC
+- 85. Cincinnati (#99) - B12
+- 95. CSU Northridge (#120) - BWEST
+- 101. Kennesaw State (#129) - CUSA
+- 106. North Dakota State (#137) - SUMMIT
+- 113. Samford (#154) - SOCON
+- 116. Missouri State (#157) - CUSA
+- 125. Wofford (#169) - SOCON
+- 132. Akron (#185) - MAC
+- 133. UAlbany (#186) - MAAC [AQ]
+- 140. North Carolina A&T (#211) - CAA
 
 ## Conference Breakdown
 
-- **ACC** (3): Wake Forest, Virginia, Virginia Tech
-- **B10** (2): Oregon, Northwestern
-- **B12** (2): Oklahoma State, Texas Tech
-- **SEC** (1): Mississippi State
-- **WCC** (1): Oregon State
-- **AAC** (1): South Florida
-- **IVY** (1): Princeton
+- **SEC** (3): Texas, Mississippi State, LSU
+- **B10** (3): Oregon, Purdue, Rutgers
+- **B12** (3): Arizona State, Arizona, Cincinnati
+- **BWEST** (2): CSU Fullerton, CSU Northridge
+- **SUNBELT** (2): Texas State, ULM
+- **CAA** (2): UNCW, North Carolina A&T
+- **CUSA** (2): Kennesaw State, Missouri State
+- **SOCON** (2): Samford, Wofford
+- **BEAST** (1): Xavier
+- **AAC** (1): Charlotte
+- **SUMMIT** (1): North Dakota State
+- **MAC** (1): Akron
+- **MAAC** (1): UAlbany
 
 ## Travel Analysis
 
-- **Average distance:** 865 miles
-- **Farthest team:** Oregon State (1970 mi)
-- **Closest team:** Northwestern (202 mi)
-- **Total field travel:** 9,519 miles
+- **Average distance:** 806 miles
+- **Farthest team:** Oregon (1967 mi)
+- **Closest team:** Akron (142 mi)
+- **Total field travel:** 19,343 miles
 
 ## Key Storylines
 
-- **Oregon** has the best win rate in this regional (77-13-0) despite being seeded 5th.
-- **Princeton** (IVY champion) enters as the 64th seed. Ranked #69, they face a steep challenge against higher-ranked opponents.
-- **Oregon State** faces the longest trip in this regional at 1970 miles - a significant cross-country journey.
-- The advancement line battle between **Northwestern** (28th seed, #28) and **Virginia** (33rd seed, #33) is razor-thin (just 5 spots in the rankings).
+- **Oregon** has the best win rate in this regional (90-15-0) despite being seeded 7th.
+- **Texas State** (SUNBELT champion) enters as the 53rd seed. Ranked #54, they face a steep challenge against higher-ranked opponents.
+- **Xavier** (BEAST champion) enters as the 74th seed. Ranked #80, they face a steep challenge against higher-ranked opponents.
+- **UAlbany** (MAAC champion) enters as the 133rd seed. Ranked #186, they face a steep challenge against higher-ranked opponents.
+- **Oregon** faces the longest trip in this regional at 1967 miles - a significant cross-country journey.
+- The advancement line battle between **Arizona** (29th seed, #29) and **LSU** (32nd seed, #32) is razor-thin (just 3 spots in the rankings).
 
 ---
-*Generated 2026-04-12 by College Golf Data*
+*Generated 2026-04-15 by College Golf Data*
