@@ -86,7 +86,7 @@ function deriveAutoQualifiers(teams: TeamData[]): TeamData[] {
  *   1. Top 6 seeds assigned to closest available regional (greedy by seed order)
  *   2. Seeds 7+ serpentine by regional strength order (competitive balance)
  *   3. Host schools guaranteed their home regional (all tiers)
- *   4. Seeds 7+: geographic preference swaps (>1200 mi threshold)
+ *   4. Regional position 12+: geographic preference swaps (>1200 mi threshold)
  */
 export function computeScurve(
   teams: TeamData[],
@@ -156,7 +156,7 @@ function computeStrictScurve(
  * 2. Seeds 7+ serpentine by REGIONAL STRENGTH ORDER (weakest regional gets
  *    best 2-seed, strongest gets worst 2-seed — the core balancing mechanism)
  * 3. Host schools guaranteed home regional (within-tier swaps)
- * 4. Seeds 7+: geographic preference swaps for teams >1200 mi from regional
+ * 4. Regional position 12+: geographic preference swaps for teams >1200 mi from regional
  */
 function computeCommitteeScurve(
   teams: TeamData[],
@@ -243,15 +243,19 @@ function computeCommitteeScurve(
   applyHostSwaps(assignments, regionals);
 
   // -------------------------------------------------------------------
-  // PHASE 4: Geographic preference for seeds 7+
-  // Teams below the 1-seed line that are >1200 miles from their regional
-  // can be swapped with a same-tier team if it meaningfully reduces travel.
+  // PHASE 4: Geographic preference for regional position 12+
+  // Only the bottom of each regional bracket (the weakest AQs who
+  // wouldn't have gotten an at-large) get geographic adjustment.
+  // Seeds 2-11 within each regional are pure serpentine.
   // -------------------------------------------------------------------
   const GEO_DISTANCE_THRESHOLD = 1200;
+  const GEO_SWAP_MIN_POSITION = 12;
 
   for (let i = 0; i < assignments.length; i++) {
     const team = assignments[i];
-    if (team.seed <= numRegionals) continue;
+    const tier = Math.floor(i / numRegionals);
+    const regionalPosition = tier + 1;
+    if (regionalPosition < GEO_SWAP_MIN_POSITION) continue;
     if (team.lat === 0 && team.lng === 0) continue;
 
     const regional = regionalMap.get(team.regionalId)!;
@@ -259,7 +263,6 @@ function computeCommitteeScurve(
 
     if (dist <= GEO_DISTANCE_THRESHOLD) continue;
 
-    const tier = Math.floor(i / numRegionals);
     const tierStart = tier * numRegionals;
     const tierEnd = Math.min(tierStart + numRegionals, assignments.length);
 
