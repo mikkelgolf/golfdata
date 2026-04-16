@@ -2206,23 +2206,14 @@ function VisualScurve({
 
           {/* Tiers */}
           {grid.map((row, tierIdx) => {
-            const isReverse = tierIdx % 2 === 1;
-            const displayRow = isReverse ? [...row].reverse() : row;
-            const displayRegionals = isReverse ? [...orderedRegionals].reverse() : orderedRegionals;
-
             return (
               <div key={tierIdx} className="relative">
-                {/* Serpentine direction indicator */}
-                <div className="absolute -left-6 top-1/2 -translate-y-1/2 text-[10px] text-text-tertiary hidden lg:block">
-                  {isReverse ? "\u2190" : "\u2192"}
-                </div>
-
                 <div
                   className="grid gap-0.5 mb-0.5"
                   style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}
                 >
-                  {displayRow.map((team, colIdx) => {
-                    const r = displayRegionals[colIdx];
+                  {row.map((team, colIdx) => {
+                    const r = orderedRegionals[colIdx];
                     if (!team) {
                       return <div key={`empty-${tierIdx}-${colIdx}`} className="h-7" />;
                     }
