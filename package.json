@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify-championships": "npx tsx scripts/verify-championships.ts"
   },
   "dependencies": {
     "@types/d3-force": "^3.0.10",

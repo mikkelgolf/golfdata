@@ -7,6 +7,8 @@ import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
+import { championshipsMen2026 } from "@/data/championships-men-2026";
+import { championshipsWomen2026 } from "@/data/championships-women-2026";
 import type { TeamData } from "@/data/rankings-men";
 
 // Team names in rankings-*.ts (sourced from Clippd) occasionally disagree with
@@ -67,6 +69,8 @@ export default function Home() {
           womenTeams={enrichWithAwp(allTeamsWomen2026, rankingsWomen)}
           menRegionals={regionalsMen2026}
           womenRegionals={regionalsWomen2026}
+          menChampionships={championshipsMen2026}
+          womenChampionships={championshipsWomen2026}
           lastUpdated={LAST_UPDATED}
         />
       </Suspense>

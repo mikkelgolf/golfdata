@@ -482,8 +482,9 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-13",
     endDate: "2026-04-15",
     color: "#8a4a6a",
-    notes: "Already concluded as of writing.",
+    notes: "Concluded April 15. UTRGV won by 1 stroke (+4) over HCU (+5).",
     sourceUrl: "https://scoreboard.clippd.com/tournaments/239985",
+    winner: "UTRGV",
   },
   {
     id: 28,
@@ -500,8 +501,9 @@ export const championshipsWomen2026: Championship[] = [
     endDate: "2026-04-15",
     color: "#b8843a",
     notes:
-      "SWAC composite schedule lists Birmingham, AL Apr 13-15; specific course not surfaced (likely RTJ Oxmoor Valley). Already underway.",
+      "Concluded April 15. Prairie View A&M won team title (+76). Carmen Fletcher (Alabama State) won individual.",
     sourceUrl: "https://swac.org/sports/wgolf",
+    winner: "Prairie View A&M",
   },
   {
     id: 29,

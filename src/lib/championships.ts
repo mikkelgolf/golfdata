@@ -43,13 +43,26 @@ export function assignToChampionships(
     });
   }
 
-  // Re-derive predicted AQ: top-ranked team per conference is the predicted
-  // automatic qualifier. Works for every conference regardless of how deep
-  // its top team is ranked.
+  // Build confirmed-winner lookup: conference -> winner team name
+  const confirmedWinners = new Map<string, string>();
+  for (const c of championships) {
+    if (c.winner) confirmedWinners.set(c.conference, c.winner);
+  }
+
+  // Re-derive AQ: if a championship has a confirmed winner, that team gets
+  // the AQ regardless of rank. Otherwise fall back to the top-ranked team
+  // per conference (predicted AQ).
   const topByConf = new Map<string, ChampionshipAssignment>();
   for (const a of out) {
-    const cur = topByConf.get(a.conference);
-    if (!cur || a.rank < cur.rank) topByConf.set(a.conference, a);
+    const winner = confirmedWinners.get(a.conference);
+    if (winner) {
+      // Confirmed winner: match by team name
+      if (a.team === winner) topByConf.set(a.conference, a);
+    } else {
+      // Predicted: top-ranked team
+      const cur = topByConf.get(a.conference);
+      if (!cur || a.rank < cur.rank) topByConf.set(a.conference, a);
+    }
   }
   for (const a of out) {
     if (topByConf.get(a.conference) === a) {

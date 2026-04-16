@@ -1,6 +1,7 @@
 import { haversineDistance } from "@/lib/geo";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
+import type { Championship } from "@/data/championships-men-2026";
 import { CHAMPIONSHIP_STRUCTURE } from "@/data/ncaa-selection-rules";
 
 export interface ScurveAssignment extends TeamData {
@@ -58,16 +59,35 @@ export function computeRegionalPositions(
 }
 
 /**
- * Derive predicted auto-qualifiers from a team list: the top-ranked team
- * in each conference is the predicted conference champion and earns an AQ.
+ * Derive auto-qualifiers from a team list. If championships with confirmed
+ * winners are provided, those teams get the AQ. Otherwise the top-ranked
+ * team per conference is the predicted AQ.
  * Mirrors the logic in championships.ts so conference + regional pages agree.
  */
-function deriveAutoQualifiers(teams: TeamData[]): TeamData[] {
+function deriveAutoQualifiers(
+  teams: TeamData[],
+  championships?: Championship[]
+): TeamData[] {
+  // Build confirmed-winner lookup: conference -> winner team name
+  const confirmedWinners = new Map<string, string>();
+  if (championships) {
+    for (const c of championships) {
+      if (c.winner) confirmedWinners.set(c.conference, c.winner);
+    }
+  }
+
   const topByConf = new Map<string, number>();
   for (let i = 0; i < teams.length; i++) {
-    const cur = topByConf.get(teams[i].conference);
-    if (cur === undefined || teams[i].rank < teams[cur].rank) {
-      topByConf.set(teams[i].conference, i);
+    const winner = confirmedWinners.get(teams[i].conference);
+    if (winner) {
+      // Confirmed winner: match by team name
+      if (teams[i].team === winner) topByConf.set(teams[i].conference, i);
+    } else {
+      // Predicted: top-ranked team
+      const cur = topByConf.get(teams[i].conference);
+      if (cur === undefined || teams[i].rank < teams[cur].rank) {
+        topByConf.set(teams[i].conference, i);
+      }
     }
   }
   return teams.map((t, i) => ({
@@ -92,9 +112,10 @@ export function computeScurve(
   teams: TeamData[],
   regionals: Regional[],
   mode: ScurveMode = "committee",
-  gender: "men" | "women" = "men"
+  gender: "men" | "women" = "men",
+  championships?: Championship[]
 ): ScurveAssignment[] {
-  const teamsWithAqs = deriveAutoQualifiers(teams);
+  const teamsWithAqs = deriveAutoQualifiers(teams, championships);
   const fieldSize = CHAMPIONSHIP_STRUCTURE.totalFieldSize[gender];
   const allEligible = teamsWithAqs.filter((t) => t.eligible || t.isAutoQualifier);
 

@@ -45,6 +45,7 @@ export interface Championship {
   color: string;
   notes?: string;
   sourceUrl?: string;
+  winner?: string; // Exact team name from rankings. Set only after championship concludes.
 }
 
 export const championshipsMen2026: Championship[] = [
@@ -63,8 +64,9 @@ export const championshipsMen2026: Championship[] = [
     endDate: "2026-04-15",
     color: "#b8843a",
     notes:
-      "Joint men's & women's championship; happening this week (today is Apr 12).",
+      "Joint men's & women's championship. Concluded April 15.",
     sourceUrl: "https://swac.org/sports/mgolf",
+    winner: "Arkansas-Pine Bluff",
   },
   {
     id: 2,

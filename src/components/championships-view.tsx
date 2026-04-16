@@ -16,7 +16,7 @@ import {
 } from "@/lib/championships";
 import type { TeamData } from "@/data/rankings-men";
 import type { Championship } from "@/data/championships-men-2026";
-import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink } from "lucide-react";
+import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink, Trophy } from "lucide-react";
 import ChampionshipsMap from "@/components/championships-map";
 import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
@@ -755,7 +755,11 @@ function ChampionshipCard({
             )}
             {top && (
               <span className="text-[10px] mt-0.5 text-foreground/70 truncate max-w-[120px]">
-                AQ: {top.team}
+                {championship.winner ? (
+                  <><Trophy className="inline h-2.5 w-2.5 mr-0.5 opacity-70" />{championship.winner}</>
+                ) : (
+                  <>AQ: {top.team}</>
+                )}
               </span>
             )}
           </div>
@@ -820,9 +824,15 @@ function ChampionshipCard({
                       </td>
                       <td className="px-3 py-1.5 text-center">
                         {t.isAutoQualifier ? (
-                          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
-                            AQ
-                          </span>
+                          championship.winner ? (
+                            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-emerald-500/15 text-emerald-400">
+                              W
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
+                              AQ
+                            </span>
+                          )
                         ) : (
                           <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">
                             AL
@@ -953,7 +963,7 @@ function PredictedAQSection({
     <section className="mt-6">
       <div className="flex items-baseline gap-2 mb-2">
         <h3 className="text-[13px] font-semibold text-foreground">
-          Predicted AQ Winners
+          Conference AQ Winners
         </h3>
         <span className="text-[11px] text-text-tertiary tabular-nums">
           <AnimatedNumber
@@ -969,9 +979,8 @@ function PredictedAQSection({
         </span>
       </div>
       <p className="text-[11px] text-text-tertiary mb-2">
-        The top-ranked team in each conference based on the current rankings is shown
-        with a <span className="font-semibold">P</span> pill (Predicted). Once a championship
-        plays, the row dims and the actual winner can be filled in.
+        Confirmed champions are marked with <span className="font-semibold text-emerald-400">W</span>.
+        Predictions based on current rankings are marked with <span className="font-semibold">P</span>.
       </p>
 
       <div className="rounded-lg border border-border overflow-hidden">
@@ -986,7 +995,7 @@ function PredictedAQSection({
         >
           <SortHeader label="Championship" sortKey="championship" current={sortKey} dir={sortDir} onSort={handleSort} />
           <SortHeader label="Dates" sortKey="date" current={sortKey} dir={sortDir} onSort={handleSort} />
-          <SortHeader label="Predicted AQ" sortKey="status" current={sortKey} dir={sortDir} onSort={handleSort} />
+          <SortHeader label="AQ / Winner" sortKey="status" current={sortKey} dir={sortDir} onSort={handleSort} />
           <SortHeader label="Rank" sortKey="rank" current={sortKey} dir={sortDir} onSort={handleSort} align="right" />
         </div>
         {sortedGrouped.map(({ championship, teams }) => {
@@ -1034,7 +1043,17 @@ function PredictedAQSection({
                 {formatDateRange(championship.startDate, championship.endDate)}
               </span>
               <span className="text-foreground/90 truncate flex items-center gap-1.5 min-w-0">
-                {top ? (
+                {championship.winner ? (
+                  <>
+                    <span className="truncate">{championship.winner}</span>
+                    <span
+                      title={`Confirmed champion — ${championship.winner} won the ${championship.conferenceFull} championship`}
+                      className="inline-flex items-center justify-center text-[9px] font-semibold text-emerald-400 bg-emerald-500/15 rounded px-1 py-px shrink-0"
+                    >
+                      W
+                    </span>
+                  </>
+                ) : top ? (
                   <>
                     <span className="truncate">{top.team}</span>
                     {!isPast && (
@@ -1051,7 +1070,12 @@ function PredictedAQSection({
                 )}
               </span>
               <span className="font-mono tabular-nums text-[11px] text-muted-foreground text-right">
-                {top ? `#${top.rank}` : "—"}
+                {championship.winner
+                  ? (() => {
+                      const winnerTeam = teams.find((t) => t.team === championship.winner);
+                      return winnerTeam ? `#${winnerTeam.rank}` : "—";
+                    })()
+                  : top ? `#${top.rank}` : "—"}
               </span>
             </button>
           );

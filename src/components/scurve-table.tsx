@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
+import type { Championship } from "@/data/championships-men-2026";
 import {
   Search,
   ChevronUp,
@@ -45,6 +46,8 @@ interface ScurveTableProps {
   womenTeams: TeamData[];
   menRegionals: Regional[];
   womenRegionals: Regional[];
+  menChampionships?: Championship[];
+  womenChampionships?: Championship[];
   lastUpdated: string;
 }
 
@@ -210,6 +213,8 @@ export default function ScurveTable({
   womenTeams,
   menRegionals,
   womenRegionals,
+  menChampionships,
+  womenChampionships,
   lastUpdated,
 }: ScurveTableProps) {
   const router = useRouter();
@@ -284,10 +289,10 @@ export default function ScurveTable({
   const assignments = useMemo(() => {
     if (gender === "women") {
       if (womenTeams.length === 0 || womenRegionals.length === 0) return [];
-      return computeScurve(womenTeams, womenRegionals, scurveMode, "women");
+      return computeScurve(womenTeams, womenRegionals, scurveMode, "women", womenChampionships);
     }
-    return computeScurve(menTeams, menRegionals, scurveMode, "men");
-  }, [gender, menTeams, menRegionals, womenTeams, womenRegionals, scurveMode]);
+    return computeScurve(menTeams, menRegionals, scurveMode, "men", menChampionships);
+  }, [gender, menTeams, menRegionals, womenTeams, womenRegionals, scurveMode, menChampionships, womenChampionships]);
 
   // Regional map for colors / names
   const regionalMap = useMemo(() => {
