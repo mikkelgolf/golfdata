@@ -211,7 +211,7 @@ export const allTeamsWomen2026: TeamData[] = [
   { rank: 197, team: "Western Michigan", conference: "MAC", events: 9, wins: 50, losses: 61, ties: 3, eligible: false, isAutoQualifier: false, aqConference: null, lat: 42.291707, lng: -85.5872286 },
   { rank: 198, team: "Belmont", conference: "MVC", events: 9, wins: 48, losses: 35, ties: 4, eligible: true, isAutoQualifier: false, aqConference: null, lat: 43.5476008, lng: -96.7293629 },
   { rank: 199, team: "North Alabama", conference: "ASUN", events: 9, wins: 36, losses: 59, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.79981, lng: -87.677251 },
-  { rank: 200, team: "Idaho", conference: "BSKY", events: 8, wins: 28, losses: 55, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 42.8620287, lng: -112.450627 },
+  { rank: 200, team: "Idaho", conference: "BSKY", events: 8, wins: 28, losses: 55, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 46.7296, lng: -117.0128 },
   { rank: 201, team: "Western Carolina", conference: "SOCON", events: 9, wins: 26, losses: 82, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 35.3137739, lng: -83.1765814 },
   { rank: 202, team: "Winthrop", conference: "BSOUTH", events: 9, wins: 41, losses: 66, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.9248667, lng: -81.0250784 },
   { rank: 203, team: "Illinois State", conference: "MVC", events: 9, wins: 24, losses: 110, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.5092961, lng: -88.9843937 },

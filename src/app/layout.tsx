@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/react";
 import { SiteHeader } from "@/components/site-header";
+import FooterContact from "@/components/footer-contact";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -68,9 +69,10 @@ export default function RootLayout({
         <main id="main-content" className="flex-1 relative z-[1]">{children}</main>
 
         <footer className="border-t border-border/60 py-4 relative z-[1]">
-          <div className="mx-auto max-w-6xl px-4 text-center text-[11px] text-text-tertiary">
-            College Golf Data &middot; Mikkel Bjerch-Andresen &amp; David
-            Tenneson
+          <div className="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-[11px] text-text-tertiary">
+            <span>College Golf Data &middot; Mikkel Bjerch-Andresen &amp; David Tenneson</span>
+            <span aria-hidden className="hidden sm:inline text-border">·</span>
+            <FooterContact />
           </div>
         </footer>
 

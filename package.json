@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "verify-championships": "npx tsx scripts/verify-championships.ts",
-    "verify-streaks": "npx tsx scripts/verify-streaks.ts"
+    "verify-streaks": "npx tsx scripts/verify-streaks.ts",
+    "verify-team-coords": "npx tsx scripts/verify-team-coords.ts"
   },
   "dependencies": {
     "@types/d3-force": "^3.0.10",

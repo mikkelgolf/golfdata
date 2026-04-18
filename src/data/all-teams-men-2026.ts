@@ -145,7 +145,7 @@ export const allTeamsMen2026: TeamData[] = [
   { rank: 131, team: "North Florida", conference: "ASUN", events: 11, wins: 39, losses: 122, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 26.3586885, lng: -80.0830984 },
   { rank: 132, team: "UTSA", conference: "AAC", events: 10, wins: 64, losses: 65, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 29.4246002, lng: -98.4951405 },
   { rank: 133, team: "Illinois State", conference: "MVC", events: 10, wins: 72, losses: 58, ties: 5, eligible: true, isAutoQualifier: false, aqConference: null, lat: 40.5092961, lng: -88.9843937 },
-  { rank: 134, team: "Idaho", conference: "BIGSKY", events: 9, wins: 89, losses: 45, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 42.8620287, lng: -112.450627 },
+  { rank: 134, team: "Idaho", conference: "BIGSKY", events: 9, wins: 89, losses: 45, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 46.7296, lng: -117.0128 },
   { rank: 135, team: "Kent State", conference: "MAC", events: 9, wins: 23, losses: 72, ties: 5, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.1499, lng: -81.3421 },
   { rank: 136, team: "Connecticut", conference: "BE", events: 10, wins: 86, losses: 52, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 41.8084314, lng: -72.2495231 },
   { rank: 137, team: "Rhode Island", conference: "A10", events: 10, wins: 87, losses: 30, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 41.8239891, lng: -71.4128343 },

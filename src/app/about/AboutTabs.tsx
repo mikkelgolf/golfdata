@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import ContactForm from "@/components/contact-form";
 
-type Tab = "explanations" | "team";
+type Tab = "explanations" | "team" | "contact";
 
 export default function AboutTabs() {
   const [tab, setTab] = useState<Tab>("explanations");
@@ -19,6 +20,7 @@ export default function AboutTabs() {
           [
             { id: "explanations" as const, label: "Explanations" },
             { id: "team" as const, label: "Team" },
+            { id: "contact" as const, label: "Contact" },
           ]
         ).map((t) => (
           <button
@@ -56,6 +58,15 @@ export default function AboutTabs() {
         className="mt-6"
       >
         <TeamPanel />
+      </div>
+
+      <div
+        id="about-panel-contact"
+        role="tabpanel"
+        hidden={tab !== "contact"}
+        className="mt-6 max-w-lg"
+      >
+        <ContactForm />
       </div>
     </>
   );
