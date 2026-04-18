@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/regionals`, lastModified: today, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE}/records/men`, lastModified: today, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/records/women`, lastModified: today, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE}/teams`, lastModified: today, changeFrequency: "weekly", priority: 0.85 },
     { url: `${BASE}/about`, lastModified: today, changeFrequency: "monthly", priority: 0.4 },
   ];
 
