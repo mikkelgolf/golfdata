@@ -14,6 +14,7 @@ import type {
 } from "@/data/records-types";
 import TeamAggregateSection from "@/components/team-aggregate-section";
 import SectionJumpSelect from "@/components/section-jump-select";
+import { AnimatedNumber } from "@/components/animated-number";
 
 interface Props {
   book: RecordBook;
@@ -49,13 +50,49 @@ function entryCount(s: RecordSection): number {
   }
 }
 
+function collectSchools(section: RecordSection, set: Set<string>): void {
+  if (section.kind === "annual-rank" || section.kind === "all-america") return;
+  for (const e of section.entries) {
+    const school = (e as { school?: string }).school;
+    if (school) set.add(school);
+  }
+}
+
+function computeBookStats(groups: RecordGroup[]): {
+  entryCount: number;
+  programCount: number;
+} {
+  let count = 0;
+  const schools = new Set<string>();
+  for (const g of groups) {
+    for (const s of g.sections) {
+      count += entryCount(s);
+      collectSchools(s, schools);
+    }
+  }
+  return { entryCount: count, programCount: schools.size };
+}
+
+const SECTION_ACCENTS: Record<RecordSection["kind"], string> = {
+  stat: "border-l-teal-500/70",
+  tournament: "border-l-amber-500/70",
+  table: "border-l-sky-500/70",
+  award: "border-l-rose-500/70",
+  "annual-rank": "border-l-violet-500/70",
+  "all-america": "border-l-fuchsia-500/70",
+  majors: "border-l-purple-500/70",
+  "long-running": "border-l-slate-500/70",
+  coach: "border-l-orange-500/70",
+  "team-aggregate": "border-l-emerald-500/70",
+};
+
 function currentClass(isCurrent: boolean | undefined): string {
   return isCurrent ? "font-semibold text-foreground" : "";
 }
 
 function StatRow({ e }: { e: StatEntry }) {
   return (
-    <div className="grid grid-cols-[48px_1fr_1fr] items-baseline gap-3 py-0.5">
+    <div className="grid grid-cols-[48px_1fr_1fr] items-baseline gap-3 py-0.5 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <span className={`font-mono text-[13px] tabular-nums text-right ${currentClass(e.isCurrentPlayer)}`}>
         {e.value}
       </span>
@@ -72,7 +109,7 @@ function StatRow({ e }: { e: StatEntry }) {
 
 function TournamentRow({ e }: { e: TournamentEntry }) {
   return (
-    <div className="py-1">
+    <div className="py-1 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <div className="grid grid-cols-[96px_1fr] items-baseline gap-3">
         <span className={`font-mono text-[13px] tabular-nums text-right ${currentClass(e.isCurrentPlayer)}`}>
           {e.value}
@@ -90,7 +127,7 @@ function TournamentRow({ e }: { e: TournamentEntry }) {
 
 function TableRow({ e }: { e: TableEntry }) {
   return (
-    <div className="grid grid-cols-[1fr_1fr_56px_56px_56px] items-baseline gap-3 py-0.5">
+    <div className="grid grid-cols-[1fr_1fr_56px_56px_56px] items-baseline gap-3 py-0.5 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <span className={`text-[13px] ${currentClass(e.isCurrentPlayer)}`}>{e.player}</span>
       <span className="text-[12px] text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis">
         {e.school}
@@ -105,7 +142,7 @@ function TableRow({ e }: { e: TableEntry }) {
 
 function AwardRow({ e }: { e: AwardEntry }) {
   return (
-    <div className="grid grid-cols-[64px_1fr] items-baseline gap-3 py-0.5">
+    <div className="grid grid-cols-[64px_1fr] items-baseline gap-3 py-0.5 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <span className="font-mono text-[13px] tabular-nums text-right text-muted-foreground">{e.year}</span>
       <span className="text-[13px]">
         {e.winner}
@@ -168,7 +205,7 @@ function AllAmericaYearBlock({ y }: { y: AllAmericaYear }) {
 
 function MajorsRow({ e }: { e: MajorsEntry }) {
   return (
-    <div className="grid grid-cols-[48px_1fr] items-baseline gap-3 py-1">
+    <div className="grid grid-cols-[48px_1fr] items-baseline gap-3 py-1 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <span className="font-mono text-[13px] tabular-nums text-right">{e.count}</span>
       <span className="text-[13px]">
         {e.school}
@@ -180,7 +217,7 @@ function MajorsRow({ e }: { e: MajorsEntry }) {
 
 function LongRunningRow({ e }: { e: LongRunningEntry }) {
   return (
-    <div className="grid grid-cols-[48px_1fr] items-baseline gap-3 py-0.5">
+    <div className="grid grid-cols-[48px_1fr] items-baseline gap-3 py-0.5 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <span className="font-mono text-[13px] tabular-nums text-right">{e.years}</span>
       <span className="text-[13px]">
         {e.event}
@@ -192,7 +229,7 @@ function LongRunningRow({ e }: { e: LongRunningEntry }) {
 
 function CoachRow({ e }: { e: CoachEntry }) {
   return (
-    <div className="grid grid-cols-[48px_1fr_1fr] items-baseline gap-3 py-0.5">
+    <div className="grid grid-cols-[48px_1fr_1fr] items-baseline gap-3 py-0.5 rounded px-1 -mx-1 hover:bg-white/[0.03] transition-colors">
       <span className="font-mono text-[13px] tabular-nums text-right">{e.value}</span>
       <span className="text-[13px]">
         {e.coach}
@@ -208,10 +245,14 @@ function CoachRow({ e }: { e: CoachEntry }) {
 
 function Section({ s, gender }: { s: RecordSection; gender: "men" | "women" }) {
   const count = entryCount(s);
+  const accent = SECTION_ACCENTS[s.kind];
   return (
-    <section id={s.slug} className="mt-10 border-t border-border pt-5 scroll-mt-20">
-      <div className="flex items-baseline justify-between mb-3">
-        <h3 className="label-caps">
+    <section
+      id={s.slug}
+      className={`mt-6 rounded-lg border border-border border-l-4 ${accent} bg-card/60 px-4 py-4 sm:px-5 sm:py-5 scroll-mt-24 transition-shadow hover:shadow-overlay`}
+    >
+      <div className="flex items-baseline justify-between mb-3 gap-3">
+        <h3 className="label-caps text-foreground">
           {s.title}
           {"minQualifier" in s && s.minQualifier ? (
             <span className="ml-2 normal-case text-[11px] font-normal text-text-tertiary">
@@ -219,7 +260,7 @@ function Section({ s, gender }: { s: RecordSection; gender: "men" | "women" }) {
             </span>
           ) : null}
         </h3>
-        <span className="text-[11px] text-text-tertiary font-mono tabular-nums">
+        <span className="shrink-0 rounded-full border border-border/60 bg-background/50 px-2 py-0.5 text-[10px] text-text-tertiary font-mono tabular-nums">
           {count} {count === 1 ? "entry" : "entries"}
         </span>
       </div>
@@ -273,23 +314,46 @@ function Section({ s, gender }: { s: RecordSection; gender: "men" | "women" }) {
 
 export default function RecordBookView({ book, extraGroups = [] }: Props) {
   const allGroups = [...extraGroups, ...book.groups];
-  // Flatten all sections for the section-jump bar
+  const stats = computeBookStats(allGroups);
   const chips = allGroups.flatMap((g) =>
     g.sections.filter((s) => entryCount(s) > 0).map((s) => ({ slug: s.slug, title: s.title })),
   );
 
   return (
     <div>
+      {/* Hero stats */}
+      <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="rounded-md border border-border bg-card px-3 py-2">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80">Entries</div>
+          <div className="mt-0.5 text-[20px] sm:text-[22px] font-semibold text-foreground tabular-nums leading-tight">
+            <AnimatedNumber value={stats.entryCount} />
+          </div>
+          <div className="text-[10px] text-muted-foreground">tracked records</div>
+        </div>
+        <div className="rounded-md border border-border bg-card px-3 py-2">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80">Programs</div>
+          <div className="mt-0.5 text-[20px] sm:text-[22px] font-semibold text-foreground tabular-nums leading-tight">
+            <AnimatedNumber value={stats.programCount} />
+          </div>
+          <div className="text-[10px] text-muted-foreground">appearing in the book</div>
+        </div>
+        <div className="rounded-md border border-border bg-card px-3 py-2">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80">Sections</div>
+          <div className="mt-0.5 text-[20px] sm:text-[22px] font-semibold text-foreground tabular-nums leading-tight">
+            <AnimatedNumber value={chips.length} />
+          </div>
+          <div className="text-[10px] text-muted-foreground">record categories</div>
+        </div>
+      </div>
+
       {/* Section jump nav */}
       <nav
         aria-label="Record sections"
-        className="sticky top-[var(--nav-height)] z-20 -mx-4 sm:mx-0 border-b border-border bg-background/65 backdrop-blur-xl backdrop-saturate-150"
+        className="sticky top-[var(--nav-height)] z-20 -mx-4 sm:mx-0 mt-5 border-b border-border bg-background/65 backdrop-blur-xl backdrop-saturate-150"
       >
-        {/* Mobile: native select */}
         <div className="sm:hidden px-4 py-2">
           <SectionJumpSelect chips={chips} />
         </div>
-        {/* Desktop: chip row */}
         <div className="hidden sm:flex overflow-x-auto px-4 py-2 gap-2">
           {chips.map((c) => (
             <a
@@ -308,12 +372,14 @@ export default function RecordBookView({ book, extraGroups = [] }: Props) {
         if (visibleSections.length === 0) return null;
         return (
           <div key={g.slug}>
-            <h2 className="mt-12 font-serif text-2xl tracking-tight text-foreground">
+            <h2 className="mt-10 font-serif text-2xl tracking-tight text-foreground">
               {g.title}
             </h2>
-            {visibleSections.map((s) => (
-              <Section key={s.slug} s={s} gender={book.gender} />
-            ))}
+            <div className="space-y-3 mt-3">
+              {visibleSections.map((s) => (
+                <Section key={s.slug} s={s} gender={book.gender} />
+              ))}
+            </div>
           </div>
         );
       })}
