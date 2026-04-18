@@ -206,7 +206,7 @@ function CoachRow({ e }: { e: CoachEntry }) {
   );
 }
 
-function Section({ s }: { s: RecordSection }) {
+function Section({ s, gender }: { s: RecordSection; gender: "men" | "women" }) {
   const count = entryCount(s);
   return (
     <section id={s.slug} className="mt-10 border-t border-border pt-5 scroll-mt-20">
@@ -263,6 +263,7 @@ function Section({ s }: { s: RecordSection }) {
             entries={s.entries}
             valueLabel={s.valueLabel}
             searchable={s.searchable}
+            gender={gender}
           />
         )}
       </div>
@@ -311,7 +312,7 @@ export default function RecordBookView({ book, extraGroups = [] }: Props) {
               {g.title}
             </h2>
             {visibleSections.map((s) => (
-              <Section key={s.slug} s={s} />
+              <Section key={s.slug} s={s} gender={book.gender} />
             ))}
           </div>
         );

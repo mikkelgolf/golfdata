@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 import type { Gender, RegionalFinish } from "@/data/records-types";
@@ -7,6 +8,7 @@ import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
+import { teamHref } from "@/lib/team-link";
 
 interface Props {
   entries: RegionalFinish[];
@@ -255,17 +257,30 @@ export default function RegionalsResultsTable({ entries }: Props) {
             const isOpen = expanded.has(r.team);
             return (
               <div key={r.team} className="border-b border-border/40 last:border-b-0">
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => toggleExpand(r.team)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggleExpand(r.team);
+                    }
+                  }}
                   aria-expanded={isOpen}
-                  className="grid w-full grid-cols-[24px_minmax(140px,1fr)_56px_56px_56px_56px_minmax(80px,1fr)] items-center gap-1 bg-card px-2 py-1.5 text-left text-[12px] hover:bg-[hsl(var(--surface-raised))] transition-colors"
+                  className="grid w-full grid-cols-[24px_minmax(140px,1fr)_56px_56px_56px_56px_minmax(80px,1fr)] items-center gap-1 bg-card px-2 py-1.5 text-left text-[12px] hover:bg-[hsl(var(--surface-raised))] transition-colors cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                   <ChevronRight
                     className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isOpen ? "rotate-90" : ""}`}
                     aria-hidden="true"
                   />
-                  <span className="truncate font-medium">{r.team}</span>
+                  <Link
+                    href={teamHref(r.team, gender)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="truncate font-medium hover:text-primary transition-colors"
+                  >
+                    {r.team}
+                  </Link>
                   <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
                   <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
                   <span className="text-right font-mono tabular-nums font-semibold text-foreground">
@@ -277,7 +292,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                   <span className="truncate text-[11px] text-muted-foreground">
                     {r.currentConference}
                   </span>
-                </button>
+                </div>
 
                 {isOpen && (
                   <div className="bg-background/40 px-3 py-3 border-t border-border/40">

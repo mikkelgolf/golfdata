@@ -1,13 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import type { TeamAggregateEntry } from "@/data/records-types";
+import type { Gender, TeamAggregateEntry } from "@/data/records-types";
+import { teamHref } from "@/lib/team-link";
 
 interface Props {
   entries: TeamAggregateEntry[];
   valueLabel?: string;
   searchable?: boolean;
+  gender?: Gender;
 }
 
 type SortKey = "value" | "school";
@@ -26,6 +29,7 @@ export default function TeamAggregateSection({
   entries,
   valueLabel,
   searchable,
+  gender,
 }: Props) {
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
@@ -128,7 +132,16 @@ export default function TeamAggregateSection({
                 {e.value}
               </span>
             )}
-            <span className="text-[13px]">{e.school}</span>
+            {gender ? (
+              <Link
+                href={teamHref(e.school, gender)}
+                className="text-[13px] hover:text-primary transition-colors truncate"
+              >
+                {e.school}
+              </Link>
+            ) : (
+              <span className="text-[13px]">{e.school}</span>
+            )}
             <span className="text-[12px] text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis">
               {e.detail ?? ""}
             </span>
