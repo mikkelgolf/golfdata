@@ -1293,12 +1293,12 @@ function BreakdownView({
         })}
 
         {/* Magic Number cutoff */}
-        <div className="relative flex items-center gap-2 px-3 py-2 bg-amber-500/10 border-y-2 border-amber-500/60">
-          <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 whitespace-nowrap">
+        <div className="relative flex items-center gap-2 px-3 py-2 bg-red-500/10 border-y-2 border-red-500/60">
+          <div className="flex-1 border-t-2 border-dashed border-red-500/60" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-red-400 whitespace-nowrap">
             Magic Number &middot; Field Cutoff
           </span>
-          <div className="flex-1 border-t-2 border-dashed border-amber-500/50" />
+          <div className="flex-1 border-t-2 border-dashed border-red-500/60" />
         </div>
 
         {/* .500 Watch */}
@@ -1366,7 +1366,7 @@ function BreakdownView({
                 >
                   <span className="font-mono text-text-tertiary text-center">
                     <span className="md:hidden">#{team.rank}</span>
-                    <span className="hidden md:inline">+{idx + 1}</span>
+                    <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
                     {team.team}
@@ -1403,12 +1403,12 @@ function BreakdownView({
         )}
       </div>
 
-      {/* Full S-curve breakdown table */}
+      {/* Full D1 breakdown table */}
       <div className="mt-6">
-        <div className="flex items-baseline gap-2 mb-2">
-          <h3 className="text-[13px] font-semibold text-foreground scroll-mt-[var(--nav-height)]">Full Field Breakdown</h3>
+        <div className="flex items-baseline gap-2 mb-2 flex-wrap">
+          <h3 className="text-[13px] font-semibold text-foreground scroll-mt-[var(--nav-height)]">Full D1 Breakdown</h3>
           <span className="text-[11px] text-text-tertiary">
-            All <AnimatedNumber value={assignments.length} className="text-foreground !font-normal !tracking-normal" /> teams &middot; sorted by seed
+            <AnimatedNumber value={assignments.length} className="text-foreground !font-normal !tracking-normal" /> in the field &middot; <AnimatedNumber value={teamsOut.length} className="text-foreground !font-normal !tracking-normal" /> below the cutline
           </span>
         </div>
         <div className="overflow-x-clip rounded-lg border border-border">
@@ -1466,6 +1466,44 @@ function BreakdownView({
                       style={{ borderLeft: `2px solid ${regional?.color ?? "#888"}`, paddingLeft: "6px" }}
                     >
                       {regional?.name.replace(/ Regional$/, "") ?? "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+              {teamsOut.length > 0 && (
+                <tr className="border-y-2 border-red-500/60 bg-red-500/10">
+                  <td colSpan={8} className="px-3 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-red-400">
+                    Magic Number · Teams Below Did Not Qualify
+                  </td>
+                </tr>
+              )}
+              {teamsOut.map((team) => {
+                const diff = fmtDiff(team.wins, team.losses);
+                return (
+                  <tr
+                    key={`out-${team.team}`}
+                    className="h-7 border-b border-border/40 hover:bg-white/[0.02] transition-colors opacity-75"
+                  >
+                    <td className="px-2 text-center font-mono text-muted-foreground">—</td>
+                    <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">—</td>
+                    <td className="px-2 text-muted-foreground">
+                      <span>{team.team}</span>
+                      {!team.eligible && (
+                        <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                          Sub-.500
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-2 text-center text-muted-foreground hidden md:table-cell">{team.conference}</td>
+                    <td className="px-2 text-right font-mono text-muted-foreground">#{team.rank}</td>
+                    <td className="px-2 text-center font-mono text-muted-foreground">
+                      {team.wins}-{team.losses}{team.ties > 0 ? `-${team.ties}` : ""}
+                    </td>
+                    <td className={cn("px-2 text-right font-mono", diff.positive ? "text-muted-foreground" : "text-destructive/80")}>
+                      {diff.label}
+                    </td>
+                    <td className="px-2 text-left text-muted-foreground hidden md:table-cell">
+                      —
                     </td>
                   </tr>
                 );
