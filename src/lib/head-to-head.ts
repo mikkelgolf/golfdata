@@ -277,6 +277,126 @@ export async function getMeetings(
 }
 
 // ---------------------------------------------------------------------------
+// Seasons
+//
+// A "season" runs Aug 1 of the start year through Jul 31 of the next year.
+// The pre-aggregated h2h totals in head-to-head-2526.json come from a BigQuery
+// view whose date filter is loose (it can include May 2025 NCAA Championship
+// matches in the 2025-26 bucket). Consumers that care about strict season
+// scoping should re-aggregate from `getMeetings()` and filter with
+// `isMeetingInSeason()` instead of trusting the pre-computed totals.
+// ---------------------------------------------------------------------------
+
+export type Season = `${number}-${number}`;
+
+/** Currently available seasons, newest last. Add more as historical JSON ships. */
+export const AVAILABLE_SEASONS: readonly Season[] = ["2025-26"];
+
+/** Default season shown by the UI. */
+export const CURRENT_SEASON: Season = AVAILABLE_SEASONS[AVAILABLE_SEASONS.length - 1];
+
+/** Inclusive [start, end] ISO date strings for a season (Aug 1 → Jul 31). */
+export function getSeasonDateRange(season: Season): {
+  startDate: string;
+  endDate: string;
+} {
+  const startYear = Number(season.slice(0, 4));
+  const endYear = startYear + 1;
+  return {
+    startDate: `${startYear}-08-01`,
+    endDate: `${endYear}-07-31`,
+  };
+}
+
+/**
+ * True if the meeting falls inside the given season window. Meetings with
+ * a missing startDate are excluded (we can't place them).
+ */
+export function isMeetingInSeason(meeting: Meeting, season: Season): boolean {
+  if (!meeting.startDate) return false;
+  const { startDate, endDate } = getSeasonDateRange(season);
+  return meeting.startDate >= startDate && meeting.startDate <= endDate;
+}
+
+/**
+ * Re-aggregate an OpponentRecord from a list of per-meeting rows. Used after
+ * filtering meetings by season so the displayed totals match what's actually
+ * shown in the meeting list. `unitid` is left as 0 — the caller already knows
+ * the opponent identity.
+ */
+export function computeRecordFromMeetings(meetings: Meeting[]): OpponentRecord {
+  let wins = 0;
+  let losses = 0;
+  let ties = 0;
+
+  let spMeetings = 0;
+  let spWins = 0;
+  let spLosses = 0;
+  let spTies = 0;
+  let cumStrokeDiff = 0;
+  let best = Infinity;
+  let worst = -Infinity;
+
+  let mpMeetings = 0;
+  let mpWins = 0;
+  let mpLosses = 0;
+  let mpTies = 0;
+
+  for (const m of meetings) {
+    if (m.winner === "A") wins += 1;
+    else if (m.winner === "B") losses += 1;
+    else ties += 1;
+
+    if (m.format === "strokeplay") {
+      spMeetings += 1;
+      if (m.winner === "A") spWins += 1;
+      else if (m.winner === "B") spLosses += 1;
+      else spTies += 1;
+      if (m.strokeDiff !== null) {
+        cumStrokeDiff += m.strokeDiff;
+        if (m.strokeDiff < best) best = m.strokeDiff;
+        if (m.strokeDiff > worst) worst = m.strokeDiff;
+      }
+    } else {
+      mpMeetings += 1;
+      if (m.winner === "A") mpWins += 1;
+      else if (m.winner === "B") mpLosses += 1;
+      else mpTies += 1;
+    }
+  }
+
+  return {
+    unitid: 0,
+    meetings: meetings.length,
+    wins,
+    losses,
+    ties,
+    strokeplay:
+      spMeetings > 0
+        ? {
+            meetings: spMeetings,
+            wins: spWins,
+            losses: spLosses,
+            ties: spTies,
+            cumulativeStrokeDiff: cumStrokeDiff,
+            avgStrokeDiff: cumStrokeDiff / spMeetings,
+            bestResult: best === Infinity ? 0 : best,
+            worstResult: worst === -Infinity ? 0 : worst,
+          }
+        : undefined,
+    matchplay:
+      mpMeetings > 0
+        ? {
+            meetings: mpMeetings,
+            wins: mpWins,
+            losses: mpLosses,
+            ties: mpTies,
+          }
+        : undefined,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------
 
