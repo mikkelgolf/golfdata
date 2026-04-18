@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RecordBookView from "@/components/record-book";
 import { recordsWomen } from "@/data/records-women";
+import { buildProgramRecordsGroup } from "@/lib/program-records";
 
 export const metadata: Metadata = {
   title: "Women's Record Book - NCAA Division I Golf",
@@ -27,7 +28,7 @@ export default function WomensRecordsPage() {
         NCAA Division I Women&apos;s Golf Record Book
       </h1>
       <p className="mt-2 text-[12px] text-text-tertiary">{recordsWomen.sourceNote}</p>
-      <RecordBookView book={recordsWomen} />
+      <RecordBookView book={recordsWomen} extraGroups={[buildProgramRecordsGroup("women")]} />
     </div>
   );
 }

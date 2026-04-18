@@ -576,6 +576,10 @@ function parseBook(text: string, groupSpecs: GroupSpec[]): RecordGroup[] {
       case "coach":
         section = { kind: "coach", ...base, entries: [] };
         break;
+      case "team-aggregate":
+        throw new Error(
+          `Section kind "team-aggregate" is built at runtime in src/lib/program-records.ts, not by the PDF parser`
+        );
     }
     group.sections.push(section);
     return section;
@@ -829,6 +833,7 @@ function countEntries(s: RecordSection): number {
     case "majors":
     case "long-running":
     case "coach":
+    case "team-aggregate":
       return s.entries.length;
     case "annual-rank":
       return s.years.reduce((n, y) => n + (y.teams?.length ?? 0) + (y.individuals?.length ?? 0), 0);

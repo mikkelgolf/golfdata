@@ -69,6 +69,12 @@ export interface CoachEntry {
   detail?: string;
 }
 
+export interface TeamAggregateEntry {
+  school: string;
+  value: number | string;
+  detail?: string;
+}
+
 export type RecordSection =
   | { kind: "stat"; slug: string; title: string; minQualifier?: string; entries: StatEntry[] }
   | { kind: "tournament"; slug: string; title: string; entries: TournamentEntry[] }
@@ -78,7 +84,16 @@ export type RecordSection =
   | { kind: "all-america"; slug: string; title: string; years: AllAmericaYear[] }
   | { kind: "majors"; slug: string; title: string; entries: MajorsEntry[] }
   | { kind: "long-running"; slug: string; title: string; entries: LongRunningEntry[] }
-  | { kind: "coach"; slug: string; title: string; entries: CoachEntry[] };
+  | { kind: "coach"; slug: string; title: string; entries: CoachEntry[] }
+  | {
+      kind: "team-aggregate";
+      slug: string;
+      title: string;
+      minQualifier?: string;
+      valueLabel?: string;
+      searchable?: boolean;
+      entries: TeamAggregateEntry[];
+    };
 
 export interface RecordGroup {
   slug: string;

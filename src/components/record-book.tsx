@@ -6,14 +6,18 @@ import type {
   LongRunningEntry,
   MajorsEntry,
   RecordBook,
+  RecordGroup,
   RecordSection,
   StatEntry,
   TableEntry,
   TournamentEntry,
 } from "@/data/records-types";
+import TeamAggregateSection from "@/components/team-aggregate-section";
+import SectionJumpSelect from "@/components/section-jump-select";
 
 interface Props {
   book: RecordBook;
+  extraGroups?: RecordGroup[];
 }
 
 function entryCount(s: RecordSection): number {
@@ -25,6 +29,7 @@ function entryCount(s: RecordSection): number {
     case "majors":
     case "long-running":
     case "coach":
+    case "team-aggregate":
       return s.entries.length;
     case "annual-rank":
       return s.years.reduce(
@@ -253,25 +258,38 @@ function Section({ s }: { s: RecordSection }) {
         {s.kind === "majors" && s.entries.map((e, i) => <MajorsRow key={i} e={e} />)}
         {s.kind === "long-running" && s.entries.map((e, i) => <LongRunningRow key={i} e={e} />)}
         {s.kind === "coach" && s.entries.map((e, i) => <CoachRow key={i} e={e} />)}
+        {s.kind === "team-aggregate" && (
+          <TeamAggregateSection
+            entries={s.entries}
+            valueLabel={s.valueLabel}
+            searchable={s.searchable}
+          />
+        )}
       </div>
     </section>
   );
 }
 
-export default function RecordBookView({ book }: Props) {
+export default function RecordBookView({ book, extraGroups = [] }: Props) {
+  const allGroups = [...extraGroups, ...book.groups];
   // Flatten all sections for the section-jump bar
-  const chips = book.groups.flatMap((g) =>
+  const chips = allGroups.flatMap((g) =>
     g.sections.filter((s) => entryCount(s) > 0).map((s) => ({ slug: s.slug, title: s.title })),
   );
 
   return (
     <div>
-      {/* Section jump chip row */}
+      {/* Section jump nav */}
       <nav
         aria-label="Record sections"
         className="sticky top-[var(--nav-height)] z-20 -mx-4 sm:mx-0 border-b border-border bg-background/65 backdrop-blur-xl backdrop-saturate-150"
       >
-        <div className="flex overflow-x-auto px-4 py-2 gap-2">
+        {/* Mobile: native select */}
+        <div className="sm:hidden px-4 py-2">
+          <SectionJumpSelect chips={chips} />
+        </div>
+        {/* Desktop: chip row */}
+        <div className="hidden sm:flex overflow-x-auto px-4 py-2 gap-2">
           {chips.map((c) => (
             <a
               key={c.slug}
@@ -284,7 +302,7 @@ export default function RecordBookView({ book }: Props) {
         </div>
       </nav>
 
-      {book.groups.map((g) => {
+      {allGroups.map((g) => {
         const visibleSections = g.sections.filter((s) => entryCount(s) > 0);
         if (visibleSections.length === 0) return null;
         return (
