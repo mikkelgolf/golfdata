@@ -34,6 +34,7 @@ export function SiteHeader() {
         <div className="hidden sm:flex items-center gap-4">
           <Link href="/" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Regional Predictions</Link>
           <Link href="/conference-championships" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Conf Champs</Link>
+          <Link href="/head-to-head" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Head-to-head</Link>
           <Link href="/regionals" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Regionals History</Link>
           <Link href="/records/men" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">Record Book</Link>
           <Link href="/about" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">About</Link>

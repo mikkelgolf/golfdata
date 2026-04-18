@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 const links = [
   { href: "/", label: "Regional Predictions" },
   { href: "/conference-championships", label: "Conference Championships" },
+  { href: "/head-to-head", label: "Head-to-head" },
   { href: "/regionals", label: "Regionals History" },
   { href: "/records/men", label: "Record Book" },
   { href: "/about", label: "About" },

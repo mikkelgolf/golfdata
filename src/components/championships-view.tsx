@@ -1,6 +1,6 @@
 "use client";
 
-import {
+import React, {
   useState,
   useMemo,
   useCallback,
@@ -26,6 +26,7 @@ import {
   formatStrokeDiff,
   type FieldRecord,
 } from "@/lib/head-to-head";
+import TeamDrillDown from "@/components/team-drill-down";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -626,6 +627,7 @@ function ChampionshipCard({
   gender: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [drillTeam, setDrillTeam] = useState<string | null>(null);
   const tbd = isVenueTBD(championship);
   const teamsWithCoords = teams.filter((t) => t.lat !== 0 || t.lng !== 0);
   const totalDistance = teamsWithCoords.reduce(
@@ -806,15 +808,26 @@ function ChampionshipCard({
               <tbody>
                 {teams.map((t) => {
                   const fr = fieldRecords.get(t.team);
+                  const isDrilled = drillTeam === t.team;
                   return (
+                    <React.Fragment key={t.team}>
                     <tr
-                      key={t.team}
-                      className="border-b border-border/20 last:border-b-0 hover:bg-white/[0.02]"
+                      className={cn(
+                        "border-b border-border/20 last:border-b-0 hover:bg-white/[0.02] cursor-pointer",
+                        isDrilled && "bg-white/[0.03]"
+                      )}
+                      onClick={() =>
+                        setDrillTeam((cur) => (cur === t.team ? null : t.team))
+                      }
+                      aria-expanded={isDrilled}
                     >
                       <td className="px-3 py-1.5 font-mono tabular-nums text-muted-foreground">
                         #{t.rank}
                       </td>
                       <td className="px-3 py-1.5 text-foreground">
+                        <span className="inline-block w-3 text-muted-foreground/60 text-[10px]">
+                          {isDrilled ? "▾" : "▸"}
+                        </span>{" "}
                         {t.team}
                         {!t.eligible && (
                           <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
@@ -876,6 +889,14 @@ function ChampionshipCard({
                           : `${t.distanceMiles.toLocaleString()} mi`}
                       </td>
                     </tr>
+                    {isDrilled && (
+                      <tr className="bg-background/50">
+                        <td colSpan={6} className="p-0">
+                          <TeamDrillDown teamBoardName={t.team} gender={gender} />
+                        </td>
+                      </tr>
+                    )}
+                    </React.Fragment>
                   );
                 })}
               </tbody>
