@@ -246,11 +246,23 @@ export default function TeamPage({ params }: { params: Params }) {
     .filter((r) => r.team === team && r.gender === gender)
     .sort((a, b) => b.year - a.year);
 
-  const timelineResults = history.map((r) => ({
-    year: r.year,
-    position: r.position,
-    advanced: r.advanced,
-  }));
+  const historyByYear = new Map(history.map((r) => [r.year, r]));
+  const minYear = history.length > 0 ? history[history.length - 1].year : MOST_RECENT_SEASON;
+  const maxYear = MOST_RECENT_SEASON;
+  const timelineResults: Array<{
+    year: number;
+    position: string;
+    advanced: boolean;
+    missed?: boolean;
+  }> = [];
+  for (let y = maxYear; y >= minYear; y--) {
+    const r = historyByYear.get(y);
+    if (r) {
+      timelineResults.push({ year: y, position: r.position, advanced: r.advanced });
+    } else {
+      timelineResults.push({ year: y, position: "--", advanced: false, missed: true });
+    }
+  }
 
   const recordBook = gender === "men" ? recordsMen : recordsWomen;
   const recordHits = findRecordMentions(team, recordBook);
@@ -419,6 +431,11 @@ export default function TeamPage({ params }: { params: Params }) {
               className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
             />
             = advanced to Nationals.
+            <span
+              aria-hidden="true"
+              className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
+            />
+            = did not make Regionals.
           </p>
         </section>
       )}
