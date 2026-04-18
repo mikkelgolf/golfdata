@@ -23,6 +23,12 @@ import { regionalsHistory } from "@/data/regionals-history";
 import { recordsMen } from "@/data/records-men";
 import { recordsWomen } from "@/data/records-women";
 
+import { StatCard } from "@/components/stat-card";
+import { ConferenceBadge } from "@/components/conference-badge";
+import RegionalTimeline from "@/components/team-page/regional-timeline";
+import UpcomingEvent from "@/components/team-page/upcoming-event";
+import RelatedTeams from "@/components/team-page/related-teams";
+
 interface Params {
   gender: string;
   slug: string;
@@ -92,8 +98,25 @@ function findChampionship(conference: string, gender: Gender) {
   return source.find((c) => c.conference === conference) ?? null;
 }
 
+function findConferencePeers(
+  conference: string,
+  gender: Gender
+): TeamData[] {
+  if (!conference) return [];
+  const rankings = gender === "men" ? rankingsMen : rankingsWomen;
+  const allTeams = gender === "men" ? allTeamsMen2026 : allTeamsWomen2026;
+  const seen = new Set<string>();
+  const out: TeamData[] = [];
+  for (const t of [...rankings, ...allTeams]) {
+    if (t.conference !== conference) continue;
+    if (seen.has(t.team)) continue;
+    seen.add(t.team);
+    out.push(t);
+  }
+  return out.sort((a, b) => a.rank - b.rank);
+}
+
 interface RecordHit {
-  group: string;
   section: string;
   value: string;
   detail?: string;
@@ -107,7 +130,6 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
         for (const e of section.entries) {
           if (e.school === team) {
             hits.push({
-              group: group.title,
               section: section.title,
               value: String(e.value),
               detail: `${e.player ?? ""}${e.years ? ` · ${e.years}` : ""}`.trim(),
@@ -118,7 +140,6 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
         for (const e of section.entries) {
           if (e.school === team) {
             hits.push({
-              group: group.title,
               section: section.title,
               value: String(e.value),
               detail: `${e.coach}${e.years ? ` · ${e.years}` : ""}`,
@@ -129,7 +150,6 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
         for (const e of section.entries) {
           if (e.school === team) {
             hits.push({
-              group: group.title,
               section: section.title,
               value: e.value,
               detail: [e.player, e.event, e.date].filter(Boolean).join(" · "),
@@ -140,7 +160,6 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
         for (const e of section.entries) {
           if (e.school === team) {
             hits.push({
-              group: group.title,
               section: section.title,
               value: `${e.avg.toFixed(2)} avg`,
               detail: `${e.player ?? ""}${e.years ? ` · ${e.years}` : ""}${e.rounds ? ` · ${e.rounds} rounds` : ""}`.trim(),
@@ -151,7 +170,6 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
         for (const e of section.entries) {
           if (e.school === team) {
             hits.push({
-              group: group.title,
               section: section.title,
               value: e.year,
               detail: e.winner,
@@ -162,7 +180,6 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
         for (const e of section.entries) {
           if (e.school === team) {
             hits.push({
-              group: group.title,
               section: section.title,
               value: String(e.count),
               detail: e.players,
@@ -173,6 +190,16 @@ function findRecordMentions(team: string, book: RecordBook): RecordHit[] {
     }
   }
   return hits;
+}
+
+function clusterBySection(hits: RecordHit[]): Map<string, RecordHit[]> {
+  const m = new Map<string, RecordHit[]>();
+  for (const h of hits) {
+    const arr = m.get(h.section) ?? [];
+    arr.push(h);
+    m.set(h.section, arr);
+  }
+  return m;
 }
 
 function formatStreak(s: StreakResult): string {
@@ -195,9 +222,9 @@ export default function TeamPage({ params }: { params: Params }) {
   const ranking = findRanking(team, gender);
   const stats = computeTeamStats(team, gender);
   const championship = record ? findChampionship(record.conference, gender) : null;
+  const conferencePeers = record ? findConferencePeers(record.conference, gender) : [];
   const label = gender === "men" ? "Men's" : "Women's";
 
-  // Compute S-curve assignment (if eligible)
   const allTeams = gender === "men" ? rankingsMen : rankingsWomen;
   const regionals = gender === "men" ? regionalsMen2026 : regionalsWomen2026;
   const championships =
@@ -218,10 +245,16 @@ export default function TeamPage({ params }: { params: Params }) {
   const history = regionalsHistory
     .filter((r) => r.team === team && r.gender === gender)
     .sort((a, b) => b.year - a.year);
-  const years = [...new Set(history.map((r) => r.year))].sort((a, b) => b - a);
+
+  const timelineResults = history.map((r) => ({
+    year: r.year,
+    position: r.position,
+    advanced: r.advanced,
+  }));
 
   const recordBook = gender === "men" ? recordsMen : recordsWomen;
   const recordHits = findRecordMentions(team, recordBook);
+  const clusteredHits = clusterBySection(recordHits);
 
   const otherGenderSlug = params.slug;
   const otherGender: Gender = gender === "men" ? "women" : "men";
@@ -236,6 +269,14 @@ export default function TeamPage({ params }: { params: Params }) {
     url: `https://collegegolfdata.com/teams/${gender}/${params.slug}`,
   };
 
+  const fieldStatusLabel = myAssignment
+    ? myAssignment.isAutoQualifier
+      ? "Projected AQ"
+      : "Projected at-large"
+    : record?.eligible === false
+      ? "Sub-.500"
+      : "Outside field";
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
       <script
@@ -243,12 +284,13 @@ export default function TeamPage({ params }: { params: Params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="flex items-center gap-2 text-[12px]">
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-[12px] flex-wrap">
         <Link
-          href={gender === "men" ? "/records/men" : "/records/women"}
+          href="/teams"
           className="text-muted-foreground hover:text-foreground transition-colors"
         >
-          ← {label} Record Book
+          ← All programs
         </Link>
         {otherTeamExists && (
           <>
@@ -263,181 +305,178 @@ export default function TeamPage({ params }: { params: Params }) {
         )}
       </div>
 
-      <h1 className="mt-4 font-serif text-3xl sm:text-4xl tracking-tight text-foreground">
-        {team} {label} Golf
-      </h1>
-      {record?.conference && (
-        <p className="mt-2 text-[13px] text-muted-foreground">
-          {record.conference} · 2025-26 NCAA Division I
-        </p>
-      )}
+      {/* Hero */}
+      <section className="mt-4 rounded-xl border border-border bg-gradient-to-b from-card/90 to-card/40 px-5 py-6 sm:px-6 sm:py-7">
+        <div className="flex items-center gap-2 text-[11px] flex-wrap">
+          {record?.conference && <ConferenceBadge conference={record.conference} size="md" />}
+          <span className="text-muted-foreground uppercase tracking-wider">
+            {label} · 2025-26
+          </span>
+        </div>
+        <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-3">
+          <h1 className="font-serif text-3xl sm:text-4xl tracking-tight text-foreground">
+            {team} {label} Golf
+          </h1>
+          {ranking && (
+            <div className="flex items-baseline gap-2">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                Rank
+              </span>
+              <span className="font-mono tabular-nums text-[32px] sm:text-[36px] font-semibold text-foreground leading-none">
+                #{ranking.rank}
+              </span>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Current season */}
-      <section className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Stat label="Current rank" value={ranking ? `#${ranking.rank}` : "—"} />
-        <Stat
+      <section className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        <StatCard
           label="Record"
           value={
             record
               ? `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`
               : "—"
           }
+          animate={false}
+          detail={record ? `${record.wins + record.losses + record.ties} meetings` : undefined}
         />
-        <Stat
+        <StatCard
           label="Field status"
-          value={
-            myAssignment
-              ? myAssignment.isAutoQualifier
-                ? "Projected AQ"
-                : "Projected at-large"
-              : record?.eligible === false
-                ? "Sub-.500"
-                : "Outside field"
-          }
+          value={fieldStatusLabel}
+          animate={false}
+          accent={myAssignment?.isAutoQualifier ? "primary" : myAssignment ? "green" : "amber"}
         />
-        <Stat
+        <StatCard
           label="Projected regional"
           value={myRegional ? myRegional.name.replace(/ Regional$/, "") : "—"}
+          animate={false}
           detail={
             myAssignment
-              ? `Seed #${myAssignment.seed} overall · ${posInRegional ?? "?"} in regional · ${Math.round(myAssignment.distanceMiles).toLocaleString()} mi`
+              ? `Seed #${myAssignment.seed} · ${posInRegional ?? "?"} in regional`
               : undefined
           }
+        />
+        <StatCard
+          label="Travel distance"
+          value={myAssignment ? `${Math.round(myAssignment.distanceMiles).toLocaleString()} mi` : "—"}
+          animate={false}
         />
       </section>
 
       {/* Upcoming conference event */}
       {championship && (
         <section className="mt-8">
-          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             Upcoming conference championship
           </h2>
-          <div className="mt-2 rounded-lg border border-border bg-card px-4 py-3">
-            <div className="text-[14px] font-medium text-foreground">
-              {championship.name}
-            </div>
-            <div className="mt-1 text-[12px] text-muted-foreground">
-              {championship.courseName} · {championship.city}
-              {championship.state ? `, ${championship.state}` : ""}
-            </div>
-            <div className="mt-1 text-[12px] text-muted-foreground font-mono tabular-nums">
-              {championship.startDate} → {championship.endDate}
-            </div>
-            {championship.winner && (
-              <div className="mt-1 text-[12px] text-primary">
-                Winner: {championship.winner}
-              </div>
-            )}
-          </div>
+          <UpcomingEvent championship={championship} />
         </section>
       )}
 
-      {/* Streaks + wins */}
+      {/* Historical */}
       <section className="mt-8">
-        <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Historical record (since 1989)
         </h2>
-        <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <Stat
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+          <StatCard
             label="Regional appearances"
-            value={String(stats.totalAppearances)}
+            value={stats.totalAppearances}
             detail={`streak: ${formatStreak(stats.regionalStreak)}`}
+            accent="green"
           />
-          <Stat
+          <StatCard
             label="National appearances"
-            value={String(stats.totalAdvancements)}
+            value={stats.totalAdvancements}
             detail={`streak: ${formatStreak(stats.nationalStreak)}`}
+            accent="primary"
           />
-          <Stat label="Regional wins" value={String(stats.regionalWins)} />
-          <Stat
+          <StatCard
+            label="Regional wins"
+            value={stats.regionalWins}
+            accent="amber"
+          />
+          <StatCard
             label="Best regional finish"
             value={stats.bestFinish ? `#${stats.bestFinish}` : "—"}
+            animate={false}
           />
         </div>
       </section>
 
-      {/* Year-by-year regional history */}
-      {years.length > 0 && (
+      {/* Year-by-year */}
+      {timelineResults.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             Year-by-year regional finishes
           </h2>
-          <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5">
-            {years.map((y) => {
-              const r = history.find((h) => h.year === y);
-              if (!r) return null;
-              return (
-                <div
-                  key={y}
-                  className="rounded border border-border/40 bg-card px-1.5 py-1 text-center"
-                >
-                  <div className="text-[10px] text-muted-foreground font-mono tabular-nums">
-                    {y}
-                  </div>
-                  <div className="text-[12px] font-mono tabular-nums">
-                    <span
-                      className={
-                        r.advanced
-                          ? "font-semibold text-foreground"
-                          : "text-foreground/80"
-                      }
-                    >
-                      {r.position}
-                      {r.advanced ? (
-                        <span
-                          aria-hidden="true"
-                          className="ml-0.5 inline-block h-[4px] w-[4px] rounded-full bg-primary/70 align-middle"
-                        />
-                      ) : null}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RegionalTimeline results={timelineResults} />
           <p className="mt-2 text-[11px] text-text-tertiary">
             <span
               aria-hidden="true"
-              className="mr-1 inline-block h-[4px] w-[4px] rounded-full bg-primary/70 align-middle"
+              className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
             />
-            = advanced to Nationals. Bold = position in regional.
+            = advanced to Nationals.
           </p>
         </section>
       )}
 
-      {/* Record book excerpts */}
-      {recordHits.length > 0 && (
+      {/* Record book excerpts, clustered */}
+      {clusteredHits.size > 0 && (
         <section className="mt-8">
-          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             {team} in the record book
           </h2>
-          <div className="mt-2 rounded-lg border border-border bg-card divide-y divide-border/40">
-            {recordHits.slice(0, 20).map((h, i) => (
+          <div className="space-y-3">
+            {[...clusteredHits.entries()].map(([sectionTitle, items]) => (
               <div
-                key={i}
-                className="grid grid-cols-[80px_1fr_1fr] items-baseline gap-3 px-3 py-1.5 text-[12px]"
+                key={sectionTitle}
+                className="rounded-lg border border-border bg-card px-4 py-3"
               >
-                <span className="font-mono tabular-nums text-right text-foreground">
-                  {h.value}
-                </span>
-                <span className="text-foreground truncate">{h.section}</span>
-                <span className="text-muted-foreground truncate">{h.detail}</span>
+                <div className="flex items-baseline justify-between mb-2 gap-3">
+                  <h3 className="label-caps">{sectionTitle}</h3>
+                  <span className="shrink-0 text-[10px] text-text-tertiary font-mono tabular-nums">
+                    {items.length} {items.length === 1 ? "entry" : "entries"}
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  {items.map((h, i) => (
+                    <div
+                      key={i}
+                      className="grid grid-cols-[80px_1fr] items-baseline gap-3 py-0.5 text-[12px]"
+                    >
+                      <span className="font-mono tabular-nums text-right text-foreground">
+                        {h.value}
+                      </span>
+                      <span className="text-muted-foreground truncate" title={h.detail}>
+                        {h.detail}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
-            {recordHits.length > 20 && (
-              <div className="px-3 py-2 text-[11px] text-muted-foreground">
-                … {recordHits.length - 20} more entries.{" "}
-                <Link
-                  href={gender === "men" ? "/records/men" : "/records/women"}
-                  className="underline-offset-4 hover:underline hover:text-foreground"
-                >
-                  Open the full record book
-                </Link>
-                .
-              </div>
-            )}
+          </div>
+          <div className="mt-2 text-[11px] text-muted-foreground">
+            <Link
+              href={gender === "men" ? "/records/men" : "/records/women"}
+              className="underline-offset-4 hover:underline hover:text-foreground"
+            >
+              Open the full {label.toLowerCase()} record book →
+            </Link>
           </div>
         </section>
+      )}
+
+      {/* Related teams */}
+      {record?.conference && (
+        <RelatedTeams
+          gender={gender}
+          currentTeam={team}
+          peers={conferencePeers}
+        />
       )}
 
       {history.length === 0 && recordHits.length === 0 && (
@@ -451,32 +490,6 @@ export default function TeamPage({ params }: { params: Params }) {
         Current-season data from Clippd rankings · Regional history 1989–
         {MOST_RECENT_SEASON}.
       </div>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  detail,
-}: {
-  label: string;
-  value: string;
-  detail?: string;
-}) {
-  return (
-    <div className="rounded-md border border-border bg-card px-3 py-2">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80">
-        {label}
-      </div>
-      <div className="mt-0.5 text-[15px] font-semibold text-foreground tabular-nums">
-        {value}
-      </div>
-      {detail && (
-        <div className="mt-0.5 text-[10px] text-muted-foreground font-mono tabular-nums truncate" title={detail}>
-          {detail}
-        </div>
-      )}
     </div>
   );
 }
