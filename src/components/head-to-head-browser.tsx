@@ -18,6 +18,7 @@ import {
   type OpponentRecord,
   type Season,
 } from "@/lib/head-to-head";
+import CommonOpponents from "@/components/head-to-head/common-opponents";
 
 // ---------------------------------------------------------------------------
 // Full-page team-vs-team head-to-head browser. URL params drive state so links
@@ -458,6 +459,8 @@ function PairSummary({
           </ul>
         )}
       </div>
+
+      <CommonOpponents teamA={teamA} teamB={teamB} gender={gender} />
     </div>
   );
 }
