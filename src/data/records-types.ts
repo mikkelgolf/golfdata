@@ -117,3 +117,23 @@ export interface RegionalFinish {
   position: string;
   advanced: boolean;
 }
+
+export interface ChampionshipFinish {
+  team: string;
+  gender: Gender;
+  year: number;
+  /** "1", "T3", "10", "MC" — "MC" means missed the 54-hole cut. */
+  position: string;
+  /** Ties flattened to the base integer. Null when position === "MC". */
+  positionNoTies: number | null;
+  /** False when position === "MC", true otherwise. */
+  madeCut: boolean;
+  /** True for post-2009 match-play-era Championships. */
+  matchPlayEra: boolean;
+  /** 1–8 when the team made the match-play bracket, else null. */
+  matchPlaySeed: number | null;
+  /** True/false once the team qualified for match play; null if DNQ. */
+  wonQuarterfinal: boolean | null;
+  wonSemifinal: boolean | null;
+  wonChampionship: boolean | null;
+}

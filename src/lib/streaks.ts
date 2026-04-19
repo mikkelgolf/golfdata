@@ -1,5 +1,10 @@
-import type { Gender, RegionalFinish } from "@/data/records-types";
+import type {
+  ChampionshipFinish,
+  Gender,
+  RegionalFinish,
+} from "@/data/records-types";
 import { regionalsHistory } from "@/data/regionals-history";
+import { championshipsHistory } from "@/data/championships-history";
 
 export const MOST_RECENT_SEASON = Math.max(
   ...regionalsHistory.map((r) => r.year)
@@ -20,6 +25,25 @@ export interface TeamHistoricalStats {
   totalAppearances: number;
   totalAdvancements: number;
   bestFinish: number | null;
+}
+
+export interface TeamChampionshipStats {
+  team: string;
+  gender: Gender;
+  /** Distinct years present at the NCAA Championship. */
+  appearances: number;
+  /** Years where position === "1". */
+  wins: number;
+  /** Best stroke-play finish (position-no-ties), lower is better. */
+  bestFinish: number | null;
+  /** Formatted best-finish label, preserving "T3" when ties exist at the min. */
+  bestFinishLabel: string | null;
+  /** Top-8 / match-play-era semifinalists or better? Count of years in the match-play bracket. */
+  topEight: number;
+  /** Quarterfinal + semifinal wins in match-play era. */
+  matchPlayWins: number;
+  /** Consecutive-years present streak — same shape as regional streak. */
+  appearanceStreak: StreakResult;
 }
 
 function streakOver(years: number[]): StreakResult {
@@ -111,5 +135,89 @@ export function computeAllTeamStats(): TeamHistoricalStats[] {
     out.push(computeTeamStats(team, gender));
   }
   cached = out;
+  return out;
+}
+
+function filterChampionships(
+  team: string,
+  gender: Gender
+): ChampionshipFinish[] {
+  return championshipsHistory.filter(
+    (r) => r.team === team && r.gender === gender
+  );
+}
+
+/**
+ * True when this row represents a championship-winning season.
+ * Pre-2009 the Championship was decided on stroke play alone — position "1"
+ * means they won. From 2009 on, match play decides it: a team can be the
+ * #1 seed and still lose the final, or seed #8 and win it. `wonChampionship`
+ * is the authoritative post-2009 signal.
+ */
+export function isChampion(r: ChampionshipFinish): boolean {
+  if (r.matchPlayEra) return r.wonChampionship === true;
+  return r.position === "1";
+}
+
+export function computeTeamChampionshipStats(
+  team: string,
+  gender: Gender
+): TeamChampionshipStats {
+  const rows = filterChampionships(team, gender);
+  const years = rows.map((r) => r.year);
+  let wins = 0;
+  let topEight = 0;
+  let mpWins = 0;
+  let bestFinish: number | null = null;
+  // Capture raw label ("1", "T3") at the best-finish position so we can
+  // surface "T3" rather than collapsing to "3".
+  let bestFinishLabel: string | null = null;
+  for (const r of rows) {
+    if (isChampion(r)) wins += 1;
+    if (r.matchPlaySeed !== null) topEight += 1;
+    if (r.wonQuarterfinal === true) mpWins += 1;
+    if (r.wonSemifinal === true) mpWins += 1;
+    if (r.positionNoTies !== null) {
+      if (bestFinish === null || r.positionNoTies < bestFinish) {
+        bestFinish = r.positionNoTies;
+        bestFinishLabel = r.position;
+      } else if (r.positionNoTies === bestFinish) {
+        // Prefer "T" label when both outright and tied finishes exist at
+        // the same rank — ties are cleaner to show.
+        if (bestFinishLabel && !bestFinishLabel.startsWith("T") && r.position.startsWith("T")) {
+          bestFinishLabel = r.position;
+        }
+      }
+    }
+  }
+  return {
+    team,
+    gender,
+    appearances: new Set(years).size,
+    wins,
+    bestFinish,
+    bestFinishLabel,
+    topEight,
+    matchPlayWins: mpWins,
+    appearanceStreak: streakOver(years),
+  };
+}
+
+let championshipCache: TeamChampionshipStats[] | null = null;
+
+export function computeAllChampionshipStats(): TeamChampionshipStats[] {
+  if (championshipCache) return championshipCache;
+  const keys = new Set<string>();
+  for (const r of championshipsHistory) {
+    keys.add(r.gender + "|" + r.team);
+  }
+  const out: TeamChampionshipStats[] = [];
+  for (const key of keys) {
+    const idx = key.indexOf("|");
+    const gender = key.slice(0, idx) as Gender;
+    const team = key.slice(idx + 1);
+    out.push(computeTeamChampionshipStats(team, gender));
+  }
+  championshipCache = out;
   return out;
 }
