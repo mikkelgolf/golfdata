@@ -2,15 +2,22 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState } from "react";
-import { ChevronRight, Search, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  ChevronsUpDown,
+  Search,
+  X,
+} from "lucide-react";
 import type { Gender, RegionalFinish } from "@/data/records-types";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { teamHref } from "@/lib/team-link";
-import { useReducedMotion } from "@/lib/animations";
+import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
 
 interface Props {
   entries: RegionalFinish[];
@@ -153,6 +160,21 @@ export default function RegionalsResultsTable({ entries }: Props) {
   const [confFilter, setConfFilter] = useState<Set<string>>(new Set());
   const [decadeFilter, setDecadeFilter] = useState<Set<string>>(new Set());
   const reduced = useReducedMotion();
+
+  // Blur-up intro on the outer table container.
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Gate row stagger to the initial mount only — re-renders from filter/sort
+  // changes must not re-trigger the entrance stagger.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   const conferenceMap = useMemo(() => buildConferenceMap(gender), [gender]);
 
@@ -379,7 +401,19 @@ export default function RegionalsResultsTable({ entries }: Props) {
         )}
       </div>
 
-      <div className="overflow-hidden rounded-md border border-border">
+      <div
+        className="overflow-hidden rounded-md border border-border"
+        style={
+          reduced
+            ? undefined
+            : {
+                opacity: loaded ? 1 : 0,
+                filter: loaded ? "blur(0px)" : "blur(8px)",
+                transition:
+                  "opacity 600ms ease-out, filter 600ms ease-out",
+              }
+        }
+      >
         <div className="grid grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
           <span />
           <SortableHeader
@@ -442,53 +476,88 @@ export default function RegionalsResultsTable({ entries }: Props) {
               No teams match.
             </div>
           )}
-          {sorted.map((r) => {
+          {sorted.map((r, rowIdx) => {
             const isOpen = expanded.has(r.team);
+            const rowBase =
+              "grid w-full grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
+            const rowCls = isOpen ? rowBase : `${rowBase} hover:shadow-raised`;
+            // Only stagger the first 24 rows, and only on initial mount.
+            const shouldStagger =
+              !reduced && !mounted && rowIdx < 24;
+            const rowInner = (
+              <>
+                <ChevronRight
+                  className={`h-3.5 w-3.5 text-muted-foreground transition-transform duration-150 ${isOpen ? "rotate-90" : ""}`}
+                  aria-hidden="true"
+                />
+                <Link
+                  href={teamHref(r.team, gender)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="truncate font-medium hover:text-primary transition-colors"
+                >
+                  {r.team}
+                </Link>
+                <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
+                <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
+                <span className="text-right font-mono tabular-nums font-semibold text-foreground">
+                  {r.wins}
+                </span>
+                <span className="text-right font-mono tabular-nums text-foreground">
+                  {r.bestFinish ?? "—"}
+                </span>
+                <span className="text-right font-mono tabular-nums text-muted-foreground">
+                  {r.lastAppearance ?? "—"}
+                </span>
+                <span className="truncate text-[11px] text-muted-foreground">
+                  {r.currentConference}
+                </span>
+              </>
+            );
             return (
               <div key={r.team} className="border-b border-border/40 last:border-b-0">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => toggleExpand(r.team)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      toggleExpand(r.team);
-                    }
-                  }}
-                  aria-expanded={isOpen}
-                  className={
-                    isOpen
-                      ? "grid w-full grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-[hsl(var(--surface-raised))] px-2 py-1.5 text-left text-[12px] cursor-pointer"
-                      : "grid w-full grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-card px-2 py-1.5 text-left text-[12px] hover:bg-[hsl(var(--surface-raised))] transition-colors cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  }
-                >
-                  <ChevronRight
-                    className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isOpen ? "rotate-90" : ""}`}
-                    aria-hidden="true"
-                  />
-                  <Link
-                    href={teamHref(r.team, gender)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="truncate font-medium hover:text-primary transition-colors"
+                {shouldStagger ? (
+                  <motion.div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleExpand(r.team)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleExpand(r.team);
+                      }
+                    }}
+                    aria-expanded={isOpen}
+                    data-active={isOpen}
+                    className={rowCls}
+                    variants={fadeSlideVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{
+                      duration: 0.25,
+                      ease: [0.32, 0.72, 0, 1],
+                      delay: rowIdx * 0.015,
+                    }}
                   >
-                    {r.team}
-                  </Link>
-                  <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
-                  <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
-                  <span className="text-right font-mono tabular-nums font-semibold text-foreground">
-                    {r.wins}
-                  </span>
-                  <span className="text-right font-mono tabular-nums text-foreground">
-                    {r.bestFinish ?? "—"}
-                  </span>
-                  <span className="text-right font-mono tabular-nums text-muted-foreground">
-                    {r.lastAppearance ?? "—"}
-                  </span>
-                  <span className="truncate text-[11px] text-muted-foreground">
-                    {r.currentConference}
-                  </span>
-                </div>
+                    {rowInner}
+                  </motion.div>
+                ) : (
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleExpand(r.team)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleExpand(r.team);
+                      }
+                    }}
+                    aria-expanded={isOpen}
+                    data-active={isOpen}
+                    className={rowCls}
+                  >
+                    {rowInner}
+                  </div>
+                )}
 
                 <AnimatePresence initial={false}>
                   {isOpen && (
@@ -502,13 +571,21 @@ export default function RegionalsResultsTable({ entries }: Props) {
                     >
                       <div className="bg-background/40 px-3 py-3 border-t border-border/40">
                         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5">
-                          {years.map((y) => {
+                          {years.map((y, idx) => {
                             const cell = r.byYear.get(y);
                             const dim = !yearInActiveDecade(y);
+                            const cellTransition = {
+                              duration: 0.22,
+                              ease: "easeOut" as const,
+                              delay: reduced ? 0 : idx * 0.012,
+                            };
                             if (!cell) {
                               return (
-                                <div
+                                <motion.div
                                   key={y}
+                                  initial={{ opacity: 0, scale: 0.94 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={cellTransition}
                                   className={`rounded border border-dashed border-border/20 px-1.5 py-1 text-center ${dim ? "opacity-25" : ""}`}
                                 >
                                   <div className="text-[10px] text-muted-foreground font-mono tabular-nums">
@@ -517,15 +594,18 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                   <div className="text-[12px] font-mono tabular-nums text-muted-foreground/50">
                                     —
                                   </div>
-                                </div>
+                                </motion.div>
                               );
                             }
                             return (
-                              <div
+                              <motion.div
                                 key={y}
+                                initial={{ opacity: 0, scale: 0.94 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={cellTransition}
                                 className={
                                   cell.advanced
-                                    ? `rounded border border-emerald-500/30 bg-emerald-500/5 px-1.5 py-1 text-center transition-colors hover:border-emerald-400/70 hover:bg-emerald-500/10 ${dim ? "opacity-25" : ""}`
+                                    ? `rounded border border-emerald-500/30 bg-emerald-500/5 px-1.5 py-1 text-center transition-colors hover:border-emerald-400/70 hover:bg-emerald-500/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`
                                     : `rounded border border-border/40 bg-card px-1.5 py-1 text-center ${dim ? "opacity-25" : ""}`
                                 }
                               >
@@ -543,7 +623,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                     {cell.position}
                                   </span>
                                 </div>
-                              </div>
+                              </motion.div>
                             );
                           })}
                         </div>
@@ -583,17 +663,21 @@ function SortableHeader({
   dir: SortDir;
   onClick: () => void;
 }) {
-  const arrow = active ? (dir === "asc" ? "↑" : "↓") : "↕";
-  const arrowClass = active ? "text-foreground/60" : "text-muted-foreground/30";
+  const Icon = active
+    ? dir === "asc"
+      ? ChevronUp
+      : ChevronDown
+    : ChevronsUpDown;
+  const iconClass = active ? "text-foreground/70" : "text-muted-foreground/40";
+  const base = `label-caps inline-flex items-center gap-1 ${align === "right" ? "justify-end text-right ml-auto" : "justify-start text-left"} hover:text-foreground transition-colors rounded px-1 py-0.5`;
+  const cls = active ? `${base} btn-lift` : base;
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      className={`label-caps ${align === "right" ? "text-right" : "text-left"} hover:text-foreground transition-colors`}
-    >
-      {label}
-      <span className={`ml-1 ${arrowClass}`}>{arrow}</span>
+    <button type="button" onClick={onClick} title={title} className={cls}>
+      <span>{label}</span>
+      <Icon
+        className={`h-3 w-3 transition-transform duration-150 ${iconClass}`}
+        aria-hidden="true"
+      />
     </button>
   );
 }
