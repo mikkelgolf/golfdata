@@ -44,7 +44,12 @@ export default function UpcomingEvent({
 
   const pill =
     state?.kind === "live"
-      ? { label: "Live now", className: "bg-red-500/15 text-red-300 border-red-500/40 animate-pulse" }
+      ? {
+          label: "Live now",
+          // No pulse (banned). Static red ring + tinted fill instead.
+          className:
+            "bg-red-500/15 text-red-300 border-red-500/40",
+        }
       : state?.kind === "upcoming"
         ? {
             label:
@@ -67,12 +72,16 @@ export default function UpcomingEvent({
             }
           : null;
 
+  // Ring-card shell. When live, overlay a static 1px red ring via ring-1
+  // AND bump to shadow-overlay depth so the card reads as "active" without
+  // any pulse. For upcoming/concluded, shadow-flat at rest, -raised on hover.
+  const liveShell =
+    state?.kind === "live"
+      ? "ring-card px-4 py-3 shadow-overlay ring-1 ring-red-500/40 transition-shadow duration-150 ease-out"
+      : "ring-card px-4 py-3 shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out";
+
   return (
-    <div
-      className={`rounded-lg border bg-card px-4 py-3 transition-colors ${
-        state?.kind === "live" ? "border-red-500/40 shadow-overlay" : "border-border"
-      }`}
-    >
+    <div className={liveShell}>
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <div className="text-[14px] font-medium text-foreground">

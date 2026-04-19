@@ -28,6 +28,13 @@ import { ConferenceBadge } from "@/components/conference-badge";
 import RegionalTimeline from "@/components/team-page/regional-timeline";
 import UpcomingEvent from "@/components/team-page/upcoming-event";
 import RelatedTeams from "@/components/team-page/related-teams";
+import ProgramArc from "@/components/team-page/program-arc";
+import {
+  AnimatedSection,
+  StaggerGrid,
+} from "@/components/team-page/animated-section";
+import { AnimatedNumber } from "@/components/animated-number";
+import { getTeamPercentiles } from "@/lib/percentiles";
 
 interface Params {
   gender: string;
@@ -268,6 +275,8 @@ export default function TeamPage({ params }: { params: Params }) {
   const recordHits = findRecordMentions(team, recordBook);
   const clusteredHits = clusterBySection(recordHits);
 
+  const percentiles = getTeamPercentiles(team, gender);
+
   const otherGenderSlug = params.slug;
   const otherGender: Gender = gender === "men" ? "women" : "men";
   const otherTeamExists = unslugify(otherGenderSlug, otherGender) !== null;
@@ -318,7 +327,7 @@ export default function TeamPage({ params }: { params: Params }) {
       </div>
 
       {/* Hero */}
-      <section className="mt-4 rounded-xl border border-border bg-gradient-to-b from-card/90 to-card/40 px-5 py-6 sm:px-6 sm:py-7">
+      <AnimatedSection className="mt-4 ring-card shadow-raised px-5 py-6 sm:px-6 sm:py-7">
         <div className="flex items-center gap-2 text-[11px] flex-wrap">
           {record?.conference && <ConferenceBadge conference={record.conference} size="md" />}
           <span className="text-muted-foreground uppercase tracking-wider">
@@ -335,47 +344,67 @@ export default function TeamPage({ params }: { params: Params }) {
                 Rank
               </span>
               <span className="font-mono tabular-nums text-[32px] sm:text-[36px] font-semibold text-foreground leading-none">
-                #{ranking.rank}
+                #<AnimatedNumber value={ranking.rank} />
               </span>
             </div>
           )}
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* Current season */}
-      <section className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-        <StatCard
-          label="Record"
-          value={
-            record
-              ? `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`
-              : "—"
-          }
-          animate={false}
-          detail={record ? `${record.wins + record.losses + record.ties} meetings` : undefined}
-        />
-        <StatCard
-          label="Field status"
-          value={fieldStatusLabel}
-          animate={false}
-          accent={myAssignment?.isAutoQualifier ? "primary" : myAssignment ? "green" : "amber"}
-        />
-        <StatCard
-          label="Projected regional"
-          value={myRegional ? myRegional.name.replace(/ Regional$/, "") : "—"}
-          animate={false}
-          detail={
-            myAssignment
-              ? `Seed #${myAssignment.seed} · ${posInRegional ?? "?"} in regional`
-              : undefined
-          }
-        />
-        <StatCard
-          label="Travel distance"
-          value={myAssignment ? `${Math.round(myAssignment.distanceMiles).toLocaleString()} mi` : "—"}
-          animate={false}
-        />
-      </section>
+      <StaggerGrid className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        {[
+          <StatCard
+            key="record"
+            label="Record"
+            value={
+              record
+                ? `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`
+                : "—"
+            }
+            animate={false}
+            detail={record ? `${record.wins + record.losses + record.ties} meetings` : undefined}
+          />,
+          <StatCard
+            key="field-status"
+            label="Field status"
+            value={fieldStatusLabel}
+            animate={false}
+            accent={myAssignment?.isAutoQualifier ? "primary" : myAssignment ? "green" : "amber"}
+          />,
+          <StatCard
+            key="projected-regional"
+            label="Projected regional"
+            value={myRegional ? myRegional.name.replace(/ Regional$/, "") : "—"}
+            animate={false}
+            detail={
+              myAssignment
+                ? `Seed #${myAssignment.seed} · ${posInRegional ?? "?"} in regional`
+                : undefined
+            }
+          />,
+          <StatCard
+            key="travel"
+            label="Travel distance"
+            value={
+              myAssignment
+                ? `${Math.round(myAssignment.distanceMiles).toLocaleString()} mi`
+                : "—"
+            }
+            animate={false}
+          />,
+        ]}
+      </StaggerGrid>
+
+      {/* Program arc — best regional finish per year */}
+      {timelineResults.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            Program arc
+          </h2>
+          <ProgramArc timeline={timelineResults} />
+        </section>
+      )}
 
       {/* Upcoming conference event */}
       {championship && (
@@ -392,30 +421,42 @@ export default function TeamPage({ params }: { params: Params }) {
         <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
           Historical record (since 1989)
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-          <StatCard
-            label="Regional appearances"
-            value={stats.totalAppearances}
-            detail={`streak: ${formatStreak(stats.regionalStreak)}`}
-            accent="green"
-          />
-          <StatCard
-            label="National appearances"
-            value={stats.totalAdvancements}
-            detail={`streak: ${formatStreak(stats.nationalStreak)}`}
-            accent="primary"
-          />
-          <StatCard
-            label="Regional wins"
-            value={stats.regionalWins}
-            accent="amber"
-          />
-          <StatCard
-            label="Best regional finish"
-            value={stats.bestFinish ? `#${stats.bestFinish}` : "—"}
-            animate={false}
-          />
-        </div>
+        <StaggerGrid className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+          {[
+            <StatCard
+              key="apps"
+              label="Regional appearances"
+              value={stats.totalAppearances}
+              detail={`streak: ${formatStreak(stats.regionalStreak)}`}
+              accent="green"
+              percentile={percentiles?.apps}
+            />,
+            <StatCard
+              key="nationals"
+              label="National appearances"
+              value={stats.totalAdvancements}
+              detail={`streak: ${formatStreak(stats.nationalStreak)}`}
+              accent="primary"
+              percentile={percentiles?.nationals}
+            />,
+            <StatCard
+              key="wins"
+              label="Regional wins"
+              value={stats.regionalWins}
+              accent="amber"
+              percentile={percentiles?.regionalWins}
+            />,
+            <StatCard
+              key="best"
+              label="Best regional finish"
+              value={stats.bestFinish ? `#${stats.bestFinish}` : "—"}
+              animate={false}
+              percentile={
+                stats.bestFinish !== null ? percentiles?.bestFinish : undefined
+              }
+            />,
+          ]}
+        </StaggerGrid>
       </section>
 
       {/* Year-by-year */}
@@ -446,11 +487,11 @@ export default function TeamPage({ params }: { params: Params }) {
           <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             {team} in the record book
           </h2>
-          <div className="space-y-3">
+          <StaggerGrid className="space-y-3" staggerDelay={0.04} initialDelay={0.05}>
             {[...clusteredHits.entries()].map(([sectionTitle, items]) => (
               <div
                 key={sectionTitle}
-                className="rounded-lg border border-border bg-card px-4 py-3"
+                className="ring-card shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out px-4 py-3"
               >
                 <div className="flex items-baseline justify-between mb-2 gap-3">
                   <h3 className="label-caps">{sectionTitle}</h3>
@@ -475,7 +516,7 @@ export default function TeamPage({ params }: { params: Params }) {
                 </div>
               </div>
             ))}
-          </div>
+          </StaggerGrid>
           <div className="mt-2 text-[11px] text-muted-foreground">
             <Link
               href={gender === "men" ? "/records/men" : "/records/women"}
