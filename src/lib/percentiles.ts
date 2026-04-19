@@ -22,6 +22,8 @@
 
 import type { Gender } from "@/data/records-types";
 import { regionalsHistory } from "@/data/regionals-history";
+import { championshipsHistory } from "@/data/championships-history";
+import { isChampion } from "@/lib/streaks";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
@@ -32,6 +34,12 @@ export interface TeamPercentiles {
   nationals: number;
   regionalWins: number;
   bestFinish: number;
+  /** NCAA Championship appearance count percentile (higher is better). */
+  ncaaApps: number;
+  /** NCAA Championship wins percentile. */
+  ncaaWins: number;
+  /** NCAA Championship best-finish percentile (lower position = higher pct). */
+  ncaaBest: number;
 }
 
 interface PercentileSnapshot {
@@ -44,20 +52,28 @@ interface RawStats {
   regionalWins: number;
   // null means "never appeared" — ranked worst on bestFinish.
   bestFinish: number | null;
+  ncaaApps: number;
+  ncaaWins: number;
+  /** Null = never appeared at NCAAs (worst). */
+  ncaaBest: number | null;
 }
 
 const cache = new Map<Gender, PercentileSnapshot>();
 
 function collectUniverse(gender: Gender): Set<string> {
   // Universe = every D1 team this season (ranked + unranked) UNION every
-  // team that's ever appeared at a regional. That way a program with a
-  // strong history but no 2026 roster still lands somewhere on the curve.
+  // team that's ever appeared at a regional UNION every team in the NCAA
+  // Championships dataset. That way a program with a strong history but no
+  // 2026 roster still lands somewhere on the curve.
   const teams = new Set<string>();
   const rankings = gender === "men" ? rankingsMen : rankingsWomen;
   const allTeams = gender === "men" ? allTeamsMen2026 : allTeamsWomen2026;
   for (const t of rankings) teams.add(t.team);
   for (const t of allTeams) teams.add(t.team);
   for (const r of regionalsHistory) {
+    if (r.gender === gender) teams.add(r.team);
+  }
+  for (const r of championshipsHistory) {
     if (r.gender === gender) teams.add(r.team);
   }
   return teams;
@@ -67,9 +83,9 @@ function rawStatsFor(team: string, gender: Gender): RawStats {
   const rows = regionalsHistory.filter(
     (r) => r.team === team && r.gender === gender
   );
-  if (rows.length === 0) {
-    return { apps: 0, nationals: 0, regionalWins: 0, bestFinish: null };
-  }
+  const ncaaRows = championshipsHistory.filter(
+    (r) => r.team === team && r.gender === gender
+  );
   const years = new Set<number>();
   const advancedYears = new Set<number>();
   let wins = 0;
@@ -81,11 +97,22 @@ function rawStatsFor(team: string, gender: Gender): RawStats {
     const n = parseInt(r.position, 10);
     if (Number.isFinite(n) && n > 0) positions.push(n);
   }
+  const ncaaYears = new Set<number>();
+  let ncaaWins = 0;
+  const ncaaPositions: number[] = [];
+  for (const r of ncaaRows) {
+    ncaaYears.add(r.year);
+    if (isChampion(r)) ncaaWins += 1;
+    if (r.positionNoTies !== null) ncaaPositions.push(r.positionNoTies);
+  }
   return {
     apps: years.size,
     nationals: advancedYears.size,
     regionalWins: wins,
     bestFinish: positions.length > 0 ? Math.min(...positions) : null,
+    ncaaApps: ncaaYears.size,
+    ncaaWins,
+    ncaaBest: ncaaPositions.length > 0 ? Math.min(...ncaaPositions) : null,
   };
 }
 
@@ -127,11 +154,17 @@ function buildSnapshot(gender: Gender): PercentileSnapshot {
   const nationalsArr: number[] = [];
   const winsArr: number[] = [];
   const bestFinishArr: Array<number | null> = [];
+  const ncaaAppsArr: number[] = [];
+  const ncaaWinsArr: number[] = [];
+  const ncaaBestArr: Array<number | null> = [];
   for (const s of raw.values()) {
     appsArr.push(s.apps);
     nationalsArr.push(s.nationals);
     winsArr.push(s.regionalWins);
     bestFinishArr.push(s.bestFinish);
+    ncaaAppsArr.push(s.ncaaApps);
+    ncaaWinsArr.push(s.ncaaWins);
+    ncaaBestArr.push(s.ncaaBest);
   }
 
   const byTeam = new Map<string, TeamPercentiles>();
@@ -141,6 +174,9 @@ function buildSnapshot(gender: Gender): PercentileSnapshot {
       nationals: percentileHigh(nationalsArr, s.nationals),
       regionalWins: percentileHigh(winsArr, s.regionalWins),
       bestFinish: percentileLow(bestFinishArr, s.bestFinish),
+      ncaaApps: percentileHigh(ncaaAppsArr, s.ncaaApps),
+      ncaaWins: percentileHigh(ncaaWinsArr, s.ncaaWins),
+      ncaaBest: percentileLow(ncaaBestArr, s.ncaaBest),
     });
   }
 

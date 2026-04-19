@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 
 import { allSlugs, unslugify } from "@/lib/team-slug";
 import {
+  computeTeamChampionshipStats,
   computeTeamStats,
+  isChampion,
   MOST_RECENT_SEASON,
   type StreakResult,
 } from "@/lib/streaks";
@@ -20,15 +22,21 @@ import { championshipsWomen2026 } from "@/data/championships-women-2026";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
 import { regionalsHistory } from "@/data/regionals-history";
+import { championshipsHistory } from "@/data/championships-history";
 import { recordsMen } from "@/data/records-men";
 import { recordsWomen } from "@/data/records-women";
 
 import { StatCard } from "@/components/stat-card";
 import { ConferenceBadge } from "@/components/conference-badge";
 import RegionalTimeline from "@/components/team-page/regional-timeline";
+import NationalTimeline, {
+  type NationalYearResult,
+} from "@/components/team-page/national-timeline";
 import UpcomingEvent from "@/components/team-page/upcoming-event";
 import RelatedTeams from "@/components/team-page/related-teams";
-import ProgramArc from "@/components/team-page/program-arc";
+import ProgramArc, {
+  type NcaaYearResult,
+} from "@/components/team-page/program-arc";
 import {
   AnimatedSection,
   StaggerGrid,
@@ -271,6 +279,56 @@ export default function TeamPage({ params }: { params: Params }) {
     }
   }
 
+  // NCAA Championship history for this team, sorted newest-first to match the
+  // regional timeline.
+  const ncaaHistory = championshipsHistory
+    .filter((r) => r.team === team && r.gender === gender)
+    .sort((a, b) => b.year - a.year);
+  const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
+  const championshipStats = computeTeamChampionshipStats(team, gender);
+
+  // NCAA timeline spans the same year range as the regional timeline so the
+  // two grids read side-by-side. Even if the NCAA span is narrower (e.g.,
+  // women's only starts 1982), we still align to the regional window.
+  const ncaaTimelineResults: NationalYearResult[] = [];
+  for (let y = maxYear; y >= minYear; y--) {
+    const row = ncaaByYear.get(y);
+    if (!row) {
+      ncaaTimelineResults.push({
+        year: y,
+        position: "—",
+        win: false,
+        matchPlay: false,
+        madeCut: false,
+        missedCut: false,
+        missed: true,
+      });
+    } else {
+      const champion = isChampion(row);
+      ncaaTimelineResults.push({
+        year: y,
+        position: row.position,
+        win: champion,
+        matchPlay: row.matchPlaySeed !== null && !champion,
+        madeCut: row.madeCut && row.matchPlaySeed === null,
+        missedCut: !row.madeCut,
+        missed: false,
+      });
+    }
+  }
+
+  // Parallel series for ProgramArc overlay. Only populated when the team
+  // has at least one NCAA appearance; otherwise the overlay isn't rendered.
+  const ncaaArcSeries: NcaaYearResult[] = ncaaHistory.map((r) => ({
+    year: r.year,
+    positionNoTies: r.positionNoTies,
+    appeared: true,
+    position: r.position,
+    win: isChampion(r),
+    advanced: r.matchPlaySeed !== null,
+    madeCut: r.madeCut,
+  }));
+
   const recordBook = gender === "men" ? recordsMen : recordsWomen;
   const recordHits = findRecordMentions(team, recordBook);
   const clusteredHits = clusterBySection(recordHits);
@@ -396,13 +454,16 @@ export default function TeamPage({ params }: { params: Params }) {
         ]}
       </StaggerGrid>
 
-      {/* Program arc — best regional finish per year */}
+      {/* Program arc — best regional finish per year, with NCAA overlay */}
       {timelineResults.length > 0 && (
         <section className="mt-8">
           <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             Program arc
           </h2>
-          <ProgramArc timeline={timelineResults} />
+          <ProgramArc
+            timeline={timelineResults}
+            ncaaTimeline={ncaaArcSeries.length > 0 ? ncaaArcSeries : undefined}
+          />
         </section>
       )}
 
@@ -416,10 +477,10 @@ export default function TeamPage({ params }: { params: Params }) {
         </section>
       )}
 
-      {/* Historical */}
+      {/* Regional history — since 1989 */}
       <section className="mt-8">
         <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Historical record (since 1989)
+          Regional history (since 1989)
         </h2>
         <StaggerGrid className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           {[
@@ -433,7 +494,7 @@ export default function TeamPage({ params }: { params: Params }) {
             />,
             <StatCard
               key="nationals"
-              label="National appearances"
+              label="Advanced to nationals"
               value={stats.totalAdvancements}
               detail={`streak: ${formatStreak(stats.nationalStreak)}`}
               accent="primary"
@@ -459,7 +520,67 @@ export default function TeamPage({ params }: { params: Params }) {
         </StaggerGrid>
       </section>
 
-      {/* Year-by-year */}
+      {/* National championship history */}
+      {championshipStats.appearances > 0 && (
+        <section className="mt-6">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            National championship history
+          </h2>
+          <StaggerGrid className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+            {[
+              <StatCard
+                key="ncaa-apps"
+                label="NCAA appearances"
+                value={championshipStats.appearances}
+                detail={`streak: ${formatStreak(championshipStats.appearanceStreak)}`}
+                accent="primary"
+                percentile={percentiles?.ncaaApps}
+              />,
+              <StatCard
+                key="ncaa-wins"
+                label="NCAA wins"
+                value={championshipStats.wins}
+                accent="amber"
+                percentile={percentiles?.ncaaWins}
+              />,
+              <StatCard
+                key="ncaa-best"
+                label="NCAA best finish"
+                value={
+                  championshipStats.bestFinishLabel
+                    ? championshipStats.bestFinishLabel
+                    : championshipStats.bestFinish !== null
+                      ? `#${championshipStats.bestFinish}`
+                      : "—"
+                }
+                animate={false}
+                percentile={
+                  championshipStats.bestFinish !== null
+                    ? percentiles?.ncaaBest
+                    : undefined
+                }
+              />,
+              <StatCard
+                key="ncaa-mp"
+                label={
+                  championshipStats.topEight > 0
+                    ? "Top-8 match-play berths"
+                    : "Match-play berths"
+                }
+                value={championshipStats.topEight}
+                detail={
+                  championshipStats.matchPlayWins > 0
+                    ? `${championshipStats.matchPlayWins} match-play wins`
+                    : undefined
+                }
+                accent="green"
+              />,
+            ]}
+          </StaggerGrid>
+        </section>
+      )}
+
+      {/* Year-by-year regionals */}
       {timelineResults.length > 0 && (
         <section className="mt-8">
           <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
@@ -478,6 +599,16 @@ export default function TeamPage({ params }: { params: Params }) {
             />
             = did not make Regionals.
           </p>
+        </section>
+      )}
+
+      {/* Year-by-year NCAA championships — mirrors the regional grid shape */}
+      {championshipStats.appearances > 0 && ncaaTimelineResults.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            Year-by-year NCAAs
+          </h2>
+          <NationalTimeline results={ncaaTimelineResults} />
         </section>
       )}
 
