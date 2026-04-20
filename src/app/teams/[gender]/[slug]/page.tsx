@@ -293,11 +293,15 @@ export default function TeamPage({ params }: { params: Params }) {
   const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
   const championshipStats = computeTeamChampionshipStats(team, gender);
 
-  // NCAA timeline spans the same year range as the regional timeline so the
-  // two grids read side-by-side. Even if the NCAA span is narrower (e.g.,
-  // women's only starts 1982), we still align to the regional window.
+  // NCAA timeline spans the full history of the championship for this gender
+  // (men's from 1939, women's from 1982) rather than clipping to the regional
+  // window — teams may have an NCAA appearance well before their regional
+  // record starts. Upper bound still tracks the most recent season.
+  const ncaaMinYear = championshipsHistory
+    .filter((r) => r.gender === gender)
+    .reduce((min, r) => Math.min(min, r.year), maxYear);
   const ncaaTimelineResults: NationalYearResult[] = [];
-  for (let y = maxYear; y >= minYear; y--) {
+  for (let y = maxYear; y >= ncaaMinYear; y--) {
     const row = ncaaByYear.get(y);
     if (!row) {
       ncaaTimelineResults.push({
