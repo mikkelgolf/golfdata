@@ -1,6 +1,6 @@
 # Session: Identify match play level in team NCAA year-by-year
 
-- **Status:** active
+- **Status:** wrapped
 - **Date:** 2026-04-20
 - **Requester:** David Tenneson (collegegolfbook on Discord)
 - **Branch:** `ron/match-play-level`
@@ -42,15 +42,68 @@ Needs a call from Mikkel / David before code is written.
 
 ## Actions
 
-_Filled at !wrap._
+1. **Added match-play round badges to NCAA year-by-year tiles.** Extended
+   `NationalYearResult` with a `matchPlayResult: "qf" | "sf" | "r" | null`
+   field and derived it in `teams/[gender]/[slug]/page.tsx` from
+   `wonQuarterfinal` / `wonSemifinal` / `matchPlaySeed` on each
+   `ChampionshipFinish`. Null for champions (trophy covers them),
+   non-qualifiers, and pre-match-play-era years. Non-champion qualifiers
+   render one of: **R** (amber, reached final), **SF** (sky, lost semi),
+   **QF** (emerald, lost quarterfinal). Added matching legend entries.
+   Commit `ef6e808`.
+2. **Extended NCAA year-by-year range to full championship history.** The
+   NCAA grid previously clipped to the regionals window; now lower bound
+   is derived from `championshipsHistory` filtered by gender, so men's
+   spans 1939–present and women's 1982–present. Upper bound still tracks
+   `MOST_RECENT_SEASON`. Commit `9a266da`.
+3. **Legend wording polish.** Changed "lost final / semifinal /
+   quarterfinal" to noun forms: **Runner-up**, **Semifinalist**,
+   **Quarterfinalist**. Commit `660bc48`. Tooltip / aria-label text on
+   the badges themselves was then aligned to the same nouns. Commit
+   `d21dc46`.
+4. **Badge + trophy position.** Moved the QF/SF/R badge from the left
+   of the year to the right (`d21dc46`), then moved the Trophy icon to
+   the same right-of-year position for visual consistency (`99d1dd9`).
+
+Build passed clean on the final state (616/616 static pages). Five
+preview deploys along the way; final preview:
+`https://collegegolfdata-3oc2k94ga-mikkelgolfs-projects.vercel.app`.
 
 ## Diff stats
 
-_Filled at !wrap._
+Vs. `ron/david-test`:
 
-## Open questions
+```
+docs/sessions/2026-04-20-match-play-level.md   | 56 +++++++++++++++
+src/app/teams/[gender]/[slug]/page.tsx         | 22 ++++++--
+src/components/team-page/national-timeline.tsx | 69 ++++++++++++++++++++++++--
+3 files changed, 140 insertions(+), 7 deletions(-)
+```
 
-- What's the data source for the "match play level" a team reached in a given NCAA? Is it already in `championships-history.json`, or does the ingest need augmenting?
-- Display: badges (QF / SF / Final / Champion), icons, or inline text?
-- Scope: men's + women's, or one first? Both championships have had match play formats — men's since 2009, women's since 2015.
-- Branch base: `dev` (wait for redesign) or `ron/david-test` (build on top)?
+Five feature commits on top of `ron/david-test` (plus the two
+session-doc commits from session setup).
+
+## Open questions / follow-ups
+
+Open questions from the setup doc — all resolved during the session:
+
+- _Data source?_ → Already in `championships-history.json`. No ingest
+  changes needed; match-play booleans + seed are the source of truth.
+- _Display format?_ → Letter badges (QF / SF / R), positioned to the
+  right of the year label, colour-coded to match the legend.
+- _Scope?_ → Both men's and women's. The component is gender-agnostic;
+  the page derivation filters by gender.
+- _Branch base?_ → `ron/david-test` (option 2 from the setup doc).
+  Clean rebase via delete-remote-and-recreate (documented in "Rebase
+  note" above).
+
+Follow-ups for a future session, not blockers for this PR:
+
+- Women's NCAA technically only adopted match play in 2015, not 2009.
+  Our `matchPlayEra` flag / derivation relies on data presence, not
+  year bounds — worth a spot-check that no pre-2015 women's row
+  accidentally carries non-null match-play seed / booleans.
+- Consider whether the Regionals timeline should likewise extend back
+  to each regional's inception rather than matching its current
+  team-scoped window. Mirror-image of this change, but different
+  data-source considerations. Raised here for tracking; not in scope.
