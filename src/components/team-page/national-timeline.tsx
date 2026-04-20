@@ -80,11 +80,11 @@ export default function NationalTimeline({
                 : "";
         const badgeLabel =
           mpr === "r"
-            ? "Reached NCAA final"
+            ? "Runner-up"
             : mpr === "sf"
-              ? "Lost NCAA semifinal"
+              ? "Semifinalist"
               : mpr === "qf"
-                ? "Lost NCAA quarterfinal"
+                ? "Quarterfinalist"
                 : undefined;
 
         const cellInner = (
@@ -95,7 +95,9 @@ export default function NationalTimeline({
                   className="h-2.5 w-2.5 text-amber-300"
                   aria-hidden="true"
                 />
-              ) : badgeText ? (
+              ) : null}
+              <span>{r.year}</span>
+              {!r.win && badgeText ? (
                 <span
                   className={`text-[9px] font-semibold font-mono leading-none ${badgeClass}`}
                   aria-label={badgeLabel}
@@ -104,7 +106,6 @@ export default function NationalTimeline({
                   {badgeText}
                 </span>
               ) : null}
-              <span>{r.year}</span>
             </div>
             <div className="text-[12px] font-mono tabular-nums leading-tight">
               <span className={posClass}>{r.missed || r.cancelled ? "—" : r.position}</span>
