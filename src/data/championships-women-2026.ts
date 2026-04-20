@@ -38,8 +38,11 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-16",
     endDate: "2026-04-19",
     color: "#4a73c2",
-    notes: "Stroke play Thu-Fri then match play Sat-Sun.",
-    sourceUrl: "https://theacc.com/feature/womens-golf-championship",
+    notes:
+      "Stroke play Thu-Fri then match play Sat-Sun. Stanford won its first ACC title, defeating SMU 3-0 in the match play final.",
+    sourceUrl:
+      "https://theacc.com/news/2026/4/19/stanford-wins-2026-acc-womens-golf-championship.aspx",
+    winner: "Stanford",
   },
   {
     id: 2,
@@ -74,9 +77,11 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-17",
     endDate: "2026-04-19",
     color: "#4a5a8a",
-    notes: "Presented by Credit Union 1.",
+    notes:
+      "Presented by Credit Union 1. Navy won its third straight Patriot League title, finishing at 896 — 11 strokes clear of Bucknell. Emma Tang (Navy) was individual medalist at 220 (+4).",
     sourceUrl:
       "https://patriotleague.org/tournaments/?id=459&path=wgolf",
+    winner: "Navy",
   },
   {
     id: 4,
@@ -92,7 +97,11 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-17",
     endDate: "2026-04-19",
     color: "#5fb7b0",
-    sourceUrl: "https://lipscombsports.com/sports/wgolf",
+    notes:
+      "North Florida won its fourth ASUN title in program history. Brianna Castaldi (UNF) captured the program's first individual title with a three-stroke margin.",
+    sourceUrl:
+      "https://unfospreys.com/news/2026/4/19/womens-golf-secures-fourth-asun-championship-title-in-program-history",
+    winner: "North Florida",
   },
   {
     id: 5,
@@ -108,7 +117,10 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-17",
     endDate: "2026-04-19",
     color: "#6c8a4e",
-    sourceUrl: "https://scoreboard.clippd.com/tournaments/244168",
+    notes:
+      "Howard won the NEC at +65, two shots clear of defending champion FDU (+67).",
+    sourceUrl: "https://scoreboard.clippd.com/tournaments/244168/scoring/team",
+    winner: "Howard",
   },
   {
     id: 6,
