@@ -90,14 +90,13 @@ export default function NationalTimeline({
         const cellInner = (
           <>
             <div className="text-[10px] text-text-tertiary font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
+              <span>{r.year}</span>
               {r.win ? (
                 <Trophy
                   className="h-2.5 w-2.5 text-amber-300"
                   aria-hidden="true"
                 />
-              ) : null}
-              <span>{r.year}</span>
-              {!r.win && badgeText ? (
+              ) : badgeText ? (
                 <span
                   className={`text-[9px] font-semibold font-mono leading-none ${badgeClass}`}
                   aria-label={badgeLabel}
