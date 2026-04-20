@@ -4,7 +4,18 @@
 - **Date:** 2026-04-20
 - **Requester:** David Tenneson (collegegolfbook on Discord)
 - **Branch:** `ron/match-play-level`
-- **Base:** `origin/dev`
+- **Base:** `ron/david-test` (rebased from `origin/dev` — see note below)
+
+## Rebase note
+
+Session was originally created off `origin/dev`. After confirming the task required editing files that only exist on `ron/david-test` (redesigned team pages and `championships-history.ts`), David chose to rebase this session onto `ron/david-test`. Executed via:
+
+1. Delete the origin `ron/match-play-level` branch (was single-commit session doc only, no PR, nobody else touched it).
+2. Reset local pointer to `ron/david-test`.
+3. Cherry-pick the session-doc commit on top.
+4. Fresh push.
+
+Future PR base should be `ron/david-test` (or `dev` once that branch merges).
 
 ## Task
 
