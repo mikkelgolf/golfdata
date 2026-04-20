@@ -1,9 +1,10 @@
 # Session: Update live site with 4/19 women's conference winners
 
+- **Status:** wrapped
 - **Date:** 2026-04-20
 - **Requester:** Mikkel Bjerch-Andresen (mikkelgolf on Discord)
 - **Branch:** `ron/update-live-winners`
-- **Base:** `origin/main`
+- **Base:** `origin/main` (note: session flow defaults to `dev`, but this branch was intentionally cut from `main` because it had to ship to production without the in-progress team-page redesign on `dev`)
 - **PR:** https://github.com/mikkelgolf/golfdata/pull/2
 - **Production deploy:** `https://collegegolfdata-5n70e4xa4-mikkelgolfs-projects.vercel.app` (aliased to collegegolfdata.com)
 - **Deployed SHA:** `7751178`
@@ -55,7 +56,38 @@ Additional internal checks:
 - **Other Apr 19 championships:** women's SEC, MVC, BWEST, OVC all end 4/21. Check back then.
 - **The large redesign work on `ron/david-test`** (team pages, championships history, etc.) is unchanged — stashed uncommitted changes were popped back after deploy. That branch is still mid-work.
 
+## Actions
+
+Commits on this branch beyond `origin/dev` (from `git log dev..HEAD --oneline`):
+
+- `7751178` — Confirm 2026 women's conference champions: Stanford (ACC), Navy (PATRIOT), North Florida (ASUN), Howard (NEC) — cherry-picked from `ron/david-test` commit `290035f`
+- `d84ed4b` — Add session doc: 2026-04-20 update-live-winners
+
+Other actions taken during the session (not commit-backed):
+- Stashed in-progress team-page redesign work on `ron/david-test` before branching, popped it back intact after deploy
+- Ran `scripts/verify-championships.ts` → 0 errors / 0 warnings
+- Ran `npm run build` → clean, 11/11 static pages generated
+- Validated each winner against two independent sources (theacc.com, patriotleague.org + navysports.com, unfospreys.com + asunsports.org, clippd scoreboard)
+- Ran `vercel --prod --yes` → production deploy `dpl_4YY2xzTj4U7LvS1gbwDjHeuwqe9D`
+- Post-deploy `curl` on live site confirmed all four winner names in page data
+- Opened PR #2 against `main` with Mikkel as reviewer
+
+## Diff stats
+
+From `git diff --stat origin/dev...HEAD`:
+
+```
+ docs/sessions/2026-04-20-update-live-winners.md | 61 +++++++++++++++++++++++++
+ src/data/championships-women-2026.ts            | 22 +++++++--
+ 2 files changed, 78 insertions(+), 5 deletions(-)
+```
+
+Only two files touched — the data file (4 winners + enriched notes/sourceUrls) and this session doc. No code, components, scripts, or config changed. Safe, minimal-surface change.
+
 ## Lessons
 
 - Validation via WebFetch on source URLs often hits either (a) login/consent walls or (b) template-only HTML stripped of article body. Fall back to **WebSearch** for cross-referenced reporting — it routes around single-source failures.
 - Cherry-picking a single-file commit from a feature branch onto a clean off-`main` branch is much safer than merging the whole feature branch when only a small subset is production-ready.
+- The default `!new` flow assumes branching off `dev`, but a prod-hotfix pattern needs a `main`-based branch. Worth documenting as a separate flow if this recurs.
+
+**Ended:** 2026-04-20T05:08:05Z
