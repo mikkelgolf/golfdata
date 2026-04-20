@@ -1,43 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/animations";
+import type { NcaaYearResult } from "./program-arc";
 
 interface YearResult {
   year: number;
   position: string;
   advanced: boolean;
   missed?: boolean;
-  /** Year cancelled at the NCAA level (e.g., 2020 COVID). Skipped from the
-   *  arc entirely — the line bridges straight across as if the year didn't
-   *  exist, because logically the program's streak does. */
   cancelled?: boolean;
 }
 
-export interface NcaaYearResult {
-  year: number;
-  /** Stroke-play finish ignoring ties; null when MC or missing. */
-  positionNoTies: number | null;
-  /** Whether the program was at the Championship that year. */
-  appeared: boolean;
-  /** Position string as shown ("1", "T3", "10", "MC"). */
-  position: string;
-  /** Won the championship. */
-  win: boolean;
-  /** Reached match-play (top 8). */
-  advanced: boolean;
-  /** Made the 54-hole cut (top 15). */
-  madeCut: boolean;
-  /** Cancelled year — skipped from the line. */
-  cancelled?: boolean;
-}
-
-// Regionals advancement cutoff: top 5 in each regional advance to nationals.
 const ADVANCEMENT_CUT = 5;
-// Plot geometry. The SVG is sized to fill a CSS-controlled aspect-box, so we
-// pick a viewBox tall enough that the line has vertical breathing room
-// without squashing on narrow viewports.
 const VB_W = 800;
 const VB_H = 240;
 const PAD_L = 32;
@@ -46,13 +22,8 @@ const PAD_T = 16;
 const PAD_B = 26;
 const PLOT_W = VB_W - PAD_L - PAD_R;
 const PLOT_H = VB_H - PAD_T - PAD_B;
-// Position range we map to the y-axis. 1 = top, 15 = bottom (worse than cut
-// by a safe margin). Teams outside this range are clamped so the chart stays
-// readable — detail lives in the grid below.
 const POS_MIN = 1;
 const POS_MAX = 15;
-
-// Win tone: warm sand/gold within the sub-brand's allowed palette.
 const WIN_COLOR = "oklch(0.82 0.11 85)";
 
 interface PlotPoint {
@@ -66,20 +37,27 @@ interface PlotPoint {
   missed: boolean;
 }
 
-export default function ProgramArc({
+/**
+ * Hover-interactive variant of ProgramArc. Same geometry/rendering, plus:
+ *  - nearest-year crosshair that follows the mouse along the x-axis
+ *  - floating tooltip with the year's regional + NCAA result
+ *  - keyboard focus not wired (chart is a supplementary visualization; all
+ *    data is also available in the year-by-year grids below)
+ *
+ * Cancelled years (COVID 2020) are skipped entirely — the line bridges
+ * straight across them, and they're not reachable via the crosshair.
+ */
+export default function InteractiveProgramArc({
   timeline,
   ncaaTimeline,
 }: {
   timeline: YearResult[];
-  /**
-   * Optional second series showing NCAA Championship finish per year. When
-   * provided, a gold line overlays the primary regional arc, rendering the
-   * dual story ("made regionals AND went deep at nationals"). If absent,
-   * behavior is unchanged from the original chart.
-   */
   ncaaTimeline?: NcaaYearResult[];
 }) {
   const reduced = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const [hoverYear, setHoverYear] = useState<number | null>(null);
 
   const { points, segments, minYear, maxYear } = useMemo(() => {
     if (timeline.length === 0) {
@@ -90,7 +68,6 @@ export default function ProgramArc({
         maxYear: 0,
       };
     }
-    // Timeline arrives in descending year order; sort ascending for the x-axis.
     const sorted = [...timeline].sort((a, b) => a.year - b.year);
     const minY = sorted[0].year;
     const maxY = sorted[sorted.length - 1].year;
@@ -98,17 +75,13 @@ export default function ProgramArc({
 
     const pts: PlotPoint[] = [];
     for (const r of sorted) {
-      // Cancelled years are skipped entirely — the line connects the points
-      // on either side without a break, reflecting that the program's
-      // continuity wasn't actually interrupted.
       if (r.cancelled) continue;
       const x = PAD_L + ((r.year - minY) / span) * PLOT_W;
       if (r.missed) {
-        // Missed year — rendered as a gap, no dot.
         pts.push({
           year: r.year,
           x,
-          y: PAD_T + PLOT_H, // placeholder, not drawn on path
+          y: PAD_T + PLOT_H,
           pos: NaN,
           position: r.position,
           advanced: false,
@@ -120,9 +93,7 @@ export default function ProgramArc({
       const parsedRaw = parseInt(r.position, 10);
       const parsed = Number.isFinite(parsedRaw) && parsedRaw > 0 ? parsedRaw : POS_MAX;
       const clamped = Math.max(POS_MIN, Math.min(POS_MAX, parsed));
-      const y =
-        PAD_T +
-        ((clamped - POS_MIN) / (POS_MAX - POS_MIN)) * PLOT_H;
+      const y = PAD_T + ((clamped - POS_MIN) / (POS_MAX - POS_MIN)) * PLOT_H;
       pts.push({
         year: r.year,
         x,
@@ -135,7 +106,6 @@ export default function ProgramArc({
       });
     }
 
-    // Segment the line across missed years so gaps break, not interpolate.
     const segs: PlotPoint[][] = [];
     let cur: PlotPoint[] = [];
     for (const p of pts) {
@@ -151,12 +121,13 @@ export default function ProgramArc({
     return { points: pts, segments: segs, minYear: minY, maxYear: maxY };
   }, [timeline]);
 
-  // Second series — NCAA finish. Shares x-axis with the regionals line by
-  // reusing minYear/maxYear. Points that missed the cut pin to POS_MAX so
-  // the line still conveys "they were there, but way outside the top 5."
   const ncaa = useMemo(() => {
     if (!ncaaTimeline || ncaaTimeline.length === 0 || maxYear === minYear) {
-      return { points: [] as PlotPoint[], segments: [] as PlotPoint[][] };
+      return {
+        points: [] as PlotPoint[],
+        segments: [] as PlotPoint[][],
+        byYear: new Map<number, PlotPoint>(),
+      };
     }
     const span = Math.max(1, maxYear - minYear);
     const pts: PlotPoint[] = [];
@@ -182,9 +153,7 @@ export default function ProgramArc({
           ? r.positionNoTies
           : POS_MAX;
       const clamped = Math.max(POS_MIN, Math.min(POS_MAX, parsed));
-      const y =
-        PAD_T +
-        ((clamped - POS_MIN) / (POS_MAX - POS_MIN)) * PLOT_H;
+      const y = PAD_T + ((clamped - POS_MIN) / (POS_MAX - POS_MIN)) * PLOT_H;
       pts.push({
         year: r.year,
         x,
@@ -208,19 +177,25 @@ export default function ProgramArc({
       }
     }
     if (cur.length > 0) segs.push(cur);
-    return { points: pts, segments: segs };
+
+    const byYear = new Map<number, PlotPoint>();
+    for (const p of pts) byYear.set(p.year, p);
+    return { points: pts, segments: segs, byYear };
   }, [ncaaTimeline, minYear, maxYear]);
+
+  const regionalByYear = useMemo(() => {
+    const m = new Map<number, PlotPoint>();
+    for (const p of points) m.set(p.year, p);
+    return m;
+  }, [points]);
 
   if (points.length === 0) return null;
 
-  const cutY =
-    PAD_T +
-    ((ADVANCEMENT_CUT - POS_MIN) / (POS_MAX - POS_MIN)) * PLOT_H;
+  const cutY = PAD_T + ((ADVANCEMENT_CUT - POS_MIN) / (POS_MAX - POS_MIN)) * PLOT_H;
 
   const pathD = (seg: PlotPoint[]) => {
     if (seg.length === 0) return "";
     if (seg.length === 1) {
-      // Degenerate single-point "line" — nudge x by 0.5 so path renders.
       const p = seg[0];
       return `M ${p.x - 0.25} ${p.y} L ${p.x + 0.25} ${p.y}`;
     }
@@ -229,7 +204,6 @@ export default function ProgramArc({
       .join(" ");
   };
 
-  // Year tick labels: start, middle-ish, end.
   const midYear = Math.round((minYear + maxYear) / 2);
   const tickYears = Array.from(new Set([minYear, midYear, maxYear])).sort(
     (a, b) => a - b
@@ -237,18 +211,54 @@ export default function ProgramArc({
 
   const titleText = `Program arc — best regional finish per year (${minYear}-${maxYear})`;
 
+  function handleMouseMove(e: React.MouseEvent<SVGSVGElement>) {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    // Convert clientX to the SVG's internal viewBox coordinate system.
+    const xPct = (e.clientX - rect.left) / rect.width;
+    const vbX = xPct * VB_W;
+    // Find the point with smallest |p.x - vbX|.
+    let best: PlotPoint | null = null;
+    let bestDist = Infinity;
+    for (const p of points) {
+      const d = Math.abs(p.x - vbX);
+      if (d < bestDist) {
+        bestDist = d;
+        best = p;
+      }
+    }
+    setHoverYear(best?.year ?? null);
+  }
+
+  function handleMouseLeave() {
+    setHoverYear(null);
+  }
+
+  const hoveredRegional = hoverYear !== null ? regionalByYear.get(hoverYear) : undefined;
+  const hoveredNcaa = hoverYear !== null ? ncaa.byYear.get(hoverYear) : undefined;
+
+  // Tooltip position: center of badge sits above the hovered x.
+  const tooltipLeftPct =
+    hoveredRegional !== undefined ? (hoveredRegional.x / VB_W) * 100 : 0;
+
   return (
-    <div className="rounded-lg border border-border/60 bg-card/40 px-3 py-3 sm:px-4 sm:py-3">
+    <div
+      ref={containerRef}
+      className="relative rounded-lg border border-border/60 bg-card/40 px-3 py-3 sm:px-4 sm:py-3"
+    >
       <svg
+        ref={svgRef}
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         preserveAspectRatio="none"
         role="img"
         aria-label={`Regional finish per year, ${minYear} to ${maxYear}. Lower line = better finish.`}
-        className="block w-full h-[110px] sm:h-[140px] overflow-visible"
+        className="block w-full h-[120px] sm:h-[150px] overflow-visible cursor-crosshair"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
         <title>{titleText}</title>
 
-        {/* Left-edge y-axis labels */}
         <text
           x={PAD_L - 6}
           y={PAD_T + 4}
@@ -270,7 +280,6 @@ export default function ProgramArc({
           5th
         </text>
 
-        {/* Advancement cut — dashed destructive line at 5th place */}
         <line
           x1={PAD_L}
           x2={VB_W - PAD_R}
@@ -293,19 +302,14 @@ export default function ProgramArc({
           Advance cut
         </text>
 
-        {/* X-axis tick labels */}
         {tickYears.map((y) => {
-          const x =
-            PAD_L +
-            ((y - minYear) / Math.max(1, maxYear - minYear)) * PLOT_W;
+          const x = PAD_L + ((y - minYear) / Math.max(1, maxYear - minYear)) * PLOT_W;
           return (
             <text
               key={`tick-${y}`}
               x={x}
               y={VB_H - 6}
-              textAnchor={
-                y === minYear ? "start" : y === maxYear ? "end" : "middle"
-              }
+              textAnchor={y === minYear ? "start" : y === maxYear ? "end" : "middle"}
               fontSize={9}
               fill="hsl(var(--muted-foreground))"
               className="font-mono tabular-nums"
@@ -315,7 +319,6 @@ export default function ProgramArc({
           );
         })}
 
-        {/* Single thin line — no fill, no gradient. */}
         {segments.map((seg, i) =>
           reduced ? (
             <path
@@ -345,23 +348,15 @@ export default function ProgramArc({
           )
         )}
 
-        {/* Win-year markers only. Everything else is the line. */}
         {points.map((p) => {
           if (p.missed || !p.win) return null;
           return (
-            <circle
-              key={`dot-${p.year}`}
-              cx={p.x}
-              cy={p.y}
-              r={2.5}
-              fill={WIN_COLOR}
-            >
+            <circle key={`dot-${p.year}`} cx={p.x} cy={p.y} r={2.5} fill={WIN_COLOR}>
               <title>{`${p.year}: won regional`}</title>
             </circle>
           );
         })}
 
-        {/* NCAA Championship overlay — single dotted gold line, NCAA-win dots only. */}
         {ncaa.segments.map((seg, i) =>
           reduced ? (
             <path
@@ -408,13 +403,93 @@ export default function ProgramArc({
             </circle>
           );
         })}
+
+        {/* Hover crosshair + highlight dots — rendered last so they sit on top. */}
+        {hoveredRegional && !hoveredRegional.missed && (
+          <>
+            <line
+              x1={hoveredRegional.x}
+              x2={hoveredRegional.x}
+              y1={PAD_T}
+              y2={PAD_T + PLOT_H}
+              stroke="hsl(var(--foreground))"
+              strokeOpacity={0.25}
+              strokeWidth={0.75}
+              strokeDasharray="2 2"
+            />
+            <circle
+              cx={hoveredRegional.x}
+              cy={hoveredRegional.y}
+              r={3.5}
+              fill="hsl(var(--foreground))"
+              fillOpacity={0.9}
+            />
+            {hoveredNcaa && !hoveredNcaa.missed && (
+              <circle
+                cx={hoveredNcaa.x}
+                cy={hoveredNcaa.y}
+                r={3.5}
+                fill={WIN_COLOR}
+                stroke="hsl(var(--card))"
+                strokeWidth={0.75}
+              />
+            )}
+          </>
+        )}
       </svg>
+
+      {/* Floating tooltip — positioned above the SVG, anchored to the crosshair. */}
+      {hoveredRegional !== undefined && (
+        <div
+          className="pointer-events-none absolute z-10 -translate-x-1/2 rounded-md border border-border/80 bg-background/95 backdrop-blur px-2 py-1.5 text-[11px] shadow-sm"
+          style={{
+            left: `calc(${tooltipLeftPct}% * (100% - 2rem) / 100% + 1rem)`,
+            top: 6,
+          }}
+        >
+          <div className="font-mono tabular-nums text-foreground font-medium">
+            {hoveredRegional.year}
+          </div>
+          <div className="text-text-tertiary">
+            Regional:{" "}
+            <span className="text-foreground font-mono tabular-nums">
+              {hoveredRegional.missed
+                ? "did not make"
+                : hoveredRegional.position}
+            </span>
+            {!hoveredRegional.missed && hoveredRegional.advanced && (
+              <span className="ml-1 text-emerald-400">→ advanced</span>
+            )}
+            {!hoveredRegional.missed && hoveredRegional.win && (
+              <span className="ml-1 text-amber-300">· won</span>
+            )}
+          </div>
+          {hoveredNcaa && !hoveredNcaa.missed && (
+            <div className="text-text-tertiary">
+              NCAA:{" "}
+              <span className="text-foreground font-mono tabular-nums">
+                {hoveredNcaa.position}
+              </span>
+              {hoveredNcaa.win && (
+                <span className="ml-1 text-amber-300">· won championship</span>
+              )}
+              {hoveredNcaa.advanced && !hoveredNcaa.win && (
+                <span className="ml-1 text-emerald-400">· match-play</span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-text-tertiary">
         <span>Line: regional finish (lower = better)</span>
         <span>·</span>
         <span className="inline-flex items-center gap-1">
-          <span aria-hidden="true" className="inline-block h-[5px] w-[5px] rounded-full" style={{ background: WIN_COLOR }} />
+          <span
+            aria-hidden="true"
+            className="inline-block h-[5px] w-[5px] rounded-full"
+            style={{ background: WIN_COLOR }}
+          />
           regional win
         </span>
         {ncaa.points.length > 0 && (

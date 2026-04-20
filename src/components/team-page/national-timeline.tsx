@@ -17,6 +17,9 @@ export interface NationalYearResult {
   missedCut: boolean;
   /** No NCAA appearance at all that year. */
   missed: boolean;
+  /** Year was cancelled at the NCAA level (e.g., 2020 COVID). Distinct from
+   *  `missed` — the team didn't fail to appear, the event wasn't held. */
+  cancelled?: boolean;
 }
 
 export default function NationalTimeline({
@@ -32,34 +35,33 @@ export default function NationalTimeline({
       className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5"
     >
       {results.map((r, idx) => {
-        let boxClass: string;
-        let posClass: string;
-        if (r.win) {
-          boxClass =
-            "rounded border border-amber-400/60 bg-amber-400/10 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:shadow-raised hover:border-amber-300/80 hover:bg-amber-400/20";
-          posClass = "font-semibold text-amber-300";
-        } else if (r.matchPlay) {
-          boxClass =
-            "rounded border border-primary/40 bg-primary/5 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:shadow-raised hover:border-primary/70 hover:bg-primary/10";
-          posClass = "font-semibold text-primary";
-        } else if (r.madeCut) {
-          boxClass =
-            "rounded border border-primary/20 bg-card px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:shadow-raised hover:border-primary/40";
-          posClass = "text-foreground/85";
-        } else if (r.missedCut) {
-          boxClass =
-            "rounded border border-rose-500/30 bg-rose-500/5 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:shadow-raised hover:border-rose-400/60";
-          posClass = "text-rose-300/90";
-        } else {
-          // Didn't appear at NCAAs that year.
-          boxClass =
-            "rounded border border-dashed border-border/30 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium";
-          posClass = "text-muted-foreground/50";
-        }
+        // Neutral cells. Wins get a faint amber wash since the trophy is the
+        // story; everything else stays monochrome with semantic text colour.
+        const boxClass = r.win
+          ? "rounded-sm border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-0.5 text-center transition-colors duration-100"
+          : r.cancelled
+            ? "rounded-sm border border-dashed border-border/40 bg-card/20 px-1.5 py-0.5 text-center transition-colors duration-100"
+            : r.missed
+              ? "rounded-sm border border-dashed border-border/30 bg-card/30 px-1.5 py-0.5 text-center transition-colors duration-100"
+              : "rounded-sm border border-border/40 bg-card/40 px-1.5 py-0.5 text-center transition-colors duration-100 hover:border-border-medium";
+        const posClass = r.win
+          ? "text-amber-300"
+          : r.cancelled
+            ? "text-text-tertiary/60"
+            : r.matchPlay
+              ? "text-emerald-400"
+              : r.madeCut
+                ? "text-foreground/80"
+                : r.missedCut
+                  ? "text-rose-400/80"
+                  : "text-text-tertiary";
+        const cellTitle = r.cancelled
+          ? "No NCAA Championship (COVID-19)"
+          : undefined;
 
         const cellInner = (
           <>
-            <div className="text-[10px] text-muted-foreground font-mono tabular-nums flex items-center justify-center gap-0.5">
+            <div className="text-[10px] text-text-tertiary font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
               {r.win && (
                 <Trophy
                   className="h-2.5 w-2.5 text-amber-300"
@@ -68,15 +70,15 @@ export default function NationalTimeline({
               )}
               <span>{r.year}</span>
             </div>
-            <div className="text-[12px] font-mono tabular-nums">
-              <span className={posClass}>{r.missed ? "—" : r.position}</span>
+            <div className="text-[12px] font-mono tabular-nums leading-tight">
+              <span className={posClass}>{r.missed || r.cancelled ? "—" : r.position}</span>
             </div>
           </>
         );
 
         if (reduced) {
           return (
-            <div key={r.year} dir="ltr" className={boxClass}>
+            <div key={r.year} dir="ltr" className={boxClass} title={cellTitle}>
               {cellInner}
             </div>
           );
@@ -87,6 +89,7 @@ export default function NationalTimeline({
             key={r.year}
             dir="ltr"
             className={boxClass}
+            title={cellTitle}
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{

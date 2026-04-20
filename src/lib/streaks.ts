@@ -10,6 +10,23 @@ export const MOST_RECENT_SEASON = Math.max(
   ...regionalsHistory.map((r) => r.year)
 );
 
+// Years where no NCAA postseason was played and no team can have appeared.
+// 2020 was cancelled mid-season (COVID). For streak purposes we treat it as
+// a pass-through: a 2019→2021 jump still counts as consecutive. The display
+// layer also uses this set to render these years as a distinct "cancelled"
+// cell (gray / dashed) rather than a "missed" (red) one.
+export const CANCELLED_YEARS = new Set<number>([2020]);
+
+export function isCancelled(year: number): boolean {
+  return CANCELLED_YEARS.has(year);
+}
+
+function nextExpectedYear(prev: number): number {
+  let y = prev + 1;
+  while (CANCELLED_YEARS.has(y)) y += 1;
+  return y;
+}
+
 export interface StreakResult {
   active: number;
   longest: number;
@@ -57,7 +74,7 @@ function streakOver(years: number[]): StreakResult {
   let curStart = sorted[0];
   let curLen = 1;
   for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i] === sorted[i - 1] + 1) {
+    if (sorted[i] === nextExpectedYear(sorted[i - 1])) {
       curLen += 1;
       if (curLen > longest) {
         longest = curLen;
@@ -73,7 +90,7 @@ function streakOver(years: number[]): StreakResult {
   if (sorted[sorted.length - 1] === MOST_RECENT_SEASON) {
     active = 1;
     for (let i = sorted.length - 2; i >= 0; i -= 1) {
-      if (sorted[i] === sorted[i + 1] - 1) active += 1;
+      if (nextExpectedYear(sorted[i]) === sorted[i + 1]) active += 1;
       else break;
     }
   }

@@ -25,10 +25,13 @@ export function BeeswarmTravel({
   assignments,
   regionalMap,
   height = 72,
+  highlightTeam,
 }: {
   assignments: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
   height?: number;
+  /** If set, this team's dot renders larger + ringed, and peers dim. */
+  highlightTeam?: string;
 }) {
   const VBW = 800;
   const PAD_X = 24;
@@ -122,16 +125,23 @@ export function BeeswarmTravel({
           ))}
           {nodes.map((n) => {
             const r = regionalMap.get(n.regionalId);
+            const isHighlighted =
+              highlightTeam !== undefined && n.team === highlightTeam;
+            const peerDimmed = highlightTeam !== undefined && !isHighlighted;
             return (
               <circle
                 key={n.team}
                 cx={n.x}
                 cy={n.y}
-                r="2.6"
+                r={isHighlighted ? 4.5 : 2.6}
                 fill={r?.color ?? "hsl(var(--foreground))"}
-                stroke="hsl(var(--background))"
-                strokeWidth="0.5"
-                opacity="0.9"
+                stroke={
+                  isHighlighted
+                    ? "hsl(var(--foreground))"
+                    : "hsl(var(--background))"
+                }
+                strokeWidth={isHighlighted ? 1.2 : 0.5}
+                opacity={peerDimmed ? 0.35 : 0.9}
               >
                 <title>{`#${n.seed} ${n.team} — ${n.distanceMiles.toLocaleString()} mi to ${r?.name ?? ""}`}</title>
               </circle>

@@ -27,11 +27,11 @@ export default function RelatedTeams({ gender, currentTeam, peers }: Props) {
   const conference = peers[0]?.conference ?? "";
 
   const cardClass =
-    "ring-card px-3 py-2 shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out";
+    "rounded-md border border-border/40 bg-card/40 px-3 py-2 transition-colors hover:border-border-medium";
 
   return (
-    <section className="mt-10">
-      <h2 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <section className="mt-8">
+      <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
         Other {conference} {gender === "men" ? "men's" : "women's"} programs
       </h2>
       {reduced ? (

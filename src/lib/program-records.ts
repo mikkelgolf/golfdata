@@ -1,5 +1,5 @@
 import type { Gender, RecordGroup, TeamAggregateEntry } from "@/data/records-types";
-import { computeAllTeamStats, MOST_RECENT_SEASON } from "@/lib/streaks";
+import { CANCELLED_YEARS, computeAllTeamStats, MOST_RECENT_SEASON } from "@/lib/streaks";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
@@ -25,14 +25,23 @@ export function buildProgramRecordsGroup(gender: Gender): RecordGroup {
       a.team.localeCompare(b.team)
     )
     .slice(0, PROGRAM_TOP_N)
-    .map((s) => ({
-      school: s.team,
-      value: s.regionalStreak.active,
-      detail:
-        s.regionalStreak.active > 0
-          ? `since ${MOST_RECENT_SEASON - s.regionalStreak.active + 1}`
-          : undefined,
-    }));
+    .map((s) => {
+      // Walk backward from MOST_RECENT_SEASON skipping cancelled years to find
+      // the actual start year of the active streak (so display matches the
+      // count). Mirrors the consecutiveness logic in streaks.ts.
+      let yearsBack = s.regionalStreak.active - 1;
+      let startYear = MOST_RECENT_SEASON;
+      while (yearsBack > 0) {
+        startYear -= 1;
+        if (!CANCELLED_YEARS.has(startYear)) yearsBack -= 1;
+      }
+      return {
+        school: s.team,
+        value: s.regionalStreak.active,
+        detail:
+          s.regionalStreak.active > 0 ? `since ${startYear}` : undefined,
+      };
+    });
 
   const nationalsStreak: TeamAggregateEntry[] = stats
     .filter((s) => s.nationalStreak.longest > 0)

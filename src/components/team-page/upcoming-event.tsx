@@ -72,27 +72,28 @@ export default function UpcomingEvent({
             }
           : null;
 
-  // Ring-card shell. When live, overlay a static 1px red ring via ring-1
-  // AND bump to shadow-overlay depth so the card reads as "active" without
-  // any pulse. For upcoming/concluded, shadow-flat at rest, -raised on hover.
+  // Flat container — single hairline border, faint card tint. When live,
+  // overlay a static 1px red ring so the card reads as "active" without any
+  // pulse. Drops the previous ring-card mask-composite gradient.
   const liveShell =
     state?.kind === "live"
-      ? "ring-card px-4 py-3 shadow-overlay ring-1 ring-red-500/40 transition-shadow duration-150 ease-out"
-      : "ring-card px-4 py-3 shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out";
+      ? "rounded-lg border border-border/60 bg-card/40 ring-1 ring-red-500/40 px-3 py-2 transition-colors"
+      : "rounded-lg border border-border/60 bg-card/40 px-3 py-2 transition-colors hover:border-border-medium";
 
   return (
     <div className={liveShell}>
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
-          <div className="text-[14px] font-medium text-foreground">
+          <div className="text-[13px] font-medium text-foreground leading-tight">
             {championship.name}
           </div>
-          <div className="mt-1 text-[12px] text-muted-foreground">
+          <div className="mt-0.5 text-[11px] text-text-tertiary">
             {championship.courseName} · {championship.city}
             {championship.state ? `, ${championship.state}` : ""}
-          </div>
-          <div className="mt-1 text-[11px] text-muted-foreground font-mono tabular-nums">
-            {championship.startDate} → {championship.endDate}
+            <span className="mx-1">·</span>
+            <span className="font-mono tabular-nums">
+              {championship.startDate} → {championship.endDate}
+            </span>
           </div>
         </div>
         {pill && (
@@ -104,7 +105,7 @@ export default function UpcomingEvent({
         )}
       </div>
       {championship.winner && (
-        <div className="mt-2 text-[12px] text-primary">
+        <div className="mt-1 text-[11px] text-primary">
           Winner: {championship.winner}
         </div>
       )}
