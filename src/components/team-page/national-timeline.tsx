@@ -154,7 +154,7 @@ export default function NationalTimeline({
         >
           R
         </span>
-        lost final
+        Runner-up
       </span>
       <span className="inline-flex items-center gap-1">
         <span
@@ -163,7 +163,7 @@ export default function NationalTimeline({
         >
           SF
         </span>
-        lost semifinal
+        Semifinalist
       </span>
       <span className="inline-flex items-center gap-1">
         <span
@@ -172,7 +172,7 @@ export default function NationalTimeline({
         >
           QF
         </span>
-        lost quarterfinal
+        Quarterfinalist
       </span>
       <span className="inline-flex items-center gap-1">
         <span
