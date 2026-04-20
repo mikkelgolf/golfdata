@@ -20,6 +20,11 @@ export interface NationalYearResult {
   /** Year was cancelled at the NCAA level (e.g., 2020 COVID). Distinct from
    *  `missed` — the team didn't fail to appear, the event wasn't held. */
   cancelled?: boolean;
+  /** Which match-play round the team lost in. Null for champions (already
+   *  covered by the trophy), teams that didn't reach match play, and
+   *  pre-match-play-era years. "qf" = lost quarterfinals, "sf" = won QF but
+   *  lost semifinals, "r" = reached the final (runner-up). */
+  matchPlayResult?: "qf" | "sf" | "r" | null;
 }
 
 export default function NationalTimeline({
@@ -59,15 +64,46 @@ export default function NationalTimeline({
           ? "No NCAA Championship (COVID-19)"
           : undefined;
 
+        // Match-play badge: only shown for non-champion qualifiers. Trophy
+        // covers champions; DNQ / pre-match-play-era / cancelled years have
+        // matchPlayResult = null and show nothing here.
+        const mpr = r.matchPlayResult ?? null;
+        const badgeText =
+          mpr === "r" ? "R" : mpr === "sf" ? "SF" : mpr === "qf" ? "QF" : null;
+        const badgeClass =
+          mpr === "r"
+            ? "text-amber-500"
+            : mpr === "sf"
+              ? "text-sky-400"
+              : mpr === "qf"
+                ? "text-emerald-400"
+                : "";
+        const badgeLabel =
+          mpr === "r"
+            ? "Reached NCAA final"
+            : mpr === "sf"
+              ? "Lost NCAA semifinal"
+              : mpr === "qf"
+                ? "Lost NCAA quarterfinal"
+                : undefined;
+
         const cellInner = (
           <>
             <div className="text-[10px] text-text-tertiary font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
-              {r.win && (
+              {r.win ? (
                 <Trophy
                   className="h-2.5 w-2.5 text-amber-300"
                   aria-hidden="true"
                 />
-              )}
+              ) : badgeText ? (
+                <span
+                  className={`text-[9px] font-semibold font-mono leading-none ${badgeClass}`}
+                  aria-label={badgeLabel}
+                  title={badgeLabel}
+                >
+                  {badgeText}
+                </span>
+              ) : null}
               <span>{r.year}</span>
             </div>
             <div className="text-[12px] font-mono tabular-nums leading-tight">
@@ -110,6 +146,33 @@ export default function NationalTimeline({
       <span className="inline-flex items-center gap-1">
         <Trophy className="h-3 w-3 text-amber-300" aria-hidden="true" />
         won championship
+      </span>
+      <span className="inline-flex items-center gap-1">
+        <span
+          aria-hidden="true"
+          className="text-[9px] font-semibold font-mono leading-none text-amber-500"
+        >
+          R
+        </span>
+        lost final
+      </span>
+      <span className="inline-flex items-center gap-1">
+        <span
+          aria-hidden="true"
+          className="text-[9px] font-semibold font-mono leading-none text-sky-400"
+        >
+          SF
+        </span>
+        lost semifinal
+      </span>
+      <span className="inline-flex items-center gap-1">
+        <span
+          aria-hidden="true"
+          className="text-[9px] font-semibold font-mono leading-none text-emerald-400"
+        >
+          QF
+        </span>
+        lost quarterfinal
       </span>
       <span className="inline-flex items-center gap-1">
         <span

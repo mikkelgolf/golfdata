@@ -312,6 +312,15 @@ export default function TeamPage({ params }: { params: Params }) {
       });
     } else {
       const champion = isChampion(row);
+      // Derive match-play round lost for non-champion qualifiers. Null for
+      // champions (trophy shown instead), teams that didn't reach match play,
+      // and pre-match-play-era years.
+      let matchPlayResult: "qf" | "sf" | "r" | null = null;
+      if (!champion && row.matchPlaySeed !== null) {
+        if (row.wonSemifinal === true) matchPlayResult = "r";
+        else if (row.wonQuarterfinal === true) matchPlayResult = "sf";
+        else matchPlayResult = "qf";
+      }
       ncaaTimelineResults.push({
         year: y,
         position: row.position,
@@ -321,6 +330,7 @@ export default function TeamPage({ params }: { params: Params }) {
         missedCut: !row.madeCut,
         missed: false,
         cancelled: false,
+        matchPlayResult,
       });
     }
   }
