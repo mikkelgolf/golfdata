@@ -12,6 +12,50 @@ interface YearResult {
   cancelled?: boolean;
   /** Finished 1st (solo or tied) at the Regional. */
   win?: boolean;
+  /** Committee seed into the Regional (1..N). Null before seeding era. */
+  seed?: number | null;
+  /** Regional site/host name (for tooltip). */
+  regional?: string | null;
+  /** Team strokes-gained total vs field (for tooltip). */
+  sgTotal?: number | null;
+  /** Winning margin in strokes (winners only, for tooltip). */
+  margin?: number | null;
+  /** Running Regional title count at this year (winners only). */
+  titleCount?: number | null;
+}
+
+function ordinalSuffix(n: number): string {
+  const tens = n % 100;
+  if (tens >= 11 && tens <= 13) return `${n}th`;
+  switch (n % 10) {
+    case 1:
+      return `${n}st`;
+    case 2:
+      return `${n}nd`;
+    case 3:
+      return `${n}rd`;
+    default:
+      return `${n}th`;
+  }
+}
+
+function buildTooltip(r: YearResult): string | undefined {
+  if (r.cancelled) return "No NCAA postseason (COVID-19)";
+  if (r.missed) return undefined;
+  const parts: string[] = [];
+  if (r.regional) parts.push(`Regional: ${r.regional}`);
+  if (r.seed != null) parts.push(`Seed #${r.seed}`);
+  if (r.sgTotal != null) {
+    const sign = r.sgTotal > 0 ? "+" : "";
+    parts.push(`Team SG ${sign}${r.sgTotal.toFixed(1)}`);
+  }
+  if (r.win && r.margin != null && r.margin > 0) {
+    parts.push(`Won by ${r.margin}`);
+  }
+  if (r.win && r.titleCount != null) {
+    parts.push(`${ordinalSuffix(r.titleCount)} Regional title`);
+  }
+  return parts.length ? parts.join(" · ") : undefined;
 }
 
 export default function RegionalTimeline({ results }: { results: YearResult[] }) {
@@ -42,9 +86,8 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
               : r.missed
                 ? "text-rose-400/80"
                 : "text-foreground/80";
-        const cellTitle = r.cancelled
-          ? "No NCAA postseason (COVID-19)"
-          : undefined;
+        const cellTitle = buildTooltip(r);
+        const showSeed = r.seed != null && !r.cancelled && !r.missed;
 
         const cellInner = (
           <>
@@ -60,6 +103,11 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
             <div className="text-[12px] font-mono tabular-nums leading-tight">
               <span className={posClass}>{r.cancelled ? "—" : r.position}</span>
             </div>
+            {showSeed ? (
+              <div className="text-[9px] font-mono tabular-nums leading-none text-text-tertiary/80">
+                #{r.seed}
+              </div>
+            ) : null}
           </>
         );
 
