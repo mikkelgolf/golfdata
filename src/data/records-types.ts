@@ -118,6 +118,34 @@ export interface RegionalFinish {
   advanced: boolean;
 }
 
+/**
+ * Per-Regional-appearance stats derived from David's private sheet.
+ * Joins to RegionalFinish on (year, team, gender). Site/regional may
+ * differ in casing; use team+year as the primary join and regional as
+ * disambiguator when a team appeared in multiple regionals (rare).
+ */
+export interface RegionalFinishRich {
+  year: number;
+  gender: Gender;
+  team: string;
+  /** Regional site/host name from the sheet (e.g. "Amherst"). */
+  regional: string;
+  /** Committee seed into the Regional (1..N). Null for years pre-seeding. */
+  seed: number | null;
+  /** Committee-expected-to-advance flag. Null for years before the stat was kept. */
+  expectedAdv: boolean | null;
+  /** Display finish ("1", "T2", "5", …). */
+  result: string | null;
+  /** Numeric finish with ties flattened to the base integer. */
+  finalPos: number | null;
+  /** Team strokes-gained total vs field at this Regional. */
+  sgTotal: number | null;
+  /** Winning margin in strokes. Only set for the Regional winner. */
+  margin: number | null;
+  /** Running count of Regional titles including this one. Winners only. */
+  titleCount: number | null;
+}
+
 export interface ChampionshipFinish {
   team: string;
   gender: Gender;
