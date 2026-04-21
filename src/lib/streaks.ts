@@ -103,14 +103,37 @@ function filterRows(team: string, gender: Gender): RegionalFinish[] {
   );
 }
 
+/**
+ * Years the team effectively advanced from their Regional to the NCAA
+ * Championship. Combines two signals:
+ *   1. `r.advanced === true` on the regional row (authoritative when set), and
+ *   2. team appearance in championshipsHistory for that year (backstop for
+ *      pre-modern eras where the regional `advanced` flag is unreliable —
+ *      e.g. Auburn men 1993-1995 are flagged advanced:false yet did show up
+ *      at Nationals).
+ * Requires a regional row to exist for the year, so pre-Regional-era NCAA
+ * appearances aren't double-counted as "advanced" (there was no Regional to
+ * advance from).
+ * 2020 is absent from both datasets (COVID cancellation) and is skipped by
+ * the streak code separately via `nextExpectedYear`.
+ */
+function effectiveAdvancedYears(team: string, gender: Gender): number[] {
+  const ncaaYears = new Set(
+    championshipsHistory
+      .filter((r) => r.team === team && r.gender === gender)
+      .map((r) => r.year)
+  );
+  return filterRows(team, gender)
+    .filter((r) => r.advanced || ncaaYears.has(r.year))
+    .map((r) => r.year);
+}
+
 export function computeRegionalStreak(team: string, gender: Gender): StreakResult {
   return streakOver(filterRows(team, gender).map((r) => r.year));
 }
 
 export function computeNationalStreak(team: string, gender: Gender): StreakResult {
-  return streakOver(
-    filterRows(team, gender).filter((r) => r.advanced).map((r) => r.year)
-  );
+  return streakOver(effectiveAdvancedYears(team, gender));
 }
 
 export function computeRegionalWins(team: string, gender: Gender): number {
@@ -120,7 +143,7 @@ export function computeRegionalWins(team: string, gender: Gender): number {
 export function computeTeamStats(team: string, gender: Gender): TeamHistoricalStats {
   const rows = filterRows(team, gender);
   const years = rows.map((r) => r.year);
-  const advancedYears = rows.filter((r) => r.advanced).map((r) => r.year);
+  const advancedYears = effectiveAdvancedYears(team, gender);
   const positions = rows
     .map((r) => parseInt(r.position, 10))
     .filter((n) => Number.isFinite(n) && n > 0);
