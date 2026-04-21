@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { regionalsRich } from "@/data/regionals-rich";
 import { championshipsHistory } from "@/data/championships-history";
 import type { Gender, RegionalFinishRich } from "@/data/records-types";
@@ -210,11 +211,13 @@ export default function RegionalsLeaderboardPage() {
           rate-based rankings.
         </p>
       </div>
-      <RegionalsLeaderboardTabs
-        men={men}
-        women={women}
-        minAppearances={MIN_APPEARANCES_FOR_RATE}
-      />
+      <Suspense fallback={<div className="h-8" />}>
+        <RegionalsLeaderboardTabs
+          men={men}
+          women={women}
+          minAppearances={MIN_APPEARANCES_FOR_RATE}
+        />
+      </Suspense>
       <p className="mt-6 text-[11px] text-text-tertiary">
         Source: aggregated Regional tournament history. Raw dataset is private;
         only derived per-team summaries are shown here.
