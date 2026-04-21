@@ -1,9 +1,10 @@
 """Build src/data/regionals-rich.json from David's private Google Sheet.
 
 The sheet holds per-team-per-year NCAA Regional tournament history with ~157
-columns (seeding, scoring, strokes-gained, etc). This script reads the D1 MEN
-tab and writes a compact derived JSON keyed by (year, team, regional) with only
-the fields the site actually uses.
+columns (seeding, scoring, strokes-gained, etc). This script reads both the
+`D1 MEN` and `D1 WOMEN` tabs and writes a combined compact derived JSON keyed
+by (year, gender, team, regional) with only the fields the site actually
+uses.
 
 Run (from the repo root, on the Mac Mini where Ron's venv + creds live):
 
@@ -45,6 +46,17 @@ MEN_CANONICAL: dict[str, str] = {
     "West Point": "Army",
 }
 
+# Women's canonical map — seeded with zero entries, grown as the first regen
+# reports unmatched team names. regionals-history.json uses the canonical
+# site form (e.g. "CSU Northridge") while the sheet may use a spaced form
+# (e.g. "CSU - Northridge"); both are handled here.
+WOMEN_CANONICAL: dict[str, str] = {
+    "CSU - Northridge": "CSU Northridge",
+    "CSU - Fullerton": "CSU Fullerton",
+    "Central Florida": "UCF",
+    "East Tennessee State": "ETSU",
+}
+
 # Sheet column indices are resolved by header name at read time, so additions
 # to the sheet don't break us. Kept here as documentation.
 WANTED_COLUMNS = [
@@ -58,6 +70,12 @@ WANTED_COLUMNS = [
     "Team SG Total",
     "Margin of Victory",
     "Regional Title Count (including this year)",
+]
+
+# (tab_name, gender_label, canonical_map)
+TABS = [
+    ("D1 MEN", "men", MEN_CANONICAL),
+    ("D1 WOMEN", "women", WOMEN_CANONICAL),
 ]
 
 
@@ -96,59 +114,54 @@ def _to_bool(value: str) -> bool | None:
     return None
 
 
-def _canonical_team(raw: str) -> str:
+def _canonical(raw: str, canonical_map: dict[str, str]) -> str:
     raw = (raw or "").strip()
-    return MEN_CANONICAL.get(raw, raw)
+    return canonical_map.get(raw, raw)
 
 
-def main() -> int:
-    sheet_id = os.environ.get("REGIONALS_SHEET_ID")
-    if not sheet_id:
-        print(
-            "ERROR: REGIONALS_SHEET_ID env var is required. "
-            "Do NOT paste it into code or commit messages.",
-            file=sys.stderr,
-        )
-        return 2
-
-    rows = read_tab(sheet_id, "D1 MEN")
+def _process_tab(
+    sheet_id: str,
+    tab: str,
+    gender: str,
+    canonical_map: dict[str, str],
+    canonical_teams: set[str],
+) -> tuple[list[dict], dict[str, int]]:
+    """Read one gender's tab and return (rows, unmatched_name_counter)."""
+    rows = read_tab(sheet_id, tab)
     if not rows:
-        print("ERROR: D1 MEN tab is empty", file=sys.stderr)
-        return 3
+        print(f"WARN: '{tab}' tab is empty — skipping {gender}", file=sys.stderr)
+        return [], {}
     header = rows[0]
     idx = {name: i for i, name in enumerate(header)}
     missing = [c for c in WANTED_COLUMNS if c not in idx]
     if missing:
-        print(f"ERROR: sheet missing columns: {missing}", file=sys.stderr)
-        return 4
+        print(
+            f"ERROR: sheet tab '{tab}' missing columns: {missing}",
+            file=sys.stderr,
+        )
+        raise SystemExit(4)
 
     def cell(row: list[str], col: str) -> str:
         i = idx[col]
         return row[i] if i < len(row) else ""
 
-    # Load existing canonical team set so we can warn on unmatched names
-    # (data-quality signal, not a hard failure — we still emit the row).
-    existing_path = REPO_ROOT / "src" / "data" / "regionals-history.json"
-    existing = json.loads(existing_path.read_text())
-    canonical_men_teams = {r["team"] for r in existing if r["gender"] == "men"}
-
     out: list[dict] = []
-    unmatched_teams: dict[str, int] = {}
+    unmatched: dict[str, int] = {}
     for row in rows[1:]:
         if not any(c for c in row):
             continue
         year = _to_int(cell(row, "Year"))
-        team = _canonical_team(cell(row, "Team"))
+        team = _canonical(cell(row, "Team"), canonical_map)
         regional = (cell(row, "Regional") or "").strip()
         if year is None or not team:
             continue
-        if team not in canonical_men_teams:
-            unmatched_teams[team] = unmatched_teams.get(team, 0) + 1
+        if team not in canonical_teams:
+            unmatched[team] = unmatched.get(team, 0) + 1
 
         out.append(
             {
                 "year": year,
-                "gender": "men",
+                "gender": gender,
                 "team": team,
                 "regional": regional,
                 "seed": _to_int(cell(row, "Initial Seeding")),
@@ -162,21 +175,77 @@ def main() -> int:
                 ),
             }
         )
+    return out, unmatched
 
-    out.sort(key=lambda r: (r["year"], r["regional"], r["finalPos"] or 99, r["team"]))
+
+def main() -> int:
+    sheet_id = os.environ.get("REGIONALS_SHEET_ID")
+    if not sheet_id:
+        print(
+            "ERROR: REGIONALS_SHEET_ID env var is required. "
+            "Do NOT paste it into code or commit messages.",
+            file=sys.stderr,
+        )
+        return 2
+
+    # Load existing canonical team set so we can warn on unmatched names
+    # (data-quality signal, not a hard failure — we still emit the row).
+    existing_path = REPO_ROOT / "src" / "data" / "regionals-history.json"
+    existing = json.loads(existing_path.read_text())
+    canonical_by_gender: dict[str, set[str]] = {
+        "men": {r["team"] for r in existing if r["gender"] == "men"},
+        "women": {r["team"] for r in existing if r["gender"] == "women"},
+    }
+
+    all_rows: list[dict] = []
+    any_rows_per_gender: dict[str, int] = {}
+    unmatched_by_gender: dict[str, dict[str, int]] = {}
+
+    for tab, gender, cmap in TABS:
+        tab_rows, unmatched = _process_tab(
+            sheet_id, tab, gender, cmap, canonical_by_gender[gender]
+        )
+        all_rows.extend(tab_rows)
+        any_rows_per_gender[gender] = len(tab_rows)
+        unmatched_by_gender[gender] = unmatched
+
+    if not all_rows:
+        print("ERROR: no rows produced from any tab", file=sys.stderr)
+        return 3
+
+    all_rows.sort(
+        key=lambda r: (
+            r["gender"],
+            r["year"],
+            r["regional"],
+            r["finalPos"] or 99,
+            r["team"],
+        )
+    )
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUT_PATH.write_text(json.dumps(out, indent=0, separators=(",", ":")) + "\n")
+    OUT_PATH.write_text(json.dumps(all_rows, indent=0, separators=(",", ":")) + "\n")
 
-    print(f"wrote {OUT_PATH.relative_to(REPO_ROOT)}: {len(out)} rows")
-    print(f"year range: {min(r['year'] for r in out)}–{max(r['year'] for r in out)}")
-    print(f"unique teams: {len({r['team'] for r in out})}")
-    if unmatched_teams:
+    print(f"wrote {OUT_PATH.relative_to(REPO_ROOT)}: {len(all_rows)} rows")
+    for gender in ("men", "women"):
+        g_rows = [r for r in all_rows if r["gender"] == gender]
+        if not g_rows:
+            continue
+        yrs = sorted({r["year"] for r in g_rows})
+        teams = {r["team"] for r in g_rows}
         print(
-            f"WARN: {len(unmatched_teams)} team name(s) in sheet not in existing "
-            "regionals-history.json (check canonical map):"
+            f"  {gender}: {len(g_rows)} rows · "
+            f"{yrs[0]}–{yrs[-1]} · {len(teams)} teams"
         )
-        for name, n in sorted(unmatched_teams.items(), key=lambda kv: -kv[1]):
+
+    for gender, unmatched in unmatched_by_gender.items():
+        if not unmatched:
+            continue
+        print(
+            f"WARN: {len(unmatched)} {gender} team name(s) in sheet not in "
+            "existing regionals-history.json (extend canonical map?):"
+        )
+        for name, n in sorted(unmatched.items(), key=lambda kv: -kv[1]):
             print(f"  {name}: {n} row(s)")
     return 0
 
