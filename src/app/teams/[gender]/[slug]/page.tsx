@@ -273,11 +273,14 @@ export default function TeamPage({ params }: { params: Params }) {
     advanced: boolean;
     missed?: boolean;
     cancelled?: boolean;
+    win?: boolean;
   }> = [];
   for (let y = maxYear; y >= minYear; y--) {
     const r = historyByYear.get(y);
     if (r) {
-      timelineResults.push({ year: y, position: r.position, advanced: r.advanced });
+      // "1" = solo winner, "T1" = tied for first. Both count as Regional wins.
+      const win = r.position === "1" || r.position === "T1";
+      timelineResults.push({ year: y, position: r.position, advanced: r.advanced, win });
     } else if (isCancelled(y)) {
       timelineResults.push({ year: y, position: "—", advanced: false, cancelled: true });
     } else {

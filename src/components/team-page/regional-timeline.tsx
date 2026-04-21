@@ -1,5 +1,6 @@
 "use client";
 
+import { Medal } from "lucide-react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/lib/animations";
 
@@ -9,6 +10,8 @@ interface YearResult {
   advanced: boolean;
   missed?: boolean;
   cancelled?: boolean;
+  /** Finished 1st (solo or tied) at the Regional. */
+  win?: boolean;
 }
 
 export default function RegionalTimeline({ results }: { results: YearResult[] }) {
@@ -20,27 +23,39 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
       className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5"
     >
       {results.map((r, idx) => {
-        // Neutral cells; colour lives in the position number alone.
-        // Cancelled years (e.g., 2020 COVID) render with a dashed border +
-        // muted tone so they can't be misread as a miss.
-        const boxClass = r.cancelled
-          ? "rounded-sm border border-dashed border-border/40 bg-card/20 px-1.5 py-0.5 text-center transition-colors duration-100"
-          : "rounded-sm border border-border/40 bg-card/40 px-1.5 py-0.5 text-center transition-colors duration-100 hover:border-border-medium";
-        const posClass = r.cancelled
-          ? "text-text-tertiary/60"
-          : r.advanced
-            ? "text-emerald-400"
-            : r.missed
-              ? "text-rose-400/80"
-              : "text-foreground/80";
+        // Regional winners (finished 1st, solo or tied) get the same amber
+        // wash as NCAA champions for visual parity. Otherwise neutral cells
+        // with colour in the position number alone. Cancelled years (e.g.,
+        // 2020 COVID) render with a dashed border + muted tone so they can't
+        // be misread as a miss.
+        const boxClass = r.win
+          ? "rounded-sm border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-0.5 text-center transition-colors duration-100"
+          : r.cancelled
+            ? "rounded-sm border border-dashed border-border/40 bg-card/20 px-1.5 py-0.5 text-center transition-colors duration-100"
+            : "rounded-sm border border-border/40 bg-card/40 px-1.5 py-0.5 text-center transition-colors duration-100 hover:border-border-medium";
+        const posClass = r.win
+          ? "text-amber-300"
+          : r.cancelled
+            ? "text-text-tertiary/60"
+            : r.advanced
+              ? "text-emerald-400"
+              : r.missed
+                ? "text-rose-400/80"
+                : "text-foreground/80";
         const cellTitle = r.cancelled
           ? "No NCAA postseason (COVID-19)"
           : undefined;
 
         const cellInner = (
           <>
-            <div className="text-[10px] text-text-tertiary font-mono tabular-nums leading-tight">
-              {r.year}
+            <div className="text-[10px] text-text-tertiary font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
+              <span>{r.year}</span>
+              {r.win ? (
+                <Medal
+                  className="h-2.5 w-2.5 text-amber-300"
+                  aria-hidden="true"
+                />
+              ) : null}
             </div>
             <div className="text-[12px] font-mono tabular-nums leading-tight">
               <span className={posClass}>{r.cancelled ? "—" : r.position}</span>
