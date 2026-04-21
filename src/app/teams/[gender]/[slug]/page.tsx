@@ -8,6 +8,7 @@ import {
   computeTeamStats,
   isCancelled,
   isChampion,
+  isRegionalWin,
   MOST_RECENT_SEASON,
   type StreakResult,
 } from "@/lib/streaks";
@@ -286,8 +287,7 @@ export default function TeamPage({ params }: { params: Params }) {
   for (let y = maxYear; y >= minYear; y--) {
     const r = historyByYear.get(y);
     if (r) {
-      // "1" = solo winner, "T1" = tied for first. Both count as Regional wins.
-      const win = r.position === "1" || r.position === "T1";
+      const win = isRegionalWin(r.position);
       // If the team appeared at the NCAA Championship that year, they must
       // have advanced through the Regional — trust NCAA presence over the
       // regional row's `advanced` flag, which is unreliable in pre-modern

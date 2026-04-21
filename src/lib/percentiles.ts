@@ -23,7 +23,7 @@
 import type { Gender } from "@/data/records-types";
 import { regionalsHistory } from "@/data/regionals-history";
 import { championshipsHistory } from "@/data/championships-history";
-import { isChampion } from "@/lib/streaks";
+import { isChampion, isRegionalWin } from "@/lib/streaks";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
@@ -86,17 +86,8 @@ function rawStatsFor(team: string, gender: Gender): RawStats {
   const ncaaRows = championshipsHistory.filter(
     (r) => r.team === team && r.gender === gender
   );
-  const years = new Set<number>();
-  const advancedYears = new Set<number>();
-  let wins = 0;
-  const positions: number[] = [];
-  for (const r of rows) {
-    years.add(r.year);
-    if (r.advanced) advancedYears.add(r.year);
-    if (r.position === "1") wins += 1;
-    const n = parseInt(r.position, 10);
-    if (Number.isFinite(n) && n > 0) positions.push(n);
-  }
+  // Compute NCAA year set first so the regional loop can use it as a backstop
+  // for the advancement flag (same rule as effectiveAdvancedYears in streaks.ts).
   const ncaaYears = new Set<number>();
   let ncaaWins = 0;
   const ncaaPositions: number[] = [];
@@ -104,6 +95,20 @@ function rawStatsFor(team: string, gender: Gender): RawStats {
     ncaaYears.add(r.year);
     if (isChampion(r)) ncaaWins += 1;
     if (r.positionNoTies !== null) ncaaPositions.push(r.positionNoTies);
+  }
+
+  const years = new Set<number>();
+  const advancedYears = new Set<number>();
+  let wins = 0;
+  const positions: number[] = [];
+  for (const r of rows) {
+    years.add(r.year);
+    // Backstop: NCAA appearance for a year implies the team advanced through
+    // that year's Regional, even when the regional row's flag says otherwise.
+    if (r.advanced || ncaaYears.has(r.year)) advancedYears.add(r.year);
+    if (isRegionalWin(r.position)) wins += 1;
+    const n = parseInt(r.position, 10);
+    if (Number.isFinite(n) && n > 0) positions.push(n);
   }
   return {
     apps: years.size,

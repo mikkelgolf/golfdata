@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/animations";
+import { isRegionalWin } from "@/lib/streaks";
 import type { NcaaYearResult } from "./program-arc";
 
 interface YearResult {
@@ -101,7 +102,7 @@ export default function InteractiveProgramArc({
         pos: clamped,
         position: r.position,
         advanced: r.advanced,
-        win: r.position === "1",
+        win: isRegionalWin(r.position),
         missed: false,
       });
     }

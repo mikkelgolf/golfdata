@@ -49,7 +49,7 @@ export interface TeamChampionshipStats {
   gender: Gender;
   /** Distinct years present at the NCAA Championship. */
   appearances: number;
-  /** Years where position === "1". */
+  /** Years where position is "1" or "T1" (Regionals share the title on ties). */
   wins: number;
   /** Best stroke-play finish (position-no-ties), lower is better. */
   bestFinish: number | null;
@@ -104,6 +104,15 @@ function filterRows(team: string, gender: Gender): RegionalFinish[] {
 }
 
 /**
+ * A Regional finish counts as a win when the team finished 1st outright
+ * ("1") or tied for 1st ("T1"). Co-champions are common at Regionals and
+ * both share the trophy.
+ */
+export function isRegionalWin(position: string): boolean {
+  return position === "1" || position === "T1";
+}
+
+/**
  * Years the team effectively advanced from their Regional to the NCAA
  * Championship. Combines two signals:
  *   1. `r.advanced === true` on the regional row (authoritative when set), and
@@ -137,7 +146,7 @@ export function computeNationalStreak(team: string, gender: Gender): StreakResul
 }
 
 export function computeRegionalWins(team: string, gender: Gender): number {
-  return filterRows(team, gender).filter((r) => r.position === "1").length;
+  return filterRows(team, gender).filter((r) => isRegionalWin(r.position)).length;
 }
 
 export function computeTeamStats(team: string, gender: Gender): TeamHistoricalStats {
@@ -152,7 +161,7 @@ export function computeTeamStats(team: string, gender: Gender): TeamHistoricalSt
     gender,
     regionalStreak: streakOver(years),
     nationalStreak: streakOver(advancedYears),
-    regionalWins: rows.filter((r) => r.position === "1").length,
+    regionalWins: rows.filter((r) => isRegionalWin(r.position)).length,
     totalAppearances: new Set(years).size,
     totalAdvancements: new Set(advancedYears).size,
     bestFinish: positions.length > 0 ? Math.min(...positions) : null,

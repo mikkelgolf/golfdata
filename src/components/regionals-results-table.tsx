@@ -17,6 +17,7 @@ import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { teamHref } from "@/lib/team-link";
+import { isRegionalWin } from "@/lib/streaks";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
 
 interface Props {
@@ -99,7 +100,7 @@ function buildRows(
     }
     r.byYear.set(e.year, { position: e.position, advanced: e.advanced });
     r.apps += 1;
-    if (e.position === "1") r.wins += 1;
+    if (isRegionalWin(e.position)) r.wins += 1;
     if (e.advanced) r.nationals += 1;
     const posNum = parseInt(e.position, 10);
     if (Number.isFinite(posNum) && posNum > 0) {
