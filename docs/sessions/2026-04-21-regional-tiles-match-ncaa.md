@@ -1,6 +1,6 @@
 # Session: Update year-by-year Regional tiles to match NCAA tiles
 
-- **Status:** active
+- **Status:** wrapped
 - **Date:** 2026-04-21
 - **Requester:** David Tenneson (collegegolfbook on Discord)
 - **Branch:** `ron/david-test`
@@ -71,10 +71,63 @@ which is what `advanced: true` already captures).
 - **Legend:** should there be a per-timeline legend (as NCAA has), or
   a single combined legend above both grids?
 
+## Scope refinement during session
+
+The initial interpretation imagined a broader alignment (range extension,
+legend, colour adjustments, "advanced" indicator, etc.). David narrowed
+the scope before any code was written: the only change wanted was
+**amber treatment + a badge for teams that finished 1st at a Regional**.
+Everything else about the Regional grid stays as-is. Kept here because
+the open-questions list in the setup doc reads like a much bigger task
+than what actually shipped.
+
 ## Actions
 
-_Filled at !wrap._
+1. **Medal badge + amber tile for Regional winners.** Added `win?: boolean`
+   to the component's `YearResult` interface, derived in
+   `teams/[gender]/[slug]/page.tsx` as
+   `position === "1" || position === "T1"` (handles solo and tied
+   winners). When `win` is true the tile switches to the NCAA-champion
+   amber palette (`border-amber-400/40`, `bg-amber-400/[0.06]`,
+   `text-amber-300`) and a lucide `Medal` icon renders to the right of
+   the year — mirroring the Trophy placement on the NCAA tile. No
+   other Regional states touched. Commit `e20dd83`.
+
+Icon pick: `Medal` chosen over `Award` as the Regional analogue of the
+NCAA `Trophy`. Semantic fit reads cleanly ("regional medalist → NCAA
+champion") and visual distinction is obvious at a glance while staying
+in the same accolade family.
+
+Preview deploy: `https://collegegolfdata-3ga7wzw52-mikkelgolfs-projects.vercel.app`
 
 ## Diff stats
 
-_Filled at !wrap._
+Vs. `bf186ae` (the PR #3 merge commit that marked the start of this
+session on `ron/david-test`):
+
+```
+docs/sessions/2026-04-21-regional-tiles-match-ncaa.md | 80 ++++++++++++++++++
+src/app/teams/[gender]/[slug]/page.tsx                |  5 +-
+src/components/team-page/regional-timeline.tsx        | 45 ++++++++----
+3 files changed, 114 insertions(+), 16 deletions(-)
+```
+
+Two commits on `ron/david-test` from this session (session-doc start +
+feature commit). No sub-branch, no PR — `!here` / direct-to-branch flow.
+
+## Follow-ups (not shipped, not blocking)
+
+- **Range extension for Regionals.** The NCAA grid was extended to the
+  full championship history (1939 men / 1982 women) in the previous
+  session. Regionals still clip to each team's own appearance window.
+  A future task could extend Regionals to the first regional year per
+  gender (men's 1989-ish, women's 1993-ish — unverified) for
+  structural parity with NCAA. Out of scope this session.
+- **Legend for Regional grid.** NCAA has a legend beneath the grid;
+  Regionals does not. Could add one if the amber/emerald/rose/neutral
+  palette needs explanation. David didn't request one.
+- **Colour differentiation for ties.** Today `"T1"` gets identical
+  treatment to `"1"` — tile, icon, and position string. If a future
+  design wants to distinguish "won outright" from "tied for first"
+  (e.g. lighter amber, or an "=" prefix), the `win` boolean could
+  split into a richer shape. Not needed today.
