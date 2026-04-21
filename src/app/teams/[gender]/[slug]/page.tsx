@@ -24,6 +24,7 @@ import { championshipsWomen2026 } from "@/data/championships-women-2026";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
 import { regionalsHistory } from "@/data/regionals-history";
+import { regionalsRich } from "@/data/regionals-rich";
 import { championshipsHistory } from "@/data/championships-history";
 import { recordsMen } from "@/data/records-men";
 import { recordsWomen } from "@/data/records-women";
@@ -31,6 +32,7 @@ import { recordsWomen } from "@/data/records-women";
 import { StatCard } from "@/components/stat-card";
 import { ConferenceBadge } from "@/components/conference-badge";
 import RegionalTimeline from "@/components/team-page/regional-timeline";
+import RegionalPerformance from "@/components/team-page/regional-performance";
 import NationalTimeline, {
   type NationalYearResult,
 } from "@/components/team-page/national-timeline";
@@ -276,6 +278,15 @@ export default function TeamPage({ params }: { params: Params }) {
   const historyByYear = new Map(history.map((r) => [r.year, r]));
   const minYear = history.length > 0 ? history[history.length - 1].year : MOST_RECENT_SEASON;
   const maxYear = MOST_RECENT_SEASON;
+
+  // Rich Regional stats (seed, SG, margin, titleCount) keyed by year for this
+  // team. Women's sheet tab is currently empty, so this will be empty for women.
+  const richByYear = new Map(
+    regionalsRich
+      .filter((r) => r.team === team && r.gender === gender)
+      .map((r) => [r.year, r])
+  );
+
   const timelineResults: Array<{
     year: number;
     position: string;
@@ -283,6 +294,11 @@ export default function TeamPage({ params }: { params: Params }) {
     missed?: boolean;
     cancelled?: boolean;
     win?: boolean;
+    seed?: number | null;
+    regional?: string | null;
+    sgTotal?: number | null;
+    margin?: number | null;
+    titleCount?: number | null;
   }> = [];
   for (let y = maxYear; y >= minYear; y--) {
     const r = historyByYear.get(y);
@@ -294,7 +310,18 @@ export default function TeamPage({ params }: { params: Params }) {
       // eras (e.g., Auburn men 1993-1995 have regional rows flagged
       // advanced:false despite showing up at Nationals).
       const advanced = r.advanced || ncaaByYear.has(y);
-      timelineResults.push({ year: y, position: r.position, advanced, win });
+      const rich = richByYear.get(y);
+      timelineResults.push({
+        year: y,
+        position: r.position,
+        advanced,
+        win,
+        seed: rich?.seed ?? null,
+        regional: rich?.regional ?? null,
+        sgTotal: rich?.sgTotal ?? null,
+        margin: rich?.margin ?? null,
+        titleCount: rich?.titleCount ?? null,
+      });
     } else if (isCancelled(y)) {
       timelineResults.push({ year: y, position: "—", advanced: false, cancelled: true });
     } else {
@@ -302,6 +329,57 @@ export default function TeamPage({ params }: { params: Params }) {
     }
   }
   const championshipStats = computeTeamChampionshipStats(team, gender);
+
+  // Derived Regional-performance stats from the rich sheet data. Computed
+  // lazily so women's teams (no rich data yet) hit the empty-case path below.
+  const richRows = Array.from(richByYear.values());
+  const seededRich = richRows.filter((r) => r.seed != null);
+  const avgSeed =
+    seededRich.length > 0
+      ? seededRich.reduce((s, r) => s + (r.seed as number), 0) / seededRich.length
+      : null;
+  const titlesFromRich = richRows.filter(
+    (r) => r.finalPos === 1 || r.result === "1" || r.result === "T1"
+  ).length;
+  const totalRichAppearances = richRows.length;
+  let bestSg: (typeof richRows)[number] | null = null;
+  for (const r of richRows) {
+    if (r.sgTotal == null) continue;
+    if (bestSg == null || (r.sgTotal as number) > (bestSg.sgTotal as number)) {
+      bestSg = r;
+    }
+  }
+  // "Beat the seed" = finalPos strictly better (lower) than committee seed.
+  const beatSeedCount = richRows.filter(
+    (r) => r.seed != null && r.finalPos != null && (r.finalPos as number) < (r.seed as number)
+  ).length;
+  // "Advanced as underdog" = seed >= 5 AND the team actually appeared at NCAAs
+  // that year (NCAA appearance is the reliable advance proxy per the existing
+  // timeline logic).
+  const underdogAdvanceCount = richRows.filter(
+    (r) => r.seed != null && (r.seed as number) >= 5 && ncaaByYear.has(r.year)
+  ).length;
+  // Seed buckets for a small "seed breakdown" chip grid.
+  const bucketDefs: Array<{ range: string; test: (s: number) => boolean }> = [
+    { range: "1", test: (s) => s === 1 },
+    { range: "2", test: (s) => s === 2 },
+    { range: "3", test: (s) => s === 3 },
+    { range: "4", test: (s) => s === 4 },
+    { range: "5–8", test: (s) => s >= 5 && s <= 8 },
+    { range: "9+", test: (s) => s >= 9 },
+  ];
+  const seedBuckets = bucketDefs.map((b) => {
+    const matches = seededRich.filter((r) => b.test(r.seed as number));
+    return {
+      range: b.range,
+      entries: matches.length,
+      titles: matches.filter(
+        (r) => r.finalPos === 1 || r.result === "1" || r.result === "T1"
+      ).length,
+      advanced: matches.filter((r) => ncaaByYear.has(r.year)).length,
+    };
+  });
+  const hasRichData = richRows.length > 0;
 
   // NCAA timeline spans the full history of the championship for this gender
   // (men's from 1939, women's from 1982) rather than clipping to the regional
@@ -646,6 +724,27 @@ export default function TeamPage({ params }: { params: Params }) {
             </section>
           )}
         </div>
+      )}
+
+      {/* Regional performance details — seed / SG / expected-vs-actual. */}
+      {hasRichData && (
+        <section className="mt-5">
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+            Regional performance
+          </h2>
+          <RegionalPerformance
+            titles={titlesFromRich}
+            avgSeed={avgSeed}
+            seededYears={seededRich.length}
+            bestSgTotal={bestSg?.sgTotal ?? null}
+            bestSgYear={bestSg?.year ?? null}
+            bestSgRegional={bestSg?.regional ?? null}
+            beatSeedCount={beatSeedCount}
+            underdogAdvanceCount={underdogAdvanceCount}
+            totalAppearances={totalRichAppearances}
+            seedBuckets={seedBuckets}
+          />
+        </section>
       )}
 
       {/* Travel beeswarm — this team highlighted among all teams' predicted distances. */}
