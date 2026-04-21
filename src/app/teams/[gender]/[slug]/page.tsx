@@ -264,6 +264,14 @@ export default function TeamPage({ params }: { params: Params }) {
     .filter((r) => r.team === team && r.gender === gender)
     .sort((a, b) => b.year - a.year);
 
+  // NCAA Championship history for this team, sorted newest-first to match the
+  // regional timeline. Derived before the regional loop so we can cross-check
+  // NCAA appearance when deciding whether a team actually advanced.
+  const ncaaHistory = championshipsHistory
+    .filter((r) => r.team === team && r.gender === gender)
+    .sort((a, b) => b.year - a.year);
+  const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
+
   const historyByYear = new Map(history.map((r) => [r.year, r]));
   const minYear = history.length > 0 ? history[history.length - 1].year : MOST_RECENT_SEASON;
   const maxYear = MOST_RECENT_SEASON;
@@ -280,20 +288,19 @@ export default function TeamPage({ params }: { params: Params }) {
     if (r) {
       // "1" = solo winner, "T1" = tied for first. Both count as Regional wins.
       const win = r.position === "1" || r.position === "T1";
-      timelineResults.push({ year: y, position: r.position, advanced: r.advanced, win });
+      // If the team appeared at the NCAA Championship that year, they must
+      // have advanced through the Regional — trust NCAA presence over the
+      // regional row's `advanced` flag, which is unreliable in pre-modern
+      // eras (e.g., Auburn men 1993-1995 have regional rows flagged
+      // advanced:false despite showing up at Nationals).
+      const advanced = r.advanced || ncaaByYear.has(y);
+      timelineResults.push({ year: y, position: r.position, advanced, win });
     } else if (isCancelled(y)) {
       timelineResults.push({ year: y, position: "—", advanced: false, cancelled: true });
     } else {
       timelineResults.push({ year: y, position: "--", advanced: false, missed: true });
     }
   }
-
-  // NCAA Championship history for this team, sorted newest-first to match the
-  // regional timeline.
-  const ncaaHistory = championshipsHistory
-    .filter((r) => r.team === team && r.gender === gender)
-    .sort((a, b) => b.year - a.year);
-  const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
   const championshipStats = computeTeamChampionshipStats(team, gender);
 
   // NCAA timeline spans the full history of the championship for this gender
