@@ -139,18 +139,31 @@ def find_match(champ: dict, tournaments: list[dict]) -> dict | None:
 
 
 def resolve_winner(tournament: dict) -> str | None:
-    """Attempt to extract the tournament winner.
+    """Extract the tournament winner via Clippd's team-leaderboard page.
 
-    Stub. Clippd's public API does not expose per-tournament team standings
-    in JSON form; the scoreboard results page is React-rendered. A follow-up
-    PR can plug a Playwright-based extractor in here that navigates to
-    ``tournament["clippdUrl"]`` and parses the final team leaderboard.
+    Uses ``clippd_winner_extractor.extract_winner_from_clippd`` which renders
+    ``/tournaments/<id>/scoring/team`` with Playwright and reads the first
+    data row's TEAM cell. Returns None if the tournament is unresolved
+    (not started, in-progress, or render failed) so callers fall back to
+    needs-manual.
 
-    For now we always return None so every eligible championship is flagged
-    as ``needs-manual`` for Mikkel/David to update the TS file.
+    Only called for tournaments that Clippd already flagged isComplete=true
+    AND hasResults=true at scrape time, so a None here is a genuine scrape
+    failure rather than an incomplete event.
     """
-    _ = tournament
-    return None
+    if not tournament:
+        return None
+    if not tournament.get("isComplete") or not tournament.get("hasResults"):
+        return None
+    tournament_id = tournament.get("tournamentId")
+    if not tournament_id:
+        return None
+    try:
+        from clippd_winner_extractor import extract_winner_from_clippd
+    except ImportError:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from clippd_winner_extractor import extract_winner_from_clippd
+    return extract_winner_from_clippd(str(tournament_id))
 
 
 def emit_report(
