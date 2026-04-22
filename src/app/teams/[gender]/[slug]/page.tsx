@@ -48,6 +48,11 @@ import {
 } from "@/components/team-page/animated-section";
 import { AnimatedNumber } from "@/components/animated-number";
 import { getTeamPercentiles } from "@/lib/percentiles";
+import {
+  formatTzDelta,
+  tzBandFromLatLng,
+  tzDeltaHours,
+} from "@/lib/timezone";
 import { cn } from "@/lib/utils";
 
 interface Params {
@@ -466,6 +471,22 @@ export default function TeamPage({ params }: { params: Params }) {
       ? "Sub-.500"
       : "Outside field";
 
+  // May/June timezone delta from campus → projected regional host. Shown
+  // as small text under the Travel distance card. Null when either end
+  // is missing coordinates (women's tabs, international, etc.).
+  const tzDetail =
+    record?.lat != null &&
+    record?.lng != null &&
+    myRegional?.lat != null &&
+    myRegional?.lng != null
+      ? formatTzDelta(
+          tzDeltaHours(
+            tzBandFromLatLng(record.lat, record.lng),
+            tzBandFromLatLng(myRegional.lat, myRegional.lng)
+          )
+        )
+      : undefined;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
       <script
@@ -555,6 +576,7 @@ export default function TeamPage({ params }: { params: Params }) {
                 ? `${Math.round(myAssignment.distanceMiles).toLocaleString()} mi`
                 : "—"
             }
+            detail={myAssignment ? tzDetail : undefined}
             animate={false}
             className="border-t sm:border-t-0 border-border/40"
           />

@@ -22,6 +22,9 @@
  */
 import { geoContains } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
+import { feature } from "topojson-client";
+import type { GeometryCollection, Topology } from "topojson-specification";
+import usTopology from "@/data/us-states-10m.json";
 
 /** Zone labels used throughout the app. */
 export type TimezoneBand = "ET" | "CT" | "MT" | "PT" | "AKT" | "HT";
@@ -192,6 +195,32 @@ export function tzBandFromCoord(
     }
   }
   return tzBandFromCoordFallback(lat, lng);
+}
+
+/**
+ * Cached FeatureCollection of U.S. states, derived from the bundled
+ * `us-states-10m` topology. Lazy so callers that only need the pure
+ * helpers (`tzDeltaHours`, `formatTzDelta`) don't pay the parse cost.
+ */
+let _statesGeoCache: FeatureCollection | null = null;
+function getStatesGeo(): FeatureCollection {
+  if (!_statesGeoCache) {
+    const topo = usTopology as unknown as Topology;
+    _statesGeoCache = feature(
+      topo,
+      topo.objects.states as GeometryCollection
+    ) as FeatureCollection;
+  }
+  return _statesGeoCache;
+}
+
+/**
+ * Convenience wrapper: resolve a (lat, lng) directly to a timezone band
+ * without the caller having to thread the state FeatureCollection
+ * through. Use this from pages that don't already render the US map.
+ */
+export function tzBandFromLatLng(lat: number, lng: number): TimezoneBand {
+  return tzBandFromCoord(lat, lng, getStatesGeo());
 }
 
 /**

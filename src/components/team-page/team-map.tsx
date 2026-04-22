@@ -340,20 +340,12 @@ export default function TeamMap({
           />
           time zones
         </span>
-        {tzInfo && (
-          <span
-            className="ml-auto font-mono tabular-nums text-foreground/80"
-            title={tzInfo.tooltip}
-          >
-            {tzInfo.label}
-          </span>
-        )}
         <span
-          className={`font-mono tabular-nums text-foreground/80${
-            tzInfo ? "" : " ml-auto"
-          }`}
+          className="ml-auto font-mono tabular-nums text-foreground/80"
+          title={tzInfo?.tooltip}
         >
           {Math.round(assignment.distanceMiles).toLocaleString()} mi
+          {tzInfo ? ` (${tzInfo.label})` : ""}
         </span>
       </div>
     </div>
