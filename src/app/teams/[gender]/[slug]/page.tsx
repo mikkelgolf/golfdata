@@ -615,7 +615,7 @@ export default function TeamPage({ params }: { params: Params }) {
           strip (2 rows × 4 cols). Streaks live inline with the relevant cells. */}
       <section className="mt-4">
         <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-          Program history <span className="font-normal normal-case text-text-tertiary/70">since 1989</span>
+          Program history
         </h2>
         <div className="rounded-lg border border-border/60 overflow-hidden bg-card/30">
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
