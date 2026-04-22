@@ -24,6 +24,23 @@ import { teamHref } from "@/lib/team-link";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
 import { isChampion } from "@/lib/streaks";
 
+/** Year the NCAA Championships were cancelled (COVID-19). */
+const CANCELLED_YEAR = 2020;
+
+/** Match-play round reached. Mirrors team-page/national-timeline.tsx. */
+type MatchPlayRound = "qf" | "sf" | "r" | null;
+
+/** Returns the deepest match-play round a team reached that year (non-champions
+ *  only). "r" = reached the final, "sf" = reached semis, "qf" = reached QF. */
+function matchPlayRound(cell: TeamCell): MatchPlayRound {
+  if (!cell.matchPlayEra) return null;
+  if (cell.matchPlaySeed === null) return null;
+  if (cell.champion) return null; // trophy covers them
+  if (cell.wonSemifinal === true) return "r"; // won SF → reached final
+  if (cell.wonQuarterfinal === true) return "sf"; // won QF → reached SF
+  return "qf"; // made bracket, lost QF
+}
+
 interface Props {
   entries: ChampionshipFinish[];
 }
@@ -657,6 +674,31 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
                               ease: "easeOut" as const,
                               delay: reduced ? 0 : idx * 0.012,
                             };
+                            const cancelled = y === CANCELLED_YEAR;
+
+                            // Cancelled year: dashed + muted "—" regardless of
+                            // whether the team has a cell that year (they
+                            // can't — the tournament didn't happen).
+                            if (cancelled) {
+                              return (
+                                <motion.div
+                                  key={y}
+                                  initial={{ opacity: 0, scale: 0.94 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={cellTransition}
+                                  title="No NCAA Championship (COVID-19)"
+                                  className={`rounded border border-dashed border-border/40 bg-card/20 px-1.5 py-1 text-center ${dim ? "opacity-25" : ""}`}
+                                >
+                                  <div className="text-[10px] text-text-tertiary font-mono tabular-nums">
+                                    {y}
+                                  </div>
+                                  <div className="text-[12px] font-mono tabular-nums text-text-tertiary/60">
+                                    —
+                                  </div>
+                                </motion.div>
+                              );
+                            }
+
                             if (!cell) {
                               return (
                                 <motion.div
@@ -681,19 +723,46 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
                             let cellCls: string;
                             let posCls: string;
                             if (isWin) {
-                              cellCls = `rounded border border-amber-400/50 bg-amber-400/5 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-amber-300/70 hover:bg-amber-400/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`;
-                              posCls = "font-semibold text-amber-300";
+                              cellCls = `rounded border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-amber-300/70 hover:bg-amber-400/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-amber-300";
                             } else if (advanced) {
-                              cellCls = `rounded border border-primary/40 bg-primary/5 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-primary/70 hover:bg-primary/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`;
-                              posCls = "font-semibold text-primary";
+                              cellCls = `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-emerald-400";
                             } else if (cell.madeCut) {
-                              cellCls = `rounded border border-primary/20 bg-card px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-primary/40 hover:shadow-raised ${dim ? "opacity-25" : ""}`;
-                              posCls = "text-foreground/85";
+                              cellCls = `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-foreground/80";
                             } else {
                               // MC
                               cellCls = `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
-                              posCls = "text-muted-foreground";
+                              posCls = "text-rose-400/80";
                             }
+
+                            const mpr = matchPlayRound(cell);
+                            const badgeText =
+                              mpr === "r"
+                                ? "R"
+                                : mpr === "sf"
+                                  ? "SF"
+                                  : mpr === "qf"
+                                    ? "QF"
+                                    : null;
+                            const badgeClass =
+                              mpr === "r"
+                                ? "text-amber-500"
+                                : mpr === "sf"
+                                  ? "text-sky-400"
+                                  : mpr === "qf"
+                                    ? "text-emerald-400"
+                                    : "";
+                            const badgeLabel =
+                              mpr === "r"
+                                ? "Runner-up"
+                                : mpr === "sf"
+                                  ? "Semifinalist"
+                                  : mpr === "qf"
+                                    ? "Quarterfinalist"
+                                    : undefined;
+
                             return (
                               <motion.div
                                 key={y}
@@ -708,16 +777,24 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
                                     : `${y} · missed cut`)
                                 }
                               >
-                                <div className="text-[10px] text-muted-foreground font-mono tabular-nums flex items-center justify-center gap-0.5">
-                                  {isWin && (
+                                <div className="text-[10px] text-muted-foreground font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
+                                  <span>{y}</span>
+                                  {isWin ? (
                                     <Trophy
                                       className="h-2.5 w-2.5 text-amber-300"
                                       aria-hidden="true"
                                     />
-                                  )}
-                                  <span>{y}</span>
+                                  ) : badgeText ? (
+                                    <span
+                                      className={`text-[9px] font-semibold font-mono leading-none ${badgeClass}`}
+                                      aria-label={badgeLabel}
+                                      title={badgeLabel}
+                                    >
+                                      {badgeText}
+                                    </span>
+                                  ) : null}
                                 </div>
-                                <div className="text-[12px] font-mono tabular-nums">
+                                <div className="text-[12px] font-mono tabular-nums leading-tight">
                                   <span className={posCls}>{cell.position}</span>
                                 </div>
                               </motion.div>
@@ -754,7 +831,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-text-tertiary">
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
         <span className="inline-flex items-center gap-1">
           <Trophy className="h-3 w-3 text-amber-300" aria-hidden="true" />
           won championship
@@ -762,23 +839,57 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
         <span className="inline-flex items-center gap-1">
           <span
             aria-hidden="true"
-            className="inline-block h-[6px] w-[6px] rounded-sm bg-primary/70"
+            className="text-[9px] font-semibold font-mono leading-none text-amber-500"
+          >
+            R
+          </span>
+          Runner-up
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="text-[9px] font-semibold font-mono leading-none text-sky-400"
+          >
+            SF
+          </span>
+          Semifinalist
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="text-[9px] font-semibold font-mono leading-none text-emerald-400"
+          >
+            QF
+          </span>
+          Quarterfinalist
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-sm bg-emerald-400/70"
           />
           reached match-play (top 8)
         </span>
         <span className="inline-flex items-center gap-1">
           <span
             aria-hidden="true"
-            className="inline-block h-[6px] w-[6px] rounded-sm border border-primary/40"
+            className="inline-block h-[6px] w-[6px] rounded-sm border border-border/60"
           />
-          made 54-hole cut
+          made cut
         </span>
         <span className="inline-flex items-center gap-1">
           <span
             aria-hidden="true"
-            className="inline-block h-[6px] w-[6px] rounded-sm bg-muted-foreground/30"
+            className="inline-block h-[6px] w-[6px] rounded-sm bg-rose-400/70"
           />
-          missed cut (MC)
+          missed cut
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-sm border border-dashed border-border/60"
+          />
+          no appearance / cancelled
         </span>
       </div>
     </div>

@@ -8,25 +8,40 @@ import {
   ChevronRight,
   ChevronUp,
   ChevronsUpDown,
+  Medal,
   Search,
   X,
 } from "lucide-react";
-import type { Gender, RegionalFinish } from "@/data/records-types";
+import type {
+  Gender,
+  RegionalFinish,
+  RegionalFinishRich,
+} from "@/data/records-types";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
+import { regionalsRich } from "@/data/regionals-rich";
 import { teamHref } from "@/lib/team-link";
 import { isRegionalWin } from "@/lib/streaks";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
+
+/** Year the NCAA Regionals/Championships were cancelled (COVID-19). */
+const CANCELLED_YEAR = 2020;
 
 interface Props {
   entries: RegionalFinish[];
 }
 
+interface YearCell {
+  position: string;
+  advanced: boolean;
+  win: boolean;
+}
+
 interface TeamRow {
   team: string;
-  byYear: Map<number, { position: string; advanced: boolean }>;
+  byYear: Map<number, YearCell>;
   apps: number;
   wins: number;
   nationals: number;
@@ -65,6 +80,51 @@ function buildDecades(minYear: number, maxYear: number): Decade[] {
   return out;
 }
 
+function ordinalSuffix(n: number): string {
+  const tens = n % 100;
+  if (tens >= 11 && tens <= 13) return `${n}th`;
+  switch (n % 10) {
+    case 1:
+      return `${n}st`;
+    case 2:
+      return `${n}nd`;
+    case 3:
+      return `${n}rd`;
+    default:
+      return `${n}th`;
+  }
+}
+
+/** Mirrors the tooltip built by team-page/regional-timeline.tsx so the same
+ *  visual language reads the same verbal story on hover. Falls back to a
+ *  short summary when the rich data (seed/SG/margin) isn't available — i.e.
+ *  pre-seeding-era years. */
+function buildRegionalTooltip(
+  cell: YearCell,
+  rich: RegionalFinishRich | undefined
+): string | undefined {
+  const parts: string[] = [];
+  if (rich?.regional) parts.push(`Regional: ${rich.regional}`);
+  if (rich?.seed != null) parts.push(`Seed #${rich.seed}`);
+  if (rich?.sgTotal != null) {
+    const sign = rich.sgTotal > 0 ? "+" : "";
+    parts.push(`Team SG ${sign}${rich.sgTotal.toFixed(1)}`);
+  }
+  if (cell.win && rich?.margin != null && rich.margin > 0) {
+    parts.push(`Won by ${rich.margin}`);
+  }
+  if (cell.win && rich?.titleCount != null) {
+    parts.push(`${ordinalSuffix(rich.titleCount)} Regional title`);
+  }
+  if (parts.length === 0) {
+    // Fallback when no rich row joined — still give the user something useful.
+    if (cell.win) return "Regional title";
+    if (cell.advanced) return `Finished ${cell.position} · advanced to Nationals`;
+    return `Finished ${cell.position}`;
+  }
+  return parts.join(" · ");
+}
+
 function buildConferenceMap(gender: Gender): Map<string, string> {
   const m = new Map<string, string>();
   for (const t of gender === "men" ? rankingsMen : rankingsWomen) {
@@ -98,9 +158,10 @@ function buildRows(
       };
       byTeam.set(e.team, r);
     }
-    r.byYear.set(e.year, { position: e.position, advanced: e.advanced });
+    const win = isRegionalWin(e.position);
+    r.byYear.set(e.year, { position: e.position, advanced: e.advanced, win });
     r.apps += 1;
-    if (isRegionalWin(e.position)) r.wins += 1;
+    if (win) r.wins += 1;
     if (e.advanced) r.nationals += 1;
     const posNum = parseInt(e.position, 10);
     if (Number.isFinite(posNum) && posNum > 0) {
@@ -183,6 +244,18 @@ export default function RegionalsResultsTable({ entries }: Props) {
     () => buildRows(entries.filter((e) => e.gender === gender), conferenceMap),
     [entries, gender, conferenceMap]
   );
+
+  // Rich-detail join by (team|year) for the current gender. Seed + SG + margin
+  // + regional site come from here — lossy before the seeding era (~2002),
+  // tiles gracefully fall back to no badge / short tooltip when missing.
+  const richByTeamYear = useMemo(() => {
+    const m = new Map<string, RegionalFinishRich>();
+    for (const r of regionalsRich) {
+      if (r.gender !== gender) continue;
+      m.set(`${r.team}|${r.year}`, r);
+    }
+    return m;
+  }, [gender]);
 
   const decades = useMemo(() => {
     if (years.length === 0) return [];
@@ -580,6 +653,35 @@ export default function RegionalsResultsTable({ entries }: Props) {
                               ease: "easeOut" as const,
                               delay: reduced ? 0 : idx * 0.012,
                             };
+                            const cancelled = y === CANCELLED_YEAR;
+                            const rich = cell
+                              ? richByTeamYear.get(`${r.team}|${y}`)
+                              : undefined;
+
+                            // Cancelled year: dashed + muted "—" regardless of
+                            // whether the team had an entry that year (they
+                            // can't — the tournament didn't happen).
+                            if (cancelled) {
+                              return (
+                                <motion.div
+                                  key={y}
+                                  initial={{ opacity: 0, scale: 0.94 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={cellTransition}
+                                  title="No NCAA postseason (COVID-19)"
+                                  className={`rounded border border-dashed border-border/40 bg-card/20 px-1.5 py-1 text-center ${dim ? "opacity-25" : ""}`}
+                                >
+                                  <div className="text-[10px] text-text-tertiary font-mono tabular-nums">
+                                    {y}
+                                  </div>
+                                  <div className="text-[12px] font-mono tabular-nums text-text-tertiary/60">
+                                    —
+                                  </div>
+                                </motion.div>
+                              );
+                            }
+
+                            // No appearance that year → dashed empty cell.
                             if (!cell) {
                               return (
                                 <motion.div
@@ -598,32 +700,54 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                 </motion.div>
                               );
                             }
+
+                            const win = cell.win;
+                            const missed = !cell.advanced && !win;
+                            const boxClass = win
+                              ? `rounded border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-1 text-center transition-colors duration-100 hover:border-amber-300/70 hover:bg-amber-400/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`
+                              : `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-colors duration-100 hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                            const posClass = win
+                              ? "text-amber-300"
+                              : cell.advanced
+                                ? "text-emerald-400"
+                                : missed
+                                  ? "text-rose-400/80"
+                                  : "text-foreground/80";
+                            const cellTitle = buildRegionalTooltip(
+                              cell,
+                              rich
+                            );
+                            const seed = rich?.seed;
+                            const showSeed = seed != null && !missed;
+
                             return (
                               <motion.div
                                 key={y}
                                 initial={{ opacity: 0, scale: 0.94 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={cellTransition}
-                                className={
-                                  cell.advanced
-                                    ? `rounded border border-emerald-500/30 bg-emerald-500/5 px-1.5 py-1 text-center transition-colors hover:border-emerald-400/70 hover:bg-emerald-500/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`
-                                    : `rounded border border-border/40 bg-card px-1.5 py-1 text-center ${dim ? "opacity-25" : ""}`
-                                }
+                                title={cellTitle}
+                                className={boxClass}
                               >
-                                <div className="text-[10px] text-muted-foreground font-mono tabular-nums">
-                                  {y}
+                                <div className="text-[10px] text-text-tertiary font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
+                                  <span>{y}</span>
+                                  {win ? (
+                                    <Medal
+                                      className="h-2.5 w-2.5 text-amber-300"
+                                      aria-hidden="true"
+                                    />
+                                  ) : null}
                                 </div>
-                                <div className="text-[12px] font-mono tabular-nums">
-                                  <span
-                                    className={
-                                      cell.advanced
-                                        ? "font-semibold text-emerald-300"
-                                        : "text-foreground/85"
-                                    }
-                                  >
+                                <div className="text-[12px] font-mono tabular-nums leading-tight">
+                                  <span className={posClass}>
                                     {cell.position}
                                   </span>
                                 </div>
+                                {showSeed ? (
+                                  <div className="text-[9px] font-mono tabular-nums leading-none text-text-tertiary/80">
+                                    #{seed}
+                                  </div>
+                                ) : null}
                               </motion.div>
                             );
                           })}
@@ -638,13 +762,36 @@ export default function RegionalsResultsTable({ entries }: Props) {
         </div>
       </div>
 
-      <p className="text-[11px] text-text-tertiary">
-        <span
-          aria-hidden="true"
-          className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
-        />
-        = advanced to Nationals. Tap a team to see year-by-year finishes.
-      </p>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
+        <span className="inline-flex items-center gap-1">
+          <Medal className="h-3 w-3 text-amber-300" aria-hidden="true" />
+          Regional title
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-sm bg-emerald-400/70"
+          />
+          advanced to Nationals
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-sm bg-rose-400/70"
+          />
+          did not advance
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-sm border border-dashed border-border/60"
+          />
+          no appearance / cancelled
+        </span>
+        <span className="text-text-tertiary/80">
+          Tap a team to see year-by-year finishes.
+        </span>
+      </div>
     </div>
   );
 }
