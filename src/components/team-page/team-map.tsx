@@ -3,13 +3,24 @@
 import { useMemo } from "react";
 import { geoAlbersUsa, geoPath } from "d3-geo";
 import { feature, mesh } from "topojson-client";
-import type { Topology, GeometryCollection } from "topojson-specification";
+import type {
+  Topology,
+  GeometryCollection,
+  GeometryObject,
+} from "topojson-specification";
 import type { FeatureCollection } from "geojson";
 import usTopology from "@/data/us-states-10m.json";
 import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { TeamData } from "@/data/rankings-men";
 import type { Gender } from "@/data/records-types";
+import {
+  STATE_FIPS_TO_TZ,
+  TIMEZONE_BAND_NAME,
+  formatTzDelta,
+  tzBandFromCoord,
+  tzDeltaHours,
+} from "@/lib/timezone";
 
 const SVG_WIDTH = 975;
 const SVG_HEIGHT = 610;
@@ -28,6 +39,32 @@ const stateBorderPath = pathGen(
 );
 const nationBorderPath = pathGen(
   mesh(topo, topo.objects.nation as GeometryCollection)
+);
+
+/**
+ * Timezone boundary mesh — the subset of state borders that separate
+ * states in different May/June timezones. Drawn at module level so the
+ * d3-geo work happens once per bundle, not once per team page.
+ *
+ * Intra-state timezone splits (TN/KY east-west, etc.) are NOT rendered
+ * here; that level of detail would need a dedicated timezone polygon
+ * dataset. The dots+delta text are still computed at per-campus
+ * precision via tzBandFromStateFips.
+ */
+const timezoneBorderPath = pathGen(
+  mesh(
+    topo,
+    topo.objects.states as GeometryCollection,
+    (a: GeometryObject, b: GeometryObject) => {
+      const aFips = typeof a.id === "string" ? a.id : String(a.id ?? "");
+      const bFips = typeof b.id === "string" ? b.id : String(b.id ?? "");
+      if (!aFips || !bFips) return false;
+      const aTz = STATE_FIPS_TO_TZ[aFips];
+      const bTz = STATE_FIPS_TO_TZ[bFips];
+      if (!aTz || !bTz) return false;
+      return aTz !== bTz;
+    }
+  )
 );
 
 function projectPoint(lat: number, lng: number): [number, number] | null {
@@ -103,6 +140,29 @@ export default function TeamMap({
     return `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`;
   }, [teamPos, regionalPos]);
 
+  // Timezone-delta computation (May/June offsets). Falls back to the
+  // longitude heuristic if either coord doesn't land inside a state polygon.
+  const tzInfo = useMemo(() => {
+    if (
+      team.lat == null ||
+      team.lng == null ||
+      regional.lat == null ||
+      regional.lng == null
+    ) {
+      return null;
+    }
+    const fromBand = tzBandFromCoord(team.lat, team.lng, statesGeo);
+    const toBand = tzBandFromCoord(regional.lat, regional.lng, statesGeo);
+    const hours = tzDeltaHours(fromBand, toBand);
+    return {
+      fromBand,
+      toBand,
+      hours,
+      label: formatTzDelta(hours),
+      tooltip: `${TIMEZONE_BAND_NAME[fromBand]} → ${TIMEZONE_BAND_NAME[toBand]} (May/June DST)`,
+    };
+  }, [team.lat, team.lng, regional.lat, regional.lng]);
+
   return (
     <div className="relative rounded-lg border border-border/60 bg-card/40 overflow-hidden">
       <svg
@@ -134,6 +194,21 @@ export default function TeamMap({
             strokeWidth="0.75"
             strokeLinejoin="round"
             opacity="0.18"
+          />
+        )}
+        {/* Timezone boundaries — drawn on top of state borders so they
+            read as a separate, slightly bolder visual layer. Dashed to
+            distinguish from both state and national borders. */}
+        {timezoneBorderPath && (
+          <path
+            d={timezoneBorderPath}
+            fill="none"
+            stroke="hsl(var(--foreground))"
+            strokeWidth="1"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeDasharray="3 2"
+            opacity="0.42"
           />
         )}
         {nationBorderPath && (
@@ -258,7 +333,26 @@ export default function TeamMap({
           />
           conference peers
         </span>
-        <span className="ml-auto font-mono tabular-nums text-foreground/80">
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-0 w-[12px] border-t border-dashed border-foreground/50"
+          />
+          time zones
+        </span>
+        {tzInfo && (
+          <span
+            className="ml-auto font-mono tabular-nums text-foreground/80"
+            title={tzInfo.tooltip}
+          >
+            {tzInfo.label}
+          </span>
+        )}
+        <span
+          className={`font-mono tabular-nums text-foreground/80${
+            tzInfo ? "" : " ml-auto"
+          }`}
+        >
           {Math.round(assignment.distanceMiles).toLocaleString()} mi
         </span>
       </div>
