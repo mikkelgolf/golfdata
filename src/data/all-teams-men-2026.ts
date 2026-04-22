@@ -227,7 +227,7 @@ export const allTeamsMen2026: TeamData[] = [
   { rank: 213, team: "Northern Colorado", conference: "BIGSKY", events: 10, wins: 55, losses: 85, ties: 4, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.4233142, lng: -104.7091322 },
   { rank: 214, team: "Houston Christian", conference: "SOUTHLAND", events: 10, wins: 51, losses: 66, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 29.7589382, lng: -95.3676974 },
   { rank: 215, team: "Utah State", conference: "MWC", events: 9, wins: 37, losses: 98, ties: 7, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.7313063, lng: -111.834914 },
-  { rank: 216, team: "CSU Northridge", conference: "BWEST", events: 10, wins: 55, losses: 117, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 45.997454, lng: -60.4457621 },
+  { rank: 216, team: "CSU Northridge", conference: "BWEST", events: 10, wins: 55, losses: 117, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.2381, lng: -118.5290 },
   { rank: 217, team: "Iona", conference: "MAAC", events: 10, wins: 84, losses: 42, ties: 4, eligible: true, isAutoQualifier: false, aqConference: null, lat: 40.9115386, lng: -73.7826363 },
   { rank: 218, team: "North Dakota", conference: "SUMMIT", events: 9, wins: 43, losses: 46, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 46.8791756, lng: -102.7896242 },
   { rank: 219, team: "UT Arlington", conference: "WAC", events: 10, wins: 22, losses: 137, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 32.7355816, lng: -97.1071186 },

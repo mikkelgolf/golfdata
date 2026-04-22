@@ -57,6 +57,7 @@ if (dupes.length > 0) {
 const teamKnownCoords: Record<string, { lat: number; lng: number; note: string }> = {
   Idaho: { lat: 46.7296, lng: -117.0128, note: "University of Idaho — Moscow, ID" },
   "Idaho State": { lat: 42.8620287, lng: -112.450627, note: "Idaho State University — Pocatello, ID" },
+  "CSU Northridge": { lat: 34.2381, lng: -118.5290, note: "Cal State Northridge — Northridge, CA (guards against Nova Scotia geocoder collision)" },
 };
 
 console.log("\n[check] Known teams at expected coordinates");

@@ -131,7 +131,7 @@ export const allTeamsWomen2026: TeamData[] = [
   { rank: 117, team: "Colorado State", conference: "MWC", events: 9, wins: 34, losses: 84, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.5734, lng: -105.0865 },
   { rank: 118, team: "Middle Tennessee", conference: "CUSA", events: 10, wins: 53, losses: 56, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 35.8460396, lng: -86.3921096 },
   { rank: 119, team: "Denver", conference: "SUMMIT", events: 8, wins: 39, losses: 75, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.678, lng: -104.9618 },
-  { rank: 120, team: "CSU Northridge", conference: "BWEST", events: 11, wins: 72, losses: 43, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 45.997454, lng: -60.4457621 },
+  { rank: 120, team: "CSU Northridge", conference: "BWEST", events: 11, wins: 72, losses: 43, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 34.2381, lng: -118.5290 },
   { rank: 121, team: "Lipscomb", conference: "ASUN", events: 9, wins: 75, losses: 50, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 36.1622767, lng: -86.7742984 },
   { rank: 122, team: "Florida Intl.", conference: "CUSA", events: 9, wins: 22, losses: 92, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 27.7712264, lng: -82.6340259 },
   { rank: 123, team: "Penn", conference: "IVY", events: 7, wins: 66, losses: 22, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 39.9527237, lng: -75.1635262 },

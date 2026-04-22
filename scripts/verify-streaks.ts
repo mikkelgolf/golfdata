@@ -49,7 +49,10 @@ const oklaSt = computeRegionalStreak("Oklahoma State", "men");
 console.log(
   `  Oklahoma State men regional streak: active=${oklaSt.active}, longest=${oklaSt.longest} (${oklaSt.longestSpan?.join("-")})`
 );
-assert(oklaSt.longest >= 5, "Oklahoma State men has a deep regional streak");
+// Pre-fix this asserted >=5 because the COVID 2020 gap broke every streak
+// at five. Post-fix, OK State men have a deep multi-decade run.
+assert(oklaSt.longest >= 24, "Oklahoma State men have a 24+-year regional streak (COVID gap bridged)");
+assert(oklaSt.active >= 24, "Oklahoma State men's active streak spans the COVID gap");
 
 const auburnNat = computeNationalStreak("Auburn", "men");
 console.log(

@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { Search, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { ChevronDown, ChevronUp, ChevronsUpDown, Search, X } from "lucide-react";
 import type { Gender } from "@/data/records-types";
+import {
+  fadeSlideVariants,
+  staggerContainerVariants,
+  useReducedMotion,
+} from "@/lib/animations";
+
+const MotionLink = motion(Link);
 
 export interface TeamsIndexRow {
   team: string;
@@ -71,6 +79,7 @@ export default function TeamsIndex({ menRows, womenRows }: Props) {
   const [conferences, setConferences] = useState<Set<string>>(new Set());
   const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const reduced = useReducedMotion();
 
   const confList = useMemo(() => {
     const s = new Set<string>();
@@ -124,21 +133,43 @@ export default function TeamsIndex({ menRows, womenRows }: Props) {
       {/* Filter bar */}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="inline-flex rounded-md border border-border bg-card p-0.5 text-[12px]">
-            {(["both", "men", "women"] as const).map((g) => (
-              <button
-                key={g}
-                type="button"
-                onClick={() => setGender(g)}
-                className={
-                  gender === g
-                    ? "btn-lift rounded px-3 py-1 font-medium text-foreground"
-                    : "rounded px-3 py-1 text-muted-foreground hover:text-foreground transition-colors"
-                }
-              >
-                {g === "both" ? "All" : g === "men" ? "Men's" : "Women's"}
-              </button>
-            ))}
+          <div className="relative inline-flex rounded-md border border-border bg-card p-0.5 text-[12px]">
+            {(["both", "men", "women"] as const).map((g) => {
+              const active = gender === g;
+              const inactiveCls =
+                "relative rounded px-3 py-1 text-muted-foreground hover:text-foreground transition-colors";
+              const activeReducedCls =
+                "btn-lift relative rounded px-3 py-1 font-medium text-foreground";
+              const activeMotionCls =
+                "relative rounded px-3 py-1 font-medium text-foreground";
+              const cls = active
+                ? reduced
+                  ? activeReducedCls
+                  : activeMotionCls
+                : inactiveCls;
+              return (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => setGender(g)}
+                  className={cls}
+                >
+                  {active && !reduced && (
+                    <motion.div
+                      layoutId="gender-toggle-pill"
+                      aria-hidden="true"
+                      className="btn-lift absolute inset-0 rounded pointer-events-none z-0"
+                      transition={{
+                        layout: { duration: 0.2, ease: [0.32, 0.72, 0, 1] },
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {g === "both" ? "All" : g === "men" ? "Men's" : "Women's"}
+                  </span>
+                </button>
+              );
+            })}
           </div>
           <div className="relative w-full sm:w-80">
             <Search
@@ -175,25 +206,51 @@ export default function TeamsIndex({ menRows, womenRows }: Props) {
         </div>
 
         {/* Conference chips */}
-        <div className="flex flex-wrap gap-1">
-          {confList.map((c) => {
-            const active = conferences.has(c);
-            return (
-              <button
-                key={c}
-                type="button"
-                onClick={() => toggleConf(c)}
-                className={
-                  active
-                    ? "btn-lift rounded-full border border-primary/50 bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-foreground"
-                    : "rounded-full border border-border/60 bg-card px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-border-medium transition-colors"
-                }
-              >
-                {c}
-              </button>
-            );
-          })}
-        </div>
+        {reduced ? (
+          <div className="flex flex-wrap gap-1">
+            {confList.map((c) => {
+              const active = conferences.has(c);
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => toggleConf(c)}
+                  className={
+                    active
+                      ? "btn-lift rounded-full border border-primary/50 bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-foreground"
+                      : "rounded-full border border-border/60 bg-card px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-border-medium transition-colors"
+                  }
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <motion.div
+            layout
+            transition={{ layout: { duration: 0.2 } }}
+            className="flex flex-wrap gap-1"
+          >
+            {confList.map((c) => {
+              const active = conferences.has(c);
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => toggleConf(c)}
+                  className={
+                    active
+                      ? "btn-lift rounded-full border border-primary/50 bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-foreground"
+                      : "rounded-full border border-border/60 bg-card px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-border-medium transition-colors"
+                  }
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
 
       {/* Tables */}
@@ -207,6 +264,7 @@ export default function TeamsIndex({ menRows, womenRows }: Props) {
             sortDir={sortDir}
             onSort={toggleSort}
             gender="men"
+            reduced={reduced}
           />
         )}
         {showWomen && (
@@ -218,6 +276,7 @@ export default function TeamsIndex({ menRows, womenRows }: Props) {
             sortDir={sortDir}
             onSort={toggleSort}
             gender="women"
+            reduced={reduced}
           />
         )}
       </div>
@@ -233,6 +292,7 @@ function TableBlock({
   sortDir,
   onSort,
   gender,
+  reduced,
 }: {
   title: string;
   rows: TeamsIndexRow[];
@@ -241,9 +301,62 @@ function TableBlock({
   sortDir: SortDir;
   onSort: (key: SortKey) => void;
   gender: Gender;
+  reduced: boolean;
 }) {
+  const [loaded, setLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Flag to confine the row stagger to the initial mount.
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 1200);
+    return () => clearTimeout(t);
+  }, []);
+
+  const rowCls =
+    "grid grid-cols-[44px_minmax(140px,1.2fr)_minmax(60px,0.7fr)_44px_44px_44px_44px] items-center gap-1 px-2 py-1.5 text-[12px] border-b border-border/40 last:border-b-0 ring-card shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out";
+
+  const blurUpStyle = reduced
+    ? undefined
+    : {
+        opacity: loaded ? 1 : 0,
+        filter: loaded ? "blur(0px)" : "blur(8px)",
+        transition: "opacity 600ms ease-out, filter 600ms ease-out",
+      };
+
+  const renderRowInner = (r: TeamsIndexRow) => (
+    <>
+      <span className="text-right font-mono tabular-nums text-muted-foreground">
+        #{r.rank}
+      </span>
+      <span className="truncate font-medium text-foreground">
+        {r.team}
+        {r.isAutoQualifier && (
+          <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">
+            AQ
+          </span>
+        )}
+      </span>
+      <span className="truncate text-[11px] text-muted-foreground">
+        {r.conference}
+      </span>
+      <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
+      <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
+      <span className="text-right font-mono tabular-nums font-semibold text-foreground">
+        {r.regionalWins}
+      </span>
+      <span className="text-right font-mono tabular-nums text-foreground">
+        {r.bestFinish ?? "—"}
+      </span>
+    </>
+  );
+
   return (
-    <section>
+    <section style={blurUpStyle}>
       <div className="flex items-baseline justify-between mb-2">
         <h2 className="text-[12px] font-semibold uppercase tracking-wider text-foreground">
           {title}
@@ -312,37 +425,36 @@ function TableBlock({
             <div className="px-3 py-8 text-center text-[12px] text-muted-foreground italic">
               No teams match.
             </div>
-          ) : (
+          ) : reduced || mounted ? (
             rows.map((r) => (
               <Link
                 key={r.slug}
                 href={`/teams/${gender}/${r.slug}`}
-                className="grid grid-cols-[44px_minmax(140px,1.2fr)_minmax(60px,0.7fr)_44px_44px_44px_44px] items-center gap-1 bg-card px-2 py-1.5 text-[12px] border-b border-border/40 last:border-b-0 hover:bg-[hsl(var(--surface-raised))] transition-colors"
+                className={rowCls}
               >
-                <span className="text-right font-mono tabular-nums text-muted-foreground">
-                  #{r.rank}
-                </span>
-                <span className="truncate font-medium text-foreground">
-                  {r.team}
-                  {r.isAutoQualifier && (
-                    <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">
-                      AQ
-                    </span>
-                  )}
-                </span>
-                <span className="truncate text-[11px] text-muted-foreground">
-                  {r.conference}
-                </span>
-                <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
-                <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
-                <span className="text-right font-mono tabular-nums font-semibold text-foreground">
-                  {r.regionalWins}
-                </span>
-                <span className="text-right font-mono tabular-nums text-foreground">
-                  {r.bestFinish ?? "—"}
-                </span>
+                {renderRowInner(r)}
               </Link>
             ))
+          ) : (
+            <motion.div
+              variants={staggerContainerVariants(
+                Math.min(0.015, 1.2 / Math.max(rows.length, 1)),
+                0.05
+              )}
+              initial="hidden"
+              animate="visible"
+            >
+              {rows.map((r) => (
+                <MotionLink
+                  key={r.slug}
+                  href={`/teams/${gender}/${r.slug}`}
+                  className={rowCls}
+                  variants={fadeSlideVariants}
+                >
+                  {renderRowInner(r)}
+                </MotionLink>
+              ))}
+            </motion.div>
           )}
         </div>
       </div>
@@ -365,17 +477,21 @@ function SortableHeader({
   dir: SortDir;
   onClick: () => void;
 }) {
-  const arrow = active ? (dir === "asc" ? "↑" : "↓") : "↕";
-  const arrowClass = active ? "text-foreground/60" : "text-muted-foreground/30";
+  const Icon = active
+    ? dir === "asc"
+      ? ChevronUp
+      : ChevronDown
+    : ChevronsUpDown;
+  const iconClass = active ? "text-foreground/70" : "text-muted-foreground/40";
+  const base = `label-caps inline-flex items-center gap-1 ${align === "right" ? "justify-end text-right ml-auto" : "justify-start text-left"} hover:text-foreground transition-colors rounded px-1 py-0.5`;
+  const cls = active ? `${base} btn-lift` : base;
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      className={`label-caps ${align === "right" ? "text-right" : "text-left"} hover:text-foreground transition-colors`}
-    >
-      {label}
-      <span className={`ml-1 ${arrowClass}`}>{arrow}</span>
+    <button type="button" onClick={onClick} title={title} className={cls}>
+      <span>{label}</span>
+      <Icon
+        className={`h-3 w-3 transition-transform duration-150 ${iconClass}`}
+        aria-hidden="true"
+      />
     </button>
   );
 }

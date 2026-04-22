@@ -8,43 +8,65 @@ import {
   ChevronRight,
   ChevronUp,
   ChevronsUpDown,
-  Medal,
   Search,
+  Trophy,
   X,
 } from "lucide-react";
 import type {
+  ChampionshipFinish,
   Gender,
-  RegionalFinish,
-  RegionalFinishRich,
 } from "@/data/records-types";
 import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
-import { regionalsRich } from "@/data/regionals-rich";
 import { teamHref } from "@/lib/team-link";
-import { isRegionalWin } from "@/lib/streaks";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
+import { isChampion } from "@/lib/streaks";
 
-/** Year the NCAA Regionals/Championships were cancelled (COVID-19). */
+/** Year the NCAA Championships were cancelled (COVID-19). */
 const CANCELLED_YEAR = 2020;
 
-interface Props {
-  entries: RegionalFinish[];
+/** Match-play round reached. Mirrors team-page/national-timeline.tsx. */
+type MatchPlayRound = "qf" | "sf" | "r" | null;
+
+/** Returns the deepest match-play round a team reached that year (non-champions
+ *  only). "r" = reached the final, "sf" = reached semis, "qf" = reached QF. */
+function matchPlayRound(cell: TeamCell): MatchPlayRound {
+  if (!cell.matchPlayEra) return null;
+  if (cell.matchPlaySeed === null) return null;
+  if (cell.champion) return null; // trophy covers them
+  if (cell.wonSemifinal === true) return "r"; // won SF → reached final
+  if (cell.wonQuarterfinal === true) return "sf"; // won QF → reached SF
+  return "qf"; // made bracket, lost QF
 }
 
-interface YearCell {
+interface Props {
+  entries: ChampionshipFinish[];
+}
+
+interface TeamCell {
   position: string;
-  advanced: boolean;
-  win: boolean;
+  positionNoTies: number | null;
+  madeCut: boolean;
+  matchPlayEra: boolean;
+  matchPlaySeed: number | null;
+  wonQuarterfinal: boolean | null;
+  wonSemifinal: boolean | null;
+  wonChampionship: boolean | null;
+  /** Won the Championship (pre-2009 stroke-play OR post-2009 match-play). */
+  champion: boolean;
 }
 
 interface TeamRow {
   team: string;
-  byYear: Map<number, YearCell>;
+  byYear: Map<number, TeamCell>;
   apps: number;
   wins: number;
-  nationals: number;
+  /** Made match play bracket (top 8 of the stroke-play field). */
+  topEight: number;
+  /** Sum of quarterfinal + semifinal wins across appearances. */
+  matchPlayWins: number;
   bestFinish: number | null;
   lastAppearance: number | null;
   currentConference: string;
@@ -54,7 +76,8 @@ type SortKey =
   | "team"
   | "apps"
   | "wins"
-  | "nationals"
+  | "topEight"
+  | "matchPlayWins"
   | "bestFinish"
   | "lastAppearance"
   | "currentConference";
@@ -80,51 +103,6 @@ function buildDecades(minYear: number, maxYear: number): Decade[] {
   return out;
 }
 
-function ordinalSuffix(n: number): string {
-  const tens = n % 100;
-  if (tens >= 11 && tens <= 13) return `${n}th`;
-  switch (n % 10) {
-    case 1:
-      return `${n}st`;
-    case 2:
-      return `${n}nd`;
-    case 3:
-      return `${n}rd`;
-    default:
-      return `${n}th`;
-  }
-}
-
-/** Mirrors the tooltip built by team-page/regional-timeline.tsx so the same
- *  visual language reads the same verbal story on hover. Falls back to a
- *  short summary when the rich data (seed/SG/margin) isn't available — i.e.
- *  pre-seeding-era years. */
-function buildRegionalTooltip(
-  cell: YearCell,
-  rich: RegionalFinishRich | undefined
-): string | undefined {
-  const parts: string[] = [];
-  if (rich?.regional) parts.push(`Regional: ${rich.regional}`);
-  if (rich?.seed != null) parts.push(`Seed #${rich.seed}`);
-  if (rich?.sgTotal != null) {
-    const sign = rich.sgTotal > 0 ? "+" : "";
-    parts.push(`Team SG ${sign}${rich.sgTotal.toFixed(1)}`);
-  }
-  if (cell.win && rich?.margin != null && rich.margin > 0) {
-    parts.push(`Won by ${rich.margin}`);
-  }
-  if (cell.win && rich?.titleCount != null) {
-    parts.push(`${ordinalSuffix(rich.titleCount)} Regional title`);
-  }
-  if (parts.length === 0) {
-    // Fallback when no rich row joined — still give the user something useful.
-    if (cell.win) return "Regional title";
-    if (cell.advanced) return `Finished ${cell.position} · advanced to Nationals`;
-    return `Finished ${cell.position}`;
-  }
-  return parts.join(" · ");
-}
-
 function buildConferenceMap(gender: Gender): Map<string, string> {
   const m = new Map<string, string>();
   for (const t of gender === "men" ? rankingsMen : rankingsWomen) {
@@ -137,7 +115,7 @@ function buildConferenceMap(gender: Gender): Map<string, string> {
 }
 
 function buildRows(
-  entries: RegionalFinish[],
+  entries: ChampionshipFinish[],
   conferenceMap: Map<string, string>
 ): { rows: TeamRow[]; years: number[] } {
   const years = new Set<number>();
@@ -151,21 +129,34 @@ function buildRows(
         byYear: new Map(),
         apps: 0,
         wins: 0,
-        nationals: 0,
+        topEight: 0,
+        matchPlayWins: 0,
         bestFinish: null,
         lastAppearance: null,
         currentConference: conferenceMap.get(e.team) ?? "—",
       };
       byTeam.set(e.team, r);
     }
-    const win = isRegionalWin(e.position);
-    r.byYear.set(e.year, { position: e.position, advanced: e.advanced, win });
+    const champion = isChampion(e);
+    r.byYear.set(e.year, {
+      position: e.position,
+      positionNoTies: e.positionNoTies,
+      madeCut: e.madeCut,
+      matchPlayEra: e.matchPlayEra,
+      matchPlaySeed: e.matchPlaySeed,
+      wonQuarterfinal: e.wonQuarterfinal,
+      wonSemifinal: e.wonSemifinal,
+      wonChampionship: e.wonChampionship,
+      champion,
+    });
     r.apps += 1;
-    if (win) r.wins += 1;
-    if (e.advanced) r.nationals += 1;
-    const posNum = parseInt(e.position, 10);
-    if (Number.isFinite(posNum) && posNum > 0) {
-      if (r.bestFinish === null || posNum < r.bestFinish) r.bestFinish = posNum;
+    if (champion) r.wins += 1;
+    if (e.matchPlaySeed !== null) r.topEight += 1;
+    if (e.wonQuarterfinal === true) r.matchPlayWins += 1;
+    if (e.wonSemifinal === true) r.matchPlayWins += 1;
+    if (e.positionNoTies !== null) {
+      if (r.bestFinish === null || e.positionNoTies < r.bestFinish)
+        r.bestFinish = e.positionNoTies;
     }
     if (r.lastAppearance === null || e.year > r.lastAppearance) {
       r.lastAppearance = e.year;
@@ -189,8 +180,11 @@ function sortRows(rows: TeamRow[], key: SortKey, dir: SortDir): TeamRow[] {
       case "wins":
         cmp = a.wins - b.wins;
         break;
-      case "nationals":
-        cmp = a.nationals - b.nationals;
+      case "topEight":
+        cmp = a.topEight - b.topEight;
+        break;
+      case "matchPlayWins":
+        cmp = a.matchPlayWins - b.matchPlayWins;
         break;
       case "bestFinish": {
         const ax = a.bestFinish ?? Number.POSITIVE_INFINITY;
@@ -208,12 +202,36 @@ function sortRows(rows: TeamRow[], key: SortKey, dir: SortDir): TeamRow[] {
         cmp = a.currentConference.localeCompare(b.currentConference);
         break;
     }
-    if (cmp === 0) return a.team.localeCompare(b.team);
+    if (cmp === 0) {
+      // Default secondary sort: apps desc within tie.
+      cmp = a.apps !== b.apps ? (a.apps - b.apps) * (-1) : 0;
+      if (cmp === 0) return a.team.localeCompare(b.team);
+      // The outer factor still needs to flip only on the primary key, so
+      // return cmp without factor multiplication here.
+      return cmp;
+    }
     return cmp * factor;
   });
 }
 
-export default function RegionalsResultsTable({ entries }: Props) {
+/** Formats "T3" as just "T3", but for a win ("1") upgrades to the trophy variant. */
+function formatRunSummary(cell: TeamCell): string | null {
+  if (!cell.matchPlayEra) return null;
+  if (cell.matchPlaySeed === null) return null;
+  const qf = cell.wonQuarterfinal === true ? 1 : 0;
+  const sf = cell.wonSemifinal === true ? 1 : 0;
+  const ch = cell.wonChampionship === true ? 1 : 0;
+  const ql = cell.wonQuarterfinal === false ? 1 : 0;
+  const sl = cell.wonSemifinal === false ? 1 : 0;
+  const cl = cell.wonChampionship === false ? 1 : 0;
+  const wins = qf + sf + ch;
+  const losses = ql + sl + cl;
+  if (wins === 0 && losses === 0) return null;
+  // W-L-T pattern trimmed to wins-losses.
+  return `Match-play run ${wins}-${losses} · #${cell.matchPlaySeed} seed`;
+}
+
+export default function ChampionshipsHistoryTable({ entries }: Props) {
   const [gender, setGender] = useState<Gender>("men");
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("wins");
@@ -230,8 +248,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
     return () => clearTimeout(t);
   }, []);
 
-  // Gate row stagger to the initial mount only — re-renders from filter/sort
-  // changes must not re-trigger the entrance stagger.
+  // Gate row stagger to the initial mount only.
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 1200);
@@ -241,21 +258,10 @@ export default function RegionalsResultsTable({ entries }: Props) {
   const conferenceMap = useMemo(() => buildConferenceMap(gender), [gender]);
 
   const { rows, years } = useMemo(
-    () => buildRows(entries.filter((e) => e.gender === gender), conferenceMap),
+    () =>
+      buildRows(entries.filter((e) => e.gender === gender), conferenceMap),
     [entries, gender, conferenceMap]
   );
-
-  // Rich-detail join by (team|year) for the current gender. Seed + SG + margin
-  // + regional site come from here — lossy before the seeding era (~2002),
-  // tiles gracefully fall back to no badge / short tooltip when missing.
-  const richByTeamYear = useMemo(() => {
-    const m = new Map<string, RegionalFinishRich>();
-    for (const r of regionalsRich) {
-      if (r.gender !== gender) continue;
-      m.set(`${r.team}|${r.year}`, r);
-    }
-    return m;
-  }, [gender]);
 
   const decades = useMemo(() => {
     if (years.length === 0) return [];
@@ -488,7 +494,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
               }
         }
       >
-        <div className="grid grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
+        <div className="grid grid-cols-[24px_minmax(140px,1fr)_44px_44px_44px_48px_44px_48px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
           <span />
           <SortableHeader
             label="Team"
@@ -504,25 +510,33 @@ export default function RegionalsResultsTable({ entries }: Props) {
             onClick={() => toggleSort("apps")}
           />
           <SortableHeader
-            label="Nat"
-            align="right"
-            title="Nationals appearances"
-            active={sortKey === "nationals"}
-            dir={sortDir}
-            onClick={() => toggleSort("nationals")}
-          />
-          <SortableHeader
             label="Wins"
             align="right"
-            title="Regional wins"
+            title="Championship wins"
             active={sortKey === "wins"}
             dir={sortDir}
             onClick={() => toggleSort("wins")}
           />
           <SortableHeader
+            label="Top 8"
+            align="right"
+            title="Match-play berths (top 8 of the stroke-play field)"
+            active={sortKey === "topEight"}
+            dir={sortDir}
+            onClick={() => toggleSort("topEight")}
+          />
+          <SortableHeader
+            label="MP W"
+            align="right"
+            title="Match-play wins (QF + SF)"
+            active={sortKey === "matchPlayWins"}
+            dir={sortDir}
+            onClick={() => toggleSort("matchPlayWins")}
+          />
+          <SortableHeader
             label="Best"
             align="right"
-            title="Best regional finish"
+            title="Best stroke-play finish (ignoring ties)"
             active={sortKey === "bestFinish"}
             dir={sortDir}
             onClick={() => toggleSort("bestFinish")}
@@ -530,7 +544,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
           <SortableHeader
             label="Last"
             align="right"
-            title="Last year making regionals"
+            title="Last appearance"
             active={sortKey === "lastAppearance"}
             dir={sortDir}
             onClick={() => toggleSort("lastAppearance")}
@@ -553,11 +567,9 @@ export default function RegionalsResultsTable({ entries }: Props) {
           {sorted.map((r, rowIdx) => {
             const isOpen = expanded.has(r.team);
             const rowBase =
-              "grid w-full grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
+              "grid w-full grid-cols-[24px_minmax(140px,1fr)_44px_44px_44px_48px_44px_48px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
             const rowCls = isOpen ? rowBase : `${rowBase} hover:shadow-raised`;
-            // Only stagger the first 24 rows, and only on initial mount.
-            const shouldStagger =
-              !reduced && !mounted && rowIdx < 24;
+            const shouldStagger = !reduced && !mounted && rowIdx < 24;
             const rowInner = (
               <>
                 <ChevronRight
@@ -571,10 +583,19 @@ export default function RegionalsResultsTable({ entries }: Props) {
                 >
                   {r.team}
                 </Link>
-                <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
-                <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
-                <span className="text-right font-mono tabular-nums font-semibold text-foreground">
-                  {r.wins}
+                <span className="text-right font-mono tabular-nums text-foreground">
+                  {r.apps}
+                </span>
+                <span className="text-right font-mono tabular-nums font-semibold text-amber-300">
+                  {r.wins > 0 ? r.wins : <span className="text-muted-foreground/60">—</span>}
+                </span>
+                <span className="text-right font-mono tabular-nums text-foreground">
+                  {r.topEight > 0 ? r.topEight : <span className="text-muted-foreground/60">—</span>}
+                </span>
+                <span className="text-right font-mono tabular-nums text-foreground">
+                  {r.matchPlayWins > 0
+                    ? r.matchPlayWins
+                    : <span className="text-muted-foreground/60">—</span>}
                 </span>
                 <span className="text-right font-mono tabular-nums text-foreground">
                   {r.bestFinish ?? "—"}
@@ -650,7 +671,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                         >
                           {/* Render newest-first so the RTL grid places
                               the most recent year in the top-right corner,
-                              matching team-page regional-timeline. */}
+                              matching team-page national-timeline. */}
                           {[...years].reverse().map((y, idx) => {
                             const cell = r.byYear.get(y);
                             const dim = !yearInActiveDecade(y);
@@ -660,12 +681,9 @@ export default function RegionalsResultsTable({ entries }: Props) {
                               delay: reduced ? 0 : idx * 0.012,
                             };
                             const cancelled = y === CANCELLED_YEAR;
-                            const rich = cell
-                              ? richByTeamYear.get(`${r.team}|${y}`)
-                              : undefined;
 
                             // Cancelled year: dashed + muted "—" regardless of
-                            // whether the team had an entry that year (they
+                            // whether the team has a cell that year (they
                             // can't — the tournament didn't happen).
                             if (cancelled) {
                               return (
@@ -675,7 +693,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                   initial={{ opacity: 0, scale: 0.94 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={cellTransition}
-                                  title="No NCAA postseason (COVID-19)"
+                                  title="No NCAA Championship (COVID-19)"
                                   className={`rounded border border-dashed border-border/40 bg-card/20 px-1.5 py-1 text-center ${dim ? "opacity-25" : ""}`}
                                 >
                                   <div className="text-[10px] text-text-tertiary font-mono tabular-nums">
@@ -688,7 +706,6 @@ export default function RegionalsResultsTable({ entries }: Props) {
                               );
                             }
 
-                            // No appearance that year → dashed empty cell.
                             if (!cell) {
                               return (
                                 <motion.div
@@ -708,25 +725,51 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                 </motion.div>
                               );
                             }
+                            const isWin = cell.champion;
+                            const madeMP = cell.matchPlaySeed !== null;
+                            const advanced = madeMP && !isWin; // top-8 reach, not the winner
+                            let cellCls: string;
+                            let posCls: string;
+                            if (isWin) {
+                              cellCls = `rounded border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-amber-300/70 hover:bg-amber-400/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-amber-300";
+                            } else if (advanced) {
+                              cellCls = `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-emerald-400";
+                            } else if (cell.madeCut) {
+                              cellCls = `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-foreground/80";
+                            } else {
+                              // MC
+                              cellCls = `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                              posCls = "text-rose-400/80";
+                            }
 
-                            const win = cell.win;
-                            const missed = !cell.advanced && !win;
-                            const boxClass = win
-                              ? `rounded border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-1 text-center transition-colors duration-100 hover:border-amber-300/70 hover:bg-amber-400/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`
-                              : `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-colors duration-100 hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
-                            const posClass = win
-                              ? "text-amber-300"
-                              : cell.advanced
-                                ? "text-emerald-400"
-                                : missed
-                                  ? "text-rose-400/80"
-                                  : "text-foreground/80";
-                            const cellTitle = buildRegionalTooltip(
-                              cell,
-                              rich
-                            );
-                            const seed = rich?.seed;
-                            const showSeed = seed != null && !missed;
+                            const mpr = matchPlayRound(cell);
+                            const badgeText =
+                              mpr === "r"
+                                ? "R"
+                                : mpr === "sf"
+                                  ? "SF"
+                                  : mpr === "qf"
+                                    ? "QF"
+                                    : null;
+                            const badgeClass =
+                              mpr === "r"
+                                ? "text-amber-500"
+                                : mpr === "sf"
+                                  ? "text-sky-400"
+                                  : mpr === "qf"
+                                    ? "text-emerald-400"
+                                    : "";
+                            const badgeLabel =
+                              mpr === "r"
+                                ? "Runner-up"
+                                : mpr === "sf"
+                                  ? "Semifinalist"
+                                  : mpr === "qf"
+                                    ? "Quarterfinalist"
+                                    : undefined;
 
                             return (
                               <motion.div
@@ -735,32 +778,58 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                 initial={{ opacity: 0, scale: 0.94 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={cellTransition}
-                                title={cellTitle}
-                                className={boxClass}
+                                className={cellCls}
+                                title={
+                                  formatRunSummary(cell) ??
+                                  (cell.madeCut
+                                    ? `${y} · finish ${cell.position}`
+                                    : `${y} · missed cut`)
+                                }
                               >
-                                <div className="text-[10px] text-text-tertiary font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
+                                <div className="text-[10px] text-muted-foreground font-mono tabular-nums flex items-center justify-center gap-0.5 leading-tight">
                                   <span>{y}</span>
-                                  {win ? (
-                                    <Medal
+                                  {isWin ? (
+                                    <Trophy
                                       className="h-2.5 w-2.5 text-amber-300"
                                       aria-hidden="true"
                                     />
+                                  ) : badgeText ? (
+                                    <span
+                                      className={`text-[9px] font-semibold font-mono leading-none ${badgeClass}`}
+                                      aria-label={badgeLabel}
+                                      title={badgeLabel}
+                                    >
+                                      {badgeText}
+                                    </span>
                                   ) : null}
                                 </div>
                                 <div className="text-[12px] font-mono tabular-nums leading-tight">
-                                  <span className={posClass}>
-                                    {cell.position}
-                                  </span>
+                                  <span className={posCls}>{cell.position}</span>
                                 </div>
-                                {showSeed ? (
-                                  <div className="text-[9px] font-mono tabular-nums leading-none text-text-tertiary/80">
-                                    #{seed}
-                                  </div>
-                                ) : null}
                               </motion.div>
                             );
                           })}
                         </div>
+                        {/* Readable run summaries for any match-play bracket years */}
+                        {(() => {
+                          const runs: string[] = [];
+                          for (const y of years) {
+                            const cell = r.byYear.get(y);
+                            if (!cell) continue;
+                            const summary = formatRunSummary(cell);
+                            if (summary) runs.push(`${y}: ${summary}`);
+                          }
+                          if (runs.length === 0) return null;
+                          return (
+                            <div className="mt-3 text-[11px] text-muted-foreground flex flex-wrap gap-x-4 gap-y-0.5">
+                              {runs.map((s) => (
+                                <span key={s} className="font-mono tabular-nums">
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </motion.div>
                   )}
@@ -773,22 +842,56 @@ export default function RegionalsResultsTable({ entries }: Props) {
 
       <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-text-tertiary">
         <span className="inline-flex items-center gap-1">
-          <Medal className="h-3 w-3 text-amber-300" aria-hidden="true" />
-          Regional title
+          <Trophy className="h-3 w-3 text-amber-300" aria-hidden="true" />
+          won championship
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="text-[9px] font-semibold font-mono leading-none text-amber-500"
+          >
+            R
+          </span>
+          Runner-up
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="text-[9px] font-semibold font-mono leading-none text-sky-400"
+          >
+            SF
+          </span>
+          Semifinalist
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="text-[9px] font-semibold font-mono leading-none text-emerald-400"
+          >
+            QF
+          </span>
+          Quarterfinalist
         </span>
         <span className="inline-flex items-center gap-1">
           <span
             aria-hidden="true"
             className="inline-block h-[6px] w-[6px] rounded-sm bg-emerald-400/70"
           />
-          advanced to Nationals
+          reached match-play (top 8)
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="inline-block h-[6px] w-[6px] rounded-sm border border-border/60"
+          />
+          made cut
         </span>
         <span className="inline-flex items-center gap-1">
           <span
             aria-hidden="true"
             className="inline-block h-[6px] w-[6px] rounded-sm bg-rose-400/70"
           />
-          did not advance
+          missed cut
         </span>
         <span className="inline-flex items-center gap-1">
           <span
@@ -796,9 +899,6 @@ export default function RegionalsResultsTable({ entries }: Props) {
             className="inline-block h-[6px] w-[6px] rounded-sm border border-dashed border-border/60"
           />
           no appearance / cancelled
-        </span>
-        <span className="text-text-tertiary/80">
-          Tap a team to see year-by-year finishes.
         </span>
       </div>
     </div>

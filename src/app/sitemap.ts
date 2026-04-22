@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/conference-championships`, lastModified: today, changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE}/head-to-head`, lastModified: today, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE}/regionals`, lastModified: today, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE}/championships-history`, lastModified: today, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE}/records/men`, lastModified: today, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/records/women`, lastModified: today, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/teams`, lastModified: today, changeFrequency: "weekly", priority: 0.85 },

@@ -248,6 +248,7 @@ const CAMPUS_COORDS = {
   "Mercer": { lat: 32.8310, lng: -83.6486 },
   "Wichita State": { lat: 37.7198, lng: -97.2951 },
   "Hawaii": { lat: 21.2972, lng: -157.8167 },
+  "CSU Northridge": { lat: 34.2381, lng: -118.5290 },  // Northridge, CA — avoids geocoder collision with Northridge, Nova Scotia
 };
 
 // ---------------------------------------------------------------------------

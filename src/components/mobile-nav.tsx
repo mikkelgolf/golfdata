@@ -9,6 +9,8 @@ const links = [
   { href: "/conference-championships", label: "Conference Championships" },
   { href: "/head-to-head", label: "Head-to-head" },
   { href: "/regionals", label: "Regionals History" },
+  { href: "/regionals-leaderboard", label: "Regionals Leaderboard" },
+  { href: "/championships-history", label: "NCAA Championships" },
   { href: "/records/men", label: "Record Book" },
   { href: "/teams", label: "Teams" },
   { href: "/about", label: "About" },

@@ -9,15 +9,26 @@ import {
   getMeetings,
   formatRecord,
   formatStrokeDiff,
+  isMeetingInSeason,
+  computeRecordFromMeetings,
+  AVAILABLE_SEASONS,
+  CURRENT_SEASON,
   type Gender,
   type Meeting,
   type OpponentRecord,
+  type Season,
 } from "@/lib/head-to-head";
+import CommonOpponents from "@/components/head-to-head/common-opponents";
+import RegionalHistoryH2H from "@/components/head-to-head/regional-history";
 
 // ---------------------------------------------------------------------------
 // Full-page team-vs-team head-to-head browser. URL params drive state so links
-// are shareable: /head-to-head?gender=men&a=Auburn&b=Florida
+// are shareable: /head-to-head?gender=men&a=Auburn&b=Florida&season=2025-26
 // ---------------------------------------------------------------------------
+
+function isSeason(value: string | null): value is Season {
+  return !!value && (AVAILABLE_SEASONS as readonly string[]).includes(value);
+}
 
 export default function HeadToHeadBrowser() {
   const router = useRouter();
@@ -26,12 +37,16 @@ export default function HeadToHeadBrowser() {
   const genderParam = (params.get("gender") ?? "men") as Gender;
   const aParam = params.get("a");
   const bParam = params.get("b");
+  const seasonParam = params.get("season");
 
   const [gender, setGender] = useState<Gender>(
     genderParam === "women" ? "women" : "men"
   );
   const [teamA, setTeamA] = useState<string | null>(aParam);
   const [teamB, setTeamB] = useState<string | null>(bParam);
+  const [season, setSeason] = useState<Season>(
+    isSeason(seasonParam) ? seasonParam : CURRENT_SEASON
+  );
 
   // Keep URL in sync when user picks teams.
   useEffect(() => {
@@ -39,22 +54,24 @@ export default function HeadToHeadBrowser() {
     next.set("gender", gender);
     if (teamA) next.set("a", teamA);
     if (teamB) next.set("b", teamB);
+    if (season !== CURRENT_SEASON) next.set("season", season);
     const qs = next.toString();
     router.replace(`/head-to-head${qs ? `?${qs}` : ""}`, { scroll: false });
-  }, [gender, teamA, teamB, router]);
+  }, [gender, teamA, teamB, season, router]);
 
   const allTeams = useMemo(() => getAllTeamNames(gender), [gender]);
 
   const teamAData = teamA ? getTeam(teamA, gender) : null;
   const teamBData = teamB ? getTeam(teamB, gender) : null;
-  const record =
-    teamAData && teamB
-      ? (teamAData.opponents[teamB] as OpponentRecord | undefined)
-      : undefined;
+
+  const swapTeams = () => {
+    setTeamA(teamB);
+    setTeamB(teamA);
+  };
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-end flex-wrap">
         <div>
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">
             Division
@@ -93,41 +110,106 @@ export default function HeadToHeadBrowser() {
           </div>
         </div>
 
-        <TeamSelector
-          label="Team A"
-          value={teamA}
-          onChange={setTeamA}
-          options={allTeams}
-          excluded={teamB}
-        />
-        <TeamSelector
-          label="Team B"
-          value={teamB}
-          onChange={setTeamB}
-          options={allTeams}
-          excluded={teamA}
-        />
+        <SeasonSelector value={season} onChange={setSeason} />
+
+        <div className="flex items-end gap-2 flex-wrap">
+          <TeamSelector
+            label="Team A"
+            value={teamA}
+            onChange={setTeamA}
+            options={allTeams}
+            excluded={teamB}
+          />
+          <button
+            type="button"
+            onClick={swapTeams}
+            disabled={!teamA && !teamB}
+            title="Swap Team A and Team B"
+            aria-label="Swap Team A and Team B"
+            className={cn(
+              "h-[26px] px-2 rounded border border-border bg-card text-[12px]",
+              "text-muted-foreground hover:bg-card/80 hover:text-foreground transition-colors",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+              "self-end"
+            )}
+          >
+            ⇄
+          </button>
+          <TeamSelector
+            label="Team B"
+            value={teamB}
+            onChange={setTeamB}
+            options={allTeams}
+            excluded={teamA}
+          />
+        </div>
       </div>
 
       {!teamA || !teamB ? (
         <div className="rounded border border-border bg-card p-4 text-[12px] text-text-tertiary">
           Pick two teams to see their head-to-head across strokeplay and matchplay this season.
         </div>
-      ) : !record ? (
+      ) : !teamAData || !teamBData ? (
         <div className="rounded border border-border bg-card p-4 text-[12px] text-text-tertiary">
-          <span className="text-foreground">{teamA}</span> and{" "}
-          <span className="text-foreground">{teamB}</span> haven&apos;t met this season.
+          Team data unavailable for the current selection.
         </div>
       ) : (
         <PairSummary
           teamA={teamA}
           teamB={teamB}
-          teamAUnitid={teamAData!.unitid}
-          teamBUnitid={record.unitid}
-          record={record}
+          teamAUnitid={teamAData.unitid}
+          teamBUnitid={teamBData.unitid}
           gender={gender}
+          season={season}
         />
       )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// SeasonSelector
+// ---------------------------------------------------------------------------
+
+function SeasonSelector({
+  value,
+  onChange,
+}: {
+  value: Season;
+  onChange: (s: Season) => void;
+}) {
+  // Single-season case: render a static label so the UI shows what's selected
+  // without exposing a no-op dropdown.
+  if (AVAILABLE_SEASONS.length <= 1) {
+    return (
+      <div>
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">
+          Season
+        </div>
+        <div className="px-3 py-1 rounded border border-border bg-card text-[12px] text-foreground">
+          {value}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">
+        Season
+      </div>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as Season)}
+        className="px-2 py-1 rounded border border-border bg-card text-[12px] text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+      >
+        {AVAILABLE_SEASONS.map((s) => (
+          <option key={s} value={s}>
+            {s}
+            {s === CURRENT_SEASON ? " (current)" : ""}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -226,6 +308,12 @@ function TeamSelector({
 
 // ---------------------------------------------------------------------------
 // PairSummary — all the stats + meetings for one team-pair
+//
+// Loads meetings, filters them to the selected season window (Aug 1 → Jul 31),
+// and re-aggregates totals from the filtered list. We do NOT trust the
+// pre-computed OpponentRecord on the team because the upstream BigQuery view
+// can leak prior-season events (e.g. May 2025 NCAA matchplay) into the
+// 2025-26 bucket.
 // ---------------------------------------------------------------------------
 
 function PairSummary({
@@ -233,27 +321,58 @@ function PairSummary({
   teamB,
   teamAUnitid,
   teamBUnitid,
-  record,
   gender,
+  season,
 }: {
   teamA: string;
   teamB: string;
   teamAUnitid: number;
   teamBUnitid: number;
-  record: OpponentRecord;
   gender: Gender;
+  season: Season;
 }) {
-  const [meetings, setMeetings] = useState<Meeting[] | null>(null);
+  const [allMeetings, setAllMeetings] = useState<Meeting[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    setAllMeetings(null);
     getMeetings(teamAUnitid, teamBUnitid, gender).then((data) => {
-      if (!cancelled) setMeetings(data);
+      if (!cancelled) setAllMeetings(data);
     });
     return () => {
       cancelled = true;
     };
   }, [teamAUnitid, teamBUnitid, gender]);
+
+  const meetings = useMemo(() => {
+    if (!allMeetings) return null;
+    return allMeetings
+      .filter((m) => isMeetingInSeason(m, season))
+      .sort((a, b) => (b.startDate ?? "").localeCompare(a.startDate ?? ""));
+  }, [allMeetings, season]);
+
+  const record: OpponentRecord | null = useMemo(() => {
+    if (!meetings || meetings.length === 0) return null;
+    return computeRecordFromMeetings(meetings);
+  }, [meetings]);
+
+  if (meetings === null) {
+    return (
+      <div className="rounded border border-border bg-card p-4 text-[12px] text-text-tertiary">
+        Loading meetings…
+      </div>
+    );
+  }
+
+  if (!record) {
+    return (
+      <div className="rounded border border-border bg-card p-4 text-[12px] text-text-tertiary">
+        <span className="text-foreground">{teamA}</span> and{" "}
+        <span className="text-foreground">{teamB}</span> haven&apos;t met in the{" "}
+        {season} season.
+      </div>
+    );
+  }
 
   const leadClass =
     record.wins > record.losses
@@ -279,7 +398,7 @@ function PairSummary({
           </div>
         </div>
         <div className="mt-1 text-[11px] text-text-tertiary">
-          2025-26 season · {record.meetings} meeting
+          {season} season · {record.meetings} meeting
           {record.meetings === 1 ? "" : "s"}
         </div>
 
@@ -311,11 +430,9 @@ function PairSummary({
 
       <div className="rounded border border-border bg-card p-4">
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground/80 mb-2">
-          Every meeting this season
+          Every meeting in {season}
         </div>
-        {meetings === null ? (
-          <div className="text-[12px] text-text-tertiary">Loading meetings…</div>
-        ) : meetings.length === 0 ? (
+        {meetings.length === 0 ? (
           <div className="text-[12px] text-text-tertiary italic">
             No per-meeting detail available.
           </div>
@@ -343,6 +460,10 @@ function PairSummary({
           </ul>
         )}
       </div>
+
+      <CommonOpponents teamA={teamA} teamB={teamB} gender={gender} />
+
+      <RegionalHistoryH2H teamA={teamA} teamB={teamB} gender={gender} />
     </div>
   );
 }
