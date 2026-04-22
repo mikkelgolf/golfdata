@@ -106,11 +106,17 @@ export async function generateMetadata({
 function findTeam(team: string, gender: Gender): TeamData | null {
   const rankings = gender === "men" ? rankingsMen : rankingsWomen;
   const allTeams = gender === "men" ? allTeamsMen2026 : allTeamsWomen2026;
-  return (
-    rankings.find((t) => t.team === team) ??
-    allTeams.find((t) => t.team === team) ??
-    null
-  );
+  const rankingsHit = rankings.find((t) => t.team === team) ?? null;
+  const allTeamsHit = allTeams.find((t) => t.team === team) ?? null;
+  if (!rankingsHit) return allTeamsHit;
+  // Defensive: if the rankings row is missing coords but all-teams has them,
+  // merge the coord fields. Keeps the team-page map from projecting (0, 0) if
+  // rankings-*.ts is ever regenerated with zero-coord rows before the
+  // all-teams backfill step runs. Both sources agree on every other field.
+  if ((rankingsHit.lat === 0 && rankingsHit.lng === 0) && allTeamsHit) {
+    return { ...rankingsHit, lat: allTeamsHit.lat, lng: allTeamsHit.lng };
+  }
+  return rankingsHit;
 }
 
 function findRanking(team: string, gender: Gender): TeamData | null {
