@@ -232,10 +232,10 @@ export function tzDeltaHours(from: TimezoneBand, to: TimezoneBand): number {
   return MAY_UTC_OFFSET[to] - MAY_UTC_OFFSET[from];
 }
 
-/** Short label: "+2 hours", "-1 hour", "same time zone". */
+/** Short label: "+2 time zones", "−1 time zone", "same time zone". */
 export function formatTzDelta(hours: number): string {
   if (hours === 0) return "same time zone";
   const sign = hours > 0 ? "+" : "−"; // use a real minus sign for polish
   const magnitude = Math.abs(hours);
-  return `${sign}${magnitude} hour${magnitude === 1 ? "" : "s"}`;
+  return `${sign}${magnitude} time zone${magnitude === 1 ? "" : "s"}`;
 }
