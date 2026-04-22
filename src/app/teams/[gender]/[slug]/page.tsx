@@ -514,7 +514,7 @@ export default function TeamPage({ params }: { params: Params }) {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 text-[10px] flex-wrap ml-auto">
+          <div className="flex items-center gap-2 text-[10px] flex-wrap w-full sm:w-auto sm:ml-auto">
             {record?.conference && <ConferenceBadge conference={record.conference} size="sm" />}
             <span className="text-text-tertiary uppercase tracking-wider">
               {label} · 2025-26
