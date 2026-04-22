@@ -644,7 +644,10 @@ export default function RegionalsResultsTable({ entries }: Props) {
                       className="overflow-hidden"
                     >
                       <div className="bg-background/40 px-3 py-3 border-t border-border/40">
-                        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5">
+                        <div
+                          dir="rtl"
+                          className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5"
+                        >
                           {years.map((y, idx) => {
                             const cell = r.byYear.get(y);
                             const dim = !yearInActiveDecade(y);
@@ -665,6 +668,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                               return (
                                 <motion.div
                                   key={y}
+                                  dir="ltr"
                                   initial={{ opacity: 0, scale: 0.94 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={cellTransition}
@@ -686,6 +690,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                               return (
                                 <motion.div
                                   key={y}
+                                  dir="ltr"
                                   initial={{ opacity: 0, scale: 0.94 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={cellTransition}
@@ -723,6 +728,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
                             return (
                               <motion.div
                                 key={y}
+                                dir="ltr"
                                 initial={{ opacity: 0, scale: 0.94 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={cellTransition}
