@@ -700,36 +700,26 @@ export default function TeamPage({ params }: { params: Params }) {
         </div>
       </section>
 
-      {/* Year-by-year grids — regional + NCAA side-by-side on desktop. */}
+      {/* Year-by-year regionals timeline. */}
       {timelineResults.length > 0 && (
-        <div className="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <section>
-            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-              Year-by-year regionals
-            </h2>
-            <RegionalTimeline results={timelineResults} />
-            <p className="mt-2 text-[11px] text-text-tertiary">
-              <span
-                aria-hidden="true"
-                className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
-              />
-              = advanced to Nationals.
-              <span
-                aria-hidden="true"
-                className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
-              />
-              = did not make Regionals.
-            </p>
-          </section>
-          {championshipStats.appearances > 0 && ncaaTimelineResults.length > 0 && (
-            <section>
-              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-                Year-by-year NCAAs
-              </h2>
-              <NationalTimeline results={ncaaTimelineResults} />
-            </section>
-          )}
-        </div>
+        <section className="mt-5">
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+            Year-by-year regionals
+          </h2>
+          <RegionalTimeline results={timelineResults} />
+          <p className="mt-2 text-[11px] text-text-tertiary">
+            <span
+              aria-hidden="true"
+              className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
+            />
+            = advanced to Nationals.
+            <span
+              aria-hidden="true"
+              className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
+            />
+            = did not make Regionals.
+          </p>
+        </section>
       )}
 
       {/* Regional performance details — seed / SG / expected-vs-actual. */}
@@ -752,6 +742,18 @@ export default function TeamPage({ params }: { params: Params }) {
           />
         </section>
       )}
+
+      {/* Year-by-year NCAAs timeline. */}
+      {timelineResults.length > 0 &&
+        championshipStats.appearances > 0 &&
+        ncaaTimelineResults.length > 0 && (
+          <section className="mt-5">
+            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+              Year-by-year NCAAs
+            </h2>
+            <NationalTimeline results={ncaaTimelineResults} />
+          </section>
+        )}
 
       {/* Record book excerpts — flat sections, no per-card chrome. */}
       {clusteredHits.size > 0 && (
