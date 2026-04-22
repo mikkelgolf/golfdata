@@ -1224,7 +1224,7 @@ function BreakdownView({
       </div>
 
       <p className="text-[11px] text-text-tertiary mb-3 leading-snug max-w-2xl">
-        AWP = Clippd&apos;s Average Weighted Points (the underlying ranking score, weighted by field strength).
+        AWP = NCAA&apos;s Average Weighted Points (the underlying ranking score, weighted by field strength).
         ± .500 = wins minus losses. The teams ranked closest to the Magic Number are the bubble.
       </p>
 

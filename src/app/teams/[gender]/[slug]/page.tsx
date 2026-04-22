@@ -37,11 +37,9 @@ import NationalTimeline, {
   type NationalYearResult,
 } from "@/components/team-page/national-timeline";
 import UpcomingEvent from "@/components/team-page/upcoming-event";
-import RelatedTeams from "@/components/team-page/related-teams";
 import { type NcaaYearResult } from "@/components/team-page/program-arc";
 import InteractiveProgramArc from "@/components/team-page/interactive-program-arc";
 import TeamMap from "@/components/team-page/team-map";
-import TeamTravelBeeswarm from "@/components/team-page/team-travel-beeswarm";
 import TeamMonogram from "@/components/team-page/team-monogram";
 import {
   AnimatedSection,
@@ -128,24 +126,6 @@ function findChampionship(conference: string, gender: Gender) {
   const source =
     gender === "men" ? championshipsMen2026 : championshipsWomen2026;
   return source.find((c) => c.conference === conference) ?? null;
-}
-
-function findConferencePeers(
-  conference: string,
-  gender: Gender
-): TeamData[] {
-  if (!conference) return [];
-  const rankings = gender === "men" ? rankingsMen : rankingsWomen;
-  const allTeams = gender === "men" ? allTeamsMen2026 : allTeamsWomen2026;
-  const seen = new Set<string>();
-  const out: TeamData[] = [];
-  for (const t of [...rankings, ...allTeams]) {
-    if (t.conference !== conference) continue;
-    if (seen.has(t.team)) continue;
-    seen.add(t.team);
-    out.push(t);
-  }
-  return out.sort((a, b) => a.rank - b.rank);
 }
 
 interface RecordHit {
@@ -254,7 +234,6 @@ export default function TeamPage({ params }: { params: Params }) {
   const ranking = findRanking(team, gender);
   const stats = computeTeamStats(team, gender);
   const championship = record ? findChampionship(record.conference, gender) : null;
-  const conferencePeers = record ? findConferencePeers(record.conference, gender) : [];
   const label = gender === "men" ? "Men's" : "Women's";
 
   const allTeams = gender === "men" ? rankingsMen : rankingsWomen;
@@ -605,13 +584,12 @@ export default function TeamPage({ params }: { params: Params }) {
             <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
               Geography
             </h2>
-            {record && myAssignment && myRegional ? (
+            {record ? (
               <TeamMap
                 team={record}
-                assignment={myAssignment}
-                regional={myRegional}
+                assignment={myAssignment ?? undefined}
+                regional={myRegional ?? undefined}
                 regionals={regionals}
-                conferencePeers={conferencePeers}
                 gender={gender}
               />
             ) : (
@@ -775,20 +753,6 @@ export default function TeamPage({ params }: { params: Params }) {
         </section>
       )}
 
-      {/* Travel beeswarm — this team highlighted among all teams' predicted distances. */}
-      {myAssignment && (
-        <section className="mt-5">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-            Travel distance across the field
-          </h2>
-          <TeamTravelBeeswarm
-            assignments={assignments}
-            regionals={regionals}
-            highlightTeam={team}
-          />
-        </section>
-      )}
-
       {/* Record book excerpts — flat sections, no per-card chrome. */}
       {clusteredHits.size > 0 && (
         <section className="mt-5">
@@ -855,15 +819,6 @@ export default function TeamPage({ params }: { params: Params }) {
         </section>
       )}
 
-      {/* Related teams */}
-      {record?.conference && (
-        <RelatedTeams
-          gender={gender}
-          currentTeam={team}
-          peers={conferencePeers}
-        />
-      )}
-
       {history.length === 0 && recordHits.length === 0 && (
         <section className="mt-8 rounded-lg border border-border bg-card/50 px-4 py-4 text-[12px] text-muted-foreground">
           No regional or record-book entries on file for {team} {label.toLowerCase()}{" "}
@@ -872,7 +827,7 @@ export default function TeamPage({ params }: { params: Params }) {
       )}
 
       <div className="mt-12 border-t border-border pt-4 text-[11px] text-text-tertiary">
-        Current-season data from Clippd rankings · Regional history 1989–
+        Current-season data from NCAA rankings · Regional history 1989–
         {MOST_RECENT_SEASON}.
       </div>
     </div>
