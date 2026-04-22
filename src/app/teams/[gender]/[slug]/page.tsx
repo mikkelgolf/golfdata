@@ -549,7 +549,7 @@ export default function TeamPage({ params }: { params: Params }) {
             animate={false}
             detail={
               myAssignment
-                ? `Seed #${myAssignment.seed} · ${posInRegional ?? "?"} in regional`
+                ? `#${posInRegional ?? "?"} seed · #${myAssignment.seed} overall`
                 : undefined
             }
             className="border-t sm:border-t-0 border-r-0 sm:border-r border-border/40"
