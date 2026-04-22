@@ -23,7 +23,11 @@ REPORT_PATH="/tmp/champion-report-$(date -u +%Y%m%d).json"
 DEPLOY_LOG="/tmp/cgd-daily-deploy-$(date -u +%Y%m%d).log"
 LOG_DIR="$CGD_DIR/logs"
 LOG_PATH="$LOG_DIR/daily-refresh-$(date -u +%Y-%m-%d).log"
-SANITY_PCT=25   # abort if more than this share of data-file lines change
+SANITY_PCT=50   # abort if more than this share of data-file lines change.
+                # Chose 50 instead of 25 because --generate rewrites every
+                # team row even when numbers barely moved, so a "normal" run
+                # can legitimately touch ~40% of lines. Tighten once we've
+                # seen a couple of days of real runs.
 
 mkdir -p "$LOG_DIR"
 # Duplicate stdout + stderr into the per-run log file.
@@ -111,14 +115,30 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 2. Rankings scrape + rebuild
+# 2. Rankings scrape + regenerate both rankings-*.ts AND all-teams-*.ts
 # ---------------------------------------------------------------------------
-log "step 2: npx tsx scripts/scrape-clippd-teams.ts --pull"
-if ! npx --yes tsx scripts/scrape-clippd-teams.ts --pull 2>&1; then
-    abort_hard "Clippd rankings scrape failed"
+# --generate does: pull Clippd rankings JSON + emit
+# data/clippd/rankings-{men,women}-<timestamp>.ts staged TS files. The site
+# reads from src/data/rankings-{men,women}.ts, so we mirror the latest
+# staged file into src/data after a successful generate.
+log "step 2: npx tsx scripts/scrape-clippd-teams.ts --generate"
+if ! npx --yes tsx scripts/scrape-clippd-teams.ts --generate 2>&1; then
+    abort_hard "Clippd rankings scrape/generate failed"
 fi
 
-log "step 2b: node scripts/build-all-teams.mjs"
+log "step 2b: mirror latest rankings-*.ts → src/data/"
+LATEST_MEN=$(ls -t data/clippd/rankings-men-*.ts 2>/dev/null | head -1)
+LATEST_WOMEN=$(ls -t data/clippd/rankings-women-*.ts 2>/dev/null | head -1)
+if [ -z "$LATEST_MEN" ] || [ -z "$LATEST_WOMEN" ]; then
+    abort_hard "scrape --generate did not produce staged rankings-*.ts"
+fi
+cp "$LATEST_MEN"   src/data/rankings-men.ts   || abort_hard "cp men rankings failed"
+cp "$LATEST_WOMEN" src/data/rankings-women.ts || abort_hard "cp women rankings failed"
+log "mirrored $(basename "$LATEST_MEN") + $(basename "$LATEST_WOMEN") → src/data/"
+# Remove staged files so Next.js doesn't index them and so they don't accumulate.
+rm -f data/clippd/rankings-men-*.ts data/clippd/rankings-women-*.ts
+
+log "step 2c: node scripts/build-all-teams.mjs"
 if ! node scripts/build-all-teams.mjs 2>&1; then
     abort_hard "build-all-teams.mjs failed"
 fi
@@ -142,18 +162,23 @@ fi
 # ---------------------------------------------------------------------------
 RANKINGS_CHANGED="no"
 DIFF_STAT=""
-if ! git diff --quiet src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts 2>/dev/null; then
+RANKINGS_FILES=(
+    src/data/rankings-men.ts
+    src/data/rankings-women.ts
+    src/data/all-teams-men-2026.ts
+    src/data/all-teams-women-2026.ts
+)
+if ! git diff --quiet "${RANKINGS_FILES[@]}" 2>/dev/null; then
     RANKINGS_CHANGED="yes"
-    DIFF_STAT=$(git diff --shortstat src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts | sed 's/^ //')
+    DIFF_STAT=$(git diff --shortstat "${RANKINGS_FILES[@]}" | sed 's/^ //')
     log "rankings delta: $DIFF_STAT"
 
-    # Sanity gate: reject runs that rewrite a huge share of the data file.
-    # Counts changed lines and expresses as percent of total lines.
-    CHANGED=$(git diff --numstat src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts | awk '{s += $1 + $2} END {print s}')
-    TOTAL=$(wc -l src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts | tail -1 | awk '{print $1}')
+    # Sanity gate: reject runs that rewrite a huge share of rows.
+    CHANGED=$(git diff --numstat "${RANKINGS_FILES[@]}" | awk '{s += $1 + $2} END {print s}')
+    TOTAL=$(wc -l "${RANKINGS_FILES[@]}" | tail -1 | awk '{print $1}')
     if [ "$TOTAL" -gt 0 ] && [ -n "$CHANGED" ]; then
         PCT=$(( CHANGED * 100 / (TOTAL * 2) ))
-        log "sanity: ${PCT}% of all-teams rows changed (threshold ${SANITY_PCT}%)"
+        log "sanity: ${PCT}% of rankings+all-teams rows changed (threshold ${SANITY_PCT}%)"
         if [ "$PCT" -gt "$SANITY_PCT" ]; then
             abort_hard "sanity gate tripped: ${PCT}% of rows changed (> ${SANITY_PCT}%)"
         fi
@@ -182,7 +207,7 @@ if [ "$RANKINGS_CHANGED" = "yes" ] || [ "$CHAMPIONS_CHANGED" = "yes" ]; then
     if [ "$dry_run_mode" = "1" ]; then
         log "step 6: [dry-run] skipping git add/commit/push + vercel"
     else
-        git add src/data/all-teams-men-2026.ts src/data/all-teams-women-2026.ts \
+        git add "${RANKINGS_FILES[@]}" \
                 src/data/championships-men-2026.ts src/data/championships-women-2026.ts 2>&1
         if ! git commit -m "daily refresh $(date -u +%Y-%m-%d) — rankings${CHAMPIONS_CHANGED:+ + champions}" 2>&1; then
             abort_hard "git commit failed"

@@ -318,7 +318,7 @@ function generateTsFile(
   const lines: string[] = [];
   const importLine =
     gender === "men"
-      ? `export interface TeamData {\n  rank: number;\n  team: string;\n  conference: string;\n  events: number;\n  wins: number;\n  losses: number;\n  ties: number;\n  eligible: boolean;\n  isAutoQualifier: boolean;\n  aqConference: string | null;\n  lat: number;\n  lng: number;\n  avgPoints: number;\n  strengthOfSchedule: number;\n  strengthOfScheduleRank: number;\n  adjustedScore: number;\n  eventsWon: number;\n  eventsTop3: number;\n}\n`
+      ? `export interface TeamData {\n  rank: number;\n  team: string;\n  conference: string;\n  events: number;\n  wins: number;\n  losses: number;\n  ties: number;\n  eligible: boolean;\n  isAutoQualifier: boolean;\n  aqConference: string | null;\n  lat: number;\n  lng: number;\n  avgPoints?: number;\n  strengthOfSchedule?: number;\n  strengthOfScheduleRank?: number;\n  adjustedScore?: number;\n  eventsWon?: number;\n  eventsTop3?: number;\n}\n`
       : `import type { TeamData } from "./rankings-men";\n`;
 
   lines.push(importLine);

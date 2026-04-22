@@ -45,5 +45,7 @@ next-env.d.ts
 
 # daily-refresh pipeline (scripts/daily-refresh.sh)
 /data/clippd/tournaments-*.json
+/data/clippd/rankings-men-*.ts
+/data/clippd/rankings-women-*.ts
 /logs/
 /.daily-refresh-disabled
