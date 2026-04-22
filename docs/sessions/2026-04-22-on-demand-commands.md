@@ -77,6 +77,63 @@ Both scripts:
 3. Paste the handler snippet into `~/projects/ron/ron.py` and restart
    Ron.
 
-## Open questions
+## Wrap — 2026-04-22 evening
 
-_To be filled on `!wrap`._
+**What landed on this branch (vs origin/dev):**
+
+- My work (commit `4ae3f8f`): the four new files listed above
+  (on-demand wrappers + handler doc + session doc).
+- **Two unexpected commits from Mikkel's parallel session** that landed
+  on `ron/on-demand-commands` between my push and the wrap:
+  - `e840264` — "Confirm 2026 women's conference champions: Tennessee
+    (SEC), Murray State (MVC), Cal Poly (BWEST), Little Rock (OVC),
+    Tulsa (AAC), Richmond (A10)" — writes 6 confirmed winners into
+    `src/data/championships-women-2026.ts`.
+  - `7aab7ce` — "Wire Playwright-based Clippd winner extractor into
+    `--apply-winners`" — replaces the stub `resolve_winner()` with a
+    real Playwright-driven extractor. Adds
+    `scripts/clippd_winner_extractor.py`, modifies
+    `scripts/detect_new_champions.py`. Tested against the 6 winners
+    above.
+  - Wrap-time commit `db...` (pending): adds this wrap section + fixes
+    David's Discord handle in the handler doc (`collegegolfbook`, not
+    the `djtenneson` I guessed initially).
+
+All three unexpected-commit contents are legitimate work that should
+land on `dev` anyway. Leaving them in this PR is cleaner than
+cherry-picking them out + force-pushing.
+
+**Diff vs dev:** (see `gh pr view 7 --json additions,deletions`).
+
+**Stash cleanup for Mikkel:**
+
+After my juggling to keep WIP out of the feature branch, there are five
+stashes. Most represent duplicates of the same WIP captured at different
+points. Safe action:
+
+```bash
+# Verify stash@{4} (original bundle) matches what's now committed on
+# this PR branch. If yes, drop them all:
+git stash list
+git stash drop stash@{0}   # stray-detect-champions-wip (now in commit 7aab7ce)
+git stash drop stash@{0}   # stray-champ-women-ts-not-mine (now in commit e840264)
+git stash drop stash@{0}   # mikkel-wip-detect-champions-re-stash-2 (dup)
+git stash drop stash@{0}   # ron/on-demand-commands WIP pre dev-main push
+                           # (ron's own daily-refresh env-var edit, reverted,
+                           # safe to drop)
+git stash drop stash@{0}   # mikkel-wip-playwright-and-champ-ts (original bundle,
+                           # contents now in the two commits above)
+```
+
+**Open questions / deferred:**
+
+- David's Discord handle confirmed (`collegegolfbook`), fixed in
+  `docs/ron-bot/on-demand-handlers.md`. The handler snippet is ready
+  to paste.
+- Not yet tested: running `bash scripts/update-rankings-on-demand.sh
+  --dry-run` and `bash scripts/update-conference-winner-on-demand.sh
+  --dry-run` end-to-end. Worth doing before Mikkel restarts Ron.
+- `post_daily_summary.py` was designed for daily-refresh's output
+  shape. When the winner script calls it in the no-change path (no
+  rankings, no deploy), the summary format might render awkwardly —
+  acceptable for v1, tweak later if noisy.

@@ -43,7 +43,7 @@ CGD_DIR = Path(os.path.expanduser("~/projects/collegegolfdata"))
 
 # Discord usernames (NOT user IDs) that can invoke these two commands.
 # Swap out for Ron's existing authorized-users check if one exists.
-ON_DEMAND_ALLOWED = {"mikkelgolf", "djtenneson"}  # David's handle — confirm
+ON_DEMAND_ALLOWED = {"mikkelgolf", "collegegolfbook"}  # David confirmed 2026-04-22
 
 
 async def _run_on_demand_script(channel, author, script_name: str, label: str):
@@ -144,9 +144,9 @@ async def _run_on_demand_script(channel, author, script_name: str, label: str):
 
 ## Auth note
 
-I hard-coded `{"mikkelgolf", "djtenneson"}` in the snippet above based on
-your system prompt instructions. If David's Discord handle is something
-other than `djtenneson`, correct that set before restarting Ron.
+David confirmed his Discord handle is `collegegolfbook` on 2026-04-22, so
+the allowlist is `{"mikkelgolf", "collegegolfbook"}`. If Mikkel's handle
+changes, update the set and restart Ron.
 
 ## Guardrail reminder
 
