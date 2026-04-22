@@ -44,16 +44,16 @@ MEN_CANONICAL: dict[str, str] = {
     "Detroit": "Detroit Mercy",
     "Kent": "Kent State",
     "West Point": "Army",
+    "Louisiana-LaFayette": "Louisiana-Lafayette",
 }
 
-# Women's canonical map — seeded with zero entries, grown as the first regen
-# reports unmatched team names. regionals-history.json uses the canonical
-# site form (e.g. "CSU Northridge") while the sheet may use a spaced form
-# (e.g. "CSU - Northridge"); both are handled here.
+# Women's canonical map. regionals-history.json uses "CSU - Northridge",
+# "CSU - Fullerton", and "Central Florida" for women (unlike the men's set,
+# which standardised on "UCF"). Normalise every sheet variant to that form.
 WOMEN_CANONICAL: dict[str, str] = {
-    "CSU - Northridge": "CSU Northridge",
-    "CSU - Fullerton": "CSU Fullerton",
-    "Central Florida": "UCF",
+    "CSU Northridge": "CSU - Northridge",
+    "CSU Fullerton": "CSU - Fullerton",
+    "UCF": "Central Florida",
     "East Tennessee State": "ETSU",
 }
 
