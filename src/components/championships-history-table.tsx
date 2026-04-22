@@ -669,7 +669,10 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
                           dir="rtl"
                           className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5"
                         >
-                          {years.map((y, idx) => {
+                          {/* Render newest-first so the RTL grid places
+                              the most recent year in the top-right corner,
+                              matching team-page national-timeline. */}
+                          {[...years].reverse().map((y, idx) => {
                             const cell = r.byYear.get(y);
                             const dim = !yearInActiveDecade(y);
                             const cellTransition = {
