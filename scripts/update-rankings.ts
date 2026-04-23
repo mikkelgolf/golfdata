@@ -292,9 +292,13 @@ Input columns (TSV/CSV with headers):
 
 After running:
   1. Review the generated file in src/data/
-  2. Update LAST_UPDATED in src/app/page.tsx
-  3. Run 'npm run build' to verify
-  4. Deploy with 'npx vercel --prod'
+  2. Run 'npm run build' to verify
+  3. Deploy with 'npx vercel --prod'
+
+The "Latest Rankings" date on the site is derived from ALL_TEAMS_GENERATED_AT
+in src/data/all-teams-{men,women}-2026.ts, which is auto-populated by
+scripts/build-all-teams.mjs from the Clippd JSON's pulledAt field — no manual
+date bump required.
 `);
     process.exit(1);
   }
@@ -346,9 +350,10 @@ After running:
   }
 
   console.log(`\nDone! Next steps:`);
-  console.log(`  1. Update LAST_UPDATED in src/app/page.tsx`);
-  console.log(`  2. npm run build`);
-  console.log(`  3. npx vercel --prod`);
+  console.log(`  1. npm run build`);
+  console.log(`  2. npx vercel --prod`);
+  console.log(`  (The "Latest Rankings" date on the site auto-derives from`);
+  console.log(`   ALL_TEAMS_GENERATED_AT — no manual page.tsx bump needed.)`);
 }
 
 main();

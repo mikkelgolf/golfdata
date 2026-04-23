@@ -25,16 +25,16 @@
       "normalized": "nevada"
     },
     {
-      "team": "UNCG",
-      "schoolName": "UNCG",
-      "conference": "Southern Conference",
-      "normalized": "uncg"
-    },
-    {
       "team": "Southern Illinois",
       "schoolName": "Southern Illinois University at Carbondale",
       "conference": "Missouri Valley Conference",
       "normalized": "southern illinois at carbondale"
+    },
+    {
+      "team": "UNCG",
+      "schoolName": "UNCG",
+      "conference": "Southern Conference",
+      "normalized": "uncg"
     },
     {
       "team": "Louisiana",
@@ -103,16 +103,16 @@
       "normalized": "tennessee at martin"
     },
     {
-      "team": "St. John's",
-      "schoolName": "St. John's University (New York)",
-      "conference": "Big East Conference",
-      "normalized": "st john s new york"
-    },
-    {
       "team": "Navy",
       "schoolName": "U.S. Naval Academy",
       "conference": "Patriot League",
       "normalized": "u s naval academy"
+    },
+    {
+      "team": "St. John's",
+      "schoolName": "St. John's University (New York)",
+      "conference": "Big East Conference",
+      "normalized": "st john s new york"
     },
     {
       "team": "ULM",
@@ -133,16 +133,16 @@
       "normalized": "north carolina a&t"
     },
     {
-      "team": "Florida A&M",
-      "schoolName": "Florida A&M University",
-      "conference": "Southwestern Athletic Conference",
-      "normalized": "florida a&m"
-    },
-    {
       "team": "LaSalle",
       "schoolName": "LaSalle University",
       "conference": "Atlantic 10 Conference",
       "normalized": "lasalle"
+    },
+    {
+      "team": "Florida A&M",
+      "schoolName": "Florida A&M University",
+      "conference": "Southwestern Athletic Conference",
+      "normalized": "florida a&m"
     },
     {
       "team": "Saint Joseph's (PA)",
@@ -217,16 +217,16 @@
       "normalized": "virginia tech"
     },
     {
-      "team": "Maryland",
-      "schoolName": "University of Maryland",
-      "conference": "Big Ten Conference",
-      "normalized": "maryland"
-    },
-    {
       "team": "ULM",
       "schoolName": "University of Louisiana Monroe",
       "conference": "Sun Belt Conference",
       "normalized": "louisiana monroe"
+    },
+    {
+      "team": "Maryland",
+      "schoolName": "University of Maryland",
+      "conference": "Big Ten Conference",
+      "normalized": "maryland"
     },
     {
       "team": "Miami",
@@ -253,16 +253,16 @@
       "normalized": "montana state bozeman"
     },
     {
-      "team": "UNCG",
-      "schoolName": "Univ. of North Carolina at Greensboro",
-      "conference": "Southern Conference",
-      "normalized": "univ of north carolina at greensboro"
-    },
-    {
       "team": "Colorado State",
       "schoolName": "Colorado State University",
       "conference": "Mountain West Conference",
       "normalized": "colorado state"
+    },
+    {
+      "team": "UNCG",
+      "schoolName": "Univ. of North Carolina at Greensboro",
+      "conference": "Southern Conference",
+      "normalized": "univ of north carolina at greensboro"
     },
     {
       "team": "Sam Houston",
@@ -313,16 +313,16 @@
       "normalized": "texas a&m corpus christi"
     },
     {
-      "team": "North Carolina A&T",
-      "schoolName": "North Carolina A&T University",
-      "conference": "Coastal Athletic Association",
-      "normalized": "north carolina a&t"
-    },
-    {
       "team": "FDU",
       "schoolName": "Fairleigh Dickinson University",
       "conference": "Northeast Conference",
       "normalized": "fairleigh dickinson"
+    },
+    {
+      "team": "North Carolina A&T",
+      "schoolName": "North Carolina A&T University",
+      "conference": "Coastal Athletic Association",
+      "normalized": "north carolina a&t"
     },
     {
       "team": "William & Mary",
