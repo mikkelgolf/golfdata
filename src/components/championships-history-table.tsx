@@ -23,6 +23,9 @@ import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { teamHref } from "@/lib/team-link";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
 import { isChampion } from "@/lib/streaks";
+import YearByYearWinnersGrid, {
+  type YearWinners,
+} from "@/components/year-by-year-winners-grid";
 
 /** Year the NCAA Championships were cancelled (COVID-19). */
 const CANCELLED_YEAR = 2020;
@@ -166,6 +169,29 @@ function buildRows(
   return { rows: rowsArr, years: [...years].sort((a, b) => a - b) };
 }
 
+/**
+ * Derives the champion(s) for each year from a flat list of championship
+ * finishes. Pre-2009 ties produce multiple champions (e.g., 2015 men's:
+ * LSU & Stanford); post-2009 match-play normally yields exactly one.
+ */
+function buildWinnersByYear(
+  entries: ChampionshipFinish[],
+  years: number[]
+): YearWinners[] {
+  const byYear = new Map<number, string[]>();
+  for (const e of entries) {
+    if (!isChampion(e)) continue;
+    const arr = byYear.get(e.year);
+    if (arr) arr.push(e.team);
+    else byYear.set(e.year, [e.team]);
+  }
+  return years.map((y) => ({
+    year: y,
+    winners: byYear.get(y) ?? [],
+    cancelled: y === CANCELLED_YEAR,
+  }));
+}
+
 function sortRows(rows: TeamRow[], key: SortKey, dir: SortDir): TeamRow[] {
   const factor = dir === "asc" ? 1 : -1;
   return [...rows].sort((a, b) => {
@@ -261,6 +287,15 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
     () =>
       buildRows(entries.filter((e) => e.gender === gender), conferenceMap),
     [entries, gender, conferenceMap]
+  );
+
+  const winnersByYear = useMemo(
+    () =>
+      buildWinnersByYear(
+        entries.filter((e) => e.gender === gender),
+        years
+      ),
+    [entries, gender, years]
   );
 
   const decades = useMemo(() => {
@@ -480,6 +515,28 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           </details>
         )}
       </div>
+
+      {winnersByYear.length > 0 && (
+        <section
+          aria-label="Champions by year"
+          className="rounded-md border border-border bg-card/20 p-3 sm:p-4"
+        >
+          <div className="mb-3 flex flex-col gap-0.5">
+            <h2 className="text-[13px] sm:text-[14px] font-semibold text-foreground">
+              Champions by year
+            </h2>
+            <p className="text-[11px] text-text-tertiary">
+              One badge per champion team. Co-champions share a cell.
+            </p>
+          </div>
+          <YearByYearWinnersGrid
+            results={winnersByYear}
+            gender={gender}
+            isYearActive={yearInActiveDecade}
+            cancelledTitle="No NCAA Championship (COVID-19)"
+          />
+        </section>
+      )}
 
       <div
         className="overflow-hidden rounded-md border border-border"
