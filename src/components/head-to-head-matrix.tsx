@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { teamHref } from "@/lib/team-link";
+import type { Gender } from "@/data/records-types";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -18,6 +21,7 @@ interface HeadToHeadMatrixProps {
   teams: { team: string; seed: number; rank: number }[];
   records?: HeadToHeadRecord[];
   regionalColor: string;
+  gender?: Gender;
 }
 
 // ---------------------------------------------------------------------------
@@ -49,6 +53,7 @@ export default function HeadToHeadMatrix({
   teams,
   records,
   regionalColor,
+  gender = "men",
 }: HeadToHeadMatrixProps) {
   const hasData = records && records.length > 0;
 
@@ -88,7 +93,12 @@ export default function HeadToHeadMatrix({
                     <span className="text-muted-foreground font-mono tabular-nums mr-1">
                       {row.seed}
                     </span>
-                    {row.team}
+                    <Link
+                      href={teamHref(row.team, gender)}
+                      className="hover:text-primary transition-colors"
+                    >
+                      {row.team}
+                    </Link>
                   </td>
                   {sorted.map((col) => {
                     if (row.team === col.team) {
@@ -152,6 +162,7 @@ export default function HeadToHeadMatrix({
 export function HeadToHeadCompact({
   teams,
   records,
+  gender = "men",
 }: Omit<HeadToHeadMatrixProps, "regionalColor">) {
   const hasData = records && records.length > 0;
   const sorted = [...teams].sort((a, b) => a.seed - b.seed);
@@ -225,7 +236,12 @@ export function HeadToHeadCompact({
           >
             <span className="text-foreground truncate flex-1">
               <span className="font-mono tabular-nums text-muted-foreground mr-1">{m.seedA}</span>
-              {m.teamA}
+              <Link
+                href={teamHref(m.teamA, gender)}
+                className="hover:text-primary transition-colors"
+              >
+                {m.teamA}
+              </Link>
             </span>
             <span
               className={cn(
@@ -238,7 +254,12 @@ export function HeadToHeadCompact({
               {m.wins}-{m.losses}
             </span>
             <span className="text-foreground truncate flex-1 text-right">
-              {m.teamB}
+              <Link
+                href={teamHref(m.teamB, gender)}
+                className="hover:text-primary transition-colors"
+              >
+                {m.teamB}
+              </Link>
               <span className="font-mono tabular-nums text-muted-foreground ml-1">{m.seedB}</span>
             </span>
           </div>
