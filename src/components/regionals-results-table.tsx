@@ -777,7 +777,12 @@ export default function RegionalsResultsTable({ entries }: Props) {
                               rich
                             );
                             const seed = rich?.seed;
-                            const showSeed = seed != null && !missed;
+                            // Seed is shown whenever the team appeared that
+                            // year and we have seed data (seeding era ~2002+).
+                            // This matches team-page/regional-timeline, which
+                            // only hides the seed for true no-appearance /
+                            // cancelled years, not for non-advancing teams.
+                            const showSeed = seed != null;
 
                             return (
                               <motion.div
