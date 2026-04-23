@@ -490,7 +490,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
 
       {winnersByYear.length > 0 && (
         <section
-          aria-label="Champions by year"
+          aria-label="Champions By Year"
           className="overflow-hidden rounded-md border border-border bg-card/20"
         >
           <button
@@ -504,14 +504,9 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
               className={`mt-[3px] h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${championsOpen ? "rotate-90" : ""}`}
               aria-hidden="true"
             />
-            <div className="flex flex-col gap-0.5">
-              <h2 className="text-[13px] sm:text-[14px] font-semibold text-foreground">
-                Champions by year
-              </h2>
-              <p className="text-[11px] text-text-tertiary">
-                One badge per champion team. Co-champions share a cell.
-              </p>
-            </div>
+            <h2 className="text-[13px] sm:text-[14px] font-semibold text-foreground">
+              Champions By Year
+            </h2>
           </button>
           <AnimatePresence initial={false}>
             {championsOpen && (
