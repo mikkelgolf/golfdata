@@ -62,6 +62,7 @@ export const championshipsWomen2026: Championship[] = [
       "Third straight year at Pelican; 54 holes stroke play + match play.",
     sourceUrl:
       "https://arkansasrazorbacks.com/2025-26-arkansas-womens-golf-schedule-released/",
+    winner: "Tennessee",
   },
   {
     id: 3,
@@ -138,6 +139,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#836f9c",
     notes: "Per Quad Cities Business; verify exact dates with MVC.",
     sourceUrl: "https://mvc-sports.com/feature/24WG",
+    winner: "Murray State",
   },
   {
     id: 7,
@@ -156,6 +158,7 @@ export const championshipsWomen2026: Championship[] = [
     notes: "4th time in Hawaii since 1987. Practice round Apr 18.",
     sourceUrl:
       "https://thegolfwire.com/big-west-womens-golf-championship-returns-to-hawaii-in-april",
+    winner: "Cal Poly",
   },
   {
     id: 8,
@@ -173,6 +176,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#7ba8d3",
     notes: "First time OVC champ held in GA; course redesigned by Bill Bergin in 2020.",
     sourceUrl: "https://ovcsports.com/tournaments/?id=65",
+    winner: "Little Rock",
   },
   {
     id: 9,
@@ -208,6 +212,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#d1574b",
     notes: "Same venue as 2024 and 2025.",
     sourceUrl: "https://theamerican.org/sports/2025/6/17/2526champs.aspx",
+    winner: "Tulsa",
   },
   {
     id: 11,
@@ -225,6 +230,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#c97540",
     notes: "Per Mid-Major Madness preview.",
     sourceUrl: "https://atlantic10.com/sports/2025/8/7/WGOLF26.aspx",
+    winner: "Richmond",
   },
   {
     id: 12,
