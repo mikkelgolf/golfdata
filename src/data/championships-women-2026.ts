@@ -193,8 +193,9 @@ export const championshipsWomen2026: Championship[] = [
     endDate: "2026-04-22",
     color: "#c47b2e",
     notes:
-      "Davis Love III-designed course at Fripp Island Golf & Beach Resort.",
-    sourceUrl: "https://bigsouthsports.com/sports/wgolf",
+      "Davis Love III-designed course at Fripp Island Golf & Beach Resort. High Point won its first Big South women's golf title, defeating UNC Asheville 3-2 in the match play final (clinched by Anais Arafi on the 22nd hole).",
+    sourceUrl: "https://highpointpanthers.com/news/2026/4/23/womens-golf-high-point-wins-first-womens-golf-big-south-championship.aspx",
+    winner: "High Point",
   },
   {
     id: 10,
@@ -246,7 +247,10 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-20",
     endDate: "2026-04-22",
     color: "#d6b173",
-    sourceUrl: "https://scoreboard.clippd.com/tournaments/241756",
+    notes:
+      "Western Kentucky repeated as CUSA champions, defeating second-place Delaware by seven strokes. Freshman Reagan Ramage won the individual title.",
+    sourceUrl: "https://bgdailynews.com/2026/04/22/lady-tops-repeat-at-cusa-champions/",
+    winner: "Western Kentucky",
   },
   {
     id: 13,
@@ -262,7 +266,10 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-20",
     endDate: "2026-04-22",
     color: "#8a5a3a",
-    sourceUrl: "https://wacsports.com/tournaments/?id=179&path=wgolf",
+    notes:
+      "Tarleton State repeated as WAC champions (889, +25) — first WAC women's program to go back-to-back since 2021-22. Louise Depadt (Tarleton) won the individual title at +1.",
+    sourceUrl: "https://wacsports.com/news/2026/4/22/golf-w-depadt-and-the-texans-go-back-to-back-in-the-2026-wac-womens-golf-championship.aspx",
+    winner: "Tarleton State",
   },
   {
     id: 14,
@@ -278,7 +285,10 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-20",
     endDate: "2026-04-22",
     color: "#608c4a",
-    sourceUrl: "https://bigskyconf.com/sports/wgolf",
+    notes:
+      "Northern Arizona won its 10th Big Sky title at −5, five strokes clear of Northern Colorado. Individual title went to Norah Seidl (Montana State), who beat NAU's Lizzie Neale in a playoff with a 40-foot birdie on the 18th.",
+    sourceUrl: "https://nauathletics.com/news/2026/4/22/womens-golf-nau-golf-wins-10th-big-sky-conference-championship-title.aspx",
+    winner: "Northern Arizona",
   },
   {
     id: 15,
@@ -294,8 +304,11 @@ export const championshipsWomen2026: Championship[] = [
     startDate: "2026-04-20",
     endDate: "2026-04-22",
     color: "#a895c9",
+    notes:
+      "Furman won the SoCon title at 894 (+30), two strokes ahead of Chattanooga (896). UNCG finished third at 911.",
     sourceUrl:
-      "https://soconsports.com/about/championships/2025-26-championships-schedule/",
+      "https://catamountsports.com/documents/2026/4/22/2026_SoConWGolfChampionship_FINAL.pdf",
+    winner: "Furman",
   },
   {
     id: 16,
@@ -529,16 +542,18 @@ export const championshipsWomen2026: Championship[] = [
     conferenceFull: "Coastal Athletic Association",
     name: "CAA Women's Golf Championship",
     host: "TBD",
-    courseName: "Venue TBD",
-    city: "TBD",
-    state: "",
-    lat: 0,
-    lng: 0,
-    startDate: "2026-04-20",
-    endDate: "2026-04-22",
+    courseName: "The Reserve Club at St. James",
+    city: "Southport, NC",
+    state: "NC",
+    lat: 34.0188,
+    lng: -78.0389,
+    startDate: "2026-04-17",
+    endDate: "2026-04-19",
     color: "#92c785",
     notes:
-      "Tournament page exists at caasports.com but venue/dates not confirmed. Date is approximate placeholder.",
-    sourceUrl: "https://caasports.com/tournaments/?id=254",
+      "Charleston repeated as CAA champions, winning its seventh conference title with a two-stroke final-round comeback. UNCW's Victoria Levy won the individual title at even-par 216.",
+    sourceUrl:
+      "https://caasports.com/news/2026/4/19/charleston-repeats-as-caa-womens-golf-championship-uncws-victoria-levy-claims-individual-crown.aspx",
+    winner: "Charleston",
   },
 ];
