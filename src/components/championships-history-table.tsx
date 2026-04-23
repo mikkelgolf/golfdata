@@ -374,6 +374,29 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
     return false;
   };
 
+  // Map year → set of conferences held by that year's champion(s). Used to
+  // dim champion cells that don't match the active conference filter.
+  const winnerConferencesByYear = useMemo(() => {
+    const m = new Map<number, Set<string>>();
+    for (const w of winnersByYear) {
+      const confs = new Set<string>();
+      for (const team of w.winners) {
+        confs.add(conferenceMap.get(team) ?? "—");
+      }
+      m.set(w.year, confs);
+    }
+    return m;
+  }, [winnersByYear, conferenceMap]);
+
+  const winnerYearActive = (y: number): boolean => {
+    if (!yearInActiveDecade(y)) return false;
+    if (confFilter.size === 0) return true;
+    const confs = winnerConferencesByYear.get(y);
+    if (!confs || confs.size === 0) return false;
+    for (const c of confs) if (confFilter.has(c)) return true;
+    return false;
+  };
+
   return (
     <div className="space-y-4">
       <div className="sticky top-[var(--nav-height)] z-10 -mx-4 sm:mx-0 bg-background/80 backdrop-blur-xl backdrop-saturate-150 border-b border-border/40 px-4 py-3 space-y-3">
@@ -532,7 +555,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           <YearByYearWinnersGrid
             results={winnersByYear}
             gender={gender}
-            isYearActive={yearInActiveDecade}
+            isYearActive={winnerYearActive}
             cancelledTitle="No NCAA Championship (COVID-19)"
           />
         </section>
