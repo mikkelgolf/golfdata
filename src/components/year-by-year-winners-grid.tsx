@@ -27,8 +27,13 @@ interface Props {
    *  a single year may mix men's/women's hosts). */
   gender?: Gender;
   /** Dim cells whose year falls outside the active filter. Pass a predicate
-   *  or omit to never dim. */
+   *  or omit to never dim. Typical use: decade filter. */
   isYearActive?: (year: number) => boolean;
+  /** Hide individual winner badges that don't match a filter. Badges that
+   *  fail the predicate are removed from the cell; if every winner in a
+   *  cell is filtered out, the cell renders as a dashed em-dash (same
+   *  visual as a missing-data year). Typical use: conference filter. */
+  isWinnerActive?: (team: string, year: number) => boolean;
   /** Optional label surfaced via cell `title` for cancelled years. */
   cancelledTitle?: string;
 }
@@ -63,6 +68,7 @@ export default function YearByYearWinnersGrid({
   results,
   gender,
   isYearActive,
+  isWinnerActive,
   cancelledTitle = "No championship this year",
 }: Props) {
   const reduced = useReducedMotion();
@@ -84,9 +90,17 @@ export default function YearByYearWinnersGrid({
           delay: reduced ? 0 : idx * 0.012,
         };
 
-        // Empty state: cancelled year OR no recorded winner. Both render
-        // as a muted em-dash so the grid stays a perfect rectangle.
-        if (r.cancelled || r.winners.length === 0) {
+        // Apply the per-winner filter (e.g., conference). Winners who
+        // fail the predicate are dropped entirely. If that empties the
+        // cell, fall through to the empty-state branch below.
+        const visibleWinners = isWinnerActive
+          ? r.winners.filter((w) => isWinnerActive(w, r.year))
+          : r.winners;
+
+        // Empty state: cancelled year OR no recorded winner OR every
+        // winner filtered out. All three render as a muted em-dash so
+        // the grid stays a perfect rectangle.
+        if (r.cancelled || visibleWinners.length === 0) {
           const cellCls = r.cancelled
             ? `rounded-sm border border-dashed border-border/40 bg-card/20 px-1.5 py-1 text-center transition-colors ${dim ? "opacity-25" : ""}`
             : `rounded-sm border border-dashed border-border/20 px-1.5 py-1 text-center transition-colors ${dim ? "opacity-25" : ""}`;
@@ -125,16 +139,16 @@ export default function YearByYearWinnersGrid({
           );
         }
 
-        const size = badgeSize(r.winners.length);
+        const size = badgeSize(visibleWinners.length);
         const cellCls = `rounded-sm border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-shadow duration-150 ease-out hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
-        const title = r.winners.join(" · ");
+        const title = visibleWinners.join(" · ");
 
         const badges = (
           <div
             className="mt-1 flex items-center justify-center gap-0.5"
             style={{ minHeight: 30 }}
           >
-            {r.winners.map((team) => {
+            {visibleWinners.map((team) => {
               const mono = <TeamMonogram team={team} size={size} />;
               if (gender) {
                 return (

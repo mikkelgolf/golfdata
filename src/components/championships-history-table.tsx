@@ -374,27 +374,14 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
     return false;
   };
 
-  // Map year → set of conferences held by that year's champion(s). Used to
-  // dim champion cells that don't match the active conference filter.
-  const winnerConferencesByYear = useMemo(() => {
-    const m = new Map<number, Set<string>>();
-    for (const w of winnersByYear) {
-      const confs = new Set<string>();
-      for (const team of w.winners) {
-        confs.add(conferenceMap.get(team) ?? "—");
-      }
-      m.set(w.year, confs);
-    }
-    return m;
-  }, [winnersByYear, conferenceMap]);
-
-  const winnerYearActive = (y: number): boolean => {
-    if (!yearInActiveDecade(y)) return false;
+  // Per-winner predicate for the champions grid: when the conference
+  // filter is active, only surface winners whose (2025-26) conference
+  // matches. Each non-matching winner's badge is replaced with an
+  // em-dash placeholder, so a year with a non-matching champion reads
+  // as filtered-out rather than "missing data".
+  const winnerMatchesConfFilter = (team: string): boolean => {
     if (confFilter.size === 0) return true;
-    const confs = winnerConferencesByYear.get(y);
-    if (!confs || confs.size === 0) return false;
-    for (const c of confs) if (confFilter.has(c)) return true;
-    return false;
+    return confFilter.has(conferenceMap.get(team) ?? "—");
   };
 
   return (
@@ -555,7 +542,8 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           <YearByYearWinnersGrid
             results={winnersByYear}
             gender={gender}
-            isYearActive={winnerYearActive}
+            isYearActive={yearInActiveDecade}
+            isWinnerActive={winnerMatchesConfFilter}
             cancelledTitle="No NCAA Championship (COVID-19)"
           />
         </section>
