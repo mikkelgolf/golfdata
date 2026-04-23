@@ -51,6 +51,45 @@ const WOMEN_CANONICAL: Record<string, string> = {
   UCF: "Central Florida",
 };
 
+/**
+ * Post-parse corrections for known errors in the upstream CSV. Applied by
+ * (gender, year, team) — matched row has its position / positionNoTies
+ * fields overwritten. Idempotent across rebuilds so a stale /tmp dump
+ * still yields the correct JSON.
+ *
+ * 1940: Princeton and LSU tied T1 as co-champions (the CSV listed LSU as
+ * outright winner and Princeton as solo runner-up). Verified against the
+ * NCAA men's golf championship records. The Google sheet has been
+ * updated; this override remains as a defensive layer until the local
+ * /tmp dump is refreshed and continues to guarantee the fix thereafter.
+ */
+type Correction = {
+  gender: Gender;
+  year: number;
+  team: string;
+  position: string;
+  positionNoTies: number | null;
+};
+const CORRECTIONS: Correction[] = [
+  { gender: "men", year: 1940, team: "LSU", position: "T1", positionNoTies: 1 },
+  { gender: "men", year: 1940, team: "Princeton", position: "T1", positionNoTies: 1 },
+];
+
+function applyCorrections(rows: ChampionshipFinish[], gender: Gender): number {
+  let applied = 0;
+  for (const c of CORRECTIONS) {
+    if (c.gender !== gender) continue;
+    for (const r of rows) {
+      if (r.gender === gender && r.year === c.year && r.team === c.team) {
+        r.position = c.position;
+        r.positionNoTies = c.positionNoTies;
+        applied += 1;
+      }
+    }
+  }
+  return applied;
+}
+
 // Snappy schema split.
 type Row = {
   Year: string;
@@ -223,6 +262,10 @@ function build(gender: Gender, path: string, universe: Set<string>) {
       console.error(`  ${team}  ×${n}`);
     }
   }
+  const corrected = applyCorrections(out, gender);
+  if (corrected > 0) {
+    console.log(`[${gender}] applied ${corrected} correction(s)`);
+  }
   return out;
 }
 
@@ -263,10 +306,14 @@ function run() {
   );
 
   // Summary. Champion predicate covers both pre-2009 stroke-play (position
-  // "1") and post-2009 match-play (wonChampionship === true) — position "1"
-  // in the match-play era is the stroke-play leader, not the champion.
+  // "1" or "T1" — ties yield co-champions) and post-2009 match-play
+  // (wonChampionship === true). Position "1" in the match-play era is the
+  // stroke-play leader, not the champion. Keep in sync with isChampion in
+  // src/lib/streaks.ts.
   const isChampion = (r: ChampionshipFinish): boolean =>
-    r.matchPlayEra ? r.wonChampionship === true : r.position === "1";
+    r.matchPlayEra
+      ? r.wonChampionship === true
+      : r.position === "1" || r.position === "T1";
   const menYears = men.map((r) => r.year);
   const womenYears = women.map((r) => r.year);
   const winsByTeamMen = new Map<string, number>();

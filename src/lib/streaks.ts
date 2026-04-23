@@ -199,13 +199,14 @@ function filterChampionships(
 /**
  * True when this row represents a championship-winning season.
  * Pre-2009 the Championship was decided on stroke play alone — position "1"
- * means they won. From 2009 on, match play decides it: a team can be the
- * #1 seed and still lose the final, or seed #8 and win it. `wonChampionship`
- * is the authoritative post-2009 signal.
+ * or "T1" means they won (ties yield co-champions; e.g. 1940 Princeton/LSU
+ * and 1942 LSU/Stanford). From 2009 on, match play decides it: a team can
+ * be the #1 seed and still lose the final, or seed #8 and win it.
+ * `wonChampionship` is the authoritative post-2009 signal.
  */
 export function isChampion(r: ChampionshipFinish): boolean {
   if (r.matchPlayEra) return r.wonChampionship === true;
-  return r.position === "1";
+  return r.position === "1" || r.position === "T1";
 }
 
 export function computeTeamChampionshipStats(
