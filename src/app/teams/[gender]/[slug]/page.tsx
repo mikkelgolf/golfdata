@@ -473,365 +473,374 @@ export default function TeamPage({ params }: { params: Params }) {
       : undefined;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-[12px] flex-wrap">
-        <Link
-          href="/teams"
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
-          ← All programs
-        </Link>
-        {otherTeamExists && (
-          <>
-            <span className="text-border">·</span>
+      {/* Sticky team header — breadcrumb + identity strip stay pinned below
+          the global SiteHeader (sticky, h=var(--nav-height)=40px) while the
+          rest of the page scrolls. z-40 sits just under the nav's z-50. */}
+      <div className="sticky top-[var(--nav-height)] z-40 bg-background/80 backdrop-blur-xl backdrop-saturate-150 border-b border-border/40">
+        <div className="mx-auto max-w-6xl px-4 py-3">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-[12px] flex-wrap">
             <Link
-              href={`/teams/${otherGender}/${otherGenderSlug}`}
+              href="/teams"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              Switch to {otherGender === "men" ? "men's" : "women's"} →
+              ← All programs
             </Link>
-          </>
-        )}
-      </div>
-
-      {/* Identity strip — compact single row: monogram + name + rank + conf + gender. */}
-      <AnimatedSection className="mt-3 px-1">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <TeamMonogram team={team} size={36} />
-          <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-0 min-w-0">
-            <h1 className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-foreground leading-tight truncate">
-              {team} {label} Golf
-            </h1>
-            {ranking && (
-              <span className="font-mono tabular-nums text-[15px] sm:text-[17px] text-text-tertiary leading-none">
-                #<AnimatedNumber value={ranking.rank} />
-              </span>
+            {otherTeamExists && (
+              <>
+                <span className="text-border">·</span>
+                <Link
+                  href={`/teams/${otherGender}/${otherGenderSlug}`}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Switch to {otherGender === "men" ? "men's" : "women's"} →
+                </Link>
+              </>
             )}
           </div>
-          <div className="flex items-center gap-2 text-[10px] flex-wrap w-full sm:w-auto sm:ml-auto">
-            {record?.conference && <ConferenceBadge conference={record.conference} size="sm" />}
-            <span className="text-text-tertiary uppercase tracking-wider">
-              {label} · 2025-26
-            </span>
-          </div>
-        </div>
-      </AnimatedSection>
 
-      {/* Current season — single bordered row, cells separated by hairlines. */}
-      <div className="mt-3 rounded-lg border border-border/60 overflow-hidden bg-card/30">
-        <div className="grid grid-cols-2 sm:grid-cols-4">
-          <StatCard
-            label="Record"
-            value={
-              record
-                ? `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`
-                : "—"
-            }
-            animate={false}
-            detail={record ? `${record.wins + record.losses + record.ties} meetings` : undefined}
-            className="border-r border-border/40 sm:border-r"
-          />
-          <StatCard
-            label="Field status"
-            value={fieldStatusLabel}
-            animate={false}
-            className="border-t sm:border-t-0 sm:border-r border-border/40"
-          />
-          <StatCard
-            label="Projected regional"
-            value={myRegional ? myRegional.name.replace(/ Regional$/, "") : "—"}
-            animate={false}
-            detail={
-              myAssignment
-                ? `#${posInRegional ?? "?"} seed · #${myAssignment.seed} overall`
-                : undefined
-            }
-            className="border-t sm:border-t-0 border-r-0 sm:border-r border-border/40"
-          />
-          <StatCard
-            label="Travel distance"
-            value={
-              myAssignment
-                ? `${Math.round(myAssignment.distanceMiles).toLocaleString()} mi`
-                : "—"
-            }
-            detail={myAssignment ? tzDetail : undefined}
-            animate={false}
-            className="border-t sm:border-t-0 border-border/40"
-          />
-        </div>
-      </div>
-
-      {/* Above-fold chart grid — program arc | mini-map side-by-side. */}
-      {timelineResults.length > 0 && (
-        <div className="mt-3 grid grid-cols-1 lg:grid-cols-12 gap-3">
-          <section className="lg:col-span-7">
-            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-              Program arc
-            </h2>
-            <InteractiveProgramArc
-              timeline={timelineResults}
-              ncaaTimeline={ncaaArcSeries.length > 0 ? ncaaArcSeries : undefined}
-            />
-          </section>
-          <section className="lg:col-span-5">
-            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-              Geography
-            </h2>
-            {record ? (
-              <TeamMap
-                team={record}
-                assignment={myAssignment ?? undefined}
-                regional={myRegional ?? undefined}
-                regionals={regionals}
-                gender={gender}
-              />
-            ) : (
-              <div className="rounded-lg border border-border/60 bg-card/30 min-h-[180px] flex items-center justify-center text-text-tertiary text-[11px]">
-                Location not available
+          {/* Identity strip — compact single row: monogram + name + rank + conf + gender. */}
+          <AnimatedSection className="mt-3 px-1">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <TeamMonogram team={team} size={36} />
+              <div className="flex items-baseline flex-wrap gap-x-2.5 gap-y-0 min-w-0">
+                <h1 className="text-[20px] sm:text-[22px] font-semibold tracking-tight text-foreground leading-tight truncate">
+                  {team} {label} Golf
+                </h1>
+                {ranking && (
+                  <span className="font-mono tabular-nums text-[15px] sm:text-[17px] text-text-tertiary leading-none">
+                    #<AnimatedNumber value={ranking.rank} />
+                  </span>
+                )}
               </div>
-            )}
-          </section>
+              <div className="flex items-center gap-2 text-[10px] flex-wrap w-full sm:w-auto sm:ml-auto">
+                {record?.conference && <ConferenceBadge conference={record.conference} size="sm" />}
+                <span className="text-text-tertiary uppercase tracking-wider">
+                  {label} · 2025-26
+                </span>
+              </div>
+            </div>
+          </AnimatedSection>
         </div>
-      )}
+      </div>
 
-      {/* Upcoming conference event */}
-      {championship && (
-        <section className="mt-5">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-            Upcoming conference championship
-          </h2>
-          <UpcomingEvent championship={championship} />
-        </section>
-      )}
-
-      {/* Historical stats — regional + NCAA merged into a single bordered 8-cell
-          strip (2 rows × 4 cols). Streaks live inline with the relevant cells. */}
-      <section className="mt-4">
-        <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-          Program history
-        </h2>
+      <div className="mx-auto max-w-6xl px-4 pt-4 pb-6 sm:pb-8">
+        {/* Current season — single bordered row, cells separated by hairlines. */}
         <div className="rounded-lg border border-border/60 overflow-hidden bg-card/30">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4">
             <StatCard
-              label="Regional apps"
-              value={stats.totalAppearances}
-              detail={`streak: ${formatStreak(stats.regionalStreak)}`}
-              percentile={percentiles?.apps}
-              className="border-r border-border/40"
-            />
-            <StatCard
-              label="Advanced"
-              value={stats.totalAdvancements}
-              detail={`streak: ${formatStreak(stats.nationalStreak)}`}
-              percentile={percentiles?.nationals}
-              className="border-r border-border/40"
-            />
-            <StatCard
-              label="Regional wins"
-              value={stats.regionalWins}
-              percentile={percentiles?.regionalWins}
-              className="border-r border-border/40"
-            />
-            <StatCard
-              label="Best regional"
-              value={stats.bestFinish ? `#${stats.bestFinish}` : "—"}
-              animate={false}
-              percentile={
-                stats.bestFinish !== null ? percentiles?.bestFinish : undefined
-              }
-              className="border-t sm:border-t-0 lg:border-r border-border/40"
-            />
-            <StatCard
-              label="NCAA apps"
-              value={championshipStats.appearances}
-              detail={
-                championshipStats.appearances > 0
-                  ? `streak: ${formatStreak(championshipStats.appearanceStreak)}`
-                  : undefined
-              }
-              percentile={
-                championshipStats.appearances > 0 ? percentiles?.ncaaApps : undefined
-              }
-              className="border-t lg:border-t-0 sm:border-r border-border/40"
-            />
-            <StatCard
-              label="NCAA wins"
-              value={championshipStats.wins}
-              percentile={
-                championshipStats.appearances > 0 ? percentiles?.ncaaWins : undefined
-              }
-              className="border-t lg:border-t-0 border-r border-border/40"
-            />
-            <StatCard
-              label="NCAA best"
+              label="Record"
               value={
-                championshipStats.bestFinishLabel
-                  ? championshipStats.bestFinishLabel
-                  : championshipStats.bestFinish !== null
-                    ? `#${championshipStats.bestFinish}`
-                    : "—"
+                record
+                  ? `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`
+                  : "—"
               }
               animate={false}
-              percentile={
-                championshipStats.bestFinish !== null
-                  ? percentiles?.ncaaBest
-                  : undefined
-              }
-              className="border-t lg:border-t-0 sm:border-r border-border/40"
+              detail={record ? `${record.wins + record.losses + record.ties} meetings` : undefined}
+              className="border-r border-border/40 sm:border-r"
             />
             <StatCard
-              label={championshipStats.topEight > 0 ? "MP berths" : "Match-play"}
-              value={championshipStats.topEight}
+              label="Field status"
+              value={fieldStatusLabel}
+              animate={false}
+              className="border-t sm:border-t-0 sm:border-r border-border/40"
+            />
+            <StatCard
+              label="Projected regional"
+              value={myRegional ? myRegional.name.replace(/ Regional$/, "") : "—"}
+              animate={false}
               detail={
-                championshipStats.matchPlayWins > 0
-                  ? `${championshipStats.matchPlayWins} MP wins`
+                myAssignment
+                  ? `#${posInRegional ?? "?"} seed · #${myAssignment.seed} overall`
                   : undefined
               }
-              className="border-t lg:border-t-0 border-border/40"
+              className="border-t sm:border-t-0 border-r-0 sm:border-r border-border/40"
+            />
+            <StatCard
+              label="Travel distance"
+              value={
+                myAssignment
+                  ? `${Math.round(myAssignment.distanceMiles).toLocaleString()} mi`
+                  : "—"
+              }
+              detail={myAssignment ? tzDetail : undefined}
+              animate={false}
+              className="border-t sm:border-t-0 border-border/40"
             />
           </div>
         </div>
-      </section>
 
-      {/* Year-by-year regionals timeline. */}
-      {timelineResults.length > 0 && (
-        <section className="mt-5">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-            Year-by-year regionals
-          </h2>
-          <RegionalTimeline results={timelineResults} />
-          <p className="mt-2 text-[11px] text-text-tertiary">
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
-            />
-            = advanced to Nationals.
-            <span
-              aria-hidden="true"
-              className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
-            />
-            = did not make Regionals.
-          </p>
-        </section>
-      )}
+        {/* Above-fold chart grid — program arc | mini-map side-by-side. */}
+        {timelineResults.length > 0 && (
+          <div className="mt-3 grid grid-cols-1 lg:grid-cols-12 gap-3">
+            <section className="lg:col-span-7">
+              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+                Program arc
+              </h2>
+              <InteractiveProgramArc
+                timeline={timelineResults}
+                ncaaTimeline={ncaaArcSeries.length > 0 ? ncaaArcSeries : undefined}
+              />
+            </section>
+            <section className="lg:col-span-5">
+              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+                Geography
+              </h2>
+              {record ? (
+                <TeamMap
+                  team={record}
+                  assignment={myAssignment ?? undefined}
+                  regional={myRegional ?? undefined}
+                  regionals={regionals}
+                  gender={gender}
+                />
+              ) : (
+                <div className="rounded-lg border border-border/60 bg-card/30 min-h-[180px] flex items-center justify-center text-text-tertiary text-[11px]">
+                  Location not available
+                </div>
+              )}
+            </section>
+          </div>
+        )}
 
-      {/* Regional performance details — seed / SG / expected-vs-actual. */}
-      {hasRichData && (
-        <section className="mt-5">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-            Regional performance
-          </h2>
-          <RegionalPerformance
-            titles={titlesFromRich}
-            avgSeed={avgSeed}
-            seededYears={seededRich.length}
-            bestSgTotal={bestSg?.sgTotal ?? null}
-            bestSgYear={bestSg?.year ?? null}
-            bestSgRegional={bestSg?.regional ?? null}
-            beatSeedCount={beatSeedCount}
-            underdogAdvanceCount={underdogAdvanceCount}
-            totalAppearances={totalRichAppearances}
-            seedBuckets={seedBuckets}
-          />
-        </section>
-      )}
-
-      {/* Year-by-year NCAAs timeline. */}
-      {timelineResults.length > 0 &&
-        championshipStats.appearances > 0 &&
-        ncaaTimelineResults.length > 0 && (
+        {/* Upcoming conference event */}
+        {championship && (
           <section className="mt-5">
             <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-              Year-by-year NCAAs
+              Upcoming conference championship
             </h2>
-            <NationalTimeline results={ncaaTimelineResults} />
+            <UpcomingEvent championship={championship} />
           </section>
         )}
 
-      {/* Record book excerpts — flat sections, no per-card chrome. */}
-      {clusteredHits.size > 0 && (
-        <section className="mt-5">
+        {/* Historical stats — regional + NCAA merged into a single bordered 8-cell
+            strip (2 rows × 4 cols). Streaks live inline with the relevant cells. */}
+        <section className="mt-4">
           <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-            {team} in the record book
+            Program history
           </h2>
           <div className="rounded-lg border border-border/60 overflow-hidden bg-card/30">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {[...clusteredHits.entries()].map(([sectionTitle, items], idx) => {
-                const colMod = idx % 3; // for 3-col borders on lg
-                const col2Mod = idx % 2; // for 2-col borders on md
-                return (
-                  <div
-                    key={sectionTitle}
-                    className={cn(
-                      "px-3 py-2 border-t border-border/40",
-                      // Top-row dividers reset
-                      idx === 0 && "border-t-0",
-                      // 2-col: hide top border for 2nd row's first cell — actually
-                      // simpler to just always render top border and accept the
-                      // first row has one too on md+. Skip hairlining.
-                      "md:border-l",
-                      col2Mod === 0 && "md:border-l-0",
-                      "lg:border-l",
-                      colMod === 0 && "lg:border-l-0"
-                    )}
-                  >
-                    <div className="flex items-baseline justify-between mb-1 gap-2">
-                      <h3 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary">
-                        {sectionTitle}
-                      </h3>
-                      <span className="shrink-0 text-[9px] text-text-tertiary font-mono tabular-nums">
-                        {items.length}
-                      </span>
-                    </div>
-                    <div>
-                      {items.map((h, i) => (
-                        <div
-                          key={i}
-                          className="grid grid-cols-[56px_1fr] items-baseline gap-2 py-0.5 text-[11px]"
-                        >
-                          <span className="font-mono tabular-nums text-right text-foreground/90">
-                            {h.value}
-                          </span>
-                          <span className="text-text-tertiary truncate" title={h.detail}>
-                            {h.detail}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+              <StatCard
+                label="Regional apps"
+                value={stats.totalAppearances}
+                detail={`streak: ${formatStreak(stats.regionalStreak)}`}
+                percentile={percentiles?.apps}
+                className="border-r border-border/40"
+              />
+              <StatCard
+                label="Advanced"
+                value={stats.totalAdvancements}
+                detail={`streak: ${formatStreak(stats.nationalStreak)}`}
+                percentile={percentiles?.nationals}
+                className="border-r border-border/40"
+              />
+              <StatCard
+                label="Regional wins"
+                value={stats.regionalWins}
+                percentile={percentiles?.regionalWins}
+                className="border-r border-border/40"
+              />
+              <StatCard
+                label="Best regional"
+                value={stats.bestFinish ? `#${stats.bestFinish}` : "—"}
+                animate={false}
+                percentile={
+                  stats.bestFinish !== null ? percentiles?.bestFinish : undefined
+                }
+                className="border-t sm:border-t-0 lg:border-r border-border/40"
+              />
+              <StatCard
+                label="NCAA apps"
+                value={championshipStats.appearances}
+                detail={
+                  championshipStats.appearances > 0
+                    ? `streak: ${formatStreak(championshipStats.appearanceStreak)}`
+                    : undefined
+                }
+                percentile={
+                  championshipStats.appearances > 0 ? percentiles?.ncaaApps : undefined
+                }
+                className="border-t lg:border-t-0 sm:border-r border-border/40"
+              />
+              <StatCard
+                label="NCAA wins"
+                value={championshipStats.wins}
+                percentile={
+                  championshipStats.appearances > 0 ? percentiles?.ncaaWins : undefined
+                }
+                className="border-t lg:border-t-0 border-r border-border/40"
+              />
+              <StatCard
+                label="NCAA best"
+                value={
+                  championshipStats.bestFinishLabel
+                    ? championshipStats.bestFinishLabel
+                    : championshipStats.bestFinish !== null
+                      ? `#${championshipStats.bestFinish}`
+                      : "—"
+                }
+                animate={false}
+                percentile={
+                  championshipStats.bestFinish !== null
+                    ? percentiles?.ncaaBest
+                    : undefined
+                }
+                className="border-t lg:border-t-0 sm:border-r border-border/40"
+              />
+              <StatCard
+                label={championshipStats.topEight > 0 ? "MP berths" : "Match-play"}
+                value={championshipStats.topEight}
+                detail={
+                  championshipStats.matchPlayWins > 0
+                    ? `${championshipStats.matchPlayWins} MP wins`
+                    : undefined
+                }
+                className="border-t lg:border-t-0 border-border/40"
+              />
             </div>
           </div>
-          <div className="mt-2 text-[11px] text-muted-foreground">
-            <Link
-              href={gender === "men" ? "/records/men" : "/records/women"}
-              className="underline-offset-4 hover:underline hover:text-foreground"
-            >
-              Open the full {label.toLowerCase()} record book →
-            </Link>
-          </div>
         </section>
-      )}
 
-      {history.length === 0 && recordHits.length === 0 && (
-        <section className="mt-8 rounded-lg border border-border bg-card/50 px-4 py-4 text-[12px] text-muted-foreground">
-          No regional or record-book entries on file for {team} {label.toLowerCase()}{" "}
-          yet. The program may be new to D1 or data is still being compiled.
-        </section>
-      )}
+        {/* Year-by-year regionals timeline. */}
+        {timelineResults.length > 0 && (
+          <section className="mt-5">
+            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+              Year-by-year regionals
+            </h2>
+            <RegionalTimeline results={timelineResults} />
+            <p className="mt-2 text-[11px] text-text-tertiary">
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-emerald-500/70 align-middle"
+              />
+              = advanced to Nationals.
+              <span
+                aria-hidden="true"
+                className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
+              />
+              = did not make Regionals.
+            </p>
+          </section>
+        )}
 
-      <div className="mt-12 border-t border-border pt-4 text-[11px] text-text-tertiary">
-        Current-season data from NCAA rankings · Regional history 1989–
-        {MOST_RECENT_SEASON}.
+        {/* Regional performance details — seed / SG / expected-vs-actual. */}
+        {hasRichData && (
+          <section className="mt-5">
+            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+              Regional performance
+            </h2>
+            <RegionalPerformance
+              titles={titlesFromRich}
+              avgSeed={avgSeed}
+              seededYears={seededRich.length}
+              bestSgTotal={bestSg?.sgTotal ?? null}
+              bestSgYear={bestSg?.year ?? null}
+              bestSgRegional={bestSg?.regional ?? null}
+              beatSeedCount={beatSeedCount}
+              underdogAdvanceCount={underdogAdvanceCount}
+              totalAppearances={totalRichAppearances}
+              seedBuckets={seedBuckets}
+            />
+          </section>
+        )}
+
+        {/* Year-by-year NCAAs timeline. */}
+        {timelineResults.length > 0 &&
+          championshipStats.appearances > 0 &&
+          ncaaTimelineResults.length > 0 && (
+            <section className="mt-5">
+              <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+                Year-by-year NCAAs
+              </h2>
+              <NationalTimeline results={ncaaTimelineResults} />
+            </section>
+          )}
+
+        {/* Record book excerpts — flat sections, no per-card chrome. */}
+        {clusteredHits.size > 0 && (
+          <section className="mt-5">
+            <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
+              {team} in the record book
+            </h2>
+            <div className="rounded-lg border border-border/60 overflow-hidden bg-card/30">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {[...clusteredHits.entries()].map(([sectionTitle, items], idx) => {
+                  const colMod = idx % 3; // for 3-col borders on lg
+                  const col2Mod = idx % 2; // for 2-col borders on md
+                  return (
+                    <div
+                      key={sectionTitle}
+                      className={cn(
+                        "px-3 py-2 border-t border-border/40",
+                        // Top-row dividers reset
+                        idx === 0 && "border-t-0",
+                        // 2-col: hide top border for 2nd row's first cell — actually
+                        // simpler to just always render top border and accept the
+                        // first row has one too on md+. Skip hairlining.
+                        "md:border-l",
+                        col2Mod === 0 && "md:border-l-0",
+                        "lg:border-l",
+                        colMod === 0 && "lg:border-l-0"
+                      )}
+                    >
+                      <div className="flex items-baseline justify-between mb-1 gap-2">
+                        <h3 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary">
+                          {sectionTitle}
+                        </h3>
+                        <span className="shrink-0 text-[9px] text-text-tertiary font-mono tabular-nums">
+                          {items.length}
+                        </span>
+                      </div>
+                      <div>
+                        {items.map((h, i) => (
+                          <div
+                            key={i}
+                            className="grid grid-cols-[56px_1fr] items-baseline gap-2 py-0.5 text-[11px]"
+                          >
+                            <span className="font-mono tabular-nums text-right text-foreground/90">
+                              {h.value}
+                            </span>
+                            <span className="text-text-tertiary truncate" title={h.detail}>
+                              {h.detail}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="mt-2 text-[11px] text-muted-foreground">
+              <Link
+                href={gender === "men" ? "/records/men" : "/records/women"}
+                className="underline-offset-4 hover:underline hover:text-foreground"
+              >
+                Open the full {label.toLowerCase()} record book →
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {history.length === 0 && recordHits.length === 0 && (
+          <section className="mt-8 rounded-lg border border-border bg-card/50 px-4 py-4 text-[12px] text-muted-foreground">
+            No regional or record-book entries on file for {team} {label.toLowerCase()}{" "}
+            yet. The program may be new to D1 or data is still being compiled.
+          </section>
+        )}
+
+        <div className="mt-12 border-t border-border pt-4 text-[11px] text-text-tertiary">
+          Current-season data from NCAA rankings · Regional history 1989–
+          {MOST_RECENT_SEASON}.
+        </div>
       </div>
-    </div>
+    </>
   );
 }
