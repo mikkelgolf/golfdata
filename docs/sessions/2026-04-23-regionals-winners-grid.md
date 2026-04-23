@@ -4,7 +4,7 @@
 **Requester:** David Tenneson
 **Branch:** ron/regionals-winners-grid
 **Base:** dev
-**Status:** in-progress
+**Status:** merged into dev
 
 ## Task
 Apply the same Year-By-Year winners grid treatment to the Regional History
@@ -59,10 +59,53 @@ interface Props {
 5. **Filters on the page.** Check which filters already exist on the Regionals page — wire `isWinnerActive` to any conference filter it has.
 
 ## Actions
-_(filled on !wrap)_
+
+Mirrored the NCAA Championship page treatment onto the Regionals page,
+reusing `YearByYearWinnersGrid` without a single change to that
+component — confirms the reusability design from the previous session.
+
+### `src/components/regionals-results-table.tsx`
+- Imported `YearByYearWinnersGrid` + `YearWinners` type.
+- Added `buildWinnersByYear(entries, years)` helper alongside `sortRows`. Uses the existing `isRegionalWin(position)` from `@/lib/streaks`, which treats both `"1"` and `"T1"` as a win — so tied co-winners at a site each get a badge automatically. 2020 is surfaced as `cancelled` for the COVID-cancelled regionals.
+- Added `winnersOpen` state (defaults to **false** — collapsed).
+- Added `winnerMatchesConfFilter(team)` predicate. Uses the existing `conferenceMap` so the same 2025-26 conference mapping drives both the main-table row filter and the winners-grid badge filter.
+- Added `winnersByYear` memo derived from the current gender's entries and the `years` range.
+- **Removed the Decades filter UI chip block** from the sticky header. Kept `decadeFilter` state, `decades` memo, and `yearInActiveDecade` in place (per NCAA-page convention) so the per-team expanded grid dim behaviour returns as soon as the filter does. Removed the now-unused `toggleDecade` helper.
+- Rendered a new collapsible `<section aria-label="Winners By Year">` between the sticky filter header and the main data table. Header is a button with a rotating chevron, body is a `motion.div` height-tween matching the expanded-team-row pattern. Inside the body: `<YearByYearWinnersGrid results={winnersByYear} gender={gender} isWinnerActive={winnerMatchesConfFilter} cancelledTitle="No NCAA Regionals (COVID-19)" />`.
+
+### What did NOT change
+- `src/components/year-by-year-winners-grid.tsx` — untouched. The component's existing API (`results`, `gender`, `isYearActive`, `isWinnerActive`, `cancelledTitle`) was sufficient.
+- The main regionals table below the grid is unchanged.
 
 ## Diff stats
-_(filled on !wrap)_
+
+```
+docs/sessions/2026-04-23-regionals-winners-grid.md |  68 +++++++++++
+src/components/regionals-results-table.tsx         | 133 ++++++++++++++-------
+2 files changed, 160 insertions(+), 41 deletions(-)
+```
 
 ## Open questions / learnings
-_(filled on !wrap)_
+
+### Confirmed the grid component is reusable as-is
+Second use site, zero edits to the component. The API split
+(`isYearActive` = dim-by-year for decade-style filters, `isWinnerActive`
+= hide-by-team for conference-style filters) survived contact with the
+Regionals data unchanged.
+
+### Decades filter still parked
+Same design question as on the NCAA page — dim-all-cells-outside-range
+reads poorly when selecting a single decade dims 90% of the grid. The
+UI is hidden on both pages now; state + helper function remain. When
+David decides on the right interaction, one commit re-enables both
+pages.
+
+### Data signal
+`isRegionalWin(position)` (from `@/lib/streaks`) is the source of truth
+for "won a regional" — treats `"1"` and `"T1"` identically. No need to
+touch `regionals-rich.json` for this feature. If a future variant wants
+to surface seeding/margin/site badges per winner, that data is already
+joined via `richByTeamYear` in the component.
+
+### Most recent preview
+https://collegegolfdata-7l6wvfugm-mikkelgolfs-projects.vercel.app/regionals
