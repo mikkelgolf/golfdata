@@ -118,11 +118,10 @@ This is just the free entry point. The real products are coming.
 3. [ ] Export rankings as TSV
 4. [ ] Run: `npx tsx scripts/update-rankings.ts --gender men --input rankings.tsv`
 5. [ ] Run: `npx tsx scripts/capture-rankings-snapshot.ts --label weekly`
-6. [ ] Update LAST_UPDATED date in src/app/page.tsx
-7. [ ] Run: `npm run build` (verify zero errors)
-8. [ ] Deploy: `npx vercel --prod`
-9. [ ] Tweet updated predictions from @CollegeGolfBot with notable changes
-10. [ ] Cross-post on @collegegolfdail if significant movement
+6. [ ] Run: `npm run build` (verify zero errors)
+7. [ ] Deploy: `npx vercel --prod`
+8. [ ] Tweet updated predictions from @CollegeGolfBot with notable changes
+9. [ ] Cross-post on @collegegolfdail if significant movement
 
 ## Postseason Capture Schedule
 

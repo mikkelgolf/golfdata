@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import ScurveTable from "@/components/scurve-table";
 import { MapSkeleton, FilterBarSkeleton } from "@/components/skeletons";
-import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
+import { allTeamsMen2026, ALL_TEAMS_GENERATED_AT } from "@/data/all-teams-men-2026";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
@@ -45,7 +45,19 @@ function enrichWithAwp(allTeams: TeamData[], rankings: TeamData[]): TeamData[] {
   });
 }
 
-const LAST_UPDATED = "Apr 15, 2026";
+// Derive the display date from ALL_TEAMS_GENERATED_AT (populated from the
+// Clippd JSON's `pulledAt` field by scripts/build-all-teams.mjs) so it stays
+// in sync automatically after every rankings refresh.
+function formatLastUpdated(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+const LAST_UPDATED = formatLastUpdated(ALL_TEAMS_GENERATED_AT);
 
 export default function Home() {
   return (
