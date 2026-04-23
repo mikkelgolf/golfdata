@@ -1,9 +1,11 @@
 "use client";
 
 import { Fragment, useState, useMemo, useCallback, useEffect, useTransition, useDeferredValue } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { teamHref } from "@/lib/team-link";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
@@ -108,6 +110,35 @@ function useScurveGrid(
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * Links a team name to its team page. Default styling is inherited from the
+ * parent so we don't disturb existing typography — we just add a subtle hover
+ * color shift and stopPropagation so the link works inside rows that have
+ * their own onClick (e.g. the RegionalGroup header expands on click; inner
+ * team rows don't, but this keeps the helper safe to drop anywhere).
+ */
+function TeamLink({
+  team,
+  gender,
+  className,
+  children,
+}: {
+  team: string;
+  gender: Gender;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={teamHref(team, gender)}
+      onClick={(e) => e.stopPropagation()}
+      className={cn("hover:text-primary transition-colors", className)}
+    >
+      {children}
+    </Link>
+  );
+}
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -455,6 +486,7 @@ export default function ScurveTable({
             regionals={activeRegionals}
             regionalMap={regionalMap}
             regionalSeeds={regionalSeeds}
+            gender={gender}
           />
         </div>
         {/* Mobile */}
@@ -464,12 +496,14 @@ export default function ScurveTable({
             regionals={activeRegionals}
             regionalMap={regionalMap}
             regionalSeeds={regionalSeeds}
+            gender={gender}
           />
         </div>
         <BubbleSection
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
           regionalMap={regionalMap}
+          gender={gender}
         />
       </div>
     );
@@ -501,6 +535,7 @@ export default function ScurveTable({
           regionalMap={regionalMap}
           regionalSeeds={regionalSeeds}
           regionalPositions={regionalPositions}
+          gender={gender}
         />
       </div>
     );
@@ -532,11 +567,13 @@ export default function ScurveTable({
           regionals={activeRegionals}
           regionalMap={regionalMap}
           regionalSeeds={regionalSeeds}
+          gender={gender}
         />
         <BubbleSection
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
           regionalMap={regionalMap}
+          gender={gender}
         />
       </div>
     );
@@ -578,6 +615,7 @@ export default function ScurveTable({
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
           regionalMap={regionalMap}
+          gender={gender}
         />
       </div>
     );
@@ -743,6 +781,7 @@ export default function ScurveTable({
               teams={teams}
               regionalMap={regionalMap}
               regionalSeed={regionalSeeds.get(regional.id)}
+              gender={gender}
             />
           ))
         ) : (
@@ -754,6 +793,7 @@ export default function ScurveTable({
                 <MobileTeamCard
                   team={team}
                   regionalMap={regionalMap}
+                  gender={gender}
                 />
                 {team.seed === cutSeed && sorted.length > cutSeed && (
                   <div className="flex items-center gap-1 px-0.5 py-px">
@@ -775,6 +815,7 @@ export default function ScurveTable({
         teams={gender === "men" ? menTeams : womenTeams}
         assignments={assignments}
         regionalMap={regionalMap}
+        gender={gender}
       />
     </div>
   );
@@ -926,10 +967,12 @@ function BubbleSection({
   teams,
   assignments,
   regionalMap,
+  gender = "men",
 }: {
   teams: TeamData[];
   assignments: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
+  gender?: Gender;
 }) {
   const LAST_IN = 6;
   const FIRST_OUT = 6;
@@ -1023,7 +1066,9 @@ function BubbleSection({
                 #{team.rank}
               </span>
               <span className="font-medium text-foreground truncate">
-                {team.team}
+                <TeamLink team={team.team} gender={gender}>
+                  {team.team}
+                </TeamLink>
               </span>
               <span className="font-mono text-foreground/80 text-right">
                 {fmtAwp(team.avgPoints)}
@@ -1068,7 +1113,9 @@ function BubbleSection({
                   #{team.rank}
                 </span>
                 <span className="text-muted-foreground truncate">
-                  {team.team}
+                  <TeamLink team={team.team} gender={gender}>
+                    {team.team}
+                  </TeamLink>
                   <span className="ml-1 text-[8px] font-semibold text-amber-500/70 uppercase">
                     {team.wins}-{team.losses}
                   </span>
@@ -1106,7 +1153,9 @@ function BubbleSection({
                   #{team.rank}
                 </span>
                 <span className="text-muted-foreground truncate">
-                  {team.team}
+                  <TeamLink team={team.team} gender={gender}>
+                    {team.team}
+                  </TeamLink>
                 </span>
                 <span className="font-mono text-foreground/70 text-right">
                   {fmtAwp(team.avgPoints)}
@@ -1127,7 +1176,14 @@ function BubbleSection({
             <p className="text-[10px] text-text-tertiary">
               <span className="font-medium text-amber-500/80">{subFiveHundredAqs.length} sub-.500 AQ{subFiveHundredAqs.length > 1 ? "s" : ""}</span>
               {" "}in field (below .500 but won conference auto-qualifier):{" "}
-              {subFiveHundredAqs.map((t) => t.team).join(", ")}
+              {subFiveHundredAqs.map((t, i) => (
+                <Fragment key={t.team}>
+                  {i > 0 && ", "}
+                  <TeamLink team={t.team} gender={gender}>
+                    {t.team}
+                  </TeamLink>
+                </Fragment>
+              ))}
             </p>
           </div>
         )}
@@ -1160,12 +1216,14 @@ function BreakdownView({
   regionalMap,
   regionalSeeds,
   regionalPositions,
+  gender = "men",
 }: {
   teams: TeamData[];
   assignments: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
   regionalPositions: Map<string, number>;
+  gender?: Gender;
 }) {
   const LAST_IN = 6;
   const FIRST_OUT = 6;
@@ -1266,7 +1324,9 @@ function BreakdownView({
                 <span className="hidden md:inline">{posInRegional ?? "—"}</span>
               </span>
               <span className="font-medium text-foreground truncate">
-                {team.team}
+                <TeamLink team={team.team} gender={gender}>
+                  {team.team}
+                </TeamLink>
               </span>
               <div className="hidden md:contents">
                 <span className="font-mono text-muted-foreground text-right">
@@ -1322,7 +1382,9 @@ function BreakdownView({
                     <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
-                    {team.team}
+                    <TeamLink team={team.team} gender={gender}>
+                      {team.team}
+                    </TeamLink>
                     <span className="ml-1.5 text-[8px] font-semibold text-amber-500/70 uppercase">
                       {team.wins}-{team.losses}
                     </span>
@@ -1369,7 +1431,9 @@ function BreakdownView({
                     <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
-                    {team.team}
+                    <TeamLink team={team.team} gender={gender}>
+                      {team.team}
+                    </TeamLink>
                   </span>
                   <div className="hidden md:contents">
                     <span className="font-mono text-muted-foreground text-right">#{team.rank}</span>
@@ -1397,7 +1461,14 @@ function BreakdownView({
             <p className="text-[10px] text-text-tertiary">
               <span className="font-medium text-amber-500/80">{subFiveHundredAqs.length} sub-.500 AQ{subFiveHundredAqs.length > 1 ? "s" : ""}</span>
               {" "}in field (below .500 but won conference auto-qualifier):{" "}
-              {subFiveHundredAqs.map((t) => t.team).join(", ")}
+              {subFiveHundredAqs.map((t, i) => (
+                <Fragment key={t.team}>
+                  {i > 0 && ", "}
+                  <TeamLink team={t.team} gender={gender}>
+                    {t.team}
+                  </TeamLink>
+                </Fragment>
+              ))}
             </p>
           </div>
         )}
@@ -1443,7 +1514,9 @@ function BreakdownView({
                     <td className="px-2 text-center font-mono text-muted-foreground">{posInRegional ?? "—"}</td>
                     <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">{regionalSeed ?? "—"}</td>
                     <td className="px-2 text-foreground">
-                      <span className="font-medium">{team.team}</span>
+                      <TeamLink team={team.team} gender={gender} className="font-medium">
+                        {team.team}
+                      </TeamLink>
                       {isSubFiveHundredAq && (
                         <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
                           Sub-.500 AQ
@@ -1487,7 +1560,9 @@ function BreakdownView({
                     <td className="px-2 text-center font-mono text-muted-foreground">—</td>
                     <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">—</td>
                     <td className="px-2 text-muted-foreground">
-                      <span>{team.team}</span>
+                      <TeamLink team={team.team} gender={gender}>
+                        {team.team}
+                      </TeamLink>
                       {!team.eligible && (
                         <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
                           Sub-.500
@@ -1615,7 +1690,7 @@ function RegionalGroup({
       {expanded && (
         <tr>
           <td colSpan={7} className="p-0">
-            <RegionalDetailPanel regional={regional} teams={teams} />
+            <RegionalDetailPanel regional={regional} teams={teams} gender={gender} />
           </td>
         </tr>
       )}
@@ -1659,9 +1734,11 @@ function RegionalGroup({
 function RegionalDetailPanel({
   regional,
   teams,
+  gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
+  gender?: Gender;
 }) {
   const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
   const avgDistance = Math.round(totalDistance / teams.length);
@@ -1690,17 +1767,26 @@ function RegionalDetailPanel({
           <p className="text-foreground">
             <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
             <span className="font-medium">Longest:</span>{" "}
-            {maxTravel.team} ({maxTravel.distanceMiles.toLocaleString()} mi)
+            <TeamLink team={maxTravel.team} gender={gender}>
+              {maxTravel.team}
+            </TeamLink>{" "}
+            ({maxTravel.distanceMiles.toLocaleString()} mi)
           </p>
           <p className="text-foreground">
             <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
             <span className="font-medium">Shortest:</span>{" "}
-            {minTravel.team} ({minTravel.distanceMiles.toLocaleString()} mi)
+            <TeamLink team={minTravel.team} gender={gender}>
+              {minTravel.team}
+            </TeamLink>{" "}
+            ({minTravel.distanceMiles.toLocaleString()} mi)
           </p>
           {hostTeam && (
             <p className="text-foreground">
               <span className="font-medium">Host:</span>{" "}
-              {hostTeam.team} (#{hostTeam.rank}, seed {hostTeam.seed})
+              <TeamLink team={hostTeam.team} gender={gender}>
+                {hostTeam.team}
+              </TeamLink>{" "}
+              (#{hostTeam.rank}, seed {hostTeam.seed})
             </p>
           )}
         </div>
@@ -1710,11 +1796,24 @@ function RegionalDetailPanel({
           <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Field Strength</p>
           <p className="text-foreground">
             <span className="font-medium">Highest seed:</span>{" "}
-            #{teams[0]?.seed} {teams[0]?.team}
+            #{teams[0]?.seed}{" "}
+            {teams[0] && (
+              <TeamLink team={teams[0].team} gender={gender}>
+                {teams[0].team}
+              </TeamLink>
+            )}
           </p>
           <p className="text-foreground">
             <span className="font-medium">Lowest seed:</span>{" "}
-            #{teams[teams.length - 1]?.seed} {teams[teams.length - 1]?.team}
+            #{teams[teams.length - 1]?.seed}{" "}
+            {teams[teams.length - 1] && (
+              <TeamLink
+                team={teams[teams.length - 1].team}
+                gender={gender}
+              >
+                {teams[teams.length - 1].team}
+              </TeamLink>
+            )}
           </p>
           <p className="text-muted-foreground">
             {conferences.join(", ")}
@@ -1726,6 +1825,7 @@ function RegionalDetailPanel({
       <HeadToHeadMatrix
         teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
         regionalColor={regional.color}
+        gender={gender}
       />
     </div>
   );
@@ -1768,7 +1868,9 @@ function TeamRow({
       </td>
       {/* Team */}
       <td className="px-2 text-left text-[13px] text-foreground whitespace-nowrap">
-        <span className="font-medium">{team.team}</span>
+        <TeamLink team={team.team} gender={gender} className="font-medium">
+          {team.team}
+        </TeamLink>
         {isHost && (
           <span className="ml-1.5 inline-flex items-center rounded px-1 py-0 text-[9px] font-semibold uppercase tracking-wider bg-secondary text-muted-foreground">
             Host
@@ -1827,11 +1929,13 @@ function MobileRegionalGroup({
   teams,
   regionalMap,
   regionalSeed,
+  gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
   regionalSeed: number | undefined;
+  gender?: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
   const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
@@ -1872,6 +1976,7 @@ function MobileRegionalGroup({
           </div>
           <HeadToHeadCompact
             teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
+            gender={gender}
           />
         </div>
       )}
@@ -1895,6 +2000,7 @@ function MobileRegionalGroup({
             <MobileTeamCard
               team={team}
               regionalMap={regionalMap}
+              gender={gender}
               isHost={team.team === regional.host}
               showRegional={false}
             />
@@ -1917,11 +2023,13 @@ function MobileRegionalGroup({
 function MobileTeamCard({
   team,
   regionalMap,
+  gender = "men",
   isHost = false,
   showRegional = true,
 }: {
   team: ScurveAssignment;
   regionalMap: Map<number, Regional>;
+  gender?: Gender;
   isHost?: boolean;
   showRegional?: boolean;
 }) {
@@ -1942,7 +2050,9 @@ function MobileTeamCard({
         {team.seed}
       </span>
       <span className="font-medium text-foreground truncate pl-1 text-[10px] overflow-hidden whitespace-nowrap">
-        {team.team}
+        <TeamLink team={team.team} gender={gender}>
+          {team.team}
+        </TeamLink>
         {isHost && <span className="text-[6px] font-bold uppercase text-muted-foreground ml-0.5">H</span>}
         {team.isAutoQualifier && <span className="text-[6px] font-bold uppercase text-primary ml-0.5">AQ</span>}
       </span>
@@ -1972,11 +2082,13 @@ function MobileVisualScurve({
   regionals,
   regionalMap,
   regionalSeeds,
+  gender = "men",
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  gender?: Gender;
 }) {
   const { orderedRegionals, byRegional } = useScurveGrid(assignments, regionals, regionalSeeds);
 
@@ -2037,7 +2149,9 @@ function MobileVisualScurve({
                         {index + 1}
                       </span>
                       <span className="font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
-                        {team.team}
+                        <TeamLink team={team.team} gender={gender}>
+                          {team.team}
+                        </TeamLink>
                         {isHost && <span className="text-[5px] font-bold text-muted-foreground ml-0.5">H</span>}
                         {team.isAutoQualifier && <span className="text-[5px] font-bold text-primary ml-0.5">AQ</span>}
                       </span>
@@ -2072,11 +2186,13 @@ function ScurveSnakeTable({
   regionals,
   regionalMap,
   regionalSeeds,
+  gender = "men",
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  gender?: Gender;
 }) {
   const orderedRegionals = useMemo(() => {
     return [...regionals].sort((a, b) => {
@@ -2175,7 +2291,9 @@ function ScurveSnakeTable({
                         "truncate font-medium min-w-0",
                         isAboveLine ? "text-foreground" : "text-muted-foreground"
                       )}>
-                        {team.team}
+                        <TeamLink team={team.team} gender={gender}>
+                          {team.team}
+                        </TeamLink>
                       </span>
                       <span className="ml-auto pl-1 font-mono tabular-nums text-[8px] text-muted-foreground shrink-0">
                         {team.rank}
@@ -2211,11 +2329,13 @@ function VisualScurve({
   regionals,
   regionalMap,
   regionalSeeds,
+  gender = "men",
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  gender?: Gender;
 }) {
   const { orderedRegionals, byRegional, grid, numRegionals, numTiers } = useScurveGrid(assignments, regionals, regionalSeeds);
 
@@ -2272,7 +2392,7 @@ function VisualScurve({
                           delay: team.seed * 0.018,
                         }}
                         className={cn(
-                          "h-7 px-2 flex items-center rounded text-[11px] transition-colors cursor-default group relative",
+                          "h-7 px-2 flex items-center rounded text-[11px] transition-colors group relative",
                           isAboveLine
                             ? "bg-secondary/80 hover:bg-secondary"
                             : "bg-secondary/30 hover:bg-secondary/50"
@@ -2287,7 +2407,9 @@ function VisualScurve({
                           "truncate font-medium flex-1 min-w-0",
                           isAboveLine ? "text-foreground" : "text-muted-foreground"
                         )}>
-                          {team.team}
+                          <TeamLink team={team.team} gender={gender}>
+                            {team.team}
+                          </TeamLink>
                           {isHost && <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">H</span>}
                           {team.isAutoQualifier && !isHost && <span className="text-[8px] font-bold text-primary ml-1">AQ</span>}
                         </span>
