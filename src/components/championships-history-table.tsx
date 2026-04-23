@@ -264,7 +264,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [confFilter, setConfFilter] = useState<Set<string>>(new Set());
-  const [championsOpen, setChampionsOpen] = useState(true);
+  const [championsOpen, setChampionsOpen] = useState(false);
   const [decadeFilter, setDecadeFilter] = useState<Set<string>>(new Set());
   const reduced = useReducedMotion();
 
