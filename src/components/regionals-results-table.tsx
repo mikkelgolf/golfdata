@@ -25,6 +25,9 @@ import { regionalsRich } from "@/data/regionals-rich";
 import { teamHref } from "@/lib/team-link";
 import { isRegionalWin } from "@/lib/streaks";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
+import YearByYearWinnersGrid, {
+  type YearWinners,
+} from "@/components/year-by-year-winners-grid";
 
 /** Year the NCAA Regionals/Championships were cancelled (COVID-19). */
 const CANCELLED_YEAR = 2020;
@@ -175,6 +178,31 @@ function buildRows(
   return { rows: rowsArr, years: [...years].sort((a, b) => a - b) };
 }
 
+/**
+ * Derives the regional winner(s) for each year from a flat list of regional
+ * finishes. "Win" = position "1" or "T1" (tie handled by isRegionalWin).
+ * Most modern years produce ~6 winners (one per regional site). Early years
+ * had fewer sites, so fewer winners. Ties produce additional winners per
+ * site. 2020 was cancelled (COVID) → surfaced as a dashed cell.
+ */
+function buildWinnersByYear(
+  entries: RegionalFinish[],
+  years: number[]
+): YearWinners[] {
+  const byYear = new Map<number, string[]>();
+  for (const e of entries) {
+    if (!isRegionalWin(e.position)) continue;
+    const arr = byYear.get(e.year);
+    if (arr) arr.push(e.team);
+    else byYear.set(e.year, [e.team]);
+  }
+  return years.map((y) => ({
+    year: y,
+    winners: byYear.get(y) ?? [],
+    cancelled: y === CANCELLED_YEAR,
+  }));
+}
+
 function sortRows(rows: TeamRow[], key: SortKey, dir: SortDir): TeamRow[] {
   const factor = dir === "asc" ? 1 : -1;
   return [...rows].sort((a, b) => {
@@ -221,6 +249,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [confFilter, setConfFilter] = useState<Set<string>>(new Set());
   const [decadeFilter, setDecadeFilter] = useState<Set<string>>(new Set());
+  const [winnersOpen, setWinnersOpen] = useState(false);
   const reduced = useReducedMotion();
 
   // Blur-up intro on the outer table container.
@@ -243,6 +272,15 @@ export default function RegionalsResultsTable({ entries }: Props) {
   const { rows, years } = useMemo(
     () => buildRows(entries.filter((e) => e.gender === gender), conferenceMap),
     [entries, gender, conferenceMap]
+  );
+
+  const winnersByYear = useMemo(
+    () =>
+      buildWinnersByYear(
+        entries.filter((e) => e.gender === gender),
+        years
+      ),
+    [entries, gender, years]
   );
 
   // Rich-detail join by (team|year) for the current gender. Seed + SG + margin
@@ -316,13 +354,12 @@ export default function RegionalsResultsTable({ entries }: Props) {
     });
   };
 
-  const toggleDecade = (label: string) => {
-    setDecadeFilter((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) next.delete(label);
-      else next.add(label);
-      return next;
-    });
+  // Per-winner predicate for the winners grid: when the conference filter
+  // is active, non-matching winners' badges are replaced with an em-dash.
+  // Mirrors the NCAA championships page pattern.
+  const winnerMatchesConfFilter = (team: string): boolean => {
+    if (confFilter.size === 0) return true;
+    return confFilter.has(conferenceMap.get(team) ?? "—");
   };
 
   const yearInActiveDecade = (y: number): boolean => {
@@ -398,40 +435,9 @@ export default function RegionalsResultsTable({ entries }: Props) {
           </div>
         </div>
 
-        {/* Decade filter */}
-        {decades.length > 1 && (
-          <div className="flex flex-wrap items-center gap-1">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mr-1">
-              Decades
-            </span>
-            {decades.map((d) => {
-              const active = decadeFilter.has(d.label);
-              return (
-                <button
-                  key={d.label}
-                  type="button"
-                  onClick={() => toggleDecade(d.label)}
-                  className={
-                    active
-                      ? "btn-lift rounded-full border border-primary/50 bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-foreground"
-                      : "rounded-full border border-border/60 bg-card px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-border-medium transition-colors"
-                  }
-                >
-                  {d.label}
-                </button>
-              );
-            })}
-            {decadeFilter.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setDecadeFilter(new Set())}
-                className="ml-1 text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        )}
+        {/* Decade filter temporarily removed — see NCAA championships page.
+            State + yearInActiveDecade are kept so the per-team expanded
+            grid's dim behavior returns as soon as the filter does. */}
 
         {/* Conference filter */}
         {conferencesInData.length > 0 && (
@@ -474,6 +480,51 @@ export default function RegionalsResultsTable({ entries }: Props) {
           </details>
         )}
       </div>
+
+      {winnersByYear.length > 0 && (
+        <section
+          aria-label="Winners By Year"
+          className="overflow-hidden rounded-md border border-border bg-card/20"
+        >
+          <button
+            type="button"
+            onClick={() => setWinnersOpen((o) => !o)}
+            aria-expanded={winnersOpen}
+            aria-controls="regional-winners-by-year-grid"
+            className="w-full flex items-start gap-2 p-3 sm:p-4 text-left hover:bg-card/30 transition-colors"
+          >
+            <ChevronRight
+              className={`mt-[3px] h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${winnersOpen ? "rotate-90" : ""}`}
+              aria-hidden="true"
+            />
+            <h2 className="text-[13px] sm:text-[14px] font-semibold text-foreground">
+              Winners By Year
+            </h2>
+          </button>
+          <AnimatePresence initial={false}>
+            {winnersOpen && (
+              <motion.div
+                key="regional-winners-grid"
+                id="regional-winners-by-year-grid"
+                initial={reduced ? false : { height: 0, opacity: 0 }}
+                animate={reduced ? undefined : { height: "auto", opacity: 1 }}
+                exit={reduced ? undefined : { height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+                  <YearByYearWinnersGrid
+                    results={winnersByYear}
+                    gender={gender}
+                    isWinnerActive={winnerMatchesConfFilter}
+                    cancelledTitle="No NCAA Regionals (COVID-19)"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
+      )}
 
       <div
         className="overflow-hidden rounded-md border border-border"
