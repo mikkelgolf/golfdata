@@ -23,11 +23,14 @@ REPORT_PATH="/tmp/champion-report-$(date -u +%Y%m%d).json"
 DEPLOY_LOG="/tmp/cgd-daily-deploy-$(date -u +%Y%m%d).log"
 LOG_DIR="$CGD_DIR/logs"
 LOG_PATH="$LOG_DIR/daily-refresh-$(date -u +%Y-%m-%d).log"
-SANITY_PCT=50   # abort if more than this share of data-file lines change.
-                # Chose 50 instead of 25 because --generate rewrites every
-                # team row even when numbers barely moved, so a "normal" run
-                # can legitimately touch ~40% of lines. Tighten once we've
-                # seen a couple of days of real runs.
+SANITY_PCT=75   # abort if more than this share of data-file lines change.
+                # History: started at 25%, raised to 50% on 2026-04-08 after
+                # --generate was shown to rewrite every team row (so "normal"
+                # runs touch ~40% of lines). Raised to 75% on 2026-04-23
+                # after Clippd's afternoon push legitimately hit 63% — one
+                # new tournament result for Tulsa (events 10→11) cascaded
+                # rank movement across ~two thirds of the women's board.
+                # Re-tighten if we see a run of ≤50% deltas for a week.
 
 mkdir -p "$LOG_DIR"
 # Duplicate stdout + stderr into the per-run log file.
