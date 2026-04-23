@@ -82,8 +82,10 @@ export const championshipsMen2026: Championship[] = [
     startDate: "2026-04-20",
     endDate: "2026-04-22",
     color: "#8a4a6a",
-    notes: "3-round event Mon-Wed.",
-    sourceUrl: "https://www.southland.org/tournaments/?id=225&path=mgolf",
+    notes:
+      "3-round event Mon-Wed. UTRGV shot a final-round 288 to win by one stroke over Incarnate Word (866 total) — first Southland men's title in program history.",
+    sourceUrl: "https://goutrgv.com/news/2026/4/22/mens-golf-wins-southland-conference-championship.aspx",
+    winner: "UTRGV",
   },
   {
     id: 3,
