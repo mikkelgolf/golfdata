@@ -264,6 +264,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [confFilter, setConfFilter] = useState<Set<string>>(new Set());
+  const [championsOpen, setChampionsOpen] = useState(true);
   const [decadeFilter, setDecadeFilter] = useState<Set<string>>(new Set());
   const reduced = useReducedMotion();
 
@@ -357,15 +358,6 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
     });
   };
 
-  const toggleDecade = (label: string) => {
-    setDecadeFilter((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) next.delete(label);
-      else next.add(label);
-      return next;
-    });
-  };
-
   const yearInActiveDecade = (y: number): boolean => {
     if (decadeFilter.size === 0) return true;
     for (const d of decades) {
@@ -449,40 +441,10 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           </div>
         </div>
 
-        {/* Decade filter */}
-        {decades.length > 1 && (
-          <div className="flex flex-wrap items-center gap-1">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mr-1">
-              Decades
-            </span>
-            {decades.map((d) => {
-              const active = decadeFilter.has(d.label);
-              return (
-                <button
-                  key={d.label}
-                  type="button"
-                  onClick={() => toggleDecade(d.label)}
-                  className={
-                    active
-                      ? "btn-lift rounded-full border border-primary/50 bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-foreground"
-                      : "rounded-full border border-border/60 bg-card px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-border-medium transition-colors"
-                  }
-                >
-                  {d.label}
-                </button>
-              );
-            })}
-            {decadeFilter.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setDecadeFilter(new Set())}
-                className="ml-1 text-[11px] text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        )}
+        {/* Decade filter temporarily removed while we iterate on how it
+            should interact with the champions grid. State + yearInActiveDecade
+            are kept in place so the per-team expanded grid keeps its dim
+            behavior when it's re-enabled. */}
 
         {/* Conference filter */}
         {conferencesInData.length > 0 && (
@@ -529,23 +491,50 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
       {winnersByYear.length > 0 && (
         <section
           aria-label="Champions by year"
-          className="rounded-md border border-border bg-card/20 p-3 sm:p-4"
+          className="overflow-hidden rounded-md border border-border bg-card/20"
         >
-          <div className="mb-3 flex flex-col gap-0.5">
-            <h2 className="text-[13px] sm:text-[14px] font-semibold text-foreground">
-              Champions by year
-            </h2>
-            <p className="text-[11px] text-text-tertiary">
-              One badge per champion team. Co-champions share a cell.
-            </p>
-          </div>
-          <YearByYearWinnersGrid
-            results={winnersByYear}
-            gender={gender}
-            isYearActive={yearInActiveDecade}
-            isWinnerActive={winnerMatchesConfFilter}
-            cancelledTitle="No NCAA Championship (COVID-19)"
-          />
+          <button
+            type="button"
+            onClick={() => setChampionsOpen((o) => !o)}
+            aria-expanded={championsOpen}
+            aria-controls="champions-by-year-grid"
+            className="w-full flex items-start gap-2 p-3 sm:p-4 text-left hover:bg-card/30 transition-colors"
+          >
+            <ChevronRight
+              className={`mt-[3px] h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${championsOpen ? "rotate-90" : ""}`}
+              aria-hidden="true"
+            />
+            <div className="flex flex-col gap-0.5">
+              <h2 className="text-[13px] sm:text-[14px] font-semibold text-foreground">
+                Champions by year
+              </h2>
+              <p className="text-[11px] text-text-tertiary">
+                One badge per champion team. Co-champions share a cell.
+              </p>
+            </div>
+          </button>
+          <AnimatePresence initial={false}>
+            {championsOpen && (
+              <motion.div
+                key="champions-grid"
+                id="champions-by-year-grid"
+                initial={reduced ? false : { height: 0, opacity: 0 }}
+                animate={reduced ? undefined : { height: "auto", opacity: 1 }}
+                exit={reduced ? undefined : { height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+                  <YearByYearWinnersGrid
+                    results={winnersByYear}
+                    gender={gender}
+                    isWinnerActive={winnerMatchesConfFilter}
+                    cancelledTitle="No NCAA Championship (COVID-19)"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       )}
 
