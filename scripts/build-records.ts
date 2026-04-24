@@ -832,11 +832,83 @@ function parseParTotal(value: string): { par: number; total: number } | null {
 }
 
 /**
+ * Pull a sortable date out of a tournament entry's event/round/date fields.
+ * Month+day+year ("Feb 8 - 10, 2024") preferred; falls back to year-only
+ * which is treated as Jan 1 of that year. Returns null when nothing
+ * date-like is present.
+ */
+const MONTH_INDEX: Record<string, number> = {
+  jan: 0, january: 0,
+  feb: 1, february: 1,
+  mar: 2, march: 2,
+  apr: 3, april: 3,
+  may: 4,
+  jun: 5, june: 5,
+  jul: 6, july: 6,
+  aug: 7, august: 7,
+  sep: 8, sept: 8, september: 8,
+  oct: 9, october: 9,
+  nov: 10, november: 10,
+  dec: 11, december: 11,
+};
+const MONTH_NAMES_RE =
+  "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?";
+
+function extractSortDate(e: TournamentEntry): number | null {
+  const all = [e.event, e.round, e.date].filter(Boolean).join(" ");
+  if (!all) return null;
+
+  // Numeric M/D/YY or M/D/YYYY (women's book format). Allow a stray "?"
+  // as a separator where a "/" was mis-OCR'd (e.g. "10?31/23").
+  const numericDate = /\b(\d{1,2})[/?](\d{1,2})[/?](\d{2,4})\b/.exec(all);
+  if (numericDate) {
+    const month = Number(numericDate[1]) - 1;
+    const day = Number(numericDate[2]);
+    let year = Number(numericDate[3]);
+    if (year < 100) year += 2000; // 2-digit → 20YY
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return Date.UTC(year, month, day);
+    }
+  }
+
+  // Month-name + day + year ("Feb 8 - 10, 2024" — men's book format).
+  const monthDayYear = new RegExp(
+    `\\b(${MONTH_NAMES_RE})\\.?\\s+(\\d{1,2})\\b.*?\\b((?:19|20)\\d{2})\\b`,
+    "i",
+  ).exec(all);
+  if (monthDayYear) {
+    const month = MONTH_INDEX[monthDayYear[1].toLowerCase()];
+    const day = Number(monthDayYear[2]);
+    const year = Number(monthDayYear[3]);
+    if (month !== undefined && day >= 1 && day <= 31) {
+      return Date.UTC(year, month, day);
+    }
+  }
+
+  // Last resort: first 4-digit year we can find.
+  const yearOnly = /\b(19|20)\d{2}\b/.exec(all);
+  if (yearOnly) return Date.UTC(Number(yearOnly[0]), 0, 1);
+
+  return null;
+}
+
+/**
+ * Compare two nullable sort dates. Null sorts first (treated as
+ * -infinity), then ascending by date.
+ */
+function compareDates(a: number | null, b: number | null): number {
+  if (a === b) return 0;
+  if (a === null) return -1;
+  if (b === null) return 1;
+  return a - b;
+}
+
+/**
  * The PDF lists the 54-hole individual records roughly by score-to-par but
- * with arbitrary tiebreakers within a par group. Normalize: primary sort by
- * par ascending (most-negative first), secondary by total ascending. Entries
- * that don't parse as "(par, total)" keep their original relative order
- * appended at the end.
+ * with arbitrary tiebreakers within a par group. Normalize: par ascending
+ * (most-negative first), then total ascending, then event date ascending
+ * (undated entries first). Entries that don't parse as "(par, total)" keep
+ * their original relative order appended at the end.
  */
 function sortScoreToParSection(groups: RecordGroup[]): RecordGroup[] {
   return groups.map((g) => {
@@ -845,14 +917,24 @@ function sortScoreToParSection(groups: RecordGroup[]): RecordGroup[] {
     const src = g.sections[idx];
     if (src.kind !== "tournament") return g;
 
-    const parseable: { entry: TournamentEntry; par: number; total: number }[] = [];
+    const parseable: {
+      entry: TournamentEntry;
+      par: number;
+      total: number;
+      date: number | null;
+    }[] = [];
     const unparseable: TournamentEntry[] = [];
     for (const e of src.entries) {
       const pt = parseParTotal(e.value);
-      if (pt) parseable.push({ entry: e, ...pt });
+      if (pt) parseable.push({ entry: e, ...pt, date: extractSortDate(e) });
       else unparseable.push(e);
     }
-    parseable.sort((a, b) => a.par - b.par || a.total - b.total);
+    parseable.sort(
+      (a, b) =>
+        a.par - b.par ||
+        a.total - b.total ||
+        compareDates(a.date, b.date),
+    );
 
     const sorted: RecordSection = {
       ...src,
@@ -866,9 +948,9 @@ function sortScoreToParSection(groups: RecordGroup[]): RecordGroup[] {
 
 /**
  * Derive a companion "Total Score" view by flipping the "(par, total)" tuple
- * to "(total, par)" and re-sorting ascending by total strokes, breaking ties
- * by score-to-par. Inserted immediately after the Score-to-Par section in the
- * same group.
+ * to "(total, par)" and re-sorting: total ascending, par ascending, event
+ * date ascending (undated entries first). Inserted immediately after the
+ * Score-to-Par section in the same group.
  */
 function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
   return groups.map((g) => {
@@ -877,14 +959,19 @@ function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
     const src = g.sections[srcIdx];
     if (src.kind !== "tournament") return g;
 
-    type Row = { entry: TournamentEntry; par: number; total: number };
+    type Row = { entry: TournamentEntry; par: number; total: number; date: number | null };
     const rows: Row[] = [];
     for (const e of src.entries) {
       const pt = parseParTotal(e.value);
       if (!pt) continue; // skip entries without a parseable (par, total) tuple
-      rows.push({ entry: e, ...pt });
+      rows.push({ entry: e, ...pt, date: extractSortDate(e) });
     }
-    rows.sort((a, b) => a.total - b.total || a.par - b.par);
+    rows.sort(
+      (a, b) =>
+        a.total - b.total ||
+        a.par - b.par ||
+        compareDates(a.date, b.date),
+    );
 
     const derived: RecordSection = {
       kind: "tournament",
