@@ -344,6 +344,7 @@ export const championshipsWomen2026: Championship[] = [
     notes: "First year split men's/women's championships in 28 years.",
     sourceUrl:
       "https://maacsports.com/news/2025/10/2/maac-mens-and-womens-golf-championships-return-to-disneys-magnolia-golf-course.aspx",
+    winner: "Quinnipiac",
   },
   {
     id: 18,
