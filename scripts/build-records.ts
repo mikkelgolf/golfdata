@@ -120,7 +120,15 @@ const MEN_GROUPS: GroupSpec[] = [
     slug: "individual-tournament",
     sections: [
       { title: "Lowest Individual Round", slug: "lowest-individual-round", kind: "tournament" },
-      { title: "Lowest Individual 54 Hole Score", slug: "lowest-individual-54", kind: "tournament", aliases: ["Lowest Individual 54 Hole Score (By Relation to Par)"] },
+      {
+        title: "Lowest Individual 54 Hole Score (Score to Par)",
+        slug: "lowest-individual-54",
+        kind: "tournament",
+        aliases: [
+          "Lowest Individual 54 Hole Score",
+          "Lowest Individual 54 Hole Score (By Relation to Par)",
+        ],
+      },
     ],
   },
   {
@@ -240,7 +248,15 @@ const WOMEN_GROUPS: GroupSpec[] = [
     slug: "individual-tournament",
     sections: [
       { title: "Lowest Individual Round", slug: "lowest-individual-round", kind: "tournament" },
-      { title: "Lowest Individual 54 Hole Score", slug: "lowest-individual-54", kind: "tournament", aliases: ["Lowest Individual 54 Hole Score (By Relation to Par)"] },
+      {
+        title: "Lowest Individual 54 Hole Score (Score to Par)",
+        slug: "lowest-individual-54",
+        kind: "tournament",
+        aliases: [
+          "Lowest Individual 54 Hole Score",
+          "Lowest Individual 54 Hole Score (By Relation to Par)",
+        ],
+      },
     ],
   },
   {
@@ -747,6 +763,233 @@ function parseBook(text: string, groupSpecs: GroupSpec[]): RecordGroup[] {
 }
 
 // ---------------------------------------------------------------------------
+// Post-processing: manual corrections for known PDF artifacts
+// ---------------------------------------------------------------------------
+
+/**
+ * pdftotext -raw occasionally mangles specific entries in ways our cleanups
+ * don't catch. Fix them explicitly so regenerating from a fresh raw dump
+ * still produces the correct output.
+ *
+ * Each correction matches by (gender, slug, player/school) then rewrites the
+ * affected fields. Keep the match criteria strict so we don't silently
+ * mutate unrelated rows.
+ */
+function applyKnownCorrections(groups: RecordGroup[], gender: Gender): RecordGroup[] {
+  if (gender !== "men") return groups;
+  return groups.map((g) => {
+    if (g.slug !== "individual-tournament") return g;
+    return {
+      ...g,
+      sections: g.sections.map((s) => {
+        if (s.slug !== "lowest-individual-54" || s.kind !== "tournament") return s;
+        return {
+          ...s,
+          entries: s.entries.map((e) => {
+            // Dustin Morris row can arrive as: value="-22", player=", 194) - Dustin Morris"
+            // (raw PDF line lost its opening paren, which collapses parsing).
+            if (
+              typeof e.player === "string" &&
+              e.player.includes("Dustin Morris") &&
+              (e.value === "-22" || !/^\(/.test(e.value))
+            ) {
+              return {
+                ...e,
+                value: "(-22, 194)",
+                player: "Dustin Morris",
+                school: e.school || "Colorado State",
+              };
+            }
+            // Braden Thornberry AutoTrader.com row is missing its total score
+            // in the raw PDF, which parses as "(-18, )".
+            if (
+              e.player === "Braden Thornberry" &&
+              e.school === "Ole Miss" &&
+              e.value === "(-18, )"
+            ) {
+              return { ...e, value: "(-18, 198)" };
+            }
+            return e;
+          }),
+        };
+      }),
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: synthesize derived sections
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse a "(par, total)" tuple off a tournament entry's value. Returns null
+ * if the value isn't in that shape.
+ */
+function parseParTotal(value: string): { par: number; total: number } | null {
+  const m = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(value);
+  if (!m) return null;
+  return { par: Number(m[1]), total: Number(m[2]) };
+}
+
+/**
+ * Pull a sortable date out of a tournament entry's event/round/date fields.
+ * Month+day+year ("Feb 8 - 10, 2024") preferred; falls back to year-only
+ * which is treated as Jan 1 of that year. Returns null when nothing
+ * date-like is present.
+ */
+const MONTH_INDEX: Record<string, number> = {
+  jan: 0, january: 0,
+  feb: 1, february: 1,
+  mar: 2, march: 2,
+  apr: 3, april: 3,
+  may: 4,
+  jun: 5, june: 5,
+  jul: 6, july: 6,
+  aug: 7, august: 7,
+  sep: 8, sept: 8, september: 8,
+  oct: 9, october: 9,
+  nov: 10, november: 10,
+  dec: 11, december: 11,
+};
+const MONTH_NAMES_RE =
+  "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?";
+
+function extractSortDate(e: TournamentEntry): number | null {
+  const all = [e.event, e.round, e.date].filter(Boolean).join(" ");
+  if (!all) return null;
+
+  // Numeric M/D/YY or M/D/YYYY (women's book format). Allow a stray "?"
+  // as a separator where a "/" was mis-OCR'd (e.g. "10?31/23").
+  const numericDate = /\b(\d{1,2})[/?](\d{1,2})[/?](\d{2,4})\b/.exec(all);
+  if (numericDate) {
+    const month = Number(numericDate[1]) - 1;
+    const day = Number(numericDate[2]);
+    let year = Number(numericDate[3]);
+    if (year < 100) year += 2000; // 2-digit → 20YY
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return Date.UTC(year, month, day);
+    }
+  }
+
+  // Month-name + day + year ("Feb 8 - 10, 2024" — men's book format).
+  const monthDayYear = new RegExp(
+    `\\b(${MONTH_NAMES_RE})\\.?\\s+(\\d{1,2})\\b.*?\\b((?:19|20)\\d{2})\\b`,
+    "i",
+  ).exec(all);
+  if (monthDayYear) {
+    const month = MONTH_INDEX[monthDayYear[1].toLowerCase()];
+    const day = Number(monthDayYear[2]);
+    const year = Number(monthDayYear[3]);
+    if (month !== undefined && day >= 1 && day <= 31) {
+      return Date.UTC(year, month, day);
+    }
+  }
+
+  // Last resort: first 4-digit year we can find.
+  const yearOnly = /\b(19|20)\d{2}\b/.exec(all);
+  if (yearOnly) return Date.UTC(Number(yearOnly[0]), 0, 1);
+
+  return null;
+}
+
+/**
+ * Compare two nullable sort dates. Null sorts first (treated as
+ * -infinity), then ascending by date.
+ */
+function compareDates(a: number | null, b: number | null): number {
+  if (a === b) return 0;
+  if (a === null) return -1;
+  if (b === null) return 1;
+  return a - b;
+}
+
+/**
+ * The PDF lists the 54-hole individual records roughly by score-to-par but
+ * with arbitrary tiebreakers within a par group. Normalize: par ascending
+ * (most-negative first), then total ascending, then event date ascending
+ * (undated entries first). Entries that don't parse as "(par, total)" keep
+ * their original relative order appended at the end.
+ */
+function sortScoreToParSection(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => {
+    const idx = g.sections.findIndex((s) => s.slug === "lowest-individual-54");
+    if (idx === -1) return g;
+    const src = g.sections[idx];
+    if (src.kind !== "tournament") return g;
+
+    const parseable: {
+      entry: TournamentEntry;
+      par: number;
+      total: number;
+      date: number | null;
+    }[] = [];
+    const unparseable: TournamentEntry[] = [];
+    for (const e of src.entries) {
+      const pt = parseParTotal(e.value);
+      if (pt) parseable.push({ entry: e, ...pt, date: extractSortDate(e) });
+      else unparseable.push(e);
+    }
+    parseable.sort(
+      (a, b) =>
+        a.par - b.par ||
+        a.total - b.total ||
+        compareDates(a.date, b.date),
+    );
+
+    const sorted: RecordSection = {
+      ...src,
+      entries: [...parseable.map((r) => r.entry), ...unparseable],
+    };
+    const nextSections = [...g.sections];
+    nextSections[idx] = sorted;
+    return { ...g, sections: nextSections };
+  });
+}
+
+/**
+ * Derive a companion "Total Score" view by flipping the "(par, total)" tuple
+ * to "(total, par)" and re-sorting: total ascending, par ascending, event
+ * date ascending (undated entries first). Inserted immediately after the
+ * Score-to-Par section in the same group.
+ */
+function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => {
+    const srcIdx = g.sections.findIndex((s) => s.slug === "lowest-individual-54");
+    if (srcIdx === -1) return g;
+    const src = g.sections[srcIdx];
+    if (src.kind !== "tournament") return g;
+
+    type Row = { entry: TournamentEntry; par: number; total: number; date: number | null };
+    const rows: Row[] = [];
+    for (const e of src.entries) {
+      const pt = parseParTotal(e.value);
+      if (!pt) continue; // skip entries without a parseable (par, total) tuple
+      rows.push({ entry: e, ...pt, date: extractSortDate(e) });
+    }
+    rows.sort(
+      (a, b) =>
+        a.total - b.total ||
+        a.par - b.par ||
+        compareDates(a.date, b.date),
+    );
+
+    const derived: RecordSection = {
+      kind: "tournament",
+      slug: "lowest-individual-54-total",
+      title: "Lowest Individual 54 Hole Score (Total Score)",
+      entries: rows.map(({ entry, par, total }) => ({
+        ...entry,
+        value: `(${total}, ${par})`,
+      })),
+    };
+
+    const nextSections = [...g.sections];
+    nextSections.splice(srcIdx + 1, 0, derived);
+    return { ...g, sections: nextSections };
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Emit TS data files
 // ---------------------------------------------------------------------------
 
@@ -783,8 +1026,12 @@ function run() {
   const menTxt = readFileSync(resolve(root, "scripts/records-raw/men-raw.txt"), "utf-8");
   const womenTxt = readFileSync(resolve(root, "scripts/records-raw/women-raw.txt"), "utf-8");
 
-  const menGroups = parseBook(menTxt, MEN_GROUPS);
-  const womenGroups = parseBook(womenTxt, WOMEN_GROUPS);
+  const menGroups = addTotalScoreSection(
+    sortScoreToParSection(applyKnownCorrections(parseBook(menTxt, MEN_GROUPS), "men")),
+  );
+  const womenGroups = addTotalScoreSection(
+    sortScoreToParSection(applyKnownCorrections(parseBook(womenTxt, WOMEN_GROUPS), "women")),
+  );
 
   emitRecordBook(
     "men",
