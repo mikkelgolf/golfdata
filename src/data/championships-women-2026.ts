@@ -378,6 +378,7 @@ export const championshipsWomen2026: Championship[] = [
     notes: "Three rounds stroke play + match play semis and final.",
     sourceUrl:
       "https://sunbeltsports.org/news/2025/8/11/baseball-sun-belt-conference-unveils-complete-2025-26-championships-schedule.aspx",
+    winner: "ULM",
   },
   {
     id: 20,
