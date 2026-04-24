@@ -103,6 +103,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#5fb7b0",
     notes: "Same venue as 2025.",
     sourceUrl: "https://asunsports.org/sports/mgolf/index",
+    winner: "Florida Gulf Coast",
   },
   {
     id: 4,
