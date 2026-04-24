@@ -965,7 +965,9 @@ function sortStatSections(groups: RecordGroup[]): RecordGroup[] {
       const entries = [...s.entries].sort((a, b) => {
         const an = typeof a.value === "number" ? a.value : Number(a.value);
         const bn = typeof b.value === "number" ? b.value : Number(b.value);
-        return bn - an;
+        if (an !== bn) return bn - an; // value desc
+        // Tiebreak: earliest start year wins. Null sorts first.
+        return compareDates(extractStartYear(a.years), extractStartYear(b.years));
       });
       return { ...s, entries };
     }),
@@ -1059,6 +1061,53 @@ function compareDates(a: number | null, b: number | null): number {
 }
 
 /**
+ * Pull the earliest 4-digit year out of a free-form `years` string
+ * ("1973-76", "2008-09", "1989", "1980-82, 83-85", "2023-",
+ * "1952 - 87", "Oklahoma State (1973 - 74)"). Returned as Date.UTC of
+ * Jan 1 so it's comparable with extractSortDate values. Null when no
+ * year-like token is present.
+ */
+function extractStartYear(value: string | undefined): number | null {
+  if (!value) return null;
+  const m = /\b((?:19|20)\d{2})\b/.exec(value);
+  if (!m) return null;
+  return Date.UTC(Number(m[1]), 0, 1);
+}
+
+/**
+ * Coach entries can carry the year on `years`, in the `coach` string
+ * ("UCLA - 1981 - 82"), or in `school` ("Oklahoma State (1973 - 74)").
+ * Probe in that order for tiebreaker sorting.
+ */
+function extractCoachYear(e: CoachEntry): number | null {
+  return (
+    extractStartYear(e.years) ??
+    extractStartYear(e.coach) ??
+    extractStartYear(e.school)
+  );
+}
+
+/**
+ * Extract a (primary, secondary) sort pair from a tournament entry's
+ * `value` string. Handles three formats:
+ *   "(par, total)"  → primary=par, secondary=total
+ *   "X (Y)"         → primary=X, secondary=Y
+ *   "60"            → primary=60, secondary=0
+ * Returns null if nothing parses (entry will be appended at section end).
+ */
+function extractTournamentSort(
+  value: string,
+): { primary: number; secondary: number } | null {
+  const tuple = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(value);
+  if (tuple) return { primary: Number(tuple[1]), secondary: Number(tuple[2]) };
+  const paren = /^(-?\d+)\s*\((-?\d+)\)$/.exec(value);
+  if (paren) return { primary: Number(paren[1]), secondary: Number(paren[2]) };
+  const bare = /^(-?\d+)$/.exec(value);
+  if (bare) return { primary: Number(bare[1]), secondary: 0 };
+  return null;
+}
+
+/**
  * The PDF lists the 54-hole individual records roughly by score-to-par but
  * with arbitrary tiebreakers within a par group. Normalize: par ascending
  * (most-negative first), then total ascending, then event date ascending
@@ -1145,6 +1194,106 @@ function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
 }
 
 // ---------------------------------------------------------------------------
+// Generic sorters: primary value + earliest-year tiebreaker
+// ---------------------------------------------------------------------------
+
+/**
+ * Table sections (career / single-season stroke average): sort by avg
+ * ascending (lower is better), tiebreak on earliest start year.
+ */
+function sortTableSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "table") return s;
+      const entries = [...s.entries].sort((a, b) => {
+        if (a.avg !== b.avg) return a.avg - b.avg;
+        return compareDates(extractStartYear(a.years), extractStartYear(b.years));
+      });
+      return { ...s, entries };
+    }),
+  }));
+}
+
+/**
+ * Coach sections (career coaching wins, consecutive team wins, etc.):
+ * primary value descending, tiebreak on earliest start year resolved
+ * from `years` / `coach` / `school`.
+ */
+function sortCoachSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "coach") return s;
+      const allNumeric = s.entries.every(
+        (e) =>
+          typeof e.value === "number" ||
+          (typeof e.value === "string" && !Number.isNaN(Number(e.value))),
+      );
+      if (!allNumeric) return s;
+      const entries = [...s.entries].sort((a, b) => {
+        const an = typeof a.value === "number" ? a.value : Number(a.value);
+        const bn = typeof b.value === "number" ? b.value : Number(b.value);
+        if (an !== bn) return bn - an;
+        return compareDates(extractCoachYear(a), extractCoachYear(b));
+      });
+      return { ...s, entries };
+    }),
+  }));
+}
+
+/**
+ * Generic tournament-section sort: primary value asc (lower is better)
+ * for "lowest" sections, primary desc for "largest"/"most"/"highest"
+ * sections. Secondary value follows the primary direction. Final
+ * tiebreaker is event date asc (earliest first; undated entries first).
+ *
+ * Skips the two 54-hole sections — those have their own dedicated
+ * sorters with explicit par-asc / total-asc rules.
+ */
+const TOURNAMENT_SORT_SKIP = new Set<string>([
+  "lowest-individual-54",
+  "lowest-individual-54-total",
+]);
+
+function sortTournamentSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "tournament") return s;
+      if (TOURNAMENT_SORT_SKIP.has(s.slug)) return s;
+      const desc = /\b(largest|most|highest)\b/i.test(s.title);
+      type Row = {
+        entry: TournamentEntry;
+        primary: number;
+        secondary: number;
+        date: number | null;
+      };
+      const parseable: Row[] = [];
+      const unparseable: TournamentEntry[] = [];
+      for (const e of s.entries) {
+        const v = typeof e.value === "string" ? extractTournamentSort(e.value) : null;
+        if (v) parseable.push({ entry: e, ...v, date: extractSortDate(e) });
+        else unparseable.push(e);
+      }
+      parseable.sort((a, b) => {
+        if (a.primary !== b.primary) {
+          return desc ? b.primary - a.primary : a.primary - b.primary;
+        }
+        if (a.secondary !== b.secondary) {
+          return desc ? b.secondary - a.secondary : a.secondary - b.secondary;
+        }
+        return compareDates(a.date, b.date);
+      });
+      return {
+        ...s,
+        entries: [...parseable.map((r) => r.entry), ...unparseable],
+      };
+    }),
+  }));
+}
+
+// ---------------------------------------------------------------------------
 // Emit TS data files
 // ---------------------------------------------------------------------------
 
@@ -1187,8 +1336,18 @@ function run() {
   const pipeline = (gender: Gender, groups: RecordGroup[]): RecordGroup[] =>
     addTotalScoreSection(
       sortScoreToParSection(
-        sortStatSections(
-          applyManualEntries(applyKnownCorrections(groups, gender), gender, manual),
+        sortTournamentSections(
+          sortCoachSections(
+            sortTableSections(
+              sortStatSections(
+                applyManualEntries(
+                  applyKnownCorrections(groups, gender),
+                  gender,
+                  manual,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
