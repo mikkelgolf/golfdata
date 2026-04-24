@@ -325,6 +325,7 @@ export const championshipsWomen2026: Championship[] = [
     endDate: "2026-04-23",
     color: "#6ba84f",
     sourceUrl: "https://themw.com/wgolfchamp/",
+    winner: "UNLV",
   },
   {
     id: 17,
