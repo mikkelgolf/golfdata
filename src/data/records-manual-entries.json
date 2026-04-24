@@ -9,6 +9,13 @@
             "player": "Bobby Clampett",
             "school": "BYU",
             "years": "1977-80"
+          },
+          {
+            "value": 11,
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "years": "2023-present",
+            "isCurrentPlayer": true
           }
         ]
       }
