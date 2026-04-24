@@ -822,8 +822,50 @@ function applyKnownCorrections(groups: RecordGroup[], gender: Gender): RecordGro
 // ---------------------------------------------------------------------------
 
 /**
- * The PDF only lists 54-hole individual records sorted by score-to-par. We
- * derive a companion "Total Score" view by flipping the "(par, total)" tuple
+ * Parse a "(par, total)" tuple off a tournament entry's value. Returns null
+ * if the value isn't in that shape.
+ */
+function parseParTotal(value: string): { par: number; total: number } | null {
+  const m = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(value);
+  if (!m) return null;
+  return { par: Number(m[1]), total: Number(m[2]) };
+}
+
+/**
+ * The PDF lists the 54-hole individual records roughly by score-to-par but
+ * with arbitrary tiebreakers within a par group. Normalize: primary sort by
+ * par ascending (most-negative first), secondary by total ascending. Entries
+ * that don't parse as "(par, total)" keep their original relative order
+ * appended at the end.
+ */
+function sortScoreToParSection(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => {
+    const idx = g.sections.findIndex((s) => s.slug === "lowest-individual-54");
+    if (idx === -1) return g;
+    const src = g.sections[idx];
+    if (src.kind !== "tournament") return g;
+
+    const parseable: { entry: TournamentEntry; par: number; total: number }[] = [];
+    const unparseable: TournamentEntry[] = [];
+    for (const e of src.entries) {
+      const pt = parseParTotal(e.value);
+      if (pt) parseable.push({ entry: e, ...pt });
+      else unparseable.push(e);
+    }
+    parseable.sort((a, b) => a.par - b.par || a.total - b.total);
+
+    const sorted: RecordSection = {
+      ...src,
+      entries: [...parseable.map((r) => r.entry), ...unparseable],
+    };
+    const nextSections = [...g.sections];
+    nextSections[idx] = sorted;
+    return { ...g, sections: nextSections };
+  });
+}
+
+/**
+ * Derive a companion "Total Score" view by flipping the "(par, total)" tuple
  * to "(total, par)" and re-sorting ascending by total strokes, breaking ties
  * by score-to-par. Inserted immediately after the Score-to-Par section in the
  * same group.
@@ -838,9 +880,9 @@ function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
     type Row = { entry: TournamentEntry; par: number; total: number };
     const rows: Row[] = [];
     for (const e of src.entries) {
-      const m = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(e.value);
-      if (!m) continue; // skip entries without a parseable (par, total) tuple
-      rows.push({ entry: e, par: Number(m[1]), total: Number(m[2]) });
+      const pt = parseParTotal(e.value);
+      if (!pt) continue; // skip entries without a parseable (par, total) tuple
+      rows.push({ entry: e, ...pt });
     }
     rows.sort((a, b) => a.total - b.total || a.par - b.par);
 
@@ -898,10 +940,10 @@ function run() {
   const womenTxt = readFileSync(resolve(root, "scripts/records-raw/women-raw.txt"), "utf-8");
 
   const menGroups = addTotalScoreSection(
-    applyKnownCorrections(parseBook(menTxt, MEN_GROUPS), "men"),
+    sortScoreToParSection(applyKnownCorrections(parseBook(menTxt, MEN_GROUPS), "men")),
   );
   const womenGroups = addTotalScoreSection(
-    applyKnownCorrections(parseBook(womenTxt, WOMEN_GROUPS), "women"),
+    sortScoreToParSection(applyKnownCorrections(parseBook(womenTxt, WOMEN_GROUPS), "women")),
   );
 
   emitRecordBook(
