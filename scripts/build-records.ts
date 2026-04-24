@@ -21,6 +21,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type {
   Gender,
+  ManualEntriesFile,
+  ManualSectionPayload,
   RecordBook,
   RecordGroup,
   RecordSection,
@@ -818,6 +820,123 @@ function applyKnownCorrections(groups: RecordGroup[], gender: Gender): RecordGro
 }
 
 // ---------------------------------------------------------------------------
+// Post-processing: merge human-added manual entries
+// ---------------------------------------------------------------------------
+
+/**
+ * Merge entries from `src/data/records-manual-entries.json` into the parsed
+ * record book so human additions survive PDF regeneration.
+ *
+ * The manual file is indexed by (gender → groupSlug → sectionSlug). For each
+ * matched section we either concat entries (flat-entry kinds) or merge years
+ * (annual-rank / all-america). Unknown group/section slugs or mismatched
+ * `kind` values throw immediately — that's how we catch typos.
+ */
+function applyManualEntries(
+  groups: RecordGroup[],
+  gender: Gender,
+  manual: ManualEntriesFile,
+): RecordGroup[] {
+  const genderBlock = manual[gender];
+  if (!genderBlock) return groups;
+
+  // Shallow clone so we can mutate sections by index without touching source.
+  const next = groups.map((g) => ({ ...g, sections: [...g.sections] }));
+
+  for (const [groupSlug, groupManual] of Object.entries(genderBlock)) {
+    const group = next.find((g) => g.slug === groupSlug);
+    if (!group) {
+      throw new Error(
+        `manual entries reference unknown group: ${gender}/${groupSlug}`,
+      );
+    }
+    for (const [sectionSlug, sectionManual] of Object.entries(groupManual)) {
+      const sectionIdx = group.sections.findIndex((s) => s.slug === sectionSlug);
+      if (sectionIdx === -1) {
+        throw new Error(
+          `manual entries reference unknown section: ${gender}/${groupSlug}/${sectionSlug}`,
+        );
+      }
+      const section = group.sections[sectionIdx];
+      if (section.kind !== sectionManual.kind) {
+        throw new Error(
+          `manual entries kind mismatch: ${gender}/${groupSlug}/${sectionSlug} — ` +
+            `section is "${section.kind}", manual is "${sectionManual.kind}"`,
+        );
+      }
+      group.sections[sectionIdx] = mergeManualIntoSection(section, sectionManual);
+    }
+  }
+
+  return next;
+}
+
+function mergeManualIntoSection(
+  section: RecordSection,
+  manual: ManualSectionPayload,
+): RecordSection {
+  switch (section.kind) {
+    case "stat":
+      if (manual.kind !== "stat") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "tournament":
+      if (manual.kind !== "tournament") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "table":
+      if (manual.kind !== "table") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "award":
+      if (manual.kind !== "award") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "majors":
+      if (manual.kind !== "majors") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "long-running":
+      if (manual.kind !== "long-running") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "coach":
+      if (manual.kind !== "coach") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "annual-rank": {
+      if (manual.kind !== "annual-rank") return section;
+      const years: AnnualRankYear[] = section.years.map((y) => ({ ...y }));
+      for (const my of manual.years) {
+        const existing = years.find((y) => y.year === my.year);
+        if (existing) {
+          if (my.teams) existing.teams = [...(existing.teams ?? []), ...my.teams];
+          if (my.individuals)
+            existing.individuals = [...(existing.individuals ?? []), ...my.individuals];
+        } else {
+          years.push({ ...my });
+        }
+      }
+      return { ...section, years };
+    }
+    case "all-america": {
+      if (manual.kind !== "all-america") return section;
+      const years: AllAmericaYear[] = section.years.map((y) => ({ ...y }));
+      for (const my of manual.years) {
+        const existing = years.find((y) => y.year === my.year);
+        if (existing) {
+          if (my.first) existing.first = [...(existing.first ?? []), ...my.first];
+          if (my.second) existing.second = [...(existing.second ?? []), ...my.second];
+          if (my.third) existing.third = [...(existing.third ?? []), ...my.third];
+          if (my.honorable)
+            existing.honorable = [...(existing.honorable ?? []), ...my.honorable];
+        } else {
+          years.push({ ...my });
+        }
+      }
+      return { ...section, years };
+    }
+    case "team-aggregate":
+      throw new Error(
+        `manual entries not supported for "team-aggregate" kind (built at runtime in src/lib/program-records.ts)`,
+      );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Post-processing: synthesize derived sections
 // ---------------------------------------------------------------------------
 
@@ -1025,13 +1144,19 @@ function run() {
   const root = resolve(__dirname, "..");
   const menTxt = readFileSync(resolve(root, "scripts/records-raw/men-raw.txt"), "utf-8");
   const womenTxt = readFileSync(resolve(root, "scripts/records-raw/women-raw.txt"), "utf-8");
+  const manual = JSON.parse(
+    readFileSync(resolve(root, "src/data/records-manual-entries.json"), "utf-8"),
+  ) as ManualEntriesFile;
 
-  const menGroups = addTotalScoreSection(
-    sortScoreToParSection(applyKnownCorrections(parseBook(menTxt, MEN_GROUPS), "men")),
-  );
-  const womenGroups = addTotalScoreSection(
-    sortScoreToParSection(applyKnownCorrections(parseBook(womenTxt, WOMEN_GROUPS), "women")),
-  );
+  const pipeline = (gender: Gender, groups: RecordGroup[]): RecordGroup[] =>
+    addTotalScoreSection(
+      sortScoreToParSection(
+        applyManualEntries(applyKnownCorrections(groups, gender), gender, manual),
+      ),
+    );
+
+  const menGroups = pipeline("men", parseBook(menTxt, MEN_GROUPS));
+  const womenGroups = pipeline("women", parseBook(womenTxt, WOMEN_GROUPS));
 
   emitRecordBook(
     "men",
