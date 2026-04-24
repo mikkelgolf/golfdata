@@ -1,5 +1,18 @@
 {
   "men": {
+    "individual-career": {
+      "career-wins": {
+        "kind": "stat",
+        "entries": [
+          {
+            "value": 12,
+            "player": "Bobby Clampett",
+            "school": "BYU",
+            "years": "1977-80"
+          }
+        ]
+      }
+    },
     "individual-season": {
       "single-season-wins": {
         "kind": "stat",
