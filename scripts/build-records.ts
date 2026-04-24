@@ -937,6 +937,42 @@ function mergeManualIntoSection(
 }
 
 // ---------------------------------------------------------------------------
+// Post-processing: sort stat sections value-desc so manual entries slot in
+// ---------------------------------------------------------------------------
+
+/**
+ * Every stat section in the PDF is already ordered by `value` descending, so
+ * this sort is a no-op in steady state. Its job is to re-slot entries added
+ * by `applyManualEntries` (which appends to the end) into the correct
+ * position alongside the parsed rows. The sort is stable, so tied values
+ * keep the order they were defined in — preserving the PDF's tiebreaker for
+ * pre-existing entries and placing a manual tie right after them.
+ *
+ * Any non-numeric value (shouldn't happen for stat kinds today) disables the
+ * sort for that section to avoid accidental reordering.
+ */
+function sortStatSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "stat") return s;
+      const allNumeric = s.entries.every(
+        (e) =>
+          typeof e.value === "number" ||
+          (typeof e.value === "string" && !Number.isNaN(Number(e.value))),
+      );
+      if (!allNumeric) return s;
+      const entries = [...s.entries].sort((a, b) => {
+        const an = typeof a.value === "number" ? a.value : Number(a.value);
+        const bn = typeof b.value === "number" ? b.value : Number(b.value);
+        return bn - an;
+      });
+      return { ...s, entries };
+    }),
+  }));
+}
+
+// ---------------------------------------------------------------------------
 // Post-processing: synthesize derived sections
 // ---------------------------------------------------------------------------
 
@@ -1151,7 +1187,9 @@ function run() {
   const pipeline = (gender: Gender, groups: RecordGroup[]): RecordGroup[] =>
     addTotalScoreSection(
       sortScoreToParSection(
-        applyManualEntries(applyKnownCorrections(groups, gender), gender, manual),
+        sortStatSections(
+          applyManualEntries(applyKnownCorrections(groups, gender), gender, manual),
+        ),
       ),
     );
 

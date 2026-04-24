@@ -1,4 +1,18 @@
 {
-  "men": {},
+  "men": {
+    "individual-season": {
+      "single-season-wins": {
+        "kind": "stat",
+        "entries": [
+          {
+            "value": 8,
+            "player": "Matt Hill",
+            "school": "NC State",
+            "years": "2008-09"
+          }
+        ]
+      }
+    }
+  },
   "women": {}
 }
