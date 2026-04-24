@@ -268,16 +268,16 @@ export default function TeamPage({ params }: { params: Params }) {
   const historyByYear = new Map(history.map((r) => [r.year, r]));
   const maxYear = MOST_RECENT_SEASON;
   // Anchor the grid to the gender-wide earliest regional year (1989 men,
-  // 1993 women) instead of the team's own first appearance. This keeps the
-  // grid the same width for every team of a given gender — programs whose
-  // first appearance came later (e.g. Illinois women, first 2002) now show
-  // their pre-2002 years as "missed" cells instead of being truncated, and
-  // the visual width matches every other women's team. Mirrors the NCAA
-  // timeline below, which already uses this pattern.
-  const regionalGenderMinYear = regionalsHistory
+  // 1993 women) for EVERY team — including teams with zero historical
+  // appearances. This keeps the grid the same width across every team of a
+  // given gender, so a program like Illinois women (first appearance 2002)
+  // and a program like Southern Utah women (no historical appearances) both
+  // render the full era. Pre-first-appearance years show as "missed" cells,
+  // which honestly communicates the team's regional history. Mirrors the
+  // NCAA timeline below, which already uses this pattern.
+  const minYear = regionalsHistory
     .filter((r) => r.gender === gender)
     .reduce((min, r) => Math.min(min, r.year), maxYear);
-  const minYear = history.length > 0 ? regionalGenderMinYear : MOST_RECENT_SEASON;
 
   // Rich Regional stats (seed, SG, margin, titleCount) keyed by year for this
   // team. Women's sheet tab is currently empty, so this will be empty for women.
@@ -841,8 +841,9 @@ export default function TeamPage({ params }: { params: Params }) {
 
         {history.length === 0 && recordHits.length === 0 && (
           <section className="mt-8 rounded-lg border border-border bg-card/50 px-4 py-4 text-[12px] text-muted-foreground">
-            No regional or record-book entries on file for {team} {label.toLowerCase()}{" "}
-            yet. The program may be new to D1 or data is still being compiled.
+            No NCAA Regional appearances or record-book entries on file for{" "}
+            {team} {label.toLowerCase()} yet. The program may be new to D1
+            or data is still being compiled.
           </section>
         )}
 
