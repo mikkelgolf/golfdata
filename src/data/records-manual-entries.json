@@ -25,6 +25,41 @@
           }
         ]
       }
+    },
+    "individual-tournament": {
+      "lowest-individual-54": {
+        "kind": "tournament",
+        "entries": [
+          {
+            "value": "(-25, 191)",
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "event": "Amer Ari Invitational",
+            "round": "Feb 5 - 7, 2026"
+          },
+          {
+            "value": "(-19, 191)",
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "event": "SEC Championship",
+            "round": "April 22 - 24, 2026"
+          },
+          {
+            "value": "(-22, 194)",
+            "player": "Thomas Schmidt",
+            "school": "Arkansas State",
+            "event": "Mark Simpson Colorado Invitational",
+            "round": "Sept 29 - 30, 2025"
+          },
+          {
+            "value": "(-21, 195)",
+            "player": "Kihei Akina",
+            "school": "BYU",
+            "event": "Bridgestone Collegiate Invitational",
+            "round": "March 23 - 24, 2026"
+          }
+        ]
+      }
     }
   },
   "women": {}
