@@ -22,6 +22,24 @@
             "player": "Matt Hill",
             "school": "NC State",
             "years": "2008-09"
+          },
+          {
+            "value": 8,
+            "player": "Keith Fergus",
+            "school": "Houston",
+            "years": "1973-74"
+          },
+          {
+            "value": 7,
+            "player": "Keith Fergus",
+            "school": "Houston",
+            "years": "1974-75"
+          },
+          {
+            "value": 6,
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "years": "2025-26"
           }
         ]
       }
