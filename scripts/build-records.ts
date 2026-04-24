@@ -120,7 +120,15 @@ const MEN_GROUPS: GroupSpec[] = [
     slug: "individual-tournament",
     sections: [
       { title: "Lowest Individual Round", slug: "lowest-individual-round", kind: "tournament" },
-      { title: "Lowest Individual 54 Hole Score", slug: "lowest-individual-54", kind: "tournament", aliases: ["Lowest Individual 54 Hole Score (By Relation to Par)"] },
+      {
+        title: "Lowest Individual 54 Hole Score (Score to Par)",
+        slug: "lowest-individual-54",
+        kind: "tournament",
+        aliases: [
+          "Lowest Individual 54 Hole Score",
+          "Lowest Individual 54 Hole Score (By Relation to Par)",
+        ],
+      },
     ],
   },
   {
@@ -240,7 +248,15 @@ const WOMEN_GROUPS: GroupSpec[] = [
     slug: "individual-tournament",
     sections: [
       { title: "Lowest Individual Round", slug: "lowest-individual-round", kind: "tournament" },
-      { title: "Lowest Individual 54 Hole Score", slug: "lowest-individual-54", kind: "tournament", aliases: ["Lowest Individual 54 Hole Score (By Relation to Par)"] },
+      {
+        title: "Lowest Individual 54 Hole Score (Score to Par)",
+        slug: "lowest-individual-54",
+        kind: "tournament",
+        aliases: [
+          "Lowest Individual 54 Hole Score",
+          "Lowest Individual 54 Hole Score (By Relation to Par)",
+        ],
+      },
     ],
   },
   {
@@ -747,6 +763,104 @@ function parseBook(text: string, groupSpecs: GroupSpec[]): RecordGroup[] {
 }
 
 // ---------------------------------------------------------------------------
+// Post-processing: manual corrections for known PDF artifacts
+// ---------------------------------------------------------------------------
+
+/**
+ * pdftotext -raw occasionally mangles specific entries in ways our cleanups
+ * don't catch. Fix them explicitly so regenerating from a fresh raw dump
+ * still produces the correct output.
+ *
+ * Each correction matches by (gender, slug, player/school) then rewrites the
+ * affected fields. Keep the match criteria strict so we don't silently
+ * mutate unrelated rows.
+ */
+function applyKnownCorrections(groups: RecordGroup[], gender: Gender): RecordGroup[] {
+  if (gender !== "men") return groups;
+  return groups.map((g) => {
+    if (g.slug !== "individual-tournament") return g;
+    return {
+      ...g,
+      sections: g.sections.map((s) => {
+        if (s.slug !== "lowest-individual-54" || s.kind !== "tournament") return s;
+        return {
+          ...s,
+          entries: s.entries.map((e) => {
+            // Dustin Morris row can arrive as: value="-22", player=", 194) - Dustin Morris"
+            // (raw PDF line lost its opening paren, which collapses parsing).
+            if (
+              typeof e.player === "string" &&
+              e.player.includes("Dustin Morris") &&
+              (e.value === "-22" || !/^\(/.test(e.value))
+            ) {
+              return {
+                ...e,
+                value: "(-22, 194)",
+                player: "Dustin Morris",
+                school: e.school || "Colorado State",
+              };
+            }
+            // Braden Thornberry AutoTrader.com row is missing its total score
+            // in the raw PDF, which parses as "(-18, )".
+            if (
+              e.player === "Braden Thornberry" &&
+              e.school === "Ole Miss" &&
+              e.value === "(-18, )"
+            ) {
+              return { ...e, value: "(-18, 198)" };
+            }
+            return e;
+          }),
+        };
+      }),
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: synthesize derived sections
+// ---------------------------------------------------------------------------
+
+/**
+ * The PDF only lists 54-hole individual records sorted by score-to-par. We
+ * derive a companion "Total Score" view by flipping the "(par, total)" tuple
+ * to "(total, par)" and re-sorting ascending by total strokes, breaking ties
+ * by score-to-par. Inserted immediately after the Score-to-Par section in the
+ * same group.
+ */
+function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => {
+    const srcIdx = g.sections.findIndex((s) => s.slug === "lowest-individual-54");
+    if (srcIdx === -1) return g;
+    const src = g.sections[srcIdx];
+    if (src.kind !== "tournament") return g;
+
+    type Row = { entry: TournamentEntry; par: number; total: number };
+    const rows: Row[] = [];
+    for (const e of src.entries) {
+      const m = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(e.value);
+      if (!m) continue; // skip entries without a parseable (par, total) tuple
+      rows.push({ entry: e, par: Number(m[1]), total: Number(m[2]) });
+    }
+    rows.sort((a, b) => a.total - b.total || a.par - b.par);
+
+    const derived: RecordSection = {
+      kind: "tournament",
+      slug: "lowest-individual-54-total",
+      title: "Lowest Individual 54 Hole Score (Total Score)",
+      entries: rows.map(({ entry, par, total }) => ({
+        ...entry,
+        value: `(${total}, ${par})`,
+      })),
+    };
+
+    const nextSections = [...g.sections];
+    nextSections.splice(srcIdx + 1, 0, derived);
+    return { ...g, sections: nextSections };
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Emit TS data files
 // ---------------------------------------------------------------------------
 
@@ -783,8 +897,12 @@ function run() {
   const menTxt = readFileSync(resolve(root, "scripts/records-raw/men-raw.txt"), "utf-8");
   const womenTxt = readFileSync(resolve(root, "scripts/records-raw/women-raw.txt"), "utf-8");
 
-  const menGroups = parseBook(menTxt, MEN_GROUPS);
-  const womenGroups = parseBook(womenTxt, WOMEN_GROUPS);
+  const menGroups = addTotalScoreSection(
+    applyKnownCorrections(parseBook(menTxt, MEN_GROUPS), "men"),
+  );
+  const womenGroups = addTotalScoreSection(
+    applyKnownCorrections(parseBook(womenTxt, WOMEN_GROUPS), "women"),
+  );
 
   emitRecordBook(
     "men",
