@@ -212,7 +212,7 @@ export const allTeamsWomen2026: TeamData[] = [
   { rank: 198, team: "Texas A&M-C. Christi", conference: "SOUTHLAND", events: 10, wins: 41, losses: 74, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 27.7136, lng: -97.3258 },
   { rank: 199, team: "North Alabama", conference: "ASUN", events: 10, wins: 39, losses: 67, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.79981, lng: -87.677251 },
   { rank: 200, team: "Winthrop", conference: "BSOUTH", events: 10, wins: 44, losses: 69, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.9248667, lng: -81.0250784 },
-  { rank: 201, team: "Idaho", conference: "BSKY", events: 10, wins: 35, losses: 69, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 42.8620287, lng: -112.450627 },
+  { rank: 201, team: "Idaho", conference: "BSKY", events: 10, wins: 35, losses: 69, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 46.7269, lng: -116.9989 },
   { rank: 202, team: "Portland State", conference: "BSKY", events: 9, wins: 27, losses: 65, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.6178915, lng: -75.3786521 },
   { rank: 203, team: "Western Carolina", conference: "SOCON", events: 10, wins: 27, losses: 89, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 35.3137739, lng: -83.1765814 },
   { rank: 204, team: "Creighton", conference: "BEAST", events: 9, wins: 35, losses: 64, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.2587459, lng: -95.9383758 },
