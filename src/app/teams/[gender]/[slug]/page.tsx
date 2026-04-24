@@ -266,8 +266,18 @@ export default function TeamPage({ params }: { params: Params }) {
   const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
 
   const historyByYear = new Map(history.map((r) => [r.year, r]));
-  const minYear = history.length > 0 ? history[history.length - 1].year : MOST_RECENT_SEASON;
   const maxYear = MOST_RECENT_SEASON;
+  // Anchor the grid to the gender-wide earliest regional year (1989 men,
+  // 1993 women) for EVERY team — including teams with zero historical
+  // appearances. This keeps the grid the same width across every team of a
+  // given gender, so a program like Illinois women (first appearance 2002)
+  // and a program like Southern Utah women (no historical appearances) both
+  // render the full era. Pre-first-appearance years show as "missed" cells,
+  // which honestly communicates the team's regional history. Mirrors the
+  // NCAA timeline below, which already uses this pattern.
+  const minYear = regionalsHistory
+    .filter((r) => r.gender === gender)
+    .reduce((min, r) => Math.min(min, r.year), maxYear);
 
   // Rich Regional stats (seed, SG, margin, titleCount) keyed by year for this
   // team. Women's sheet tab is currently empty, so this will be empty for women.
@@ -831,8 +841,9 @@ export default function TeamPage({ params }: { params: Params }) {
 
         {history.length === 0 && recordHits.length === 0 && (
           <section className="mt-8 rounded-lg border border-border bg-card/50 px-4 py-4 text-[12px] text-muted-foreground">
-            No regional or record-book entries on file for {team} {label.toLowerCase()}{" "}
-            yet. The program may be new to D1 or data is still being compiled.
+            No NCAA Regional appearances or record-book entries on file for{" "}
+            {team} {label.toLowerCase()} yet. The program may be new to D1
+            or data is still being compiled.
           </section>
         )}
 
