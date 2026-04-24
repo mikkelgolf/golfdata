@@ -266,8 +266,18 @@ export default function TeamPage({ params }: { params: Params }) {
   const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
 
   const historyByYear = new Map(history.map((r) => [r.year, r]));
-  const minYear = history.length > 0 ? history[history.length - 1].year : MOST_RECENT_SEASON;
   const maxYear = MOST_RECENT_SEASON;
+  // Anchor the grid to the gender-wide earliest regional year (1989 men,
+  // 1993 women) instead of the team's own first appearance. This keeps the
+  // grid the same width for every team of a given gender — programs whose
+  // first appearance came later (e.g. Illinois women, first 2002) now show
+  // their pre-2002 years as "missed" cells instead of being truncated, and
+  // the visual width matches every other women's team. Mirrors the NCAA
+  // timeline below, which already uses this pattern.
+  const regionalGenderMinYear = regionalsHistory
+    .filter((r) => r.gender === gender)
+    .reduce((min, r) => Math.min(min, r.year), maxYear);
+  const minYear = history.length > 0 ? regionalGenderMinYear : MOST_RECENT_SEASON;
 
   // Rich Regional stats (seed, SG, margin, titleCount) keyed by year for this
   // team. Women's sheet tab is currently empty, so this will be empty for women.
