@@ -9,7 +9,7 @@
 
 import type { TeamData } from "@/data/rankings-men";
 
-export const ALL_TEAMS_GENERATED_AT = "2026-04-25";
+export const ALL_TEAMS_GENERATED_AT = "2026-04-24";
 
 export const allTeamsMen2026: TeamData[] = [
   { rank: 1, team: "Auburn", conference: "SEC", events: 12, wins: 144, losses: 20, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 32.6034, lng: -85.4808 },
