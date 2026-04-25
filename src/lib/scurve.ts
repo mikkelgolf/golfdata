@@ -177,7 +177,9 @@ function computeStrictScurve(
  * 2. Seeds 7+ serpentine by REGIONAL STRENGTH ORDER (weakest regional gets
  *    best 2-seed, strongest gets worst 2-seed — the core balancing mechanism)
  * 3. Host schools guaranteed home regional (within-tier swaps)
- * 4. Regional position 12+: geographic preference swaps for teams >1200 mi from regional
+ * 4. Regional positions 12-13: geographic preference swaps for teams >1200 mi from regional
+ * 5. Regional position 14 (men only): closest-site placement (greedy by seed),
+ *    unconstrained by strength order — any 3 of the 6 sites can host a 14-seed
  */
 function computeCommitteeScurve(
   teams: TeamData[],
@@ -279,19 +281,23 @@ function computeCommitteeScurve(
   }
 
   // -------------------------------------------------------------------
-  // PHASE 4: Geographic preference for regional position 12+
+  // PHASE 4: Geographic preference for regional positions 12-13
   // Only the bottom of each regional bracket (the weakest AQs who
   // wouldn't have gotten an at-large) get geographic adjustment.
   // Seeds 2-11 within each regional are pure serpentine.
+  // Position 14 is handled separately in Phase 4b (men's only — closest
+  // site, unconstrained by strength order).
   // -------------------------------------------------------------------
   const GEO_DISTANCE_THRESHOLD = 1200;
   const GEO_SWAP_MIN_POSITION = 12;
+  const POSITION_14 = 14;
 
   for (let i = 0; i < assignments.length; i++) {
     const team = assignments[i];
     const tier = Math.floor(i / numRegionals);
     const regionalPosition = tier + 1;
     if (regionalPosition < GEO_SWAP_MIN_POSITION) continue;
+    if (regionalPosition === POSITION_14) continue; // handled in Phase 4b
     if (team.lat === 0 && team.lng === 0) continue;
 
     const regional = regionalMap.get(team.regionalId)!;
@@ -330,6 +336,81 @@ function computeCommitteeScurve(
       const temp = assignments[bestSwapIdx].regionalId;
       assignments[bestSwapIdx].regionalId = team.regionalId;
       assignments[i].regionalId = temp;
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // PHASE 4b: Closest-site placement for regional position 14 (men only)
+  //
+  // Men's field is 81 teams across 6 regionals → the last tier has only
+  // 3 teams (seeds #79, #80, #81), each filling the 14th slot in 3 of
+  // the 6 regionals. The strict S-curve (and Phase 2's serpentine) would
+  // push these 3 teams into the "last 3 sites" by strength order. The
+  // committee instead places each at its closest available site, so any
+  // 3 of the 6 sites can end up hosting a 14-seed (no requirement that
+  // the 14-seed sites be contiguous in the strength ordering).
+  //
+  // Women's field (72) has no position-14 slot, so this phase no-ops.
+  //
+  // Order of operations:
+  //   1. Hosts at position 14 → home regional (host rule still wins)
+  //   2. Remaining position-14 teams in seed order → closest unused site
+  //      (with no-lat/lng teams falling back to lowest-numbered free site)
+  // -------------------------------------------------------------------
+  const position14Indices: number[] = [];
+  for (let i = 0; i < assignments.length; i++) {
+    const tier = Math.floor(i / numRegionals);
+    if (tier + 1 === POSITION_14) position14Indices.push(i);
+  }
+
+  if (position14Indices.length > 0) {
+    const usedRegionals = new Set<number>();
+
+    // Step 1: Hosts at position 14 lock to their home regional.
+    const needsAssignment: number[] = [];
+    for (const idx of position14Indices) {
+      const team = assignments[idx];
+      const homeId = hostToRegional.get(team.team);
+      if (homeId !== undefined) {
+        team.regionalId = homeId;
+        usedRegionals.add(homeId);
+      } else {
+        needsAssignment.push(idx);
+      }
+    }
+
+    // Step 2: Greedy by seed — each non-host position-14 team picks
+    // its closest available (unused) site.
+    needsAssignment.sort((a, b) => assignments[a].seed - assignments[b].seed);
+    for (const idx of needsAssignment) {
+      const team = assignments[idx];
+
+      // Fallback for teams with no geographic data: pick the lowest-id
+      // unused regional. Keeps behavior deterministic without skewing
+      // distance stats. In practice all teams have lat/lng populated.
+      if (team.lat === 0 && team.lng === 0) {
+        const fallback = regionals.find((r) => !usedRegionals.has(r.id));
+        if (fallback) {
+          team.regionalId = fallback.id;
+          usedRegionals.add(fallback.id);
+        }
+        continue;
+      }
+
+      let bestId = -1;
+      let bestDist = Infinity;
+      for (const r of regionals) {
+        if (usedRegionals.has(r.id)) continue;
+        const d = haversineDistance(team.lat, team.lng, r.lat, r.lng);
+        if (d < bestDist) {
+          bestDist = d;
+          bestId = r.id;
+        }
+      }
+      if (bestId !== -1) {
+        team.regionalId = bestId;
+        usedRegionals.add(bestId);
+      }
     }
   }
 
