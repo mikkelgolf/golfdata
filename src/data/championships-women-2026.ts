@@ -362,6 +362,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#d9a13d",
     notes: "Presented by Allstate.",
     sourceUrl: "https://big12sports.com/tournaments/?id=1061&path=golf",
+    winner: "Iowa State",
   },
   {
     id: 19,
