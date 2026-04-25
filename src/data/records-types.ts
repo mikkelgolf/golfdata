@@ -109,6 +109,46 @@ export interface RecordBook {
   groups: RecordGroup[];
 }
 
+/**
+ * Shape of `src/data/records-manual-entries.json`. Entries listed here are
+ * merged into the parsed record book by `scripts/build-records.ts` so that
+ * human-added rows survive regeneration from the PDF source.
+ *
+ * Indexed by (gender → groupSlug → sectionSlug). Each section payload is a
+ * discriminated union whose `kind` must match the target section's kind.
+ * The build script throws if a target group/section doesn't exist or the
+ * kind disagrees — use that to catch typos early.
+ *
+ * For `stat`/`tournament`/`table`/`award`/`majors`/`long-running`/`coach`,
+ * entries are concatenated to the parsed list (sort helpers then slot each
+ * one into the right position).
+ *
+ * For `annual-rank`/`all-america`, manual years merge by year key: if the
+ * year already exists in the parsed data, its arrays are extended; otherwise
+ * the whole year is appended.
+ *
+ * `team-aggregate` is not supported — it's built at runtime in
+ * `src/lib/program-records.ts`, not by this parser.
+ */
+export type ManualSectionPayload =
+  | { kind: "stat"; entries: StatEntry[] }
+  | { kind: "tournament"; entries: TournamentEntry[] }
+  | { kind: "table"; entries: TableEntry[] }
+  | { kind: "award"; entries: AwardEntry[] }
+  | { kind: "majors"; entries: MajorsEntry[] }
+  | { kind: "long-running"; entries: LongRunningEntry[] }
+  | { kind: "coach"; entries: CoachEntry[] }
+  | { kind: "annual-rank"; years: AnnualRankYear[] }
+  | { kind: "all-america"; years: AllAmericaYear[] };
+
+export type ManualEntriesFile = {
+  [gender in Gender]?: {
+    [groupSlug: string]: {
+      [sectionSlug: string]: ManualSectionPayload;
+    };
+  };
+};
+
 export interface RegionalFinish {
   year: number;
   gender: Gender;
