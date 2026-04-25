@@ -358,10 +358,11 @@ export const championshipsWomen2026: Championship[] = [
     lat: 32.7945,
     lng: -96.6334,
     startDate: "2026-04-23",
-    endDate: "2026-04-25",
+    endDate: "2026-04-24",
     color: "#d9a13d",
     notes: "Presented by Allstate.",
     sourceUrl: "https://big12sports.com/tournaments/?id=1061&path=golf",
+    winner: "Iowa State",
   },
   {
     id: 19,
