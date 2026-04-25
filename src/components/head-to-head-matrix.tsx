@@ -142,7 +142,7 @@ export default function HeadToHeadMatrix({
           Head-to-Head
         </p>
         <p className="text-[9px] text-muted-foreground/70">
-          stroke play &middot; column vs row
+          stroke play &middot; row vs column
         </p>
       </div>
 
@@ -154,6 +154,15 @@ export default function HeadToHeadMatrix({
         </div>
       ) : (
         <table className="w-full table-fixed border-collapse">
+          {/* First column reserved for the row-header (regional-seed + badge);
+              data columns share the remainder equally so worst-case 14-team
+              men's regionals still fit a ~360px viewport. */}
+          <colgroup>
+            <col style={{ width: compact ? 30 : 40 }} />
+            {sorted.map((t) => (
+              <col key={t.team} />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               {/* Empty top-left corner */}
@@ -162,15 +171,16 @@ export default function HeadToHeadMatrix({
                 <th
                   key={t.team}
                   className="p-0.5 align-bottom"
-                  title={`${t.team} (seed ${t.seed})`}
+                  title={`${t.team} (rank #${t.rank})`}
                 >
                   <Link
                     href={teamHref(t.team, gender)}
                     className="inline-flex flex-col items-center gap-0.5"
                   >
                     <TeamMonogram team={t.team} size={badgeSize} />
+                    {/* Sub-label: column team's national rank, e.g. "#5". */}
                     <span className="font-mono tabular-nums text-[8px] text-muted-foreground/80 leading-none">
-                      {t.seed}
+                      #{t.rank}
                     </span>
                   </Link>
                 </th>
@@ -178,18 +188,24 @@ export default function HeadToHeadMatrix({
             </tr>
           </thead>
           <tbody>
-            {sorted.map((rowTeam) => (
+            {sorted.map((rowTeam, rowIdx) => (
               <tr key={rowTeam.team}>
-                {/* Row header — badge on the left */}
-                <th className="p-0.5" title={`${rowTeam.team} (seed ${rowTeam.seed})`}>
+                {/* Row header — regional seed on the left of the badge.
+                    Regional seed is 1..N within this regional and matches
+                    the sorted index because `sorted` is ordered by S-curve
+                    seed already. */}
+                <th
+                  className="p-0.5"
+                  title={`${rowTeam.team} (regional seed ${rowIdx + 1})`}
+                >
                   <Link
                     href={teamHref(rowTeam.team, gender)}
-                    className="inline-flex items-center gap-0.5"
+                    className="inline-flex items-center justify-end gap-0.5"
                   >
-                    <TeamMonogram team={rowTeam.team} size={badgeSize} />
-                    <span className="font-mono tabular-nums text-[8px] text-muted-foreground/80 leading-none hidden sm:inline">
-                      {rowTeam.seed}
+                    <span className="font-mono tabular-nums text-[8px] text-muted-foreground/80 leading-none">
+                      {rowIdx + 1}
                     </span>
+                    <TeamMonogram team={rowTeam.team} size={badgeSize} />
                   </Link>
                 </th>
                 {sorted.map((colTeam) => {
@@ -213,11 +229,13 @@ export default function HeadToHeadMatrix({
                     );
                   }
 
-                  // Cell shows column team's record vs row team. Per spec:
-                  // "x-axis is Team A, y-axis is Team B" — so col=A, row=B
-                  // and the displayed record is A vs B from A's perspective.
-                  const teamA = colTeam.team;
-                  const teamB = rowTeam.team;
+                  // Cell shows ROW team's record vs COLUMN team (row vs
+                  // column). Reading: "this row's team has gone {W-L} against
+                  // each column-team this season." Greens running across a
+                  // row mean the row team is dominant; reds running down a
+                  // column mean the column team is dominant.
+                  const teamA = rowTeam.team;
+                  const teamB = colTeam.team;
                   const rec = lookupStrokeplay(gender, teamA, teamB);
 
                   if (!rec) {
