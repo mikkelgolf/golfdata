@@ -312,14 +312,3 @@ export default function HeadToHeadMatrix({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Compact variant — re-exported as a thin wrapper so the mobile call site in
-// `scurve-table.tsx` keeps working without any prop juggling. Same matrix,
-// just denser sizing.
-// ---------------------------------------------------------------------------
-
-export function HeadToHeadCompact(
-  props: Omit<HeadToHeadMatrixProps, "variant">
-) {
-  return <HeadToHeadMatrix {...props} variant="compact" />;
-}

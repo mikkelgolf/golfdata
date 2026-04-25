@@ -20,7 +20,8 @@ import {
   MapPin,
   Plane,
 } from "lucide-react";
-import HeadToHeadMatrix, { HeadToHeadCompact } from "@/components/head-to-head-matrix";
+import HeadToHeadMatrix from "@/components/head-to-head-matrix";
+import { ConferenceBadge } from "@/components/conference-badge";
 import USMap from "@/components/us-map";
 import { Sparkline } from "@/components/sparkline";
 import { AnimatedNumber } from "@/components/animated-number";
@@ -1794,34 +1795,130 @@ function RegionalDetailPanel({
   hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
-  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
-  const avgDistance = Math.round(totalDistance / teams.length);
-  const maxTravel = teams.reduce((max, t) => (t.distanceMiles > max.distanceMiles ? t : max), teams[0]);
-  const minTravel = teams.reduce((min, t) => (t.distanceMiles < min.distanceMiles ? t : min), teams[0]);
-  const aqCount = teams.filter((t) => t.isAutoQualifier).length;
-  const hostTeam = teams.find((t) => t.team === regional.host);
-  const conferences = [...new Set(teams.map((t) => t.conference))];
-
   return (
     <div
       className="bg-card/50 border-t border-b border-border/50 px-4 py-4"
       style={{ borderLeft: `4px solid ${regional.color}` }}
     >
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
-        <StatBox label="Avg Travel" value={`${avgDistance.toLocaleString()} mi`} />
-        <StatBox label="Auto Qualifiers" value={String(aqCount)} />
-        <StatBox label="Conferences" value={String(conferences.length)} />
+      <RegionalDetailContent
+        regional={regional}
+        teams={teams}
+        hostColorByTeam={hostColorByTeam}
+        gender={gender}
+      />
+    </div>
+  );
+}
+
+/**
+ * Inner content of the regional expansion, shared between desktop
+ * (`RegionalDetailPanel`) and mobile (`MobileRegionalGroup`). Layout uses
+ * tailwind responsive classes so a single render works at all widths — the
+ * caller only owns the wrapper chrome (border, padding, regional color
+ * stripe), not the content.
+ */
+function RegionalDetailContent({
+  regional,
+  teams,
+  hostColorByTeam,
+  gender = "men",
+  compact = false,
+}: {
+  regional: Regional;
+  teams: ScurveAssignment[];
+  hostColorByTeam?: Map<string, string>;
+  gender?: Gender;
+  /** Tighten padding + matrix density for mobile cards. */
+  compact?: boolean;
+}) {
+  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
+  const avgDistance = Math.round(totalDistance / teams.length);
+  const maxTravel = teams.reduce(
+    (max, t) => (t.distanceMiles > max.distanceMiles ? t : max),
+    teams[0]
+  );
+  const minTravel = teams.reduce(
+    (min, t) => (t.distanceMiles < min.distanceMiles ? t : min),
+    teams[0]
+  );
+  const aqTeams = teams.filter((t) => t.isAutoQualifier);
+  const aqConfs = [
+    ...new Set(aqTeams.map((t) => t.aqConference ?? t.conference)),
+  ];
+  const hostTeam = teams.find((t) => t.team === regional.host);
+  // `teams` arrives sorted ascending by S-curve seed → array index + 1 is the
+  // "true" regional seed (1..N within this regional), the same value the H2H
+  // matrix uses on its row labels.
+  const hostRegionalSeed = hostTeam ? teams.indexOf(hostTeam) + 1 : null;
+  const conferences = [...new Set(teams.map((t) => t.conference))];
+  // Highest/Lowest *Rank* — derived from national rank, not S-curve seed,
+  // because David wants the headline to be national-rank based and a team's
+  // rank can diverge from its seed (auto-qualifier carve-outs etc.).
+  const highestRankTeam = teams.reduce(
+    (best, t) => (t.rank < best.rank ? t : best),
+    teams[0]
+  );
+  const lowestRankTeam = teams.reduce(
+    (worst, t) => (t.rank > worst.rank ? t : worst),
+    teams[0]
+  );
+
+  const gapCls = compact ? "gap-2" : "gap-4";
+  const blockGap = compact ? "mb-3" : "mb-4";
+  const lineGap = compact ? "space-y-1" : "space-y-1.5";
+  const textCls = compact ? "text-[12px]" : "text-[13px]";
+
+  return (
+    <>
+      <div className={cn("grid grid-cols-2 md:grid-cols-4", gapCls, blockGap)}>
+        <StatBox
+          label="Total Travel"
+          value={`${totalDistance.toLocaleString()} mi`}
+        />
+        <StatBox
+          label="Avg Travel"
+          value={`${avgDistance.toLocaleString()} mi`}
+        />
+        <StatBox
+          label="Auto Qualifiers"
+          value={String(aqTeams.length)}
+          tail={
+            aqConfs.length > 0 ? (
+              <div className="flex flex-wrap gap-1">
+                {aqConfs.map((c) => (
+                  <ConferenceBadge key={c} conference={c} size="sm" />
+                ))}
+              </div>
+            ) : null
+          }
+        />
+        <StatBox
+          label="Conferences"
+          value={String(conferences.length)}
+          tail={
+            <div className="flex flex-wrap gap-1">
+              {conferences.map((c) => (
+                <ConferenceBadge key={c} conference={c} size="sm" />
+              ))}
+            </div>
+          }
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[13px]">
+      <div className={cn("grid grid-cols-1 md:grid-cols-2", gapCls, textCls)}>
         {/* Travel extremes */}
-        <div className="space-y-1.5">
-          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Travel</p>
+        <div className={lineGap}>
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Travel
+          </p>
           <p className="text-foreground">
             <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
             <span className="font-medium">Longest:</span>{" "}
-            <TeamLink team={maxTravel.team} gender={gender} hostColor={hostColorByTeam?.get(maxTravel.team)}>
+            <TeamLink
+              team={maxTravel.team}
+              gender={gender}
+              hostColor={hostColorByTeam?.get(maxTravel.team)}
+            >
               {maxTravel.team}
             </TeamLink>{" "}
             ({maxTravel.distanceMiles.toLocaleString()} mi)
@@ -1829,7 +1926,11 @@ function RegionalDetailPanel({
           <p className="text-foreground">
             <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
             <span className="font-medium">Shortest:</span>{" "}
-            <TeamLink team={minTravel.team} gender={gender} hostColor={hostColorByTeam?.get(minTravel.team)}>
+            <TeamLink
+              team={minTravel.team}
+              gender={gender}
+              hostColor={hostColorByTeam?.get(minTravel.team)}
+            >
               {minTravel.team}
             </TeamLink>{" "}
             ({minTravel.distanceMiles.toLocaleString()} mi)
@@ -1837,42 +1938,57 @@ function RegionalDetailPanel({
           {hostTeam && (
             <p className="text-foreground">
               <span className="font-medium">Host:</span>{" "}
-              <TeamLink team={hostTeam.team} gender={gender} hostColor={hostColorByTeam?.get(hostTeam.team)}>
+              <TeamLink
+                team={hostTeam.team}
+                gender={gender}
+                hostColor={hostColorByTeam?.get(hostTeam.team)}
+              >
                 {hostTeam.team}
               </TeamLink>{" "}
-              (#{hostTeam.rank}, seed {hostTeam.seed})
+              <span className="text-muted-foreground">
+                (#{hostRegionalSeed} seed, #{hostTeam.rank} rank)
+              </span>
             </p>
           )}
         </div>
 
         {/* Field strength */}
-        <div className="space-y-1.5">
-          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Field Strength</p>
-          <p className="text-foreground">
-            <span className="font-medium">Highest seed:</span>{" "}
-            #{teams[0]?.seed}{" "}
-            {teams[0] && (
-              <TeamLink team={teams[0].team} gender={gender} hostColor={hostColorByTeam?.get(teams[0].team)}>
-                {teams[0].team}
-              </TeamLink>
-            )}
+        <div className={lineGap}>
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Field Strength
           </p>
-          <p className="text-foreground">
-            <span className="font-medium">Lowest seed:</span>{" "}
-            #{teams[teams.length - 1]?.seed}{" "}
-            {teams[teams.length - 1] && (
+          {highestRankTeam && (
+            <p className="text-foreground">
+              <span className="font-medium">Highest Rank:</span>{" "}
+              #{highestRankTeam.rank}{" "}
               <TeamLink
-                team={teams[teams.length - 1].team}
+                team={highestRankTeam.team}
                 gender={gender}
-                hostColor={hostColorByTeam?.get(teams[teams.length - 1].team)}
+                hostColor={hostColorByTeam?.get(highestRankTeam.team)}
               >
-                {teams[teams.length - 1].team}
-              </TeamLink>
-            )}
-          </p>
-          <p className="text-muted-foreground">
-            {conferences.join(", ")}
-          </p>
+                {highestRankTeam.team}
+              </TeamLink>{" "}
+              <span className="text-muted-foreground">
+                (#{highestRankTeam.seed})
+              </span>
+            </p>
+          )}
+          {lowestRankTeam && (
+            <p className="text-foreground">
+              <span className="font-medium">Lowest Rank:</span>{" "}
+              #{lowestRankTeam.rank}{" "}
+              <TeamLink
+                team={lowestRankTeam.team}
+                gender={gender}
+                hostColor={hostColorByTeam?.get(lowestRankTeam.team)}
+              >
+                {lowestRankTeam.team}
+              </TeamLink>{" "}
+              <span className="text-muted-foreground">
+                (#{lowestRankTeam.seed})
+              </span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -1881,16 +1997,27 @@ function RegionalDetailPanel({
         teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
         regionalColor={regional.color}
         gender={gender}
+        variant={compact ? "compact" : "default"}
       />
-    </div>
+    </>
   );
 }
 
-function StatBox({ label, value }: { label: string; value: string }) {
+function StatBox({
+  label,
+  value,
+  tail,
+}: {
+  label: string;
+  value: string;
+  /** Optional content rendered below the value — used for conference badges. */
+  tail?: React.ReactNode;
+}) {
   return (
     <div className="ring-card px-3 py-2">
       <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="text-[15px] font-semibold text-foreground mt-0.5 display-num">{value}</p>
+      {tail && <div className="mt-1.5">{tail}</div>}
     </div>
   );
 }
@@ -1998,8 +2125,6 @@ function MobileRegionalGroup({
   gender?: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
-  const avgDistance = Math.round(totalDistance / teams.length);
 
   return (
     <div className="mt-1 first:mt-0">
@@ -2027,17 +2152,18 @@ function MobileRegionalGroup({
         </span>
       </button>
 
-      {/* Expanded detail */}
+      {/* Expanded detail — full content, same shape as desktop. */}
       {expanded && (
-        <div className="px-1.5 py-1.5 border-b border-border/40 space-y-1.5">
-          <div className="grid grid-cols-2 gap-1.5">
-            <StatBox label="Total Travel" value={`${totalDistance.toLocaleString()} mi`} />
-            <StatBox label="Auto Qualifiers" value={String(teams.filter((t) => t.isAutoQualifier).length)} />
-          </div>
-          <HeadToHeadCompact
-            teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
-            regionalColor={regional.color}
+        <div
+          className="px-1.5 py-1.5 border-b border-border/40 space-y-2"
+          style={{ borderLeft: `2px solid ${regional.color}` }}
+        >
+          <RegionalDetailContent
+            regional={regional}
+            teams={teams}
+            hostColorByTeam={hostColorByTeam}
             gender={gender}
+            compact
           />
         </div>
       )}
