@@ -1,0 +1,91 @@
+{
+  "men": {
+    "individual-career": {
+      "career-wins": {
+        "kind": "stat",
+        "entries": [
+          {
+            "value": 12,
+            "player": "Bobby Clampett",
+            "school": "BYU",
+            "years": "1977-80"
+          },
+          {
+            "value": 11,
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "years": "2023-",
+            "isCurrentPlayer": true
+          }
+        ]
+      }
+    },
+    "individual-season": {
+      "single-season-wins": {
+        "kind": "stat",
+        "entries": [
+          {
+            "value": 8,
+            "player": "Matt Hill",
+            "school": "NC State",
+            "years": "2008-09"
+          },
+          {
+            "value": 8,
+            "player": "Keith Fergus",
+            "school": "Houston",
+            "years": "1973-74"
+          },
+          {
+            "value": 7,
+            "player": "Keith Fergus",
+            "school": "Houston",
+            "years": "1974-75"
+          },
+          {
+            "value": 6,
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "years": "2025-26"
+          }
+        ]
+      }
+    },
+    "individual-tournament": {
+      "lowest-individual-54": {
+        "kind": "tournament",
+        "entries": [
+          {
+            "value": "(-25, 191)",
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "event": "Amer Ari Invitational",
+            "round": "Feb 5 - 7, 2026"
+          },
+          {
+            "value": "(-19, 191)",
+            "player": "Jackson Koivun",
+            "school": "Auburn",
+            "event": "SEC Championship",
+            "round": "April 22 - 24, 2026"
+          },
+          {
+            "value": "(-22, 194)",
+            "player": "Thomas Schmidt",
+            "school": "Arkansas State",
+            "event": "Mark Simpson Colorado Invitational",
+            "round": "Sept 29 - 30, 2025"
+          },
+          {
+            "value": "(-21, 195)",
+            "player": "Kihei Akina",
+            "school": "BYU",
+            "event": "Bridgestone Collegiate Invitational",
+            "round": "March 23 - 24, 2026"
+          }
+        ]
+      }
+    }
+  },
+  "women": {}
+}

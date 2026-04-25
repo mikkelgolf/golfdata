@@ -21,6 +21,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type {
   Gender,
+  ManualEntriesFile,
+  ManualSectionPayload,
   RecordBook,
   RecordGroup,
   RecordSection,
@@ -120,7 +122,15 @@ const MEN_GROUPS: GroupSpec[] = [
     slug: "individual-tournament",
     sections: [
       { title: "Lowest Individual Round", slug: "lowest-individual-round", kind: "tournament" },
-      { title: "Lowest Individual 54 Hole Score", slug: "lowest-individual-54", kind: "tournament", aliases: ["Lowest Individual 54 Hole Score (By Relation to Par)"] },
+      {
+        title: "Lowest Individual 54 Hole Score (Score to Par)",
+        slug: "lowest-individual-54",
+        kind: "tournament",
+        aliases: [
+          "Lowest Individual 54 Hole Score",
+          "Lowest Individual 54 Hole Score (By Relation to Par)",
+        ],
+      },
     ],
   },
   {
@@ -240,7 +250,15 @@ const WOMEN_GROUPS: GroupSpec[] = [
     slug: "individual-tournament",
     sections: [
       { title: "Lowest Individual Round", slug: "lowest-individual-round", kind: "tournament" },
-      { title: "Lowest Individual 54 Hole Score", slug: "lowest-individual-54", kind: "tournament", aliases: ["Lowest Individual 54 Hole Score (By Relation to Par)"] },
+      {
+        title: "Lowest Individual 54 Hole Score (Score to Par)",
+        slug: "lowest-individual-54",
+        kind: "tournament",
+        aliases: [
+          "Lowest Individual 54 Hole Score",
+          "Lowest Individual 54 Hole Score (By Relation to Par)",
+        ],
+      },
     ],
   },
   {
@@ -747,6 +765,535 @@ function parseBook(text: string, groupSpecs: GroupSpec[]): RecordGroup[] {
 }
 
 // ---------------------------------------------------------------------------
+// Post-processing: manual corrections for known PDF artifacts
+// ---------------------------------------------------------------------------
+
+/**
+ * pdftotext -raw occasionally mangles specific entries in ways our cleanups
+ * don't catch. Fix them explicitly so regenerating from a fresh raw dump
+ * still produces the correct output.
+ *
+ * Each correction matches by (gender, slug, player/school) then rewrites the
+ * affected fields. Keep the match criteria strict so we don't silently
+ * mutate unrelated rows.
+ */
+function applyKnownCorrections(groups: RecordGroup[], gender: Gender): RecordGroup[] {
+  if (gender !== "men") return groups;
+  return groups.map((g) => {
+    if (g.slug !== "individual-tournament") return g;
+    return {
+      ...g,
+      sections: g.sections.map((s) => {
+        if (s.slug !== "lowest-individual-54" || s.kind !== "tournament") return s;
+        return {
+          ...s,
+          entries: s.entries.map((e) => {
+            // Dustin Morris row can arrive as: value="-22", player=", 194) - Dustin Morris"
+            // (raw PDF line lost its opening paren, which collapses parsing).
+            if (
+              typeof e.player === "string" &&
+              e.player.includes("Dustin Morris") &&
+              (e.value === "-22" || !/^\(/.test(e.value))
+            ) {
+              return {
+                ...e,
+                value: "(-22, 194)",
+                player: "Dustin Morris",
+                school: e.school || "Colorado State",
+              };
+            }
+            // Braden Thornberry AutoTrader.com row is missing its total score
+            // in the raw PDF, which parses as "(-18, )".
+            if (
+              e.player === "Braden Thornberry" &&
+              e.school === "Ole Miss" &&
+              e.value === "(-18, )"
+            ) {
+              return { ...e, value: "(-18, 198)" };
+            }
+            return e;
+          }),
+        };
+      }),
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: merge human-added manual entries
+// ---------------------------------------------------------------------------
+
+/**
+ * Merge entries from `src/data/records-manual-entries.json` into the parsed
+ * record book so human additions survive PDF regeneration.
+ *
+ * The manual file is indexed by (gender → groupSlug → sectionSlug). For each
+ * matched section we either concat entries (flat-entry kinds) or merge years
+ * (annual-rank / all-america). Unknown group/section slugs or mismatched
+ * `kind` values throw immediately — that's how we catch typos.
+ */
+function applyManualEntries(
+  groups: RecordGroup[],
+  gender: Gender,
+  manual: ManualEntriesFile,
+): RecordGroup[] {
+  const genderBlock = manual[gender];
+  if (!genderBlock) return groups;
+
+  // Shallow clone so we can mutate sections by index without touching source.
+  const next = groups.map((g) => ({ ...g, sections: [...g.sections] }));
+
+  for (const [groupSlug, groupManual] of Object.entries(genderBlock)) {
+    const group = next.find((g) => g.slug === groupSlug);
+    if (!group) {
+      throw new Error(
+        `manual entries reference unknown group: ${gender}/${groupSlug}`,
+      );
+    }
+    for (const [sectionSlug, sectionManual] of Object.entries(groupManual)) {
+      const sectionIdx = group.sections.findIndex((s) => s.slug === sectionSlug);
+      if (sectionIdx === -1) {
+        throw new Error(
+          `manual entries reference unknown section: ${gender}/${groupSlug}/${sectionSlug}`,
+        );
+      }
+      const section = group.sections[sectionIdx];
+      if (section.kind !== sectionManual.kind) {
+        throw new Error(
+          `manual entries kind mismatch: ${gender}/${groupSlug}/${sectionSlug} — ` +
+            `section is "${section.kind}", manual is "${sectionManual.kind}"`,
+        );
+      }
+      group.sections[sectionIdx] = mergeManualIntoSection(section, sectionManual);
+    }
+  }
+
+  return next;
+}
+
+function mergeManualIntoSection(
+  section: RecordSection,
+  manual: ManualSectionPayload,
+): RecordSection {
+  switch (section.kind) {
+    case "stat":
+      if (manual.kind !== "stat") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "tournament":
+      if (manual.kind !== "tournament") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "table":
+      if (manual.kind !== "table") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "award":
+      if (manual.kind !== "award") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "majors":
+      if (manual.kind !== "majors") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "long-running":
+      if (manual.kind !== "long-running") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "coach":
+      if (manual.kind !== "coach") return section;
+      return { ...section, entries: [...section.entries, ...manual.entries] };
+    case "annual-rank": {
+      if (manual.kind !== "annual-rank") return section;
+      const years: AnnualRankYear[] = section.years.map((y) => ({ ...y }));
+      for (const my of manual.years) {
+        const existing = years.find((y) => y.year === my.year);
+        if (existing) {
+          if (my.teams) existing.teams = [...(existing.teams ?? []), ...my.teams];
+          if (my.individuals)
+            existing.individuals = [...(existing.individuals ?? []), ...my.individuals];
+        } else {
+          years.push({ ...my });
+        }
+      }
+      return { ...section, years };
+    }
+    case "all-america": {
+      if (manual.kind !== "all-america") return section;
+      const years: AllAmericaYear[] = section.years.map((y) => ({ ...y }));
+      for (const my of manual.years) {
+        const existing = years.find((y) => y.year === my.year);
+        if (existing) {
+          if (my.first) existing.first = [...(existing.first ?? []), ...my.first];
+          if (my.second) existing.second = [...(existing.second ?? []), ...my.second];
+          if (my.third) existing.third = [...(existing.third ?? []), ...my.third];
+          if (my.honorable)
+            existing.honorable = [...(existing.honorable ?? []), ...my.honorable];
+        } else {
+          years.push({ ...my });
+        }
+      }
+      return { ...section, years };
+    }
+    case "team-aggregate":
+      throw new Error(
+        `manual entries not supported for "team-aggregate" kind (built at runtime in src/lib/program-records.ts)`,
+      );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: sort stat sections value-desc so manual entries slot in
+// ---------------------------------------------------------------------------
+
+/**
+ * Every stat section in the PDF is already ordered by `value` descending, so
+ * this sort is a no-op in steady state. Its job is to re-slot entries added
+ * by `applyManualEntries` (which appends to the end) into the correct
+ * position alongside the parsed rows. The sort is stable, so tied values
+ * keep the order they were defined in — preserving the PDF's tiebreaker for
+ * pre-existing entries and placing a manual tie right after them.
+ *
+ * Any non-numeric value (shouldn't happen for stat kinds today) disables the
+ * sort for that section to avoid accidental reordering.
+ */
+function sortStatSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "stat") return s;
+      const allNumeric = s.entries.every(
+        (e) =>
+          typeof e.value === "number" ||
+          (typeof e.value === "string" && !Number.isNaN(Number(e.value))),
+      );
+      if (!allNumeric) return s;
+      const entries = [...s.entries].sort((a, b) => {
+        const an = typeof a.value === "number" ? a.value : Number(a.value);
+        const bn = typeof b.value === "number" ? b.value : Number(b.value);
+        if (an !== bn) return bn - an; // value desc
+        // Tiebreak: earliest start year wins. Null sorts first.
+        return compareDates(extractStartYear(a.years), extractStartYear(b.years));
+      });
+      return { ...s, entries };
+    }),
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Post-processing: synthesize derived sections
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse a "(par, total)" tuple off a tournament entry's value. Returns null
+ * if the value isn't in that shape.
+ */
+function parseParTotal(value: string): { par: number; total: number } | null {
+  const m = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(value);
+  if (!m) return null;
+  return { par: Number(m[1]), total: Number(m[2]) };
+}
+
+/**
+ * Pull a sortable date out of a tournament entry's event/round/date fields.
+ * Month+day+year ("Feb 8 - 10, 2024") preferred; falls back to year-only
+ * which is treated as Jan 1 of that year. Returns null when nothing
+ * date-like is present.
+ */
+const MONTH_INDEX: Record<string, number> = {
+  jan: 0, january: 0,
+  feb: 1, february: 1,
+  mar: 2, march: 2,
+  apr: 3, april: 3,
+  may: 4,
+  jun: 5, june: 5,
+  jul: 6, july: 6,
+  aug: 7, august: 7,
+  sep: 8, sept: 8, september: 8,
+  oct: 9, october: 9,
+  nov: 10, november: 10,
+  dec: 11, december: 11,
+};
+const MONTH_NAMES_RE =
+  "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?";
+
+function extractSortDate(e: TournamentEntry): number | null {
+  const all = [e.event, e.round, e.date].filter(Boolean).join(" ");
+  if (!all) return null;
+
+  // Numeric M/D/YY or M/D/YYYY (women's book format). Allow a stray "?"
+  // as a separator where a "/" was mis-OCR'd (e.g. "10?31/23").
+  const numericDate = /\b(\d{1,2})[/?](\d{1,2})[/?](\d{2,4})\b/.exec(all);
+  if (numericDate) {
+    const month = Number(numericDate[1]) - 1;
+    const day = Number(numericDate[2]);
+    let year = Number(numericDate[3]);
+    if (year < 100) year += 2000; // 2-digit → 20YY
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return Date.UTC(year, month, day);
+    }
+  }
+
+  // Month-name + day + year ("Feb 8 - 10, 2024" — men's book format).
+  const monthDayYear = new RegExp(
+    `\\b(${MONTH_NAMES_RE})\\.?\\s+(\\d{1,2})\\b.*?\\b((?:19|20)\\d{2})\\b`,
+    "i",
+  ).exec(all);
+  if (monthDayYear) {
+    const month = MONTH_INDEX[monthDayYear[1].toLowerCase()];
+    const day = Number(monthDayYear[2]);
+    const year = Number(monthDayYear[3]);
+    if (month !== undefined && day >= 1 && day <= 31) {
+      return Date.UTC(year, month, day);
+    }
+  }
+
+  // Last resort: first 4-digit year we can find.
+  const yearOnly = /\b(19|20)\d{2}\b/.exec(all);
+  if (yearOnly) return Date.UTC(Number(yearOnly[0]), 0, 1);
+
+  return null;
+}
+
+/**
+ * Compare two nullable sort dates. Null sorts first (treated as
+ * -infinity), then ascending by date.
+ */
+function compareDates(a: number | null, b: number | null): number {
+  if (a === b) return 0;
+  if (a === null) return -1;
+  if (b === null) return 1;
+  return a - b;
+}
+
+/**
+ * Pull the earliest 4-digit year out of a free-form `years` string
+ * ("1973-76", "2008-09", "1989", "1980-82, 83-85", "2023-",
+ * "1952 - 87", "Oklahoma State (1973 - 74)"). Returned as Date.UTC of
+ * Jan 1 so it's comparable with extractSortDate values. Null when no
+ * year-like token is present.
+ */
+function extractStartYear(value: string | undefined): number | null {
+  if (!value) return null;
+  const m = /\b((?:19|20)\d{2})\b/.exec(value);
+  if (!m) return null;
+  return Date.UTC(Number(m[1]), 0, 1);
+}
+
+/**
+ * Coach entries can carry the year on `years`, in the `coach` string
+ * ("UCLA - 1981 - 82"), or in `school` ("Oklahoma State (1973 - 74)").
+ * Probe in that order for tiebreaker sorting.
+ */
+function extractCoachYear(e: CoachEntry): number | null {
+  return (
+    extractStartYear(e.years) ??
+    extractStartYear(e.coach) ??
+    extractStartYear(e.school)
+  );
+}
+
+/**
+ * Extract a (primary, secondary) sort pair from a tournament entry's
+ * `value` string. Handles three formats:
+ *   "(par, total)"  → primary=par, secondary=total
+ *   "X (Y)"         → primary=X, secondary=Y
+ *   "60"            → primary=60, secondary=0
+ * Returns null if nothing parses (entry will be appended at section end).
+ */
+function extractTournamentSort(
+  value: string,
+): { primary: number; secondary: number } | null {
+  const tuple = /^\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)$/.exec(value);
+  if (tuple) return { primary: Number(tuple[1]), secondary: Number(tuple[2]) };
+  const paren = /^(-?\d+)\s*\((-?\d+)\)$/.exec(value);
+  if (paren) return { primary: Number(paren[1]), secondary: Number(paren[2]) };
+  const bare = /^(-?\d+)$/.exec(value);
+  if (bare) return { primary: Number(bare[1]), secondary: 0 };
+  return null;
+}
+
+/**
+ * The PDF lists the 54-hole individual records roughly by score-to-par but
+ * with arbitrary tiebreakers within a par group. Normalize: par ascending
+ * (most-negative first), then total ascending, then event date ascending
+ * (undated entries first). Entries that don't parse as "(par, total)" keep
+ * their original relative order appended at the end.
+ */
+function sortScoreToParSection(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => {
+    const idx = g.sections.findIndex((s) => s.slug === "lowest-individual-54");
+    if (idx === -1) return g;
+    const src = g.sections[idx];
+    if (src.kind !== "tournament") return g;
+
+    const parseable: {
+      entry: TournamentEntry;
+      par: number;
+      total: number;
+      date: number | null;
+    }[] = [];
+    const unparseable: TournamentEntry[] = [];
+    for (const e of src.entries) {
+      const pt = parseParTotal(e.value);
+      if (pt) parseable.push({ entry: e, ...pt, date: extractSortDate(e) });
+      else unparseable.push(e);
+    }
+    parseable.sort(
+      (a, b) =>
+        a.par - b.par ||
+        a.total - b.total ||
+        compareDates(a.date, b.date),
+    );
+
+    const sorted: RecordSection = {
+      ...src,
+      entries: [...parseable.map((r) => r.entry), ...unparseable],
+    };
+    const nextSections = [...g.sections];
+    nextSections[idx] = sorted;
+    return { ...g, sections: nextSections };
+  });
+}
+
+/**
+ * Derive a companion "Total Score" view by flipping the "(par, total)" tuple
+ * to "(total, par)" and re-sorting: total ascending, par ascending, event
+ * date ascending (undated entries first). Inserted immediately after the
+ * Score-to-Par section in the same group.
+ */
+function addTotalScoreSection(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => {
+    const srcIdx = g.sections.findIndex((s) => s.slug === "lowest-individual-54");
+    if (srcIdx === -1) return g;
+    const src = g.sections[srcIdx];
+    if (src.kind !== "tournament") return g;
+
+    type Row = { entry: TournamentEntry; par: number; total: number; date: number | null };
+    const rows: Row[] = [];
+    for (const e of src.entries) {
+      const pt = parseParTotal(e.value);
+      if (!pt) continue; // skip entries without a parseable (par, total) tuple
+      rows.push({ entry: e, ...pt, date: extractSortDate(e) });
+    }
+    rows.sort(
+      (a, b) =>
+        a.total - b.total ||
+        a.par - b.par ||
+        compareDates(a.date, b.date),
+    );
+
+    const derived: RecordSection = {
+      kind: "tournament",
+      slug: "lowest-individual-54-total",
+      title: "Lowest Individual 54 Hole Score (Total Score)",
+      entries: rows.map(({ entry, par, total }) => ({
+        ...entry,
+        value: `(${total}, ${par})`,
+      })),
+    };
+
+    const nextSections = [...g.sections];
+    nextSections.splice(srcIdx + 1, 0, derived);
+    return { ...g, sections: nextSections };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Generic sorters: primary value + earliest-year tiebreaker
+// ---------------------------------------------------------------------------
+
+/**
+ * Table sections (career / single-season stroke average): sort by avg
+ * ascending (lower is better), tiebreak on earliest start year.
+ */
+function sortTableSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "table") return s;
+      const entries = [...s.entries].sort((a, b) => {
+        if (a.avg !== b.avg) return a.avg - b.avg;
+        return compareDates(extractStartYear(a.years), extractStartYear(b.years));
+      });
+      return { ...s, entries };
+    }),
+  }));
+}
+
+/**
+ * Coach sections (career coaching wins, consecutive team wins, etc.):
+ * primary value descending, tiebreak on earliest start year resolved
+ * from `years` / `coach` / `school`.
+ */
+function sortCoachSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "coach") return s;
+      const allNumeric = s.entries.every(
+        (e) =>
+          typeof e.value === "number" ||
+          (typeof e.value === "string" && !Number.isNaN(Number(e.value))),
+      );
+      if (!allNumeric) return s;
+      const entries = [...s.entries].sort((a, b) => {
+        const an = typeof a.value === "number" ? a.value : Number(a.value);
+        const bn = typeof b.value === "number" ? b.value : Number(b.value);
+        if (an !== bn) return bn - an;
+        return compareDates(extractCoachYear(a), extractCoachYear(b));
+      });
+      return { ...s, entries };
+    }),
+  }));
+}
+
+/**
+ * Generic tournament-section sort: primary value asc (lower is better)
+ * for "lowest" sections, primary desc for "largest"/"most"/"highest"
+ * sections. Secondary value follows the primary direction. Final
+ * tiebreaker is event date asc (earliest first; undated entries first).
+ *
+ * Skips the two 54-hole sections — those have their own dedicated
+ * sorters with explicit par-asc / total-asc rules.
+ */
+const TOURNAMENT_SORT_SKIP = new Set<string>([
+  "lowest-individual-54",
+  "lowest-individual-54-total",
+]);
+
+function sortTournamentSections(groups: RecordGroup[]): RecordGroup[] {
+  return groups.map((g) => ({
+    ...g,
+    sections: g.sections.map((s) => {
+      if (s.kind !== "tournament") return s;
+      if (TOURNAMENT_SORT_SKIP.has(s.slug)) return s;
+      const desc = /\b(largest|most|highest)\b/i.test(s.title);
+      type Row = {
+        entry: TournamentEntry;
+        primary: number;
+        secondary: number;
+        date: number | null;
+      };
+      const parseable: Row[] = [];
+      const unparseable: TournamentEntry[] = [];
+      for (const e of s.entries) {
+        const v = typeof e.value === "string" ? extractTournamentSort(e.value) : null;
+        if (v) parseable.push({ entry: e, ...v, date: extractSortDate(e) });
+        else unparseable.push(e);
+      }
+      parseable.sort((a, b) => {
+        if (a.primary !== b.primary) {
+          return desc ? b.primary - a.primary : a.primary - b.primary;
+        }
+        if (a.secondary !== b.secondary) {
+          return desc ? b.secondary - a.secondary : a.secondary - b.secondary;
+        }
+        return compareDates(a.date, b.date);
+      });
+      return {
+        ...s,
+        entries: [...parseable.map((r) => r.entry), ...unparseable],
+      };
+    }),
+  }));
+}
+
+// ---------------------------------------------------------------------------
 // Emit TS data files
 // ---------------------------------------------------------------------------
 
@@ -782,9 +1329,31 @@ function run() {
   const root = resolve(__dirname, "..");
   const menTxt = readFileSync(resolve(root, "scripts/records-raw/men-raw.txt"), "utf-8");
   const womenTxt = readFileSync(resolve(root, "scripts/records-raw/women-raw.txt"), "utf-8");
+  const manual = JSON.parse(
+    readFileSync(resolve(root, "src/data/records-manual-entries.json"), "utf-8"),
+  ) as ManualEntriesFile;
 
-  const menGroups = parseBook(menTxt, MEN_GROUPS);
-  const womenGroups = parseBook(womenTxt, WOMEN_GROUPS);
+  const pipeline = (gender: Gender, groups: RecordGroup[]): RecordGroup[] =>
+    addTotalScoreSection(
+      sortScoreToParSection(
+        sortTournamentSections(
+          sortCoachSections(
+            sortTableSections(
+              sortStatSections(
+                applyManualEntries(
+                  applyKnownCorrections(groups, gender),
+                  gender,
+                  manual,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+  const menGroups = pipeline("men", parseBook(menTxt, MEN_GROUPS));
+  const womenGroups = pipeline("women", parseBook(womenTxt, WOMEN_GROUPS));
 
   emitRecordBook(
     "men",

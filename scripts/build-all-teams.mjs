@@ -720,10 +720,23 @@ async function main() {
   const cleanMen = teamsMen.map(({ _coordSource, ...rest }) => rest);
   const cleanWomen = teamsWomen.map(({ _coordSource, ...rest }) => rest);
 
-  // Use the Clippd JSON's pulledAt date for the generation marker
-  const generatedAt = data.pulledAt
-    ? new Date(data.pulledAt).toISOString().slice(0, 10)
-    : new Date().toISOString().slice(0, 10);
+  // Use Clippd's `rankingDate` (when Clippd actually published the snapshot)
+  // rather than `pulledAt` (when our cron ran). The two diverge whenever we
+  // pull on a day Clippd hasn't refreshed yet, and the user-facing "Updated"
+  // line should match what Clippd shows on their site. Falls back to pulledAt
+  // and then to today as a defensive last resort.
+  //
+  // NOTE: Clippd serializes rankingDate as a naive datetime ("2026-04-24T01:24:34")
+  // with no timezone marker. JS would parse that as local time and then drift the
+  // calendar date when we convert to UTC. Slice the string directly to keep the
+  // calendar date Clippd intended.
+  const sampleRankingDate =
+    data.women?.[0]?.rankingDate ?? data.men?.[0]?.rankingDate ?? null;
+  const generatedAt = sampleRankingDate
+    ? sampleRankingDate.slice(0, 10)
+    : data.pulledAt
+      ? new Date(data.pulledAt).toISOString().slice(0, 10)
+      : new Date().toISOString().slice(0, 10);
 
   emitDataFile(cleanMen, "men", generatedAt, sourceFile);
   emitDataFile(cleanWomen, "women", generatedAt, sourceFile);
