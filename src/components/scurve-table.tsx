@@ -123,17 +123,29 @@ function TeamLink({
   gender,
   className,
   children,
+  hostColor,
 }: {
   team: string;
   gender: Gender;
   className?: string;
   children: React.ReactNode;
+  /**
+   * When set, the team hosts a regional — render the name in that regional's
+   * color and bold, so the host stands out on every tab except Map. This
+   * applies even when the host team is assigned elsewhere (Strict mode).
+   */
+  hostColor?: string;
 }) {
   return (
     <Link
       href={teamHref(team, gender)}
       onClick={(e) => e.stopPropagation()}
-      className={cn("hover:text-primary transition-colors", className)}
+      className={cn(
+        "hover:text-primary transition-colors",
+        hostColor && "font-bold",
+        className
+      )}
+      style={hostColor ? { color: hostColor } : undefined}
     >
       {children}
     </Link>
@@ -333,6 +345,17 @@ export default function ScurveTable({
     return map;
   }, [gender, menRegionals, womenRegionals]);
 
+  // Host-team → the color of the regional they host. Used across every tab
+  // except Map to highlight host teams (coloured + bold) regardless of where
+  // they're currently assigned. In Strict mode a host can land in a different
+  // regional; we still want them to stand out in their host colour.
+  const hostColorByTeam = useMemo(() => {
+    const regs = gender === "men" ? menRegionals : womenRegionals;
+    const map = new Map<string, string>();
+    for (const r of regs) map.set(r.host, r.color);
+    return map;
+  }, [gender, menRegionals, womenRegionals]);
+
   const regionalSeeds = useMemo(() => computeRegionalSeeds(assignments), [assignments]);
   const regionalPositions = useMemo(() => computeRegionalPositions(assignments), [assignments]);
 
@@ -486,6 +509,7 @@ export default function ScurveTable({
             regionals={activeRegionals}
             regionalMap={regionalMap}
             regionalSeeds={regionalSeeds}
+            hostColorByTeam={hostColorByTeam}
             gender={gender}
           />
         </div>
@@ -496,6 +520,7 @@ export default function ScurveTable({
             regionals={activeRegionals}
             regionalMap={regionalMap}
             regionalSeeds={regionalSeeds}
+            hostColorByTeam={hostColorByTeam}
             gender={gender}
           />
         </div>
@@ -503,6 +528,7 @@ export default function ScurveTable({
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
           regionalMap={regionalMap}
+          hostColorByTeam={hostColorByTeam}
           gender={gender}
         />
       </div>
@@ -535,6 +561,7 @@ export default function ScurveTable({
           regionalMap={regionalMap}
           regionalSeeds={regionalSeeds}
           regionalPositions={regionalPositions}
+          hostColorByTeam={hostColorByTeam}
           gender={gender}
         />
       </div>
@@ -567,12 +594,14 @@ export default function ScurveTable({
           regionals={activeRegionals}
           regionalMap={regionalMap}
           regionalSeeds={regionalSeeds}
+          hostColorByTeam={hostColorByTeam}
           gender={gender}
         />
         <BubbleSection
           teams={gender === "men" ? menTeams : womenTeams}
           assignments={assignments}
           regionalMap={regionalMap}
+          hostColorByTeam={hostColorByTeam}
           gender={gender}
         />
       </div>
@@ -732,6 +761,7 @@ export default function ScurveTable({
                     teams={teams}
                     regionalMap={regionalMap}
                     regionalSeed={regionalSeeds.get(regional.id)}
+                    hostColorByTeam={hostColorByTeam}
                     gender={gender}
                   />
                 ))
@@ -743,6 +773,7 @@ export default function ScurveTable({
                       key={`${team.team}-${team.seed}`}
                       team={team}
                       regionalMap={regionalMap}
+                      hostColor={hostColorByTeam.get(team.team)}
                       gender={gender}
                     />,
                   ];
@@ -781,6 +812,7 @@ export default function ScurveTable({
               teams={teams}
               regionalMap={regionalMap}
               regionalSeed={regionalSeeds.get(regional.id)}
+              hostColorByTeam={hostColorByTeam}
               gender={gender}
             />
           ))
@@ -793,6 +825,7 @@ export default function ScurveTable({
                 <MobileTeamCard
                   team={team}
                   regionalMap={regionalMap}
+                  hostColor={hostColorByTeam.get(team.team)}
                   gender={gender}
                 />
                 {team.seed === cutSeed && sorted.length > cutSeed && (
@@ -970,11 +1003,17 @@ function BubbleSection({
   teams,
   assignments,
   regionalMap,
+  hostColorByTeam,
   gender = "men",
 }: {
   teams: TeamData[];
   assignments: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
+  /**
+   * Map of host team name → host regional colour. Omit (e.g. from the Map tab)
+   * to skip the host highlight treatment.
+   */
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const LAST_IN = 6;
@@ -1069,7 +1108,7 @@ function BubbleSection({
                 #{team.rank}
               </span>
               <span className="font-medium text-foreground truncate">
-                <TeamLink team={team.team} gender={gender}>
+                <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                   {team.team}
                 </TeamLink>
               </span>
@@ -1116,7 +1155,7 @@ function BubbleSection({
                   #{team.rank}
                 </span>
                 <span className="text-muted-foreground truncate">
-                  <TeamLink team={team.team} gender={gender}>
+                  <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                     {team.team}
                   </TeamLink>
                   <span className="ml-1 text-[8px] font-semibold text-amber-500/70 uppercase">
@@ -1156,7 +1195,7 @@ function BubbleSection({
                   #{team.rank}
                 </span>
                 <span className="text-muted-foreground truncate">
-                  <TeamLink team={team.team} gender={gender}>
+                  <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                     {team.team}
                   </TeamLink>
                 </span>
@@ -1182,7 +1221,7 @@ function BubbleSection({
               {subFiveHundredAqs.map((t, i) => (
                 <Fragment key={t.team}>
                   {i > 0 && ", "}
-                  <TeamLink team={t.team} gender={gender}>
+                  <TeamLink team={t.team} gender={gender} hostColor={hostColorByTeam?.get(t.team)}>
                     {t.team}
                   </TeamLink>
                 </Fragment>
@@ -1219,6 +1258,7 @@ function BreakdownView({
   regionalMap,
   regionalSeeds,
   regionalPositions,
+  hostColorByTeam,
   gender = "men",
 }: {
   teams: TeamData[];
@@ -1226,6 +1266,7 @@ function BreakdownView({
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
   regionalPositions: Map<string, number>;
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const LAST_IN = 6;
@@ -1327,7 +1368,7 @@ function BreakdownView({
                 <span className="hidden md:inline">{posInRegional ?? "—"}</span>
               </span>
               <span className="font-medium text-foreground truncate">
-                <TeamLink team={team.team} gender={gender}>
+                <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                   {team.team}
                 </TeamLink>
               </span>
@@ -1385,7 +1426,7 @@ function BreakdownView({
                     <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
-                    <TeamLink team={team.team} gender={gender}>
+                    <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                       {team.team}
                     </TeamLink>
                     <span className="ml-1.5 text-[8px] font-semibold text-amber-500/70 uppercase">
@@ -1434,7 +1475,7 @@ function BreakdownView({
                     <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
-                    <TeamLink team={team.team} gender={gender}>
+                    <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                       {team.team}
                     </TeamLink>
                   </span>
@@ -1467,7 +1508,7 @@ function BreakdownView({
               {subFiveHundredAqs.map((t, i) => (
                 <Fragment key={t.team}>
                   {i > 0 && ", "}
-                  <TeamLink team={t.team} gender={gender}>
+                  <TeamLink team={t.team} gender={gender} hostColor={hostColorByTeam?.get(t.team)}>
                     {t.team}
                   </TeamLink>
                 </Fragment>
@@ -1517,7 +1558,7 @@ function BreakdownView({
                     <td className="px-2 text-center font-mono text-muted-foreground">{posInRegional ?? "—"}</td>
                     <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">{regionalSeed ?? "—"}</td>
                     <td className="px-2 text-foreground">
-                      <TeamLink team={team.team} gender={gender} className="font-medium">
+                      <TeamLink team={team.team} gender={gender} className="font-medium" hostColor={hostColorByTeam?.get(team.team)}>
                         {team.team}
                       </TeamLink>
                       {isSubFiveHundredAq && (
@@ -1563,7 +1604,7 @@ function BreakdownView({
                     <td className="px-2 text-center font-mono text-muted-foreground">—</td>
                     <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">—</td>
                     <td className="px-2 text-muted-foreground">
-                      <TeamLink team={team.team} gender={gender}>
+                      <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                         {team.team}
                       </TeamLink>
                       {!team.eligible && (
@@ -1636,12 +1677,14 @@ function RegionalGroup({
   teams,
   regionalMap,
   regionalSeed,
+  hostColorByTeam,
   gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
   regionalSeed: number | undefined;
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -1693,7 +1736,12 @@ function RegionalGroup({
       {expanded && (
         <tr>
           <td colSpan={7} className="p-0">
-            <RegionalDetailPanel regional={regional} teams={teams} gender={gender} />
+            <RegionalDetailPanel
+              regional={regional}
+              teams={teams}
+              hostColorByTeam={hostColorByTeam}
+              gender={gender}
+            />
           </td>
         </tr>
       )}
@@ -1705,6 +1753,7 @@ function RegionalGroup({
             key={`${team.team}-${team.seed}`}
             team={team}
             regionalMap={regionalMap}
+            hostColor={hostColorByTeam?.get(team.team)}
             gender={gender}
             isHost={team.team === regional.host}
           />,
@@ -1737,10 +1786,12 @@ function RegionalGroup({
 function RegionalDetailPanel({
   regional,
   teams,
+  hostColorByTeam,
   gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const totalDistance = teams.reduce((sum, t) => sum + t.distanceMiles, 0);
@@ -1770,7 +1821,7 @@ function RegionalDetailPanel({
           <p className="text-foreground">
             <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
             <span className="font-medium">Longest:</span>{" "}
-            <TeamLink team={maxTravel.team} gender={gender}>
+            <TeamLink team={maxTravel.team} gender={gender} hostColor={hostColorByTeam?.get(maxTravel.team)}>
               {maxTravel.team}
             </TeamLink>{" "}
             ({maxTravel.distanceMiles.toLocaleString()} mi)
@@ -1778,7 +1829,7 @@ function RegionalDetailPanel({
           <p className="text-foreground">
             <MapPin className="inline h-3 w-3 mr-1 opacity-60" />
             <span className="font-medium">Shortest:</span>{" "}
-            <TeamLink team={minTravel.team} gender={gender}>
+            <TeamLink team={minTravel.team} gender={gender} hostColor={hostColorByTeam?.get(minTravel.team)}>
               {minTravel.team}
             </TeamLink>{" "}
             ({minTravel.distanceMiles.toLocaleString()} mi)
@@ -1786,7 +1837,7 @@ function RegionalDetailPanel({
           {hostTeam && (
             <p className="text-foreground">
               <span className="font-medium">Host:</span>{" "}
-              <TeamLink team={hostTeam.team} gender={gender}>
+              <TeamLink team={hostTeam.team} gender={gender} hostColor={hostColorByTeam?.get(hostTeam.team)}>
                 {hostTeam.team}
               </TeamLink>{" "}
               (#{hostTeam.rank}, seed {hostTeam.seed})
@@ -1801,7 +1852,7 @@ function RegionalDetailPanel({
             <span className="font-medium">Highest seed:</span>{" "}
             #{teams[0]?.seed}{" "}
             {teams[0] && (
-              <TeamLink team={teams[0].team} gender={gender}>
+              <TeamLink team={teams[0].team} gender={gender} hostColor={hostColorByTeam?.get(teams[0].team)}>
                 {teams[0].team}
               </TeamLink>
             )}
@@ -1813,6 +1864,7 @@ function RegionalDetailPanel({
               <TeamLink
                 team={teams[teams.length - 1].team}
                 gender={gender}
+                hostColor={hostColorByTeam?.get(teams[teams.length - 1].team)}
               >
                 {teams[teams.length - 1].team}
               </TeamLink>
@@ -1852,11 +1904,14 @@ function TeamRow({
   regionalMap,
   gender = "men",
   isHost = false,
+  hostColor,
 }: {
   team: ScurveAssignment;
   regionalMap: Map<number, Regional>;
   gender?: Gender;
   isHost?: boolean;
+  /** When set, render the team name in this colour + bold — the team hosts a regional. */
+  hostColor?: string;
 }) {
   const regional = regionalMap.get(team.regionalId);
   const color = regional?.color ?? "#888";
@@ -1871,7 +1926,7 @@ function TeamRow({
       </td>
       {/* Team */}
       <td className="px-2 text-left text-[13px] text-foreground whitespace-nowrap">
-        <TeamLink team={team.team} gender={gender} className="font-medium">
+        <TeamLink team={team.team} gender={gender} className="font-medium" hostColor={hostColor}>
           {team.team}
         </TeamLink>
         {isHost && (
@@ -1932,12 +1987,14 @@ function MobileRegionalGroup({
   teams,
   regionalMap,
   regionalSeed,
+  hostColorByTeam,
   gender = "men",
 }: {
   regional: Regional;
   teams: ScurveAssignment[];
   regionalMap: Map<number, Regional>;
   regionalSeed: number | undefined;
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -2005,6 +2062,7 @@ function MobileRegionalGroup({
               regionalMap={regionalMap}
               gender={gender}
               isHost={team.team === regional.host}
+              hostColor={hostColorByTeam?.get(team.team)}
               showRegional={false}
             />
             {index === TEAMS_ADVANCING - 1 && teams.length > TEAMS_ADVANCING && (
@@ -2029,12 +2087,15 @@ function MobileTeamCard({
   gender = "men",
   isHost = false,
   showRegional = true,
+  hostColor,
 }: {
   team: ScurveAssignment;
   regionalMap: Map<number, Regional>;
   gender?: Gender;
   isHost?: boolean;
   showRegional?: boolean;
+  /** When set, render the team name in this colour + bold — the team hosts a regional. */
+  hostColor?: string;
 }) {
   const regional = regionalMap.get(team.regionalId);
   const color = regional?.color ?? "#888";
@@ -2053,7 +2114,7 @@ function MobileTeamCard({
         {team.seed}
       </span>
       <span className="font-medium text-foreground truncate pl-1 text-[10px] overflow-hidden whitespace-nowrap">
-        <TeamLink team={team.team} gender={gender}>
+        <TeamLink team={team.team} gender={gender} hostColor={hostColor}>
           {team.team}
         </TeamLink>
         {isHost && <span className="text-[6px] font-bold uppercase text-muted-foreground ml-0.5">H</span>}
@@ -2085,12 +2146,14 @@ function MobileVisualScurve({
   regionals,
   regionalMap,
   regionalSeeds,
+  hostColorByTeam,
   gender = "men",
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const { orderedRegionals, byRegional } = useScurveGrid(assignments, regionals, regionalSeeds);
@@ -2152,7 +2215,7 @@ function MobileVisualScurve({
                         {index + 1}
                       </span>
                       <span className="font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
-                        <TeamLink team={team.team} gender={gender}>
+                        <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                           {team.team}
                         </TeamLink>
                         {isHost && <span className="text-[5px] font-bold text-muted-foreground ml-0.5">H</span>}
@@ -2189,12 +2252,14 @@ function ScurveSnakeTable({
   regionals,
   regionalMap,
   regionalSeeds,
+  hostColorByTeam,
   gender = "men",
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const orderedRegionals = useMemo(() => {
@@ -2294,7 +2359,7 @@ function ScurveSnakeTable({
                         "truncate font-medium min-w-0",
                         isAboveLine ? "text-foreground" : "text-muted-foreground"
                       )}>
-                        <TeamLink team={team.team} gender={gender}>
+                        <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                           {team.team}
                         </TeamLink>
                       </span>
@@ -2332,12 +2397,14 @@ function VisualScurve({
   regionals,
   regionalMap,
   regionalSeeds,
+  hostColorByTeam,
   gender = "men",
 }: {
   assignments: ScurveAssignment[];
   regionals: Regional[];
   regionalMap: Map<number, Regional>;
   regionalSeeds: Map<number, number>;
+  hostColorByTeam?: Map<string, string>;
   gender?: Gender;
 }) {
   const { orderedRegionals, byRegional, grid, numRegionals, numTiers } = useScurveGrid(assignments, regionals, regionalSeeds);
@@ -2410,7 +2477,7 @@ function VisualScurve({
                           "truncate font-medium flex-1 min-w-0",
                           isAboveLine ? "text-foreground" : "text-muted-foreground"
                         )}>
-                          <TeamLink team={team.team} gender={gender}>
+                          <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                             {team.team}
                           </TeamLink>
                           {isHost && <span className="text-[8px] font-bold text-muted-foreground uppercase ml-1">H</span>}
