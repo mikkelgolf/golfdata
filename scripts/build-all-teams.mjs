@@ -312,6 +312,28 @@ const MANUAL_OVERRIDES = {
   "Akron": { lat: 41.0763, lng: -81.5102 },                     // Akron, OH
   "Texas A&M-C. Christi": { lat: 27.7136, lng: -97.3258 },      // Corpus Christi, TX
   "The Citadel": { lat: 32.7960, lng: -79.9613 },               // Charleston, SC
+  // ---- Canonical coords for teams whose Photon/Supabase lookup keeps
+  // ---- producing wrong-city / out-of-state values. Sourced from prior
+  // ---- fix commits (edca021, bceadd0, 4791fae) so the regenerated
+  // ---- all-teams-*.ts no longer reverts these to placeholder values.
+  "West Georgia": { lat: 33.5729, lng: -85.0978 },              // Carrollton, GA  (was hitting Honolulu)
+  "Utah Tech": { lat: 37.1041, lng: -113.5659 },                // St. George, UT  (was hitting Bering Sea)
+  "Idaho": { lat: 46.7269, lng: -116.9989 },                    // Moscow, ID      (was hitting Idaho State's Pocatello)
+  "SIU Edwardsville": { lat: 38.7942, lng: -89.9947 },          // Edwardsville, IL (was hitting Ball State / Muncie, IN)
+  "Georgetown": { lat: 38.9076, lng: -77.0723 },                // Washington, DC  (was hitting Georgetown College in KY)
+  "Merrimack": { lat: 42.6681, lng: -71.1211 },                 // North Andover, MA (was hitting Palo Alto, CA)
+  "Monmouth": { lat: 40.2779, lng: -74.0038 },                  // West Long Branch, NJ (was hitting Monmouth College in IL)
+  "Rider": { lat: 40.2817, lng: -74.7317 },                     // Lawrenceville, NJ (was hitting Athens, GA)
+  "Saint Francis": { lat: 40.5101, lng: -78.6250 },             // Loretto, PA      (was hitting Univ. of Saint Francis NAIA in Fort Wayne, IN)
+  "Richmond": { lat: 37.5790, lng: -77.5385 },                  // Richmond, VA    (was hitting Staunton)
+  "North Florida": { lat: 30.2694, lng: -81.5065 },             // Jacksonville, FL (was hitting Boca Raton)
+  "Queens-Charlotte": { lat: 35.2029, lng: -80.8358 },          // Charlotte, NC   (was hitting Norfolk, VA)
+  "Manhattan": { lat: 40.8904, lng: -73.9041 },                 // Bronx, NY       (was hitting Atlanta)
+  "UAlbany": { lat: 42.6866, lng: -73.8230 },                   // Albany, NY      (was hitting Rochester)
+  "Montana": { lat: 46.8597, lng: -113.9852 },                  // Missoula, MT    (was overlapping Montana State / Bozeman)
+  "UIC": { lat: 41.8715, lng: -87.6502 },                       // Chicago, IL     (was hitting Rock Island)
+  "Fairfield": { lat: 41.1412, lng: -73.2637 },                 // Fairfield, CT   (campus, current 14-seed)
+  "New Haven": { lat: 41.2707, lng: -72.9470 },                 // West Haven, CT  (campus, current 14-seed)
 };
 
 // ---------------------------------------------------------------------------
@@ -505,8 +527,18 @@ function buildSchoolIndex(schools) {
 // Step 5: Resolve coordinates per Clippd team
 // ---------------------------------------------------------------------------
 function resolveCoords(team, schoolIdx, cityCentroids, diagnostics) {
-  // Tier 1: campus precision via boardName
   const board = team.boardName || team.schoolName;
+  // Tier 0: MANUAL_OVERRIDES wins above everything. The name is literal —
+  // these are hand-verified coords that must beat any geocoder/Supabase
+  // result. Historically MANUAL_OVERRIDES was checked last (Tier 3) which
+  // meant a wrong-but-found city centroid (e.g. Monmouth IL beating
+  // Monmouth University NJ in Supabase) silently overrode the manual
+  // entry. Hoisting it to the top fixes that whole class of regression.
+  if (board in MANUAL_OVERRIDES) {
+    const m = MANUAL_OVERRIDES[board];
+    return { lat: m.lat, lng: m.lng, source: "manual" };
+  }
+  // Tier 1: campus precision via boardName
   if (board in CAMPUS_COORDS) {
     return { lat: CAMPUS_COORDS[board].lat, lng: CAMPUS_COORDS[board].lng, source: "campus" };
   }
@@ -539,12 +571,7 @@ function resolveCoords(team, schoolIdx, cityCentroids, diagnostics) {
       normalized: norm,
     });
   }
-  // Tier 3: manual override
-  if (board in MANUAL_OVERRIDES) {
-    const m = MANUAL_OVERRIDES[board];
-    return { lat: m.lat, lng: m.lng, source: "manual" };
-  }
-  // Tier 4: skip
+  // Tier 3: skip
   return { lat: 0, lng: 0, source: "none" };
 }
 

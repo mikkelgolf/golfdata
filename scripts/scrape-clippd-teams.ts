@@ -191,6 +191,30 @@ const SCHOOL_COORDS: Record<string, { lat: number; lng: number }> = {
   "NC State": { lat: 35.7872, lng: -78.6706 },
   "East Tennessee State": { lat: 36.3032, lng: -82.3678 },
   "Mississippi State": { lat: 33.4557, lng: -88.7890 },
+  // ---- Canonical coords for teams that have been hand-fixed before -------
+  // Sourced from prior fix commits: edca021, bceadd0, 4791fae, plus
+  // already-correct values in MANUAL_OVERRIDES (build-all-teams.mjs) and
+  // the campus locations of the current 14-seeds. Adding these here stops
+  // the daily refresh from writing 0,0 for these teams.
+  "West Georgia": { lat: 33.5729, lng: -85.0978 },           // Carrollton, GA
+  "Utah Tech": { lat: 37.1041, lng: -113.5659 },             // St. George, UT
+  "Idaho": { lat: 46.7269, lng: -116.9989 },                 // Moscow, ID
+  "SIU Edwardsville": { lat: 38.7942, lng: -89.9947 },       // Edwardsville, IL
+  "Georgetown": { lat: 38.9076, lng: -77.0723 },             // Washington, DC
+  "Merrimack": { lat: 42.6681, lng: -71.1211 },              // North Andover, MA
+  "Monmouth": { lat: 40.2779, lng: -74.0038 },               // West Long Branch, NJ
+  "Rider": { lat: 40.2817, lng: -74.7317 },                  // Lawrenceville, NJ
+  "Saint Francis": { lat: 40.5101, lng: -78.6250 },          // Loretto, PA
+  "Richmond": { lat: 37.5790, lng: -77.5385 },               // Richmond, VA
+  "North Florida": { lat: 30.2694, lng: -81.5065 },          // Jacksonville, FL
+  "Queens-Charlotte": { lat: 35.2029, lng: -80.8358 },       // Charlotte, NC
+  "Manhattan": { lat: 40.8904, lng: -73.9041 },              // Bronx, NY
+  "UAlbany": { lat: 42.6866, lng: -73.8230 },                // Albany, NY
+  "Montana": { lat: 46.8597, lng: -113.9852 },               // Missoula, MT
+  "UIC": { lat: 41.8715, lng: -87.6502 },                    // Chicago, IL
+  "Florida A&M": { lat: 30.4239, lng: -84.2876 },            // Tallahassee, FL
+  "Fairfield": { lat: 41.1412, lng: -73.2637 },              // Fairfield, CT
+  "New Haven": { lat: 41.2707, lng: -72.9470 },              // West Haven, CT
 };
 
 // ---------------------------------------------------------------------------
@@ -230,6 +254,62 @@ function abbreviateConf(fullName: string): string {
 
 function lookupCoords(boardName: string): { lat: number; lng: number } | null {
   return SCHOOL_COORDS[boardName] ?? null;
+}
+
+/**
+ * Read the existing src/data/rankings-{gender}.ts and extract any non-zero
+ * lat/lng already present. This is the "preserve existing" guardrail: if a
+ * team isn't in SCHOOL_COORDS but already has good coords in the destination
+ * file (e.g. a past hand-fix), we carry those values forward instead of
+ * silently writing 0,0 and reverting the fix.
+ */
+function loadExistingCoords(
+  gender: "men" | "women"
+): Map<string, { lat: number; lng: number }> {
+  const map = new Map<string, { lat: number; lng: number }>();
+  const existingPath = path.join(SRC_DATA_DIR, `rankings-${gender}.ts`);
+  if (!fs.existsSync(existingPath)) return map;
+  const content = fs.readFileSync(existingPath, "utf-8");
+  // Match: team: "<name>", ... lat: <num>, lng: <num>
+  const re = /team:\s*"([^"]+)"[^}]*?lat:\s*(-?[\d.]+),\s*lng:\s*(-?[\d.]+)/g;
+  for (const m of content.matchAll(re)) {
+    const lat = Number(m[2]);
+    const lng = Number(m[3]);
+    if (lat !== 0 || lng !== 0) {
+      map.set(m[1], { lat, lng });
+    }
+  }
+  return map;
+}
+
+/**
+ * Read src/data/all-teams-{gender}-2026.ts and extract any non-zero
+ * lat/lng. The all-teams file is built by `scripts/build-all-teams.mjs`,
+ * which has CAMPUS_COORDS + MANUAL_OVERRIDES + a Photon geocoder
+ * fallback — so it's a much richer coord source than just
+ * `SCHOOL_COORDS` here. Used as the third-priority fallback after the
+ * canonical map and the existing rankings file. Without this lookup,
+ * any team Clippd returns that isn't hardcoded ends up at 0,0 even
+ * though the same team's coords are sitting in the all-teams file
+ * already (this caused ~150 eligible/AQ teams to be at 0,0 prior to
+ * the 2026-04-25 backfill).
+ */
+function loadAllTeamsCoords(
+  gender: "men" | "women"
+): Map<string, { lat: number; lng: number }> {
+  const map = new Map<string, { lat: number; lng: number }>();
+  const p = path.join(SRC_DATA_DIR, `all-teams-${gender}-2026.ts`);
+  if (!fs.existsSync(p)) return map;
+  const content = fs.readFileSync(p, "utf-8");
+  const re = /team:\s*"([^"]+)"[^}]*?lat:\s*(-?[\d.]+),\s*lng:\s*(-?[\d.]+)/g;
+  for (const m of content.matchAll(re)) {
+    const lat = Number(m[2]);
+    const lng = Number(m[3]);
+    if (lat !== 0 || lng !== 0) {
+      map.set(m[1], { lat, lng });
+    }
+  }
+  return map;
 }
 
 // ---------------------------------------------------------------------------
@@ -313,7 +393,9 @@ async function pullAll(): Promise<PullResult> {
 function generateTsFile(
   teams: ClippdTeamRanking[],
   gender: "men" | "women",
-  autoQualifiers: Map<string, string>
+  autoQualifiers: Map<string, string>,
+  existingCoords: Map<string, { lat: number; lng: number }> = new Map(),
+  allTeamsCoords: Map<string, { lat: number; lng: number }> = new Map()
 ): string {
   const lines: string[] = [];
   const importLine =
@@ -332,7 +414,18 @@ function generateTsFile(
   for (const t of teams) {
     const { wins, losses, ties } = parseWLT(t.winLossTie);
     const conf = abbreviateConf(t.conference);
-    const coords = lookupCoords(t.boardName);
+    // Coordinate lookup priority:
+    //   1. SCHOOL_COORDS (canonical hardcoded map in this file)
+    //   2. Existing non-zero coords already in src/data/rankings-{gender}.ts
+    //      (preserves past hand-fixes that haven't been added to SCHOOL_COORDS yet)
+    //   3. Coords in src/data/all-teams-{gender}-2026.ts (CAMPUS_COORDS +
+    //      MANUAL_OVERRIDES + Photon geocoder via build-all-teams.mjs)
+    //   4. (0, 0) — last resort; will be flagged by verify-team-coords.ts
+    const coords =
+      lookupCoords(t.boardName) ??
+      existingCoords.get(t.boardName) ??
+      allTeamsCoords.get(t.boardName) ??
+      null;
     const eligible = wins + ties * 0.5 >= (wins + losses + ties) * 0.5;
     const isAQ = autoQualifiers.has(t.boardName);
     const aqConf = autoQualifiers.get(t.boardName) ?? null;
@@ -396,10 +489,39 @@ async function generateTsFiles(result: PullResult): Promise<void> {
     .filter((t) => t.division === "NCAA Division I")
     .sort((a, b) => a.rank - b.rank);
 
-  // Check for missing coordinates
+  // Load existing coords from src/data so the preserve-existing fallback
+  // can carry forward any hand-fix that isn't yet in SCHOOL_COORDS.
+  const existingMenCoords = loadExistingCoords("men");
+  const existingWomenCoords = loadExistingCoords("women");
+  // Also load coords from all-teams-{gender}-2026.ts (built by
+  // build-all-teams.mjs) as a third-priority fallback.
+  const allTeamsMenCoords = loadAllTeamsCoords("men");
+  const allTeamsWomenCoords = loadAllTeamsCoords("women");
+  console.log(
+    `  Existing coords cached: men ${existingMenCoords.size}, women ${existingWomenCoords.size}`
+  );
+  console.log(
+    `  All-teams coords cached: men ${allTeamsMenCoords.size}, women ${allTeamsWomenCoords.size}`
+  );
+
+  // Check for missing coordinates (after SCHOOL_COORDS, preserve-existing,
+  // and all-teams fallbacks have all had a chance to resolve).
   const missingCoords: string[] = [];
-  for (const t of [...menD1, ...womenD1]) {
-    if (!lookupCoords(t.boardName)) {
+  for (const t of menD1) {
+    if (
+      !lookupCoords(t.boardName) &&
+      !existingMenCoords.has(t.boardName) &&
+      !allTeamsMenCoords.has(t.boardName)
+    ) {
+      missingCoords.push(t.boardName);
+    }
+  }
+  for (const t of womenD1) {
+    if (
+      !lookupCoords(t.boardName) &&
+      !existingWomenCoords.has(t.boardName) &&
+      !allTeamsWomenCoords.has(t.boardName)
+    ) {
       missingCoords.push(t.boardName);
     }
   }
@@ -415,9 +537,22 @@ async function generateTsFiles(result: PullResult): Promise<void> {
     );
   }
 
-  // Write files
-  const menTs = generateTsFile(menD1, "men", menAQs);
-  const womenTs = generateTsFile(womenD1, "women", womenAQs);
+  // Write files (passes both existing-coords and all-teams-coords maps so
+  // previous hand-fixes AND the broader Photon-geocoded set survive).
+  const menTs = generateTsFile(
+    menD1,
+    "men",
+    menAQs,
+    existingMenCoords,
+    allTeamsMenCoords
+  );
+  const womenTs = generateTsFile(
+    womenD1,
+    "women",
+    womenAQs,
+    existingWomenCoords,
+    allTeamsWomenCoords
+  );
 
   const menOutPath = path.join(DATA_DIR, `rankings-men-${timestamp()}.ts`);
   const womenOutPath = path.join(DATA_DIR, `rankings-women-${timestamp()}.ts`);

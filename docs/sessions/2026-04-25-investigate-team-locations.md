@@ -4,7 +4,7 @@
 **Requester:** David Tenneson
 **Branch:** ron/investigate-team-locations
 **Base:** dev
-**Status:** in-progress
+**Status:** wrapped
 
 ## Task
 investigate team location problems
@@ -133,23 +133,87 @@ ship to prod. Tier 2 is the long-term cleanup that makes the codebase
 honest. Recommend doing **Tier 1 + Tier 3 in this branch**, and Tier 2
 as a follow-up once the canonical list is built.
 
-## Actions
-_(filled on !wrap once we land the chosen tier(s))_
+## Actions (landed 2026-04-25)
+
+David picked Tier 1 + Tier 3 plus a broader backfill of the ~150
+eligible/AQ teams sitting at 0,0 (he asked for "all locations… including
+the 14-seeds" to have coords). Final scope:
+
+### Tier 1 — canonical map
+- Added 19 hand-verified teams (West Georgia, Utah Tech, Idaho, SIU
+  Edwardsville, Georgetown, Merrimack, Monmouth, Rider, Saint Francis,
+  Richmond, North Florida, Queens-Charlotte, Manhattan, UAlbany, Montana,
+  UIC, Florida A&M, Fairfield, New Haven) to **both**
+  `SCHOOL_COORDS` in `scripts/scrape-clippd-teams.ts` and
+  `MANUAL_OVERRIDES` in `scripts/build-all-teams.mjs`. Coords sourced from
+  prior fix commits (edca021, bceadd0, 4791fae) + Photon results already
+  in `all-teams-*.ts`.
+- **Hoisted `MANUAL_OVERRIDES` to Tier 0 of the build-all-teams resolver.**
+  It was previously the LAST fallback (Tier 3), so a wrong-but-found
+  Supabase city centroid (e.g. Monmouth IL beating Monmouth University NJ)
+  silently overrode the manual entry. This was *the same revert bug at a
+  different layer* — adding a team to MANUAL_OVERRIDES wasn't enough on
+  its own. Now manual overrides win above geocoder + Supabase.
+
+### Preserve-existing fallback (the "B" item from recommendations)
+- `scripts/scrape-clippd-teams.ts` now reads existing non-zero coords
+  from BOTH `src/data/rankings-{gender}.ts` AND
+  `src/data/all-teams-{gender}-2026.ts` and uses them as 2nd/3rd
+  priority lookups after `SCHOOL_COORDS`. This means any future hand-fix
+  in either data file automatically survives the daily refresh — no
+  more "fix it, watch it revert overnight" cycle.
+
+### Tier 3 — verifier as deploy blocker
+- Rewrote `scripts/verify-team-coords.ts` with 4 layers:
+  - Layer 1: `KNOWN_GOOD` regression guard (21 teams, 0.5° tolerance).
+  - Layer 2: any eligible/AQ team at lat:0/lng:0 → **FAIL** (deploy block).
+  - Layer 3: ineligible teams at 0/0 → warn only.
+  - Layer 4: duplicate coords across teams → warn only.
+- Wired into `scripts/daily-refresh.sh` as Step 4b, between the 75%
+  sanity gate and the champions auto-apply. Uses `abort_hard` so a
+  failure posts a Discord alert and skips git/vercel.
+
+### Backfill of all eligible/AQ teams
+- A one-off pass copied non-zero coords from `all-teams-*-2026.ts`
+  into the corresponding rankings-*.ts rows. 447 rankings rows
+  backfilled (236 men, 211 women). After the backfill the verifier
+  reports 0 eligible/AQ teams at 0,0 (was 151).
+- The 14-seed teams David flagged (Fairfield, Florida A&M, New Haven)
+  all now carry real coords end-to-end.
+
+### Verification
+- `npx tsc --noEmit` clean.
+- `npm run lint` clean.
+- `npx tsx scripts/verify-team-coords.ts` → PASS.
+- `bash scripts/daily-refresh.sh --dry-run` → completes; verifier passes
+  on the freshly-rebuilt files (proves MANUAL_OVERRIDES hoist works
+  end-to-end through the daily pipeline).
 
 ## Diff stats
-_(filled on !wrap)_
+8 files changed:
+- `scripts/build-all-teams.mjs` — MANUAL_OVERRIDES list + hoist to Tier 0
+- `scripts/daily-refresh.sh` — Step 4b verifier
+- `scripts/scrape-clippd-teams.ts` — SCHOOL_COORDS + 2nd/3rd fallbacks
+- `scripts/verify-team-coords.ts` — full rewrite, 4-layer validation
+- `src/data/{rankings-men,rankings-women,all-teams-men-2026,all-teams-women-2026}.ts`
+  — 510 coord lines updated (255 rows × 2 sides of diff). No rank/AQ
+  changes; only `lat: 0, lng: 0` → real coords (and the 19 canonical
+  patches over previously-wrong coords).
 
 ## Open questions / learnings
-- **Open:** which tier(s) does David want in this branch? Recommendation
-  above is Tier 1 + Tier 3.
-- **Open:** "Idaho" (University of Idaho, Moscow) currently has correct
-  coords in `rankings-men.ts` (lat 0/0 — wait, no, it's currently 0/0;
-  was lat 46.7269 in past commits, reverted). Need to confirm the
-  expected coords for all four named teams before adding them to
-  `SCHOOL_COORDS`. David has been re-applying them by hand, so he knows
-  the right values — should source from the most recent fix commit.
-- **Learning:** the `verify-team-coords.ts` warns-but-doesn't-fail
-  pattern is a soft guardrail with no enforcement. Any check that's
-  not wired into the deploy pipeline doesn't actually block bugs. The
-  daily-refresh's existing sanity gate (75% row change → abort) is a
-  good template — same `abort_hard` mechanism, same Discord alert.
+- **Tier-2 follow-up:** 2 ineligible-team rows still at 0,0 (Duquesne W,
+  Saint Joseph's W). Warn-only; doesn't block deploy. Tracked.
+- **20 duplicate-coord pairs** are upstream Supabase/Photon collisions
+  (UTEP=Texas El Paso, UC San Diego=San Diego, Eastern Michigan=Central
+  Michigan, etc.). Not introduced by this branch; some are correct
+  (same city), some are wrong (Eastern≠Central Michigan in Mt
+  Pleasant). Out of scope here — file as separate cleanup.
+- **Learning:** "MANUAL_OVERRIDES" being the last fallback was deeply
+  surprising — the name implies "override," but the code treated it as
+  "use only if nothing else found." Two different mental models for the
+  same map. Hoisted; comment now explicit.
+- **Learning:** the daily-refresh `cp staged → src/data` pattern is
+  THE revert mechanism. Without the preserve-existing fallback the
+  scrape always wrote 0,0 for non-hardcoded teams, so any prior fix
+  was wiped. That's no longer possible: existing coords in either
+  data file act as a soft-canonical source.

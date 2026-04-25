@@ -189,6 +189,24 @@ if ! git diff --quiet "${RANKINGS_FILES[@]}" 2>/dev/null; then
 fi
 
 # ---------------------------------------------------------------------------
+# 4b. Coordinate verifier (deploy blocker)
+# ---------------------------------------------------------------------------
+# Fails (exit 1) when:
+#   - any eligible/AQ team in rankings-*.ts or all-teams-*-2026.ts is at
+#     lat:0, lng:0 (which would land them in the Atlantic for the S-curve
+#     closest-site logic);
+#   - any team in the KNOWN_GOOD canonical map drifted >0.5° from its
+#     hand-verified campus coords (regression guard against a coord-fix
+#     getting reverted by the daily refresh — the exact bug this whole
+#     branch is plugging).
+# Same abort_hard semantics as the 75%-rows sanity gate above: we Discord
+# the failure reason and bail before touching git or vercel.
+log "step 4b: npx tsx scripts/verify-team-coords.ts"
+if ! npx --yes tsx scripts/verify-team-coords.ts 2>&1; then
+    abort_hard "coord verifier failed — see log for FAIL lines"
+fi
+
+# ---------------------------------------------------------------------------
 # 5. Auto-apply confirmed winners (no-op until Playwright extractor lands)
 # ---------------------------------------------------------------------------
 log "step 5: python3 scripts/detect_new_champions.py --apply-winners (secondary pass)"
