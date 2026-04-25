@@ -2036,6 +2036,7 @@ function MobileRegionalGroup({
           </div>
           <HeadToHeadCompact
             teams={teams.map((t) => ({ team: t.team, seed: t.seed, rank: t.rank }))}
+            regionalColor={regional.color}
             gender={gender}
           />
         </div>

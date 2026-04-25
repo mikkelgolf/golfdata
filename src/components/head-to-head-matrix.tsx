@@ -1,48 +1,84 @@
 "use client";
 
 import Link from "next/link";
+import h2hData from "@/data/head-to-head-2526.json";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
+import TeamMonogram from "@/components/team-page/team-monogram";
 import type { Gender } from "@/data/records-types";
+import type {
+  TeamHeadToHead,
+  StrokeplayBreakdown,
+} from "@/lib/head-to-head";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface HeadToHeadRecord {
-  teamA: string;
-  teamB: string;
-  meetings: number;
-  teamAWins: number;
-  teamBWins: number;
-}
-
 interface HeadToHeadMatrixProps {
   teams: { team: string; seed: number; rank: number }[];
-  records?: HeadToHeadRecord[];
-  regionalColor: string;
+  /** Regional brand color — used as a subtle tint on the diagonal. */
+  regionalColor?: string;
   gender?: Gender;
+  /**
+   * Visual density. "compact" is the small mobile-card layout used inside
+   * `MobileRegionalGroup`; "default" is the desktop expanded panel.
+   */
+  variant?: "default" | "compact";
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Data lookup
 // ---------------------------------------------------------------------------
 
-function getRecord(
-  records: HeadToHeadRecord[],
+const byGender = (h2hData as unknown as {
+  byGender: Record<Gender, Record<string, TeamHeadToHead>>;
+}).byGender;
+
+interface CellRecord {
+  meetings: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  avgStrokeDiff: number;
+}
+
+/**
+ * Look up Team A's strokeplay record vs Team B from A's perspective. Returns
+ * null if the pair has no recorded strokeplay meetings.
+ */
+function lookupStrokeplay(
+  gender: Gender,
   teamA: string,
   teamB: string
-): { wins: number; losses: number; meetings: number } | null {
-  const rec = records.find(
-    (r) =>
-      (r.teamA === teamA && r.teamB === teamB) ||
-      (r.teamA === teamB && r.teamB === teamA)
-  );
-  if (!rec) return null;
-  if (rec.teamA === teamA) {
-    return { wins: rec.teamAWins, losses: rec.teamBWins, meetings: rec.meetings };
-  }
-  return { wins: rec.teamBWins, losses: rec.teamAWins, meetings: rec.meetings };
+): CellRecord | null {
+  const a = byGender[gender]?.[teamA];
+  if (!a) return null;
+  const opp = a.opponents[teamB];
+  if (!opp) return null;
+  const sp: StrokeplayBreakdown | undefined = opp.strokeplay;
+  if (!sp || sp.meetings === 0) return null;
+  return {
+    meetings: sp.meetings,
+    wins: sp.wins,
+    losses: sp.losses,
+    ties: sp.ties,
+    avgStrokeDiff: sp.avgStrokeDiff,
+  };
+}
+
+function formatRecord(r: { wins: number; losses: number; ties: number }): string {
+  if (r.ties > 0) return `${r.wins}-${r.losses}-${r.ties}`;
+  return `${r.wins}-${r.losses}`;
+}
+
+function formatAvg(diff: number): string {
+  // Lower stroke total = better in golf, so a negative avg-diff means Team A
+  // beat Team B by that many strokes per meeting — display unchanged so the
+  // sign reads naturally ("-8.5" = A is 8.5 strokes better on average).
+  const rounded = Math.round(diff * 10) / 10;
+  if (rounded === 0) return "±0";
+  return rounded > 0 ? `+${rounded}` : `${rounded}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -51,252 +87,199 @@ function getRecord(
 
 export default function HeadToHeadMatrix({
   teams,
-  records,
   regionalColor,
   gender = "men",
+  variant = "default",
 }: HeadToHeadMatrixProps) {
-  const hasData = records && records.length > 0;
-
-  // Sort teams by seed for consistent display
+  // Order columns + rows by seed so the cross-reference reads top-down by
+  // strength.
   const sorted = [...teams].sort((a, b) => a.seed - b.seed);
+  const compact = variant === "compact";
+
+  // Sizing tokens. The whole grid uses `width: 100%` with `table-fixed` so
+  // every cell scales with the container — this is what keeps it on-screen
+  // without horizontal scrolling on phones. Worst case is a 14-team men's
+  // regional → 15 columns. On a 360px viewport (after the panel's px-4 padding
+  // ≈ 328px usable) every cell gets ~22px, so type and badge sizes are tuned
+  // to read at that density.
+  const badgeSize = compact ? 16 : 20;
+  const cellPad = compact ? "px-0 py-px" : "px-px py-0.5";
+  const recordCls = compact
+    ? "text-[9px] sm:text-[10px]"
+    : "text-[9px] sm:text-[11px]";
+  const avgCls = compact
+    ? "text-[7px] sm:text-[8px]"
+    : "text-[7px] sm:text-[9px]";
+
+  // Detect whether any cell has data. If the regional has zero strokeplay
+  // overlap (rare but possible early in the season), keep the placeholder so
+  // we don't render an empty grid.
+  let anyData = false;
+  for (let i = 0; i < sorted.length && !anyData; i++) {
+    for (let j = 0; j < sorted.length && !anyData; j++) {
+      if (i === j) continue;
+      if (lookupStrokeplay(gender, sorted[i].team, sorted[j].team)) {
+        anyData = true;
+      }
+    }
+  }
 
   return (
-    <div className="mt-4">
-      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-2">
-        Head-to-Head
-      </p>
+    <div className={compact ? "mt-1.5" : "mt-4"}>
+      <div className="flex items-baseline justify-between gap-2 mb-1.5">
+        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          Head-to-Head
+        </p>
+        <p className="text-[9px] text-muted-foreground/70">
+          stroke play &middot; column vs row
+        </p>
+      </div>
 
-      {hasData ? (
-        <div className="overflow-x-auto -mx-1">
-          <table className="w-full text-[11px] border-collapse">
-            <thead>
-              <tr>
-                <th className="px-1.5 py-1.5 text-left text-muted-foreground font-medium min-w-[120px] max-w-[160px]">
-                  Team
-                </th>
-                {sorted.map((t) => (
-                  <th
-                    key={t.team}
-                    className="px-1 py-1.5 text-center text-muted-foreground font-medium"
-                    title={t.team}
-                  >
-                    <span className="hidden md:inline">{abbreviate(t.team)}</span>
-                    <span className="md:hidden text-[10px]">{abbreviate(t.team)}</span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((row) => (
-                <tr key={row.team} className="border-t border-border/30">
-                  <td className="px-1.5 py-1.5 text-foreground font-medium truncate max-w-[160px]">
-                    <span className="text-muted-foreground font-mono tabular-nums mr-1">
-                      {row.seed}
-                    </span>
-                    <Link
-                      href={teamHref(row.team, gender)}
-                      className="hover:text-primary transition-colors"
-                    >
-                      {row.team}
-                    </Link>
-                  </td>
-                  {sorted.map((col) => {
-                    if (row.team === col.team) {
-                      return (
-                        <td
-                          key={col.team}
-                          className="px-1 py-1.5 text-center"
-                          style={{ backgroundColor: `${regionalColor}10` }}
-                        >
-                          <span className="text-muted-foreground/40">-</span>
-                        </td>
-                      );
-                    }
-                    const rec = getRecord(records!, row.team, col.team);
-                    if (!rec || rec.meetings === 0) {
-                      return (
-                        <td
-                          key={col.team}
-                          className="px-1 py-1.5 text-center text-muted-foreground/40"
-                        >
-                          -
-                        </td>
-                      );
-                    }
-                    const isWinning = rec.wins > rec.losses;
-                    const isLosing = rec.wins < rec.losses;
-                    return (
-                      <td
-                        key={col.team}
-                        className={cn(
-                          "px-1 py-1.5 text-center font-mono tabular-nums whitespace-nowrap",
-                          isWinning && "text-primary",
-                          isLosing && "text-destructive",
-                          !isWinning && !isLosing && "text-muted-foreground"
-                        )}
-                      >
-                        {rec.wins}-{rec.losses}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
+      {!anyData ? (
         <div className="rounded-md bg-secondary/30 px-3 py-3 text-center">
           <p className="text-[12px] text-muted-foreground">
-            Head-to-head records will appear here once tournament data is available.
+            No strokeplay meetings yet between this regional&rsquo;s teams.
           </p>
         </div>
+      ) : (
+        <table className="w-full table-fixed border-collapse">
+          <thead>
+            <tr>
+              {/* Empty top-left corner */}
+              <th className="p-0" aria-hidden="true" />
+              {sorted.map((t) => (
+                <th
+                  key={t.team}
+                  className="p-0.5 align-bottom"
+                  title={`${t.team} (seed ${t.seed})`}
+                >
+                  <Link
+                    href={teamHref(t.team, gender)}
+                    className="inline-flex flex-col items-center gap-0.5"
+                  >
+                    <TeamMonogram team={t.team} size={badgeSize} />
+                    <span className="font-mono tabular-nums text-[8px] text-muted-foreground/80 leading-none">
+                      {t.seed}
+                    </span>
+                  </Link>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((rowTeam) => (
+              <tr key={rowTeam.team}>
+                {/* Row header — badge on the left */}
+                <th className="p-0.5" title={`${rowTeam.team} (seed ${rowTeam.seed})`}>
+                  <Link
+                    href={teamHref(rowTeam.team, gender)}
+                    className="inline-flex items-center gap-0.5"
+                  >
+                    <TeamMonogram team={rowTeam.team} size={badgeSize} />
+                    <span className="font-mono tabular-nums text-[8px] text-muted-foreground/80 leading-none hidden sm:inline">
+                      {rowTeam.seed}
+                    </span>
+                  </Link>
+                </th>
+                {sorted.map((colTeam) => {
+                  // Diagonal — same team on both axes.
+                  if (colTeam.team === rowTeam.team) {
+                    return (
+                      <td
+                        key={colTeam.team}
+                        className={cn(
+                          cellPad,
+                          "text-center text-muted-foreground/40 align-middle"
+                        )}
+                        style={
+                          regionalColor
+                            ? { backgroundColor: `${regionalColor}14` }
+                            : undefined
+                        }
+                      >
+                        <span className={recordCls}>--</span>
+                      </td>
+                    );
+                  }
+
+                  // Cell shows column team's record vs row team. Per spec:
+                  // "x-axis is Team A, y-axis is Team B" — so col=A, row=B
+                  // and the displayed record is A vs B from A's perspective.
+                  const teamA = colTeam.team;
+                  const teamB = rowTeam.team;
+                  const rec = lookupStrokeplay(gender, teamA, teamB);
+
+                  if (!rec) {
+                    return (
+                      <td
+                        key={colTeam.team}
+                        className={cn(
+                          cellPad,
+                          "text-center align-middle text-muted-foreground/30"
+                        )}
+                      >
+                        <span className={recordCls}>—</span>
+                      </td>
+                    );
+                  }
+
+                  const better = rec.wins > rec.losses;
+                  const worse = rec.wins < rec.losses;
+
+                  return (
+                    <td
+                      key={colTeam.team}
+                      className={cn(
+                        cellPad,
+                        "text-center align-middle border border-border/30 leading-tight",
+                        better && "bg-primary/15",
+                        worse && "bg-destructive/15"
+                      )}
+                      title={`${teamA} vs ${teamB} — ${formatRecord(rec)} (${formatAvg(rec.avgStrokeDiff)} avg over ${rec.meetings} meeting${rec.meetings === 1 ? "" : "s"})`}
+                    >
+                      <div
+                        className={cn(
+                          "font-mono tabular-nums font-semibold truncate",
+                          recordCls,
+                          better && "text-primary",
+                          worse && "text-destructive",
+                          !better && !worse && "text-foreground"
+                        )}
+                      >
+                        {formatRecord(rec)}
+                      </div>
+                      <div
+                        className={cn(
+                          "font-mono tabular-nums text-muted-foreground truncate",
+                          avgCls
+                        )}
+                      >
+                        {formatAvg(rec.avgStrokeDiff)}
+                        {/* Hide " avg" suffix below `sm` (≤640px) so the
+                            cell content stays inside its 22-24px column on
+                            phones. */}
+                        <span className="hidden sm:inline text-muted-foreground/60"> avg</span>
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Mobile variant
+// Compact variant — re-exported as a thin wrapper so the mobile call site in
+// `scurve-table.tsx` keeps working without any prop juggling. Same matrix,
+// just denser sizing.
 // ---------------------------------------------------------------------------
 
-export function HeadToHeadCompact({
-  teams,
-  records,
-  gender = "men",
-}: Omit<HeadToHeadMatrixProps, "regionalColor">) {
-  const hasData = records && records.length > 0;
-  const sorted = [...teams].sort((a, b) => a.seed - b.seed);
-
-  if (!hasData) {
-    return (
-      <div className="mt-3">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-2">
-          Head-to-Head
-        </p>
-        <div className="rounded-md bg-secondary/30 px-3 py-3 text-center">
-          <p className="text-[12px] text-muted-foreground">
-            Available once tournament data is loaded.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // On mobile, show a list of notable matchups instead of a full matrix
-  const matchups: {
-    teamA: string;
-    teamB: string;
-    seedA: number;
-    seedB: number;
-    wins: number;
-    losses: number;
-    meetings: number;
-  }[] = [];
-
-  for (let i = 0; i < sorted.length; i++) {
-    for (let j = i + 1; j < sorted.length; j++) {
-      const rec = getRecord(records!, sorted[i].team, sorted[j].team);
-      if (rec && rec.meetings > 0) {
-        matchups.push({
-          teamA: sorted[i].team,
-          teamB: sorted[j].team,
-          seedA: sorted[i].seed,
-          seedB: sorted[j].seed,
-          wins: rec.wins,
-          losses: rec.losses,
-          meetings: rec.meetings,
-        });
-      }
-    }
-  }
-
-  if (matchups.length === 0) {
-    return (
-      <div className="mt-3">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-2">
-          Head-to-Head
-        </p>
-        <p className="text-[12px] text-muted-foreground">
-          No head-to-head meetings found this season.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-3">
-      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground mb-2">
-        Head-to-Head ({matchups.length} matchups)
-      </p>
-      <div className="space-y-1">
-        {matchups.map((m) => (
-          <div
-            key={`${m.teamA}-${m.teamB}`}
-            className="flex items-center justify-between text-[12px] px-2 py-1.5 rounded bg-secondary/30"
-          >
-            <span className="text-foreground truncate flex-1">
-              <span className="font-mono tabular-nums text-muted-foreground mr-1">{m.seedA}</span>
-              <Link
-                href={teamHref(m.teamA, gender)}
-                className="hover:text-primary transition-colors"
-              >
-                {m.teamA}
-              </Link>
-            </span>
-            <span
-              className={cn(
-                "font-mono tabular-nums px-2 whitespace-nowrap",
-                m.wins > m.losses && "text-primary",
-                m.wins < m.losses && "text-destructive",
-                m.wins === m.losses && "text-muted-foreground"
-              )}
-            >
-              {m.wins}-{m.losses}
-            </span>
-            <span className="text-foreground truncate flex-1 text-right">
-              <Link
-                href={teamHref(m.teamB, gender)}
-                className="hover:text-primary transition-colors"
-              >
-                {m.teamB}
-              </Link>
-              <span className="font-mono tabular-nums text-muted-foreground ml-1">{m.seedB}</span>
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Utils
-// ---------------------------------------------------------------------------
-
-function abbreviate(name: string): string {
-  const abbrevs: Record<string, string> = {
-    "Oklahoma State": "OKST",
-    "Arizona State": "ASU",
-    "Georgia Tech": "GT",
-    "North Carolina": "UNC",
-    "Texas Tech": "TTU",
-    "Texas A&M": "TAMU",
-    "South Carolina": "SCAR",
-    "Ohio State": "OSU",
-    "Michigan State": "MSU",
-    "Kennesaw State": "KSU",
-    "Florida State": "FSU",
-    "Wake Forest": "WAKE",
-    "Old Dominion": "ODU",
-    "East Tennessee State": "ETSU",
-    "Sam Houston": "SHSU",
-    "New Mexico": "UNM",
-    "San Diego State": "SDSU",
-    "Southern California": "USC",
-    "Coastal Carolina": "CCU",
-    "South Florida": "USF",
-    "Kansas State": "KST",
-    "San Jose State": "SJSU",
-  };
-  return abbrevs[name] || name.slice(0, 4).toUpperCase();
+export function HeadToHeadCompact(
+  props: Omit<HeadToHeadMatrixProps, "variant">
+) {
+  return <HeadToHeadMatrix {...props} variant="compact" />;
 }
