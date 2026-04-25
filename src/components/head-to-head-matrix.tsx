@@ -81,6 +81,17 @@ function formatAvg(diff: number): string {
   return rounded > 0 ? `+${rounded}` : `${rounded}`;
 }
 
+/**
+ * Deep-link to the /head-to-head page with both teams pre-populated. The
+ * client-side `HeadToHeadBrowser` reads `gender`, `a`, and `b` from the
+ * query string on mount and hydrates its selectors from them — see
+ * `src/components/head-to-head-browser.tsx`.
+ */
+function h2hPairHref(gender: Gender, teamA: string, teamB: string): string {
+  const qs = new URLSearchParams({ gender, a: teamA, b: teamB });
+  return `/head-to-head?${qs.toString()}`;
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -230,36 +241,47 @@ export default function HeadToHeadMatrix({
                     <td
                       key={colTeam.team}
                       className={cn(
-                        cellPad,
-                        "text-center align-middle border border-border/30 leading-tight",
+                        "p-0 text-center align-middle border border-border/30 leading-tight",
                         better && "bg-primary/15",
                         worse && "bg-destructive/15"
                       )}
-                      title={`${teamA} vs ${teamB} — ${formatRecord(rec)} (${formatAvg(rec.avgStrokeDiff)} avg over ${rec.meetings} meeting${rec.meetings === 1 ? "" : "s"})`}
                     >
-                      <div
+                      <Link
+                        href={h2hPairHref(gender, teamA, teamB)}
+                        title={`Open head-to-head: ${teamA} vs ${teamB} — ${formatRecord(rec)} (${formatAvg(rec.avgStrokeDiff)} avg over ${rec.meetings} meeting${rec.meetings === 1 ? "" : "s"})`}
+                        aria-label={`${teamA} vs ${teamB} head-to-head, ${formatRecord(rec)}`}
                         className={cn(
-                          "font-mono tabular-nums font-semibold truncate",
-                          recordCls,
-                          better && "text-primary",
-                          worse && "text-destructive",
-                          !better && !worse && "text-foreground"
+                          "block w-full h-full transition-colors",
+                          cellPad,
+                          better && "hover:bg-primary/25",
+                          worse && "hover:bg-destructive/25",
+                          !better && !worse && "hover:bg-secondary/40"
                         )}
                       >
-                        {formatRecord(rec)}
-                      </div>
-                      <div
-                        className={cn(
-                          "font-mono tabular-nums text-muted-foreground truncate",
-                          avgCls
-                        )}
-                      >
-                        {formatAvg(rec.avgStrokeDiff)}
-                        {/* Hide " avg" suffix below `sm` (≤640px) so the
-                            cell content stays inside its 22-24px column on
-                            phones. */}
-                        <span className="hidden sm:inline text-muted-foreground/60"> avg</span>
-                      </div>
+                        <div
+                          className={cn(
+                            "font-mono tabular-nums font-semibold truncate",
+                            recordCls,
+                            better && "text-primary",
+                            worse && "text-destructive",
+                            !better && !worse && "text-foreground"
+                          )}
+                        >
+                          {formatRecord(rec)}
+                        </div>
+                        <div
+                          className={cn(
+                            "font-mono tabular-nums text-muted-foreground truncate",
+                            avgCls
+                          )}
+                        >
+                          {formatAvg(rec.avgStrokeDiff)}
+                          {/* Hide " avg" suffix below `sm` (≤640px) so the
+                              cell content stays inside its 22-24px column on
+                              phones. */}
+                          <span className="hidden sm:inline text-muted-foreground/60"> avg</span>
+                        </div>
+                      </Link>
                     </td>
                   );
                 })}
