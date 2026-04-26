@@ -59,12 +59,50 @@ def cache_path(key: str) -> Path:
     return CACHE_DIR / f"{hashlib.sha1(key.encode()).hexdigest()}.json.gz"
 
 
-def fetch_wikitext(title: str, use_cache: bool = True) -> str | None:
+def query_redirect(title: str, use_cache: bool = True) -> tuple[str, str | None]:
+    """Resolve a title via the query API. Returns (target_title, fragment_or_None)."""
+    p = cache_path("redirect:" + title)
+    if use_cache and p.exists():
+        with gzip.open(p, "rt") as f:
+            j = json.load(f)
+        return j["target"], j.get("fragment")
+    r = requests.get(
+        API_BASE,
+        params={
+            "action": "query",
+            "titles": title,
+            "redirects": 1,
+            "format": "json",
+        },
+        headers={"User-Agent": USER_AGENT},
+        timeout=30,
+    )
+    r.raise_for_status()
+    j = r.json()
+    target = title
+    fragment = None
+    redirects = j.get("query", {}).get("redirects", [])
+    if redirects:
+        target = redirects[-1].get("to") or title
+        fragment = redirects[-1].get("tofragment")
+    pages = j.get("query", {}).get("pages", {})
+    if pages and "-1" in pages:
+        # Page does not exist
+        target = ""
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    with gzip.open(p, "wt") as f:
+        json.dump({"title": title, "target": target, "fragment": fragment}, f)
+    time.sleep(RATE_LIMIT_SECONDS)
+    return target, fragment
+
+
+def fetch_wikitext(title: str, use_cache: bool = True) -> tuple[str, str] | tuple[None, None]:
+    """Returns (resolved_title, wikitext) or (None, None)."""
     p = cache_path(title)
     if use_cache and p.exists():
         with gzip.open(p, "rt") as f:
             j = json.load(f)
-        return j.get("wikitext")
+        return j.get("resolved_title") or j.get("title"), j.get("wikitext")
     print(f"[wiki] fetching: {title}", file=sys.stderr)
     r = requests.get(
         API_BASE,
@@ -81,50 +119,40 @@ def fetch_wikitext(title: str, use_cache: bool = True) -> str | None:
     r.raise_for_status()
     j = r.json()
     wt = None
+    resolved = title
     if "parse" in j and "wikitext" in j["parse"]:
         wt = j["parse"]["wikitext"]["*"]
+        resolved = j["parse"].get("title") or title
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     with gzip.open(p, "wt") as f:
-        json.dump({"title": title, "wikitext": wt}, f)
+        json.dump({"title": title, "resolved_title": resolved, "wikitext": wt}, f)
     time.sleep(RATE_LIMIT_SECONDS)
-    return wt
+    return resolved, wt
 
 
-def candidate_titles(slug: str, school_name: str | None) -> list[str]:
+MASCOTS = [
+    "Cowboys", "Tigers", "Bulldogs", "Razorbacks", "Crimson Tide", "Longhorns",
+    "Red Raiders", "Sun Devils", "Commodores", "Cardinal", "Tar Heels",
+    "Wolfpack", "Demon Deacons", "Cougars", "Bruins", "Trojans", "Wildcats",
+    "Buckeyes", "Boilermakers", "Cavaliers", "Seminoles", "Wolverines",
+    "Hawkeyes", "Blue Devils", "Aggies", "Hokies", "Lady Vols", "Lady Tigers",
+    "Lady Bulldogs", "Lady Razorbacks", "Lady Raiders",
+]
+
+
+def candidate_titles(slug: str, school_name: str | None, gender: str) -> list[str]:
     """Try several title variants. Wikipedia program pages are usually
-    "<School> <Mascot> men's golf"; we try a couple."""
+    "<School> <Mascot> <gender>'s golf"; we try a couple."""
     base = school_name or slug.replace("-", " ").title()
-    return [
-        f"{base} men's golf",
-        f"{base} Cowboys men's golf",
-        f"{base} Tigers men's golf",
-        f"{base} Bulldogs men's golf",
-        f"{base} Razorbacks men's golf",
-        f"{base} Crimson Tide men's golf",
-        f"{base} Longhorns men's golf",
-        f"{base} Red Raiders men's golf",
-        f"{base} Sun Devils men's golf",
-        f"{base} Commodores men's golf",
-        f"{base} Cardinal men's golf",
-        f"{base} Tar Heels men's golf",
-        f"{base} Wolfpack men's golf",
-        f"{base} Demon Deacons men's golf",
-        f"{base} Cougars men's golf",
-        f"{base} Bruins men's golf",
-        f"{base} Trojans men's golf",
-        f"{base} Wildcats men's golf",
-        f"{base} Buckeyes men's golf",
-        f"{base} Boilermakers men's golf",
-        f"{base} Cavaliers men's golf",
-        f"{base} Seminoles men's golf",
-        f"{base} Wolverines men's golf",
-        f"{base} Hawkeyes men's golf",
-        f"{base} Blue Devils men's golf",
-        f"{base} Aggies men's golf",
-        f"{base} Hokies men's golf",
+    g = "men" if gender in ("m", "men") else "women"
+    out = [
+        f"{base} {g}'s golf",
+        f"{base} {g}'s golf team",
         f"{base} Tigers golf",
-        f"{base} men's golf team",
     ]
+    for mascot in MASCOTS:
+        out.append(f"{base} {mascot} {g}'s golf")
+    return out
 
 
 SCHOOL_DISPLAY_NAMES: dict[str, str] = {
@@ -142,6 +170,7 @@ SCHOOL_DISPLAY_NAMES: dict[str, str] = {
     "arizona-state": "Arizona State Sun Devils",
     "ucla": "UCLA Bruins",
     "usc": "USC Trojans",
+    "southern-california": "USC Trojans",
     "byu": "BYU Cougars",
     "tcu": "TCU Horned Frogs",
     "smu": "SMU Mustangs",
@@ -180,19 +209,66 @@ SCHOOL_DISPLAY_NAMES: dict[str, str] = {
 }
 
 
-def resolve_title(slug: str) -> tuple[str, str] | None:
+def title_matches_gender(resolved: str, gender: str) -> bool:
+    """Reject pages where the redirect landed on the wrong gender's page
+    (or a generic athletics page). Wikipedia titles always include
+    "men's golf" / "women's golf" for the dedicated program pages."""
+    g = "men" if gender in ("m", "men") else "women"
+    other = "women" if g == "men" else "men"
+    rl = resolved.lower()
+    if f"{other}'s golf" in rl and f"{g}'s golf" not in rl:
+        return False
+    # Also require the gender keyword somewhere in the title — otherwise the
+    # page is a generic team/athletics page and the parsed sections will be
+    # noise from other sports.
+    if f"{g}'s golf" not in rl and "golf" not in rl:
+        return False
+    return True
+
+
+def try_resolve(title: str, gender: str) -> tuple[str, str] | None:
+    """Resolve a candidate title. Returns (display_title, wikitext) where
+    wikitext is either the full page wikitext (if no fragment redirect) or
+    just the slice for the relevant section (if redirected to a fragment on
+    a broader athletics page)."""
+    target, fragment = query_redirect(title)
+    if not target:
+        return None
+    if fragment:
+        # Broader athletics page; slice to just our section.
+        _, full_wt = fetch_wikitext(target)
+        if not full_wt:
+            return None
+        section_wt = slice_section(full_wt, fragment)
+        if not section_wt:
+            return None
+        # Sanity-check: section header should mention our gender.
+        g = "men" if gender in ("m", "men") else "women"
+        if g not in fragment.lower():
+            return None
+        return f"{target}#{fragment}", section_wt
+    # No fragment — must be a dedicated program page; verify gender match.
+    if not title_matches_gender(target, gender):
+        return None
+    _, wt = fetch_wikitext(target)
+    if not wt:
+        return None
+    return target, wt
+
+
+def resolve_title(slug: str, gender: str) -> tuple[str, str] | None:
     display = SCHOOL_DISPLAY_NAMES.get(slug, slug.replace("-", " ").title())
-    primary = f"{display} men's golf"
-    wt = fetch_wikitext(primary)
-    if wt:
-        return primary, wt
-    # Fallback: try other variants.
-    for t in candidate_titles(slug, display):
+    g = "men" if gender in ("m", "men") else "women"
+    primary = f"{display} {g}'s golf"
+    res = try_resolve(primary, gender)
+    if res:
+        return res
+    for t in candidate_titles(slug, display, gender):
         if t == primary:
             continue
-        wt = fetch_wikitext(t)
-        if wt:
-            return t, wt
+        res = try_resolve(t, gender)
+        if res:
+            return res
     return None
 
 
@@ -482,14 +558,15 @@ def parse_all_americans(wt: str) -> list[dict]:
     return out
 
 
-def parse_program(slug: str) -> dict | None:
-    res = resolve_title(slug)
+def parse_program(slug: str, gender: str) -> dict | None:
+    res = resolve_title(slug, gender)
     if not res:
         return None
     title, wt = res
 
     return {
         "school_slug": slug,
+        "gender": "m" if gender in ("m", "men") else "w",
         "wikipedia_title": title,
         "wikipedia_url": f"https://en.wikipedia.org/wiki/{quote(title.replace(' ', '_'))}",
         "scraped_at": datetime.now().isoformat(timespec="seconds") + "Z",
@@ -514,17 +591,17 @@ def main() -> None:
             print("No players index — run pipeline first")
             sys.exit(1)
         idx = json.loads(PLAYERS_INDEX.read_text())
-        slugs = sorted({e["school_slug"] for e in idx if e.get("gender") == "m"})
-        print(f"Running for {len(slugs)} schools …")
-        for slug in slugs:
-            out = parse_program(slug)
+        pairs = sorted({(e["school_slug"], e.get("gender") or "m") for e in idx})
+        print(f"Running for {len(pairs)} school/gender pairs …")
+        for slug, g in pairs:
+            out = parse_program(slug, g)
             if not out:
-                print(f"[wiki] {slug}: no Wikipedia page resolved")
+                print(f"[wiki] {slug} {g}: no Wikipedia page resolved")
                 continue
-            out_path = OUT_DIR / f"wikipedia-{slug}-m.json"
+            out_path = OUT_DIR / f"wikipedia-{slug}-{g}.json"
             out_path.write_text(json.dumps(out, indent=2))
             print(
-                f"[wiki] {slug}: ncaa={len(out['ncaa_championships'])} "
+                f"[wiki] {slug} {g}: ncaa={len(out['ncaa_championships'])} "
                 f"conf={len(out['conference_titles'])} "
                 f"alumni={len(out['notable_alumni'])} "
                 f"coaches={len(out['head_coaches'])} "
@@ -535,11 +612,11 @@ def main() -> None:
     if not args.slug:
         print("Usage: <slug> <men|women>  OR  --all")
         sys.exit(1)
-    out = parse_program(args.slug)
-    if not out:
-        print(f"No Wikipedia page found for {args.slug}")
-        sys.exit(1)
     g = "m" if args.gender in ("m", "men") else "w"
+    out = parse_program(args.slug, g)
+    if not out:
+        print(f"No Wikipedia page found for {args.slug} ({g})")
+        sys.exit(1)
     out_path = OUT_DIR / f"wikipedia-{args.slug}-{g}.json"
     out_path.write_text(json.dumps(out, indent=2))
     print(f"Wrote {out_path}")
