@@ -144,8 +144,8 @@ def write_evidence(slug: str, url: str, parsed: dict) -> Path:
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_OCR:
-        print(f"WARN: no LoC mapping for slug '{args.slug}'", file=sys.stderr)
-        sys.exit(1)
+        print(f"WARN: no LoC mapping for slug '{args.slug}'; skipping loc_newspapers", file=sys.stderr)
+        sys.exit(0)
     school = SCHOOL_OCR[args.slug]
     http = HttpCache(rate_limit_seconds=1.0, respect_robots=False)
 

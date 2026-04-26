@@ -169,8 +169,8 @@ def write_evidence(slug: str, query: str, result: dict) -> Path:
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_DISPLAY:
-        print(f"WARN: no display name for {args.slug}", file=sys.stderr)
-        sys.exit(1)
+        print(f"WARN: no display name for {args.slug}; skipping search_aggregator", file=sys.stderr)
+        sys.exit(0)
     school = SCHOOL_DISPLAY[args.slug]
 
     http = HttpCache(rate_limit_seconds=0.5, respect_robots=False)

@@ -316,8 +316,13 @@ def wayback_fallback(
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_SITES:
-        print(f"WARN: no athletics-site mapping for {args.slug}", file=sys.stderr)
-        sys.exit(1)
+        # Bridge-seeded jobs may target schools we haven't registered an
+        # athletics domain for yet — exit clean so the dispatcher proceeds
+        # to the universal phases (wayback, loc, search) which don't need
+        # a per-school site mapping. Add the slug to SCHOOL_SITES in
+        # scrape-school-news.py to enable schedule_discovery.
+        print(f"WARN: no athletics-site mapping for {args.slug}; skipping schedule_discovery", file=sys.stderr)
+        sys.exit(0)
     domain = SCHOOL_SITES[args.slug]["domain"]
     http = HttpCache(rate_limit_seconds=2.5)
     cli = ClaudeCLI(timeout_seconds=300)

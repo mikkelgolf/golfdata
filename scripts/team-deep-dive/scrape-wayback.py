@@ -161,8 +161,8 @@ def write_evidence(slug: str, url: str, source: str, parsed: dict, original_url:
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_SITES:
-        print(f"WARN: no site mapping for slug '{args.slug}'", file=sys.stderr)
-        sys.exit(1)
+        print(f"WARN: no site mapping for slug '{args.slug}'; skipping wayback", file=sys.stderr)
+        sys.exit(0)
     site = SCHOOL_SITES[args.slug]
     domain = site["domain"]
     news_path = site["news_path"]

@@ -227,8 +227,11 @@ def write_evidence(slug: str, url: str, source: str, parsed: dict) -> Path:
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_SITES:
-        print(f"WARN: no site mapping for slug '{args.slug}'. Add to SCHOOL_SITES.", file=sys.stderr)
-        sys.exit(1)
+        # Bridge-seeded jobs may target schools we haven't registered an
+        # athletics domain for yet — exit clean so the dispatcher proceeds
+        # to the universal phases.
+        print(f"WARN: no site mapping for slug '{args.slug}'; skipping news_archive. Add to SCHOOL_SITES to enable.", file=sys.stderr)
+        sys.exit(0)
     site = SCHOOL_SITES[args.slug]
     domain = site["domain"]
     news_path = site["news_path"]
