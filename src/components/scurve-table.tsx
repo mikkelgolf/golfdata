@@ -1703,22 +1703,26 @@ function RegionalGroup({
           onClick={() => setExpanded(!expanded)}
         >
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-baseline gap-2.5 flex-wrap">
-              <span className="flex items-center gap-1.5">
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className="flex items-center gap-2">
                 <ChevronRight
                   className={cn(
-                    "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                    "h-6 w-6 text-muted-foreground transition-transform",
                     expanded && "rotate-90"
                   )}
+                  style={{ color: regional.color }}
                 />
-                <span className="font-semibold text-[14px] text-foreground leading-none">
+                <span
+                  className="font-bold text-[28px] leading-none"
+                  style={{ color: regional.color }}
+                >
                   {regionalSeed !== undefined && (
-                    <span className="font-mono tabular-nums text-muted-foreground mr-1.5">#{regionalSeed}</span>
+                    <span className="font-mono tabular-nums text-muted-foreground mr-2">#{regionalSeed}</span>
                   )}
                   {regional.name}
                 </span>
               </span>
-              <span className="text-[12px] text-muted-foreground leading-none">
+              <span className="text-[24px] text-muted-foreground leading-none">
                 {regional.host} &middot; {regional.city}
               </span>
             </div>
@@ -2131,23 +2135,27 @@ function MobileRegionalGroup({
       {/* Regional header - single line, bottom border only, no background */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-1.5 px-0.5 py-0.5 border-b border-border/40"
+        className="w-full flex items-center gap-1.5 px-0.5 py-1 border-b border-border/40"
         style={{ borderLeftColor: regional.color, borderLeftWidth: "2px", paddingLeft: "4px" }}
       >
         <ChevronRight
           className={cn(
-            "h-2.5 w-2.5 text-muted-foreground shrink-0 transition-transform",
+            "h-5 w-5 shrink-0 transition-transform",
             expanded && "rotate-90"
           )}
+          style={{ color: regional.color }}
         />
-        <span className="font-semibold text-[11px] text-foreground">
+        <span
+          className="font-bold text-[22px] leading-none"
+          style={{ color: regional.color }}
+        >
           {regionalSeed !== undefined && (
             <span className="font-mono tabular-nums text-muted-foreground mr-1">#{regionalSeed}</span>
           )}
           {regional.name.replace(/ Regional$/, "")}
         </span>
-        <span className="text-[8px] text-muted-foreground">{regional.city}</span>
-        <span className="ml-auto text-[8px] text-muted-foreground tabular-nums shrink-0">
+        <span className="text-[16px] text-muted-foreground">{regional.city}</span>
+        <span className="ml-auto text-[16px] text-muted-foreground tabular-nums shrink-0">
           {teams.length}t
         </span>
       </button>

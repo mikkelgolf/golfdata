@@ -39,6 +39,12 @@ CHAMP_FILES=(
     src/data/championships-women-2026.ts
 )
 
+# Conference-championship history database — populated alongside the .ts edits
+# so the Conference Championships page picks up the stroke-play medalist,
+# match-play runner-up, and final score for any newly confirmed conferences.
+# See scripts/populate_conf_championship_winners.py.
+CONF_HISTORY_JSON="src/data/conference-championship-history.json"
+
 mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG_PATH") 2>&1
 
@@ -160,6 +166,56 @@ if ! npx --yes tsx scripts/verify-championships.ts 2>&1; then
 fi
 
 # ---------------------------------------------------------------------------
+# 5b. Populate conference-championship-history.json for each new winner
+# ---------------------------------------------------------------------------
+# After the .ts edits + validator pass, run the Phase 2 populator scoped to
+# each (conference, gender) pair we just confirmed. This pulls the stroke-play
+# medalist, match-play runner-up, and final-score from Clippd into the
+# history JSON, which the Conference Championships UI uses to render the
+# medal / silver-trophy icons.
+#
+# We loop per-(conf, gender) rather than running unfiltered so a single bad
+# leg from one conference can't poison the whole batch — partial-success rc=1
+# from one call doesn't abort the others. The populator has a defensive
+# winner-mismatch check inside that refuses to overwrite an existing winner
+# with a different extracted value, so the manual-winner pipeline's writes
+# stay safe even when this cron path runs over the same conference later.
+#
+# --include-2026 is required because by default the populator skips 2026
+# (Phase 1 seeded current-season data from the .ts files and we don't want
+# accidental bulk re-extraction).
+log "step 5b: populate conference-championship-history.json for autoConfirmed entries"
+mapfile -t POPULATE_TARGETS < <(python3 -c "
+import json
+r = json.load(open('$REPORT_PATH'))
+for e in r.get('autoConfirmed', []):
+    print(f\"{e['gender']}\\t{e['conference']}\")
+" 2>/dev/null || true)
+
+if [ "${#POPULATE_TARGETS[@]}" -eq 0 ]; then
+    log "no autoConfirmed entries to populate (skipping populator)"
+else
+    log "populating ${#POPULATE_TARGETS[@]} (gender, conference) pair(s)"
+    for target in "${POPULATE_TARGETS[@]}"; do
+        target_gender="${target%%$'\t'*}"
+        target_conf="${target##*$'\t'}"
+        log "  populator: gender=$target_gender conference=$target_conf"
+        POPULATE_ARGS=(
+            --season 2026
+            --gender "$target_gender"
+            --conference "$target_conf"
+            --include-2026
+        )
+        [ "$dry_run_mode" = "1" ] && POPULATE_ARGS+=( --dry-run )
+        if python3 scripts/populate_conf_championship_winners.py "${POPULATE_ARGS[@]}" 2>&1; then
+            log "    OK ($target_conf $target_gender)"
+        else
+            log "    partial-success rc — leaving any extracted data in place ($target_conf $target_gender)"
+        fi
+    done
+fi
+
+# ---------------------------------------------------------------------------
 # 6. Commit + push + deploy
 # ---------------------------------------------------------------------------
 # Collect list of new winners for the commit message / Discord summary.
@@ -179,8 +235,17 @@ COMMIT_SHA=""
 DEPLOY_URL=""
 if [ "$dry_run_mode" = "1" ]; then
     log "step 6: [dry-run] skipping git add/commit/push + vercel"
+    # In dry-run, revert any populator JSON edits so the tree stays clean.
+    if ! git diff --quiet -- "$CONF_HISTORY_JSON" 2>/dev/null; then
+        git checkout -- "$CONF_HISTORY_JSON" 2>&1 || \
+            log "WARN: couldn't revert JSON edit in dry-run"
+    fi
 else
     git add "${CHAMP_FILES[@]}" 2>&1
+    if ! git diff --quiet -- "$CONF_HISTORY_JSON" 2>/dev/null; then
+        log "staging populator JSON changes for commit"
+        git add "$CONF_HISTORY_JSON" 2>&1
+    fi
     if ! git commit -m "on-demand conference winners $(date -u +%Y-%m-%d) — ${NEW_WINNERS}" 2>&1; then
         abort_hard "git commit failed"
     fi

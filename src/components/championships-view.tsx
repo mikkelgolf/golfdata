@@ -16,7 +16,12 @@ import {
 } from "@/lib/championships";
 import type { TeamData } from "@/data/rankings-men";
 import type { Championship } from "@/data/championships-men-2026";
-import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink, Trophy } from "lucide-react";
+import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink, Trophy, Medal } from "lucide-react";
+import {
+  getConferenceResult2026,
+  getTeamHonours,
+} from "@/lib/conference-results-2026";
+import { LeaderboardBadges } from "@/components/leaderboard-badges";
 import ChampionshipsMap from "@/components/championships-map";
 import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
@@ -629,6 +634,13 @@ function ChampionshipCard({
   const [expanded, setExpanded] = useState(false);
   const [drillTeam, setDrillTeam] = useState<string | null>(null);
   const tbd = isVenueTBD(championship);
+  // Per-conference championship result (stroke-play / match-play winners + runner-up).
+  // Sourced from conference-championship-history.json so this stays in sync with the
+  // long-term database. `undefined` if no row exists for this (gender, conference).
+  const conferenceResult = useMemo(
+    () => getConferenceResult2026(gender, championship.conference),
+    [gender, championship.conference]
+  );
   const teamsWithCoords = teams.filter((t) => t.lat !== 0 || t.lng !== 0);
   const totalDistance = teamsWithCoords.reduce(
     (sum, t) => sum + t.distanceMiles,
@@ -746,6 +758,12 @@ function ChampionshipCard({
                 {formatDateRange(championship.startDate, championship.endDate)}
               </div>
             )}
+            {(conferenceResult?.strokeplayUrl ||
+              conferenceResult?.matchplayUrl) && (
+              <div className="mt-1.5 ml-5">
+                <LeaderboardBadges result={conferenceResult} size="md" />
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-end text-[11px] text-muted-foreground whitespace-nowrap shrink-0">
             <span className="tabular-nums">{teams.length} teams</span>
@@ -756,13 +774,46 @@ function ChampionshipCard({
               </span>
             )}
             {top && (
-              <span className="text-[10px] mt-0.5 text-foreground/70 truncate max-w-[120px]">
+              <div className="text-[10px] mt-0.5 text-foreground/70 max-w-[140px] flex flex-col items-end">
                 {championship.winner ? (
-                  <><Trophy className="inline h-2.5 w-2.5 mr-0.5 opacity-70" />{championship.winner}</>
+                  <>
+                    <span className="truncate max-w-full">
+                      <Trophy
+                        className="inline h-2.5 w-2.5 mr-0.5 text-amber-300"
+                        aria-hidden="true"
+                      />
+                      {championship.winner}
+                    </span>
+                    {/* For mixed-format championships (SP + MP), also list the
+                        match-play runner-up (silver trophy) and the stroke-play
+                        winner (gold medal) — even if it's the same team that
+                        won both legs, since the medal/trophy split is part of
+                        the conference's award structure. */}
+                    {conferenceResult?.hasMatchplay &&
+                      conferenceResult.matchplayRunnerUp && (
+                        <span className="truncate max-w-full">
+                          <Trophy
+                            className="inline h-2.5 w-2.5 mr-0.5 text-slate-400"
+                            aria-hidden="true"
+                          />
+                          {conferenceResult.matchplayRunnerUp}
+                        </span>
+                      )}
+                    {conferenceResult?.hasMatchplay &&
+                      conferenceResult.strokeplayWinner && (
+                        <span className="truncate max-w-full">
+                          <Medal
+                            className="inline h-2.5 w-2.5 mr-0.5 text-amber-300"
+                            aria-hidden="true"
+                          />
+                          {conferenceResult.strokeplayWinner}
+                        </span>
+                      )}
+                  </>
                 ) : (
-                  <>AQ: {top.team}</>
+                  <span className="truncate max-w-full">AQ: {top.team}</span>
                 )}
-              </span>
+              </div>
             )}
           </div>
         </div>
@@ -829,6 +880,61 @@ function ChampionshipCard({
                           {isDrilled ? "▾" : "▸"}
                         </span>{" "}
                         {t.team}
+                        {(() => {
+                          const honours = getTeamHonours(conferenceResult, t.team);
+                          return (
+                            <>
+                              {honours.strokeplayMedal && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Stroke-play winner — ${championship.conferenceFull}`}
+                                  aria-label="Stroke-play winner"
+                                >
+                                  <Medal
+                                    className="h-3.5 w-3.5 text-amber-300"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                              {honours.matchplayChampion && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Match-play champion — ${championship.conferenceFull}`}
+                                  aria-label="Match-play champion"
+                                >
+                                  <Trophy
+                                    className="h-3.5 w-3.5 text-amber-300"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                              {honours.matchplayRunnerUp && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Match-play runner-up — ${championship.conferenceFull}`}
+                                  aria-label="Match-play runner-up"
+                                >
+                                  <Trophy
+                                    className="h-3.5 w-3.5 text-slate-400"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                              {honours.strokeplayChampion && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Conference champion — ${championship.conferenceFull}`}
+                                  aria-label="Conference champion"
+                                >
+                                  <Trophy
+                                    className="h-3.5 w-3.5 text-amber-300"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
                         {!t.eligible && (
                           <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
                             Below .500
@@ -837,15 +943,9 @@ function ChampionshipCard({
                       </td>
                       <td className="px-3 py-1.5 text-center">
                         {t.isAutoQualifier ? (
-                          championship.winner ? (
-                            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-emerald-500/15 text-emerald-400">
-                              W
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
-                              AQ
-                            </span>
-                          )
+                          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
+                            AQ
+                          </span>
                         ) : (
                           <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">
                             AL
@@ -999,9 +1099,16 @@ function PredictedAQSection({
           ranked teams
         </span>
       </div>
-      <p className="text-[11px] text-text-tertiary mb-2">
-        Confirmed champions are marked with <span className="font-semibold text-emerald-400">W</span>.
-        Predictions based on current rankings are marked with <span className="font-semibold">P</span>.
+      <p className="text-[11px] text-text-tertiary mb-2 inline-flex flex-wrap items-center gap-x-1 gap-y-0.5">
+        <span className="inline-flex items-center gap-1">
+          Confirmed champions are marked with
+          <Trophy className="h-3 w-3 text-amber-300" aria-hidden="true" />
+          <span className="sr-only">trophy</span>.
+        </span>
+        <span>
+          Predictions based on current rankings are marked with{" "}
+          <span className="font-semibold">P</span>.
+        </span>
       </p>
 
       <div className="rounded-lg border border-border overflow-hidden">
@@ -1069,9 +1176,13 @@ function PredictedAQSection({
                     <span className="truncate">{championship.winner}</span>
                     <span
                       title={`Confirmed champion — ${championship.winner} won the ${championship.conferenceFull} championship`}
-                      className="inline-flex items-center justify-center text-[9px] font-semibold text-emerald-400 bg-emerald-500/15 rounded px-1 py-px shrink-0"
+                      aria-label="Conference champion"
+                      className="inline-flex items-center justify-center shrink-0"
                     >
-                      W
+                      <Trophy
+                        className="h-3 w-3 text-amber-300"
+                        aria-hidden="true"
+                      />
                     </span>
                   </>
                 ) : top ? (

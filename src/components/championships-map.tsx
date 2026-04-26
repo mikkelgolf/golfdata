@@ -11,7 +11,12 @@ import {
   formatStrokeDiff,
   type FieldRecord,
 } from "@/lib/head-to-head";
-import { Plane } from "lucide-react";
+import { Plane, Trophy, Medal } from "lucide-react";
+import {
+  getConferenceResult2026,
+  getTeamHonours,
+} from "@/lib/conference-results-2026";
+import { LeaderboardBadges } from "@/components/leaderboard-badges";
 import { geoAlbersUsa, geoPath } from "d3-geo";
 import { feature, mesh } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
@@ -179,6 +184,18 @@ export default function ChampionshipsMap({
     }
     return m;
   }, [activeChampionship, activeTeams, gender]);
+
+  // Per-conference championship result for the currently-active championship.
+  // Drives the gold-medal / gold-trophy / silver-trophy icons beside team names
+  // in the popup. Sourced from conference-championship-history.json so it stays
+  // in sync with the long-term database. `undefined` when nothing is active.
+  const activeConferenceResult = useMemo(
+    () =>
+      activeChampionshipData
+        ? getConferenceResult2026(gender, activeChampionshipData.conference)
+        : undefined,
+    [activeChampionshipData, gender]
+  );
 
   return (
     <div className="space-y-4">
@@ -449,6 +466,15 @@ export default function ChampionshipsMap({
                 activeChampionshipData.endDate
               )}
             </p>
+            {(activeConferenceResult?.strokeplayUrl ||
+              activeConferenceResult?.matchplayUrl) && (
+              <div className="mt-2">
+                <LeaderboardBadges
+                  result={activeConferenceResult}
+                  size="sm"
+                />
+              </div>
+            )}
             <div className="mt-2 space-y-1">
               <p className="text-[11px] text-muted-foreground">
                 {activeTeams.length} teams
@@ -491,6 +517,40 @@ export default function ChampionshipsMap({
                           <td className="text-left py-0.5 pr-2 truncate max-w-[140px]">
                             <span className="font-mono opacity-60 mr-1">#{t.rank}</span>
                             {t.team}
+                            {(() => {
+                              const honours = getTeamHonours(
+                                activeConferenceResult,
+                                t.team
+                              );
+                              return (
+                                <>
+                                  {honours.strokeplayMedal && (
+                                    <Medal
+                                      className="inline h-3 w-3 ml-1 text-amber-300 align-middle"
+                                      aria-label="Stroke-play winner"
+                                    />
+                                  )}
+                                  {honours.matchplayChampion && (
+                                    <Trophy
+                                      className="inline h-3 w-3 ml-1 text-amber-300 align-middle"
+                                      aria-label="Match-play champion"
+                                    />
+                                  )}
+                                  {honours.matchplayRunnerUp && (
+                                    <Trophy
+                                      className="inline h-3 w-3 ml-1 text-slate-400 align-middle"
+                                      aria-label="Match-play runner-up"
+                                    />
+                                  )}
+                                  {honours.strokeplayChampion && (
+                                    <Trophy
+                                      className="inline h-3 w-3 ml-1 text-amber-300 align-middle"
+                                      aria-label="Conference champion"
+                                    />
+                                  )}
+                                </>
+                              );
+                            })()}
                           </td>
                           <td
                             className={cn(
@@ -587,6 +647,15 @@ export default function ChampionshipsMap({
                   </p>
                 )}
               </div>
+              {(activeConferenceResult?.strokeplayUrl ||
+                activeConferenceResult?.matchplayUrl) && (
+                <div className="mt-2">
+                  <LeaderboardBadges
+                    result={activeConferenceResult}
+                    size="sm"
+                  />
+                </div>
+              )}
               <div className="mt-2 max-h-[34vh] overflow-y-auto pr-1 -mr-1">
                 <table className="w-full text-[11px] tabular-nums">
                   <thead className="sticky top-0 bg-background/90 backdrop-blur">
@@ -623,6 +692,40 @@ export default function ChampionshipsMap({
                                 #{t.rank}
                               </span>
                               {t.team}
+                              {(() => {
+                                const honours = getTeamHonours(
+                                  activeConferenceResult,
+                                  t.team
+                                );
+                                return (
+                                  <>
+                                    {honours.strokeplayMedal && (
+                                      <Medal
+                                        className="inline h-3 w-3 ml-1 text-amber-300 align-middle"
+                                        aria-label="Stroke-play winner"
+                                      />
+                                    )}
+                                    {honours.matchplayChampion && (
+                                      <Trophy
+                                        className="inline h-3 w-3 ml-1 text-amber-300 align-middle"
+                                        aria-label="Match-play champion"
+                                      />
+                                    )}
+                                    {honours.matchplayRunnerUp && (
+                                      <Trophy
+                                        className="inline h-3 w-3 ml-1 text-slate-400 align-middle"
+                                        aria-label="Match-play runner-up"
+                                      />
+                                    )}
+                                    {honours.strokeplayChampion && (
+                                      <Trophy
+                                        className="inline h-3 w-3 ml-1 text-amber-300 align-middle"
+                                        aria-label="Conference champion"
+                                      />
+                                    )}
+                                  </>
+                                );
+                              })()}
                             </td>
                             <td
                               className={cn(
