@@ -4,7 +4,7 @@
 **Requester:** David Tenneson
 **Branch:** ron/conf-championship-history-db
 **Base:** dev (origin/dev @ abb56d3)
-**Status:** in-progress
+**Status:** wrapped (merged to dev)
 
 ## Task
 
@@ -149,4 +149,96 @@ both stroke-play and match-play in the SEC women's row) is internally
 consistent with how Phase 1 seeded current-season winners from the
 `.ts` files; it just doesn't capture the stroke-vs-match-play split
 for 2026 SEC women yet.
+
+## Wrap
+
+After Phase 2 we kept rolling — turned the JSON into a UI surface
+and wired the populator into the existing automation so the data
+catches up automatically as conferences finish. Final shape of the
+branch versus `dev`:
+
+```
+13 files changed, 4731 insertions(+), 53 deletions(-)
+```
+
+### Phase 3 — UI surface (Conference Championships page + map)
+
+- **Per-team trophy/medal icons** on the conference cards (commit
+  `7ff1efb`): gold trophy = match-play champion (or stroke-only
+  champion when no match-play leg), silver trophy = match-play
+  runner-up, gold medal = stroke-play medalist. Same convention is
+  used by every team-row table that surfaces the data.
+- **Conference card winner badge swap** (`ed63842`): replaced the
+  green "W" badge with the same gold trophy used everywhere else.
+- **Map-tab popup** (`2a9fa1d`): per-team trophy/medal icons in the
+  team list of both the desktop overlay and the mobile bottom sheet.
+- **Stroke Play / Match Play leaderboard link badges** (`4361222`):
+  new `LeaderboardBadges` component renders a soft-blue Stroke Play
+  badge and a soft-red Match Play badge that link to Clippd's public
+  scoreboard. Two sizes: `"sm"` for map popup, `"md"` for card
+  header. Anchors stop click propagation so they don't toggle the
+  expanding parent.
+- **Collapsed-card top-right stripe** (`40e4b27`): on the Champ tab
+  and Date tab, the collapsed view now lists up to three stacked
+  lines — 🏆 champion, silver 🏆 MP runner-up, 🥇 SP medalist —
+  even when the same team won both legs (Stanford women is the
+  obvious case).
+
+### Phase 4 — Automation wiring (so we never have to remember)
+
+- **`apply-manual-winner.sh`** (`326b069`): step 3b runs
+  `populate_conf_championship_winners.py` after the validator passes,
+  scoped to the conf+gender just edited. Stages the JSON for commit
+  alongside the .ts edit; reverts cleanly in `--dry-run`.
+- **`update-conference-winner-on-demand.sh`** (`326b069`): step 5b
+  parses the cron's `autoConfirmed` array and loops the populator
+  per (conf, gender) pair. Per-pair invocation isolates partial-
+  success failures. Same staging + dry-run cleanup as the manual
+  script.
+- **Defensive winner-mismatch guard inside the populator**
+  (`326b069`): if a leg already carries a winner and the Clippd
+  extractor returns a different value, log a warning and leave the
+  leg untouched. Use `--force` to override. Without this, the cron
+  path could silently overwrite a human-supplied manual winner with
+  a Clippd row-1 misread.
+
+### Phase 5 — One-off populate + a Regional Predictions polish
+
+- **2026 SEC men one-off populate** (`09c9b97`): Auburn (SP),
+  Florida (MP runner-up), 4-1 final score. First real-world dogfood
+  of the populator — paved the way for the automation wiring above.
+- **By-Regional tab regional headers enlarged + recolored** (`179115c`):
+  expandable header text doubled (desktop name 14 → 28 px, host/city
+  subtitle 12 → 24 px; mobile name 11 → 22 px, city/teams 8 → 16 px),
+  and the regional name + chevron now render in the regional's own
+  color (the same highlight pattern host teams already use). Makes
+  scanning for a specific regional instant.
+
+### Open follow-ups (not blocking the merge)
+
+- The 9-row "stroke-play winner ≠ match-play winner" sanity-check
+  table earlier in this doc still needs David's eyeball. Tracked
+  there; do in a separate branch.
+- 2026 SEC women's row in the JSON is still committed as
+  Tennessee/Tennessee (see note immediately above this section); the
+  populator can refill it on a future run once we decide the
+  stroke-vs-match-play split is locked.
+
+### Files touched
+
+```
+docs/sessions/2026-04-26-conf-championship-history-db.md
+scripts/build-conf-championship-history.ts
+scripts/clippd_match_extractor.py            (new)
+scripts/clippd_winner_extractor.py
+scripts/populate_conf_championship_winners.py (new)
+scripts/apply-manual-winner.sh
+scripts/update-conference-winner-on-demand.sh
+src/components/championships-map.tsx
+src/components/championships-view.tsx
+src/components/leaderboard-badges.tsx        (new)
+src/components/scurve-table.tsx
+src/data/conference-championship-history.json (new)
+src/lib/conference-results-2026.ts
+```
 
