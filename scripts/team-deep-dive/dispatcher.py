@@ -67,6 +67,13 @@ PHASES = [
     {"name": "rankings_history", "kind": "py_script_global_once", "script": "scrape-rankings-history.py"},
     {"name": "conference_archives", "kind": "py_script_global_once", "script": "scrape-conference-archives.py"},
     {"name": "usga_amateur", "kind": "py_script_global_once", "script": "scrape-usga-amateur.py"},
+    # 10b. Event-bridge extraction — leaderboard PDFs + recaps → cross-team
+    #      event roster. Writes the global event-bridges.json so every team
+    #      we process expands the universe of teams we have ground truth on.
+    {"name": "extract_event_bridges", "kind": "py_script_per_team", "script": "extract-event-bridges.py", "timeout_seconds": 3600},
+    # 10c. Apply bridges — fill expected-schedule for seeded teams from
+    #      bridges; auto-queue unseeded teams seen in 3+ bridge events.
+    {"name": "apply_event_bridges", "kind": "py_script_global_once", "script": "apply-event-bridges.py"},
     # 11. Coverage validation — diff expected schedule vs granular_master + PDFs.
     {"name": "coverage_validation", "kind": "py_script_per_team", "script": "validate-coverage.py"},
     # 12. GolfStat backfill — resolve TIDs for gaps; logs queue (does NOT
