@@ -222,6 +222,38 @@ Return the JSON array now."""
     return events
 
 
+def page_matches_year(html: str, year: int) -> bool:
+    """Verify the schedule page actually serves data for the requested
+    academic year. Sidearm sites silently fall back to the current schedule
+    when an unrecognized `?season=` param is passed.
+
+    Heuristics, any of which is sufficient:
+      1. <title> contains "<year>-<yy>" or "<year>" pattern.
+      2. The first ~5KB of body mentions the year string.
+      3. A canonical Sidearm season-picker dropdown contains the year as
+         the SELECTED option.
+    """
+    seasons_y2 = str(year + 1)[-2:]
+    target_yy = f"{year}-{seasons_y2}"
+    target_year_str = str(year)
+    title_m = re.search(r"<title[^>]*>(.+?)</title>", html, re.S | re.I)
+    title = title_m.group(1) if title_m else ""
+    if target_yy in title or target_year_str in title:
+        return True
+    # Selected option in the season-picker.
+    sel_m = re.search(
+        r'<option[^>]*selected[^>]*>\s*(\d{4}[-–]\d{2,4})\s*</option>',
+        html,
+    )
+    if sel_m and (target_yy in sel_m.group(1) or target_year_str in sel_m.group(1)):
+        return True
+    # Body mention is weak signal but better than nothing for legacy pages.
+    head_blob = html[:8000]
+    if target_yy in head_blob:
+        return True
+    return False
+
+
 def wayback_fallback(
     http: HttpCache, cli: ClaudeCLI, domain: str, year: int, slug: str
 ) -> list[dict]:
@@ -266,6 +298,8 @@ def wayback_fallback(
             status, html, _ = http.get(snap_url)
             if status != 200 or not html or len(html) < 1500:
                 continue
+            if not page_matches_year(html, year):
+                continue
             events = parse_schedule_html(html, year, snap_url)
             if len(events) < 5:
                 events = llm_extract_schedule(cli, html, year, snap_url)
@@ -294,6 +328,15 @@ def main() -> None:
         for url in candidate_urls(domain, year):
             status, html, _ = http.get(url)
             if status != 200 or not html or len(html) < 1000:
+                continue
+            # Sanity check: does this page actually correspond to the
+            # requested academic year? Sidearm sites silently serve the
+            # CURRENT schedule when an old `?season=` param is passed,
+            # which would produce hallucinated event lists if we let the
+            # LLM extract from it. The page <title> typically says
+            # "<YEAR>-<YY> <Mascot> Golf Schedule" — verify the year is
+            # in there.
+            if not page_matches_year(html, year):
                 continue
             events = parse_schedule_html(html, year, url)
             if len(events) < 5:
