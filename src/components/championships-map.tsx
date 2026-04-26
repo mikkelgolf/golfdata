@@ -16,6 +16,7 @@ import {
   getConferenceResult2026,
   getTeamHonours,
 } from "@/lib/conference-results-2026";
+import { LeaderboardBadges } from "@/components/leaderboard-badges";
 import { geoAlbersUsa, geoPath } from "d3-geo";
 import { feature, mesh } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
@@ -465,6 +466,15 @@ export default function ChampionshipsMap({
                 activeChampionshipData.endDate
               )}
             </p>
+            {(activeConferenceResult?.strokeplayUrl ||
+              activeConferenceResult?.matchplayUrl) && (
+              <div className="mt-2">
+                <LeaderboardBadges
+                  result={activeConferenceResult}
+                  size="sm"
+                />
+              </div>
+            )}
             <div className="mt-2 space-y-1">
               <p className="text-[11px] text-muted-foreground">
                 {activeTeams.length} teams
@@ -637,6 +647,15 @@ export default function ChampionshipsMap({
                   </p>
                 )}
               </div>
+              {(activeConferenceResult?.strokeplayUrl ||
+                activeConferenceResult?.matchplayUrl) && (
+                <div className="mt-2">
+                  <LeaderboardBadges
+                    result={activeConferenceResult}
+                    size="sm"
+                  />
+                </div>
+              )}
               <div className="mt-2 max-h-[34vh] overflow-y-auto pr-1 -mr-1">
                 <table className="w-full text-[11px] tabular-nums">
                   <thead className="sticky top-0 bg-background/90 backdrop-blur">

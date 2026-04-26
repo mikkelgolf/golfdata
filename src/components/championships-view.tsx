@@ -21,6 +21,7 @@ import {
   getConferenceResult2026,
   getTeamHonours,
 } from "@/lib/conference-results-2026";
+import { LeaderboardBadges } from "@/components/leaderboard-badges";
 import ChampionshipsMap from "@/components/championships-map";
 import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
@@ -755,6 +756,12 @@ function ChampionshipCard({
             {!showDate && (
               <div className="mt-1 ml-5 text-[11px] font-mono tabular-nums text-text-tertiary">
                 {formatDateRange(championship.startDate, championship.endDate)}
+              </div>
+            )}
+            {(conferenceResult?.strokeplayUrl ||
+              conferenceResult?.matchplayUrl) && (
+              <div className="mt-1.5 ml-5">
+                <LeaderboardBadges result={conferenceResult} size="md" />
               </div>
             )}
           </div>

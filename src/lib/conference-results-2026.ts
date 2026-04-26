@@ -24,6 +24,10 @@ export interface ConferenceResult2026 {
   matchplayWinner?: string;
   /** Team that lost the match-play final, if a match-play leg exists. */
   matchplayRunnerUp?: string;
+  /** Public Clippd leaderboard URL for the stroke-play leg, if present. */
+  strokeplayUrl?: string;
+  /** Public Clippd leaderboard URL for the match-play leg, if present. */
+  matchplayUrl?: string;
   /** True when this championship has a match-play leg (gold medal / silver trophy unlock). */
   hasMatchplay: boolean;
 }
@@ -34,6 +38,7 @@ type Key = `${Gender}:${string}`;
 interface RawLeg {
   winner: string | null;
   runnerUp?: string | null;
+  clippdUrl?: string | null;
 }
 
 interface RawRow {
@@ -56,10 +61,14 @@ const ALL: ReadonlyMap<Key, ConferenceResult2026> = (() => {
     const sp = r.strokeplay?.winner ?? undefined;
     const mp = r.matchplay?.winner ?? undefined;
     const ru = r.matchplay?.runnerUp ?? undefined;
+    const spUrl = r.strokeplay?.clippdUrl ?? undefined;
+    const mpUrl = r.matchplay?.clippdUrl ?? undefined;
     m.set(`${r.gender}:${r.conference}`, {
       strokeplayWinner: sp,
       matchplayWinner: mp,
       matchplayRunnerUp: ru,
+      strokeplayUrl: spUrl,
+      matchplayUrl: mpUrl,
       hasMatchplay: r.matchplay != null,
     });
   }
