@@ -758,7 +758,13 @@ function ChampionshipCard({
             {top && (
               <span className="text-[10px] mt-0.5 text-foreground/70 truncate max-w-[120px]">
                 {championship.winner ? (
-                  <><Trophy className="inline h-2.5 w-2.5 mr-0.5 opacity-70" />{championship.winner}</>
+                  <>
+                    <Trophy
+                      className="inline h-2.5 w-2.5 mr-0.5 text-amber-300"
+                      aria-hidden="true"
+                    />
+                    {championship.winner}
+                  </>
                 ) : (
                   <>AQ: {top.team}</>
                 )}
@@ -838,8 +844,15 @@ function ChampionshipCard({
                       <td className="px-3 py-1.5 text-center">
                         {t.isAutoQualifier ? (
                           championship.winner ? (
-                            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-emerald-500/15 text-emerald-400">
-                              W
+                            <span
+                              className="inline-flex items-center justify-center"
+                              title={`Conference champion — ${championship.winner}`}
+                              aria-label="Conference champion"
+                            >
+                              <Trophy
+                                className="h-3.5 w-3.5 text-amber-300"
+                                aria-hidden="true"
+                              />
                             </span>
                           ) : (
                             <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
@@ -999,9 +1012,16 @@ function PredictedAQSection({
           ranked teams
         </span>
       </div>
-      <p className="text-[11px] text-text-tertiary mb-2">
-        Confirmed champions are marked with <span className="font-semibold text-emerald-400">W</span>.
-        Predictions based on current rankings are marked with <span className="font-semibold">P</span>.
+      <p className="text-[11px] text-text-tertiary mb-2 inline-flex flex-wrap items-center gap-x-1 gap-y-0.5">
+        <span className="inline-flex items-center gap-1">
+          Confirmed champions are marked with
+          <Trophy className="h-3 w-3 text-amber-300" aria-hidden="true" />
+          <span className="sr-only">trophy</span>.
+        </span>
+        <span>
+          Predictions based on current rankings are marked with{" "}
+          <span className="font-semibold">P</span>.
+        </span>
       </p>
 
       <div className="rounded-lg border border-border overflow-hidden">
@@ -1069,9 +1089,13 @@ function PredictedAQSection({
                     <span className="truncate">{championship.winner}</span>
                     <span
                       title={`Confirmed champion — ${championship.winner} won the ${championship.conferenceFull} championship`}
-                      className="inline-flex items-center justify-center text-[9px] font-semibold text-emerald-400 bg-emerald-500/15 rounded px-1 py-px shrink-0"
+                      aria-label="Conference champion"
+                      className="inline-flex items-center justify-center shrink-0"
                     >
-                      W
+                      <Trophy
+                        className="h-3 w-3 text-amber-300"
+                        aria-hidden="true"
+                      />
                     </span>
                   </>
                 ) : top ? (
