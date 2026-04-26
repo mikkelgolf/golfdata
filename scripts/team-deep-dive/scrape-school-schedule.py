@@ -29,6 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib.http_cache import HttpCache  # noqa: E402
+from lib.claude_cli import ClaudeCLI  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = REPO_ROOT / "data" / "team-deep-dive"
@@ -135,6 +136,67 @@ def parse_schedule_html(html: str, year: int, source_url: str) -> list[dict]:
     return out
 
 
+def llm_extract_schedule(cli: ClaudeCLI, html: str, year: int, source_url: str) -> list[dict]:
+    """Fallback: hand the raw schedule HTML to Claude. The model is good at
+    pulling structured event lists from arbitrary site frameworks (Sidearm
+    Vue.js, custom React, etc.) where regex per-school work is fragile.
+
+    Truncate to 60k chars to keep the prompt tractable; modern schedule pages
+    are typically 200-400 KB but the meaningful content is in the first
+    50-100 KB before the footer / nav scripts.
+    """
+    snippet = html[:60000]
+    prompt = f"""You are extracting a college golf team's schedule for the {year}-{str(year+1)[-2:]} academic year from this raw HTML.
+
+Return ONLY a JSON array. Each entry is one tournament the team played (or has scheduled) that season:
+  {{
+    "tournament_name": "...",            # e.g. "Carmel Cup", "Big 12 Championship"
+    "date_text": "Aug 29-31" or null,
+    "location": "Pebble Beach, CA" or null,
+    "course": "Pebble Beach Golf Links" or null,
+    "host_school": "Stanford" or null,
+    "finish_text": "1st" / "T5" / "MC" / null
+  }}
+
+Rules:
+  - Only include actual scheduled/played events. Skip navigation links, recap teasers, future-season previews, ranking widgets.
+  - Include events with no posted finish (future-scheduled or in-progress).
+  - Strict JSON. No markdown. No prose.
+  - If you can't find a single real event, return [].
+
+HTML follows.
+=== HTML ({len(snippet):,} chars) ===
+{snippet}
+=== END HTML ===
+
+Return the JSON array now."""
+    try:
+        out = cli.extract_json(prompt)
+    except Exception as e:
+        print(f"[schedule]   llm extract failed: {e}", file=sys.stderr)
+        return []
+    if not isinstance(out, list):
+        return []
+    events = []
+    for ev in out:
+        if not isinstance(ev, dict) or not ev.get("tournament_name"):
+            continue
+        events.append({
+            "academic_year": year,
+            "tournament_name": ev.get("tournament_name"),
+            "date_text": ev.get("date_text"),
+            "location": ev.get("location") or ev.get("course"),
+            "course": ev.get("course"),
+            "host_school": ev.get("host_school"),
+            "finish_text": ev.get("finish_text"),
+            "recap_url": None,
+            "raw_card_text": "",
+            "source_url": source_url,
+            "extraction_method": "llm",
+        })
+    return events
+
+
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_SITES:
@@ -142,20 +204,32 @@ def main() -> None:
         sys.exit(1)
     domain = SCHOOL_SITES[args.slug]["domain"]
     http = HttpCache(rate_limit_seconds=2.5)
+    cli = ClaudeCLI(timeout_seconds=300)
     all_events: list[dict] = []
     seasons_with_data: list[int] = []
     for year in range(args.from_season, args.to_season + 1):
+        seasoned = False
         for url in candidate_urls(domain, year):
             status, html, _ = http.get(url)
             if status != 200 or not html or len(html) < 1000:
                 continue
             events = parse_schedule_html(html, year, url)
+            if len(events) < 5:
+                # Regex didn't find enough — fall back to LLM extraction.
+                llm_events = llm_extract_schedule(cli, html, year, url)
+                if len(llm_events) >= len(events):
+                    events = llm_events
+                    print(f"[schedule] {args.slug} {year}-{str(year+1)[-2:]}: {len(events)} events from LLM fallback ({url})")
+                else:
+                    print(f"[schedule] {args.slug} {year}-{str(year+1)[-2:]}: {len(events)} events from regex ({url})")
+            else:
+                print(f"[schedule] {args.slug} {year}-{str(year+1)[-2:]}: {len(events)} events from regex ({url})")
             if events:
                 all_events.extend(events)
                 seasons_with_data.append(year)
-                print(f"[schedule] {args.slug} {year}-{str(year+1)[-2:]}: {len(events)} events from {url}")
+                seasoned = True
                 break  # don't try more URL patterns for this season
-        else:
+        if not seasoned:
             print(f"[schedule] {args.slug} {year}: no schedule page found")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
