@@ -137,15 +137,30 @@ def parse_schedule_html(html: str, year: int, source_url: str) -> list[dict]:
 
 
 def llm_extract_schedule(cli: ClaudeCLI, html: str, year: int, source_url: str) -> list[dict]:
-    """Fallback: hand the raw schedule HTML to Claude. The model is good at
-    pulling structured event lists from arbitrary site frameworks (Sidearm
-    Vue.js, custom React, etc.) where regex per-school work is fragile.
+    """Fallback: hand schedule HTML to Claude. The model is good at pulling
+    structured event lists from arbitrary site frameworks (Sidearm Vue.js,
+    custom React, etc.) where regex per-school work is fragile.
 
-    Truncate to 60k chars to keep the prompt tractable; modern schedule pages
-    are typically 200-400 KB but the meaningful content is in the first
-    50-100 KB before the footer / nav scripts.
+    Modern Sidearm schedule pages are 400-700 KB but the actual schedule
+    payload is buried in a `window.__NUXT__=...` JSON blob, OR in late-page
+    `s-game-card` cards. Naive head-of-document truncation misses both.
+    Strategy: hunt for the highest-signal slice and send up to 80 KB of it.
     """
-    snippet = html[:60000]
+    snippet = ""
+    # 1. Try the Nuxt hydration blob first.
+    nuxt_m = re.search(r"window\.__NUXT__\s*=\s*\(?function[\s\S]+?</script>", html)
+    if nuxt_m:
+        snippet = nuxt_m.group(0)[:80000]
+    # 2. Fall back to a window around the first s-game-card occurrence.
+    if not snippet or len(snippet) < 5000:
+        card_m = re.search(r"s-game-card s-game-card--standard", html)
+        if card_m:
+            start = max(0, card_m.start() - 5000)
+            snippet = html[start : start + 80000]
+    # 3. Last resort: head + tail concatenation. Front 30k for any inline
+    #    schedule, last 50k for the JSON dump.
+    if not snippet or len(snippet) < 5000:
+        snippet = html[:30000] + "\n\n[...truncated middle...]\n\n" + html[-50000:]
     prompt = f"""You are extracting a college golf team's schedule for the {year}-{str(year+1)[-2:]} academic year from this raw HTML.
 
 Return ONLY a JSON array. Each entry is one tournament the team played (or has scheduled) that season:
