@@ -111,3 +111,42 @@ the team they defeated and the final score (ex: '3-2' or '3-1-1' or
   match-play legs. Added `loadPriorWinners()` so a rebuild preserves
   Phase 2 data instead of clobbering it back to null.
 
+## Follow-ups
+
+### TODO (David) — sanity-check 2024/2025 stroke-play vs match-play splits
+
+When this JSON eventually backs UI on the Conference Championships
+page, every row where the stroke-play medalist team differs from
+the match-play trophy team will be visible. Most are legitimate
+(stroke-play seeds match-play, then a re-bracketed team wins the
+trophy), but each pair is worth a manual eyeball against the
+authoritative scoreboard URLs already stored on the row, in case
+the Phase 2 extractor mis-read row 1.
+
+**Verify in a separate feature branch (do NOT block this branch on it):**
+
+| Season | Gender | Conf | Stroke-play winner | Match-play winner |
+|---|---|---|---|---|
+| 2024 | men | BIGSOUTH | High Point | Winthrop |
+| 2024 | men | CUSA | Louisiana Tech | Liberty |
+| 2024 | men | OVC | Little Rock | Tennessee Tech |
+| 2024 | women | SEC | South Carolina | Mississippi State |
+| 2025 | men | BIGSOUTH | Charleston Southern | USC Upstate |
+| 2025 | men | CUSA | Liberty | Sam Houston |
+| 2025 | women | ACC | Stanford | Florida State |
+| 2025 | women | BSOUTH | Charleston Southern | Radford |
+| 2025 | women | SUNBELT | Georgia Southern | Southern Mississippi |
+
+Confirmed during today's discrepancy review (2026-04-26): every 2026
+trophy winner in the JSON agrees with the live `championships-{men,women}-2026.ts`
+source-of-truth — no live-site corrections needed from this dataset.
+
+The 2026 SEC women's stroke-play row was momentarily edited
+`Tennessee → Florida` in the working tree to reflect Florida's
+stroke-play medalist team finish, but the edit was reverted pending
+the broader sanity check above. The committed value (`Tennessee` for
+both stroke-play and match-play in the SEC women's row) is internally
+consistent with how Phase 1 seeded current-season winners from the
+`.ts` files; it just doesn't capture the stroke-vs-match-play split
+for 2026 SEC women yet.
+
