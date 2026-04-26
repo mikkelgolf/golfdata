@@ -49,3 +49,15 @@ next-env.d.ts
 /data/clippd/rankings-women-*.ts
 /logs/
 /.daily-refresh-disabled
+
+# team-deep-dive pipeline — intermediates and scraper caches are regenerated
+/data/team-deep-dive/
+/data/cache/
+# School record-book PDFs are bulky source data (one is >100MB); keep local only
+/data/source/*-record-book-*.pdf
+/data/source/*-media-guide-*.pdf
+# Built record-book outputs are large; revisit storage strategy before tracking
+/src/data/teams/
+/src/data/events/
+/src/data/players/
+__pycache__/

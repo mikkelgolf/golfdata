@@ -40,6 +40,7 @@ import UpcomingEvent from "@/components/team-page/upcoming-event";
 import { type NcaaYearResult } from "@/components/team-page/program-arc";
 import InteractiveProgramArc from "@/components/team-page/interactive-program-arc";
 import TeamMap from "@/components/team-page/team-map";
+import AllTimeRoster from "@/components/team-page/all-time-roster";
 import TeamMonogram from "@/components/team-page/team-monogram";
 import {
   AnimatedSection,
@@ -838,6 +839,8 @@ export default function TeamPage({ params }: { params: Params }) {
             </div>
           </section>
         )}
+
+        <AllTimeRoster schoolSlug={params.slug} gender={gender} />
 
         {history.length === 0 && recordHits.length === 0 && (
           <section className="mt-8 rounded-lg border border-border bg-card/50 px-4 py-4 text-[12px] text-muted-foreground">
