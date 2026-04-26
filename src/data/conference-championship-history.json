@@ -17,7 +17,7 @@
         "name": "Atlantic 10 Men's Golf Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231462",
-        "winner": null
+        "winner": "VCU"
       },
       "matchplay": null
     },
@@ -31,7 +31,7 @@
         "name": "2024 American Athletic Conference Men's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232323",
-        "winner": null
+        "winner": "USF"
       },
       "matchplay": null
     },
@@ -45,14 +45,16 @@
         "name": "ACC 2024 Men's Golf Championship - Stroke Play",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232315",
-        "winner": null
+        "winner": "North Carolina"
       },
       "matchplay": {
         "tournamentId": "232318",
         "name": "ACC 2024 Men's Golf Championship - Match Play",
         "endDate": "2024-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232318",
-        "winner": null
+        "winner": "North Carolina",
+        "runnerUp": "Florida State",
+        "finalScore": "3.5-1.5"
       }
     },
     {
@@ -65,7 +67,7 @@
         "name": "Atlantic Sun Men's Golf Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231452",
-        "winner": null
+        "winner": "Lipscomb"
       },
       "matchplay": null
     },
@@ -79,7 +81,7 @@
         "name": "2024 Big Ten Men's Golf Championships",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232387",
-        "winner": null
+        "winner": "Northwestern"
       },
       "matchplay": null
     },
@@ -93,7 +95,7 @@
         "name": "Big 12 Conference Championship",
         "endDate": "2024-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232500",
-        "winner": null
+        "winner": "Texas"
       },
       "matchplay": null
     },
@@ -107,7 +109,7 @@
         "name": "Big Sky Conference Championship",
         "endDate": "2024-04-25",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232715",
-        "winner": null
+        "winner": "Sacramento State"
       },
       "matchplay": null
     },
@@ -121,14 +123,16 @@
         "name": "2024 Big South Men's Golf Championship - Stroke Play",
         "endDate": "2024-04-20",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232454",
-        "winner": null
+        "winner": "High Point"
       },
       "matchplay": {
         "tournamentId": "232455",
         "name": "2024 Big South Men's Golf Championship - Match Play",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232455",
-        "winner": null
+        "winner": "Winthrop",
+        "runnerUp": "Gardner-Webb",
+        "finalScore": "4-1"
       }
     },
     {
@@ -141,7 +145,7 @@
         "name": "2024 Big West Men's Golf Championship",
         "endDate": "2024-04-30",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232367",
-        "winner": null
+        "winner": "Long Beach State"
       },
       "matchplay": null
     },
@@ -155,7 +159,7 @@
         "name": "CAA Men's Golf Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231451",
-        "winner": null
+        "winner": "Charleston"
       },
       "matchplay": null
     },
@@ -169,14 +173,16 @@
         "name": "2024 Conference USA Championship",
         "endDate": "2024-04-25",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232667",
-        "winner": null
+        "winner": "Louisiana Tech"
       },
       "matchplay": {
         "tournamentId": "232751",
         "name": "2024 Conference USA Championship - Match Play",
         "endDate": "2024-04-25",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232751",
-        "winner": null
+        "winner": "Liberty",
+        "runnerUp": "UTEP",
+        "finalScore": "3-2"
       }
     },
     {
@@ -189,7 +195,7 @@
         "name": "Horizon League Men's Golf Championship",
         "endDate": "2024-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232724",
-        "winner": null
+        "winner": "Wright State"
       },
       "matchplay": null
     },
@@ -203,7 +209,7 @@
         "name": "Ivy League Men's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232272",
-        "winner": null
+        "winner": "Yale"
       },
       "matchplay": null
     },
@@ -217,7 +223,7 @@
         "name": "2024 MAAC Men's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232319",
-        "winner": null
+        "winner": "Siena"
       },
       "matchplay": null
     },
@@ -231,7 +237,7 @@
         "name": "Mid-American Conference Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231675",
-        "winner": null
+        "winner": "Ball State"
       },
       "matchplay": null
     },
@@ -245,7 +251,7 @@
         "name": "2024 Missouri Valley Conference Men's Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232400",
-        "winner": null
+        "winner": "Southern Illinois"
       },
       "matchplay": null
     },
@@ -259,7 +265,7 @@
         "name": "2024 Mountain West Men's Golf Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232734",
-        "winner": null
+        "winner": "San Diego State"
       },
       "matchplay": null
     },
@@ -273,7 +279,7 @@
         "name": "NEC Men's Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232872",
-        "winner": null
+        "winner": "Howard"
       },
       "matchplay": null
     },
@@ -287,14 +293,16 @@
         "name": "2024 OVC Men's Golf Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232358",
-        "winner": null
+        "winner": "Little Rock"
       },
       "matchplay": {
         "tournamentId": "232359",
         "name": "2024 OVC Men's Golf Championship - Match Play",
         "endDate": "2024-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232359",
-        "winner": null
+        "winner": "Tennessee Tech",
+        "runnerUp": "SIU Edwardsville",
+        "finalScore": "3-2"
       }
     },
     {
@@ -307,7 +315,7 @@
         "name": "PAC-12 Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231945",
-        "winner": null
+        "winner": "Arizona State"
       },
       "matchplay": null
     },
@@ -321,7 +329,7 @@
         "name": "2024 Patriot League Men's Golf Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232767",
-        "winner": null
+        "winner": "Loyola Maryland"
       },
       "matchplay": null
     },
@@ -335,14 +343,16 @@
         "name": "2024 SEC Men's Golf Championship - Stroke Play",
         "endDate": "2024-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232553",
-        "winner": null
+        "winner": "Auburn"
       },
       "matchplay": {
         "tournamentId": "232557",
         "name": "2024 SEC Men's Golf Championship - Match Play",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232557",
-        "winner": null
+        "winner": "Auburn",
+        "runnerUp": "Vanderbilt",
+        "finalScore": "3-2"
       }
     },
     {
@@ -355,7 +365,7 @@
         "name": "2024 SoCon Men's Golf Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231457",
-        "winner": null
+        "winner": "East Tennessee State"
       },
       "matchplay": null
     },
@@ -369,7 +379,7 @@
         "name": "2024 Southland Conference Men's Golf Championship",
         "endDate": "2024-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232386",
-        "winner": null
+        "winner": "Augusta"
       },
       "matchplay": null
     },
@@ -383,7 +393,7 @@
         "name": "2024 Summit League Men's Golf Championship",
         "endDate": "2024-04-30",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232780",
-        "winner": null
+        "winner": "Kansas City"
       },
       "matchplay": null
     },
@@ -397,7 +407,7 @@
         "name": "2024 Sun Belt Conference Men's Golf Stroke Play Championship",
         "endDate": "2024-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232556",
-        "winner": null
+        "winner": "Arkansas State"
       },
       "matchplay": null
     },
@@ -411,7 +421,7 @@
         "name": "2024 SWAC Men Golf Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232504",
-        "winner": null
+        "winner": "Arkansas-Pine Bluff"
       },
       "matchplay": null
     },
@@ -425,7 +435,7 @@
         "name": "2024 WAC Men's Golf Championship",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232725",
-        "winner": null
+        "winner": "Grand Canyon"
       },
       "matchplay": null
     },
@@ -439,14 +449,16 @@
         "name": "2024 WCC Men's Golf Championship - Stroke Play",
         "endDate": "2024-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232759",
-        "winner": null
+        "winner": "San Diego"
       },
       "matchplay": {
         "tournamentId": "232760",
         "name": "2024 WCC Men's Golf Championship - Match Play",
         "endDate": "2024-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232760",
-        "winner": null
+        "winner": "San Diego",
+        "runnerUp": "Pepperdine",
+        "finalScore": "4-1"
       }
     },
     {
@@ -459,7 +471,7 @@
         "name": "American Athletic Conference Women's Golf Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232280",
-        "winner": null
+        "winner": "SMU"
       },
       "matchplay": null
     },
@@ -473,14 +485,16 @@
         "name": "2024 ACC Women's Golf Championship",
         "endDate": "2024-04-20",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232392",
-        "winner": null
+        "winner": "Wake Forest"
       },
       "matchplay": {
         "tournamentId": "232394",
         "name": "2024 ACC Women's Golf Match Play Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232394",
-        "winner": null
+        "winner": "Wake Forest",
+        "runnerUp": "Clemson",
+        "finalScore": "3-2"
       }
     },
     {
@@ -493,7 +507,7 @@
         "name": "2024 Atlantic Sun Conference Championship",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232292",
-        "winner": null
+        "winner": "Kennesaw State"
       },
       "matchplay": null
     },
@@ -507,7 +521,7 @@
         "name": "Big Ten Women's Golf Championships",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232530",
-        "winner": null
+        "winner": "Indiana"
       },
       "matchplay": null
     },
@@ -521,7 +535,7 @@
         "name": "2024 Big 12 Women's Golf Championship",
         "endDate": "2024-04-20",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232460",
-        "winner": null
+        "winner": "Texas"
       },
       "matchplay": null
     },
@@ -535,7 +549,7 @@
         "name": "BIG EAST Conference Women's Golf Championships",
         "endDate": "2024-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232673",
-        "winner": null
+        "winner": "Xavier"
       },
       "matchplay": null
     },
@@ -549,7 +563,7 @@
         "name": "Big Sky Conference Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232714",
-        "winner": null
+        "winner": "Sacramento State"
       },
       "matchplay": null
     },
@@ -563,14 +577,16 @@
         "name": "2024 Big South Women's Golf Championship - Stroke Play",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232452",
-        "winner": null
+        "winner": "Charleston Southern"
       },
       "matchplay": {
         "tournamentId": "232453",
         "name": "2024 Big South Women's Golf Championship - Match Play",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232453",
-        "winner": null
+        "winner": "Charleston Southern",
+        "runnerUp": "USC Upstate",
+        "finalScore": "4-1"
       }
     },
     {
@@ -583,7 +599,7 @@
         "name": "2024 Big West Women's Golf Championship",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232366",
-        "winner": null
+        "winner": "Long Beach State"
       },
       "matchplay": null
     },
@@ -597,7 +613,7 @@
         "name": "CAA Women's Golf Championship",
         "endDate": "2024-04-14",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231404",
-        "winner": null
+        "winner": "Delaware"
       },
       "matchplay": null
     },
@@ -611,7 +627,7 @@
         "name": "Conference USA Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232532",
-        "winner": null
+        "winner": "Sam Houston"
       },
       "matchplay": null
     },
@@ -625,7 +641,7 @@
         "name": "Horizon League Women's Golf Championship",
         "endDate": "2024-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232700",
-        "winner": null
+        "winner": "Oakland"
       },
       "matchplay": null
     },
@@ -639,7 +655,7 @@
         "name": "Ivy League Women's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232273",
-        "winner": null
+        "winner": "Dartmouth"
       },
       "matchplay": null
     },
@@ -653,7 +669,7 @@
         "name": "2024 MAAC Women's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232320",
-        "winner": null
+        "winner": "UAlbany"
       },
       "matchplay": null
     },
@@ -667,7 +683,7 @@
         "name": "Mid-American Conference Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231455",
-        "winner": null
+        "winner": "Kent State"
       },
       "matchplay": null
     },
@@ -681,7 +697,7 @@
         "name": "2024 Missouri Valley Conference Women's Championship",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232399",
-        "winner": null
+        "winner": "Illinois State"
       },
       "matchplay": null
     },
@@ -695,7 +711,7 @@
         "name": "2024 Mountain West Women's Golf Championship",
         "endDate": "2024-04-18",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232716",
-        "winner": null
+        "winner": "San Jose State"
       },
       "matchplay": null
     },
@@ -709,7 +725,7 @@
         "name": "NEC Women's Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232698",
-        "winner": null
+        "winner": "Sacred Heart"
       },
       "matchplay": null
     },
@@ -723,7 +739,7 @@
         "name": "2024 OVC Women's Golf Championship",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232357",
-        "winner": null
+        "winner": "Little Rock"
       },
       "matchplay": null
     },
@@ -737,7 +753,7 @@
         "name": "2024 Pac-12 Women's Golf Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232726",
-        "winner": null
+        "winner": "Stanford"
       },
       "matchplay": null
     },
@@ -751,7 +767,7 @@
         "name": "Patriot League Women's Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232697",
-        "winner": null
+        "winner": "Navy"
       },
       "matchplay": null
     },
@@ -765,14 +781,16 @@
         "name": "2024 SEC Women's Golf Championship - Stroke Play",
         "endDate": "2024-04-14",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232611",
-        "winner": null
+        "winner": "South Carolina"
       },
       "matchplay": {
         "tournamentId": "232616",
         "name": "2024 SEC Women's Golf Championship - Match Play",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232616",
-        "winner": null
+        "winner": "Mississippi State",
+        "runnerUp": "Texas A&M",
+        "finalScore": "3-2"
       }
     },
     {
@@ -785,7 +803,7 @@
         "name": "2024 SoCon Women's Golf Championship",
         "endDate": "2024-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/231418",
-        "winner": null
+        "winner": "East Tennessee State"
       },
       "matchplay": null
     },
@@ -799,7 +817,7 @@
         "name": "2024 Southland Conference Women's Golf Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232385",
-        "winner": null
+        "winner": "Augusta"
       },
       "matchplay": null
     },
@@ -813,7 +831,7 @@
         "name": "2024 Summit League Women's Golf Championship",
         "endDate": "2024-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232707",
-        "winner": null
+        "winner": "Denver"
       },
       "matchplay": null
     },
@@ -827,14 +845,16 @@
         "name": "Sun Belt Conference Women's Golf Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232554",
-        "winner": null
+        "winner": "Texas State"
       },
       "matchplay": {
         "tournamentId": "232555",
         "name": "Sun Belt Conference Women's Golf Match Play Championship",
         "endDate": "2024-04-18",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232555",
-        "winner": null
+        "winner": "Texas State",
+        "runnerUp": "Georgia Southern",
+        "finalScore": "4-1"
       }
     },
     {
@@ -847,7 +867,7 @@
         "name": "2024 SWAC Women Golf Championship",
         "endDate": "2024-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232505",
-        "winner": null
+        "winner": "Alabama State"
       },
       "matchplay": null
     },
@@ -861,7 +881,7 @@
         "name": "2024 WAC Women's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232720",
-        "winner": null
+        "winner": "Seattle"
       },
       "matchplay": null
     },
@@ -875,7 +895,7 @@
         "name": "2024 WCC Women's Golf Championship",
         "endDate": "2024-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/232434",
-        "winner": null
+        "winner": "Pepperdine"
       },
       "matchplay": null
     },
@@ -889,7 +909,7 @@
         "name": "Atlantic 10 Men's Golf Championship",
         "endDate": "2025-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234523",
-        "winner": null
+        "winner": "Davidson"
       },
       "matchplay": null
     },
@@ -903,7 +923,7 @@
         "name": "2025 Men's American Athletic Conference Championship",
         "endDate": "2025-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233593",
-        "winner": null
+        "winner": "Charlotte"
       },
       "matchplay": null
     },
@@ -917,14 +937,16 @@
         "name": "ACC 2025 Men's Golf Championship",
         "endDate": "2025-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234020",
-        "winner": null
+        "winner": "Virginia"
       },
       "matchplay": {
         "tournamentId": "234022",
         "name": "ACC 2025 Men's Golf Match Play Championship",
         "endDate": "2025-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234022",
-        "winner": null
+        "winner": "Virginia",
+        "runnerUp": "North Carolina",
+        "finalScore": "3-2"
       }
     },
     {
@@ -937,7 +959,7 @@
         "name": "2025 Atlantic Sun Conference Championship",
         "endDate": "2025-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234414",
-        "winner": null
+        "winner": "Central Arkansas"
       },
       "matchplay": null
     },
@@ -951,7 +973,7 @@
         "name": "Big Ten Men's Golf Championships",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233800",
-        "winner": null
+        "winner": "UCLA"
       },
       "matchplay": null
     },
@@ -965,7 +987,7 @@
         "name": "Big 12 Conference Men's Golf Championship",
         "endDate": "2025-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233986",
-        "winner": null
+        "winner": "Oklahoma State"
       },
       "matchplay": null
     },
@@ -979,7 +1001,7 @@
         "name": "2025 BIG EAST Men's Golf Championships",
         "endDate": "2025-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237326",
-        "winner": null
+        "winner": "Marquette"
       },
       "matchplay": null
     },
@@ -993,14 +1015,16 @@
         "name": "2025 Big South Men's Golf Championship",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234640",
-        "winner": null
+        "winner": "Charleston Southern"
       },
       "matchplay": {
         "tournamentId": "234641",
         "name": "2025 Big South Men's Golf Championship",
         "endDate": "2025-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234641",
-        "winner": null
+        "winner": "USC Upstate",
+        "runnerUp": "Charleston Southern",
+        "finalScore": "3-2"
       }
     },
     {
@@ -1013,7 +1037,7 @@
         "name": "2025 Big West Men's Golf Championship",
         "endDate": "2025-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234272",
-        "winner": null
+        "winner": "Long Beach State"
       },
       "matchplay": null
     },
@@ -1027,7 +1051,7 @@
         "name": "2025 CAA Men's Golf Championship",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237845",
-        "winner": null
+        "winner": "Elon"
       },
       "matchplay": null
     },
@@ -1041,14 +1065,16 @@
         "name": "2025 Conference USA Men's Golf Championship - Stroke Play",
         "endDate": "2025-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/235233",
-        "winner": null
+        "winner": "Liberty"
       },
       "matchplay": {
         "tournamentId": "235239",
         "name": "2025 Conference USA Men's Golf Championship - Match Play",
         "endDate": "2025-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/235239",
-        "winner": null
+        "winner": "Sam Houston",
+        "runnerUp": "UTEP",
+        "finalScore": "3.5-1.5"
       }
     },
     {
@@ -1061,7 +1087,7 @@
         "name": "2025 Horizon League Men's Golf Championship",
         "endDate": "2025-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237669",
-        "winner": null
+        "winner": "Wright State"
       },
       "matchplay": null
     },
@@ -1075,7 +1101,7 @@
         "name": "Ivy League Men's Golf Championship",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/235223",
-        "winner": null
+        "winner": "Princeton"
       },
       "matchplay": null
     },
@@ -1089,7 +1115,7 @@
         "name": "2025 MAAC Men's Golf Championship",
         "endDate": "2025-04-19",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237652",
-        "winner": null
+        "winner": "Fairfield"
       },
       "matchplay": null
     },
@@ -1103,7 +1129,7 @@
         "name": "MAC Championship",
         "endDate": "2025-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234314",
-        "winner": null
+        "winner": "Kent State"
       },
       "matchplay": null
     },
@@ -1117,7 +1143,7 @@
         "name": "2025 Missouri Valley Conference Men's Golf Championship",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234434",
-        "winner": null
+        "winner": "Illinois State"
       },
       "matchplay": null
     },
@@ -1131,7 +1157,7 @@
         "name": "2025 Credit Union 1 Mountain West Men’s Golf Championship",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233900",
-        "winner": null
+        "winner": "San Diego State"
       },
       "matchplay": null
     },
@@ -1145,7 +1171,7 @@
         "name": "2025 Northeast Conference Men's Golf Championship",
         "endDate": "2025-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/238181",
-        "winner": null
+        "winner": "Howard"
       },
       "matchplay": null
     },
@@ -1159,14 +1185,16 @@
         "name": "2025 OVC Men's Golf Championship - Stroke Play",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234477",
-        "winner": null
+        "winner": "Little Rock"
       },
       "matchplay": {
         "tournamentId": "234478",
         "name": "2025 OVC Men's Golf Championship - Match Play",
         "endDate": "2025-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234478",
-        "winner": null
+        "winner": "Little Rock",
+        "runnerUp": "Tennessee-Martin",
+        "finalScore": "3-2"
       }
     },
     {
@@ -1179,7 +1207,7 @@
         "name": "2025 Patriot League Men's Golf Championship",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234233",
-        "winner": null
+        "winner": "Loyola Maryland"
       },
       "matchplay": null
     },
@@ -1193,7 +1221,7 @@
         "name": "2025 SEC Men's Golf Championship Stroke Play",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234143",
-        "winner": null
+        "winner": "Auburn"
       },
       "matchplay": null
     },
@@ -1207,7 +1235,7 @@
         "name": "2025 SoCon Men's Golf Championship",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233816",
-        "winner": null
+        "winner": "East Tennessee State"
       },
       "matchplay": null
     },
@@ -1221,7 +1249,7 @@
         "name": "Southland Conference Men's Golf Championship",
         "endDate": "2025-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234249",
-        "winner": null
+        "winner": "Augusta"
       },
       "matchplay": null
     },
@@ -1235,7 +1263,7 @@
         "name": "2025 Summit League Men's Golf Championship",
         "endDate": "2025-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237974",
-        "winner": null
+        "winner": "Oral Roberts"
       },
       "matchplay": null
     },
@@ -1249,14 +1277,16 @@
         "name": "Sun Belt Conference Men's Championship- Stroke Play",
         "endDate": "2025-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/236341",
-        "winner": null
+        "winner": "Coastal Carolina"
       },
       "matchplay": {
         "tournamentId": "236343",
         "name": "Sun Belt Conference Men's Championship- Match Play",
         "endDate": "2025-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/236343",
-        "winner": null
+        "winner": "Coastal Carolina",
+        "runnerUp": "Arkansas State",
+        "finalScore": "3-2"
       }
     },
     {
@@ -1269,7 +1299,7 @@
         "name": "2025 SWAC Men's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237991",
-        "winner": null
+        "winner": "Florida A&M"
       },
       "matchplay": null
     },
@@ -1283,7 +1313,7 @@
         "name": "2025 WAC Men's Golf Championship",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/236909",
-        "winner": null
+        "winner": "Seattle"
       },
       "matchplay": null
     },
@@ -1297,14 +1327,16 @@
         "name": "2025 WCC Men's Golf Championship",
         "endDate": "2025-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234108",
-        "winner": null
+        "winner": "Pepperdine"
       },
       "matchplay": {
         "tournamentId": "234110",
         "name": "2025 WCC Men's Golf Championship",
         "endDate": "2025-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234110",
-        "winner": null
+        "winner": "Pepperdine",
+        "runnerUp": "Loyola Marymount",
+        "finalScore": "4-1"
       }
     },
     {
@@ -1317,7 +1349,7 @@
         "name": "2025 Atlantic 10 Women's Golf Championship",
         "endDate": "2025-04-19",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237760",
-        "winner": null
+        "winner": "Richmond"
       },
       "matchplay": null
     },
@@ -1331,7 +1363,7 @@
         "name": "2025 American Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233864",
-        "winner": null
+        "winner": "Tulsa"
       },
       "matchplay": null
     },
@@ -1345,14 +1377,16 @@
         "name": "2025 ACC Women's Golf Championship",
         "endDate": "2025-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233820",
-        "winner": null
+        "winner": "Stanford"
       },
       "matchplay": {
         "tournamentId": "233821",
         "name": "2025 ACC Women's Golf Match Play Championship",
         "endDate": "2025-04-19",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233821",
-        "winner": null
+        "winner": "Florida State",
+        "runnerUp": "Wake Forest",
+        "finalScore": "3-2"
       }
     },
     {
@@ -1365,7 +1399,7 @@
         "name": "2025 Atlantic Sun Conference Championship",
         "endDate": "2025-04-15",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234416",
-        "winner": null
+        "winner": "Florida Gulf Coast"
       },
       "matchplay": null
     },
@@ -1379,7 +1413,7 @@
         "name": "Big Ten Women's Golf Championships",
         "endDate": "2025-04-20",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233801",
-        "winner": null
+        "winner": "Oregon"
       },
       "matchplay": null
     },
@@ -1393,7 +1427,7 @@
         "name": "Big 12 Conference Women's Golf Championship",
         "endDate": "2025-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233987",
-        "winner": null
+        "winner": "Arizona"
       },
       "matchplay": null
     },
@@ -1407,7 +1441,7 @@
         "name": "2025 BIG EAST Women's Golf Championships",
         "endDate": "2025-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237327",
-        "winner": null
+        "winner": "Xavier"
       },
       "matchplay": null
     },
@@ -1421,7 +1455,7 @@
         "name": "Big Sky Conference Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237689",
-        "winner": null
+        "winner": "Sacramento State"
       },
       "matchplay": null
     },
@@ -1435,14 +1469,16 @@
         "name": "2025 Big South Women's Golf Championship",
         "endDate": "2025-04-15",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234637",
-        "winner": null
+        "winner": "Charleston Southern"
       },
       "matchplay": {
         "tournamentId": "234639",
         "name": "2025 Big South Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234639",
-        "winner": null
+        "winner": "Radford",
+        "runnerUp": "Charleston Southern",
+        "finalScore": "3-2"
       }
     },
     {
@@ -1455,7 +1491,7 @@
         "name": "2025 Big West Women's Golf Championship",
         "endDate": "2025-04-15",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234273",
-        "winner": null
+        "winner": "CSU Fullerton"
       },
       "matchplay": null
     },
@@ -1469,7 +1505,7 @@
         "name": "2025 CAA Women's Golf Championship",
         "endDate": "2025-04-13",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237822",
-        "winner": null
+        "winner": "Charleston"
       },
       "matchplay": null
     },
@@ -1483,7 +1519,7 @@
         "name": "2025 Conference USA Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/235230",
-        "winner": null
+        "winner": "Western Kentucky"
       },
       "matchplay": null
     },
@@ -1497,7 +1533,7 @@
         "name": "2025 Horizon League Women's Golf Championship",
         "endDate": "2025-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237686",
-        "winner": null
+        "winner": "Oakland"
       },
       "matchplay": null
     },
@@ -1511,7 +1547,7 @@
         "name": "Ivy League Women's Golf Championship",
         "endDate": "2025-04-20",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/235202",
-        "winner": null
+        "winner": "Princeton"
       },
       "matchplay": null
     },
@@ -1525,7 +1561,7 @@
         "name": "2025 MAAC Women's Golf Championship",
         "endDate": "2025-04-19",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237654",
-        "winner": null
+        "winner": "Quinnipiac"
       },
       "matchplay": null
     },
@@ -1539,7 +1575,7 @@
         "name": "Mid-American Conference Championship",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234229",
-        "winner": null
+        "winner": "Kent State"
       },
       "matchplay": null
     },
@@ -1553,7 +1589,7 @@
         "name": "2025 Missouri Valley Conference Women's Golf Championship",
         "endDate": "2025-04-15",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234435",
-        "winner": null
+        "winner": "Illinois State"
       },
       "matchplay": null
     },
@@ -1567,7 +1603,7 @@
         "name": "2025 Credit Union 1 Mountain West Women's Golf Championship",
         "endDate": "2025-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/233899",
-        "winner": null
+        "winner": "UNLV"
       },
       "matchplay": null
     },
@@ -1581,7 +1617,7 @@
         "name": "2025 Northeast Conference Women's Golf Championship",
         "endDate": "2025-04-13",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237986",
-        "winner": null
+        "winner": "FDU"
       },
       "matchplay": null
     },
@@ -1595,7 +1631,7 @@
         "name": "2025 OVC Women's Golf Championship",
         "endDate": "2025-04-15",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234475",
-        "winner": null
+        "winner": "Morehead State"
       },
       "matchplay": null
     },
@@ -1609,7 +1645,7 @@
         "name": "2025 Patriot League Women's Golf Championship",
         "endDate": "2025-04-20",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234234",
-        "winner": null
+        "winner": "Navy"
       },
       "matchplay": null
     },
@@ -1623,14 +1659,16 @@
         "name": "2025 SEC Women's Golf Conference Championship (SP)",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237656",
-        "winner": null
+        "winner": "South Carolina"
       },
       "matchplay": {
         "tournamentId": "234144",
         "name": "SEC Women's Golf Championship Match Play",
         "endDate": "2025-04-18",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234144",
-        "winner": null
+        "winner": "South Carolina",
+        "runnerUp": "Florida",
+        "finalScore": "3.5-1.5"
       }
     },
     {
@@ -1643,7 +1681,7 @@
         "name": "2025 SoCon Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234025",
-        "winner": null
+        "winner": "Furman"
       },
       "matchplay": null
     },
@@ -1657,7 +1695,7 @@
         "name": "Southland Conference Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234251",
-        "winner": null
+        "winner": "Texas A&M-C. Christi"
       },
       "matchplay": null
     },
@@ -1671,7 +1709,7 @@
         "name": "2025 Summit League Women's Golf Championship",
         "endDate": "2025-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237861",
-        "winner": null
+        "winner": "Denver"
       },
       "matchplay": null
     },
@@ -1685,14 +1723,16 @@
         "name": "Sun Belt Conference Women's Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/236339",
-        "winner": null
+        "winner": "Georgia Southern"
       },
       "matchplay": {
         "tournamentId": "236340",
         "name": "Sun Belt Conference Women's Championship",
         "endDate": "2025-04-17",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/236340",
-        "winner": null
+        "winner": "Southern Mississippi",
+        "runnerUp": "Georgia Southern",
+        "finalScore": "3.5-1.5"
       }
     },
     {
@@ -1705,7 +1745,7 @@
         "name": "2025 SWAC Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/237985",
-        "winner": null
+        "winner": "Alabama State"
       },
       "matchplay": null
     },
@@ -1719,7 +1759,7 @@
         "name": "2025 WAC Women's Golf Championship",
         "endDate": "2025-04-16",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/236907",
-        "winner": null
+        "winner": "Tarleton State"
       },
       "matchplay": null
     },
@@ -1733,7 +1773,7 @@
         "name": "2025 WCC Women's Golf Championship",
         "endDate": "2025-04-19",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/234107",
-        "winner": null
+        "winner": "Oregon State"
       },
       "matchplay": null
     },
@@ -2230,7 +2270,9 @@
         "name": "2026 ACC Women's Golf Championship - Match Play",
         "endDate": "2026-04-19",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239963",
-        "winner": "Stanford"
+        "winner": "Stanford",
+        "runnerUp": "SMU",
+        "finalScore": "5-0"
       }
     },
     {
@@ -2320,7 +2362,9 @@
         "name": "2026 Big South Women's Golf Championship (Match Play)",
         "endDate": "2026-04-22",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242779",
-        "winner": "High Point"
+        "winner": "High Point",
+        "runnerUp": "UNC Asheville",
+        "finalScore": "3-2"
       }
     },
     {
@@ -2508,7 +2552,9 @@
         "name": "2026 SEC Women's Golf Championship (Match Play)",
         "endDate": "2026-04-21",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/244174",
-        "winner": "Tennessee"
+        "winner": "Tennessee",
+        "runnerUp": "Auburn",
+        "finalScore": "3-2"
       }
     },
     {
@@ -2570,7 +2616,9 @@
         "name": "Sun Belt Conference Women's Championship Match Play",
         "endDate": "2026-04-23",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/243202",
-        "winner": "ULM"
+        "winner": "ULM",
+        "runnerUp": "Texas State",
+        "finalScore": "4-1"
       }
     },
     {

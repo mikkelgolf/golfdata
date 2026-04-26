@@ -17,8 +17,13 @@
  *     gender: "men" | "women",
  *     season: 2024,                       // academic-year-end (Clippd's `season` param)
  *     strokeplay: { tournamentId, name, endDate, clippdUrl, winner? } | null,
- *     matchplay:  { tournamentId, name, endDate, clippdUrl, winner? } | null,
+ *     matchplay:  { tournamentId, name, endDate, clippdUrl, winner?, runnerUp?, finalScore? } | null,
  *   }
+ *
+ * Match-play legs carry two extra fields populated by Phase 2:
+ *   - runnerUp:   the team that lost the championship final.
+ *   - finalScore: dual score, winner-first, half-points kept (e.g. "3-2",
+ *                 "3.5-1.5", "4-1", "5-0", "4-0-1").
  *
  * Winner population — phase 1:
  *   - Current season (2026): pulled from `championships-{men,women}-2026.ts`.
@@ -103,6 +108,16 @@ interface TournamentLeg {
   endDate: string;
   clippdUrl: string;
   winner: string | null;
+  /**
+   * Match-play only — team that lost the championship final.
+   * Stroke-play legs leave this undefined (writer omits the key).
+   */
+  runnerUp?: string | null;
+  /**
+   * Match-play only — dual score, winner-first ("3-2", "3.5-1.5", ...).
+   * Stroke-play legs leave this undefined (writer omits the key).
+   */
+  finalScore?: string | null;
 }
 
 interface ConfChampRow {
@@ -494,6 +509,42 @@ async function fetchTournaments(
 }
 
 /**
+ * Read the previously-written conference-championship-history.json (if any)
+ * and return a tournamentId → {winner, runnerUp, finalScore} index. Used by
+ * the build step to preserve Phase 2 data when refreshing the Clippd tournament
+ * list — without this, every rebuild would wipe winners back to null.
+ *
+ * Returns an empty map if the file is missing or unparseable.
+ */
+function loadPriorWinners(): Map<
+  string,
+  { winner: string | null; runnerUp?: string | null; finalScore?: string | null }
+> {
+  const out = new Map<
+    string,
+    { winner: string | null; runnerUp?: string | null; finalScore?: string | null }
+  >();
+  if (!fs.existsSync(OUTPUT_PATH)) return out;
+  try {
+    const raw = fs.readFileSync(OUTPUT_PATH, "utf-8");
+    const parsed = JSON.parse(raw) as BuildOutput;
+    for (const r of parsed.rows ?? []) {
+      for (const leg of [r.strokeplay, r.matchplay]) {
+        if (!leg) continue;
+        out.set(leg.tournamentId, {
+          winner: leg.winner ?? null,
+          runnerUp: leg.runnerUp ?? null,
+          finalScore: leg.finalScore ?? null,
+        });
+      }
+    }
+  } catch (err) {
+    log(`WARN: prior JSON load failed (${(err as Error).message})`);
+  }
+  return out;
+}
+
+/**
  * Build the index of canonical-code → winner from the championships-2026.ts
  * file for current-season winner attribution. Keyed by `${gender}:${code}`.
  */
@@ -519,6 +570,13 @@ async function main(): Promise<number> {
 
   const winnerIndex = buildCurrentWinnerIndex();
   log(`current-season winner index: ${winnerIndex.size} entries`);
+
+  // Load any prior run's JSON so we can preserve Phase 2 winner / runnerUp /
+  // finalScore data when re-fetching the tournament list. The populator script
+  // owns those fields — the build script should never clobber them just
+  // because we refreshed the Clippd API listing.
+  const prior = loadPriorWinners();
+  log(`prior-run winner index: ${prior.size} tournament-ids`);
 
   // Collect every tournament that maps cleanly to a conference. We dedupe
   // AFTER the full sweep so we can compare candidates against each other —
@@ -579,20 +637,33 @@ async function main(): Promise<number> {
           season,
         });
 
+        // Prefer prior-run winner data over the freshly-built defaults so a
+        // rebuild doesn't clobber Phase 2 extractions. Fall back to the
+        // current-season TS-file winner for 2026 (still useful for the
+        // very first build before the populator has run).
+        const priorEntry = prior.get(t.tournamentId);
+        const winner =
+          priorEntry?.winner ??
+          (season === 2026
+            ? winnerIndex.get(`${gender}:${resolved.code}`) ?? null
+            : null);
+
         const leg: TournamentLeg = {
           tournamentId: t.tournamentId,
           name,
           endDate: t.endDate,
           clippdUrl: `${CLIPPD_BASE}/tournaments/${t.tournamentId}`,
-          // Phase 1: only attach the current-season TS-file winner. Past
-          // seasons stay null until Phase 2 Playwright extraction. The
-          // championships-2026.ts file has one `winner` per conference;
-          // attribute it to whichever leg this is — Phase 2 will refine.
-          winner:
-            season === 2026
-              ? winnerIndex.get(`${gender}:${resolved.code}`) ?? null
-              : null,
+          winner,
         };
+
+        // Match-play extras: copy through if we have prior data. They live
+        // ONLY on match-play legs — leave the keys absent on stroke-play
+        // legs so the JSON stays clean.
+        if (fmt === "match" && priorEntry) {
+          if (priorEntry.runnerUp != null) leg.runnerUp = priorEntry.runnerUp;
+          if (priorEntry.finalScore != null)
+            leg.finalScore = priorEntry.finalScore;
+        }
 
         // "Conference-hosted" means hostName looks like a conference (i.e.
         // it appears in any mapping's hostNames list, after stripping the

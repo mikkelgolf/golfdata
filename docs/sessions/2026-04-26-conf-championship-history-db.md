@@ -58,4 +58,56 @@ session once the data is in place).
 
 ## Actions
 
-(populated as work progresses)
+### Phase 1 — JSON skeleton + current-season winners
+
+- Built `scripts/build-conf-championship-history.ts` (commit `5a339dc`)
+  pulling `https://scoreboard.clippd.com/api/tournaments` for every
+  (gender × season) panel, applying an EXCLUDE table + a 30-row
+  CONFERENCE_MAPPINGS table (host-name + name-pattern resolution),
+  and grouping into one row per (conference × gender × season). The
+  stroke/match split uses Clippd's authoritative `eventType` field
+  rather than name parsing.
+- Output: `src/data/conference-championship-history.json` — 173 rows,
+  31 with both stroke + match legs, 25 winners attached from the
+  current-season `championships-{men,women}-2026.ts` files. 2024 +
+  2025 winners left null pending Phase 2.
+
+### Phase 2 — Past-season winner / runnerUp / finalScore
+
+David's directive: *"Begin phase 2 for stroke play first and then match
+play. For the match play entry, we want not only the winner but also
+the team they defeated and the final score (ex: '3-2' or '3-1-1' or
+'4-1' or '4-0-1' or '5-0' or any iteration with 0.5 such as
+'3.5-1.5')."*
+
+- **`scripts/clippd_match_extractor.py` (new).** Extracts match-play
+  championship-final detail. Two-phase Playwright walk:
+    1. `/scoring/team` → row 1 (winner) + row 2 (runner-up) by finding
+       the TEAM-column header dynamically.
+    2. `/scoring/round` (defaults to FINAL round) → scan rendered body
+       for the dual matchup `"{Left}\nSingles\n\n{X} - {Y}\n\n{Right}"`
+       whose two team names equal {winner, runnerUp}. Cross-references
+       team-page winner so that LEFT-vs-RIGHT order on the round page
+       — which is NOT consistent across tournaments — doesn't get the
+       score backwards. Half-point matches preserved as `"3.5-1.5"`.
+  Validated against four manually-verified samples:
+    - `232318` (ACC men 2024) → `North Carolina` def `Florida State`, 3.5-1.5
+    - `232394` (ACC women 2024) → `Wake Forest` def `Clemson`, 3-2
+    - `232557` (SEC men 2024) → `Auburn` def `Vanderbilt`, 3-2
+    - `232616` (SEC women 2024) → `Mississippi State` def `Texas A&M`, 3-2
+- **`scripts/clippd_winner_extractor.py` (refactor).** Added a
+  `page=None` overload so the populator can share one Chromium context
+  across many tournaments. Existing CLI + `detect_new_champions.py`
+  caller untouched (positional default args).
+- **`scripts/populate_conf_championship_winners.py` (new).** Loads
+  the JSON, filters by --season/--gender/--conference (default: 2024
+  + 2025), and walks stroke-play legs first then match-play legs.
+  Reuses one Playwright browser context across every tournament.
+  Flushes JSON every 10 legs so an interruption is non-fatal.
+  Idempotent: legs that already carry full data are skipped unless
+  `--force`.
+- **`scripts/build-conf-championship-history.ts` (update).** Extended
+  `TournamentLeg` with optional `runnerUp` + `finalScore` for
+  match-play legs. Added `loadPriorWinners()` so a rebuild preserves
+  Phase 2 data instead of clobbering it back to null.
+
