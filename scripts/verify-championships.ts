@@ -53,7 +53,14 @@ function verify(
   const conferenceWinners = new Map<string, string>();
 
   for (const c of championships) {
+    // For staleness (Check 1) we only flag events that ended at least a day
+    // ago — no point yelling about a championship that ends today and is still
+    // being scored. For the premature-winner guard (Check 3) we only block
+    // winners on events whose endDate is strictly in the future, so a manual
+    // edit on the same day the final concludes is allowed (matters for
+    // afternoon/evening match-play finals like the SEC men's championship).
     const isPast = c.endDate < today;
+    const isFuture = c.endDate > today;
 
     // Check 1: Stale — concluded but no winner
     if (isPast && !c.winner) {
@@ -74,8 +81,8 @@ function verify(
       conferenceWinners.set(c.conference, c.winner);
     }
 
-    // Check 3: Winner set on a championship that hasn't ended
-    if (c.winner && !isPast) {
+    // Check 3: Winner set on a championship whose endDate is in the future
+    if (c.winner && isFuture) {
       error(
         `${c.conference} has winner "${c.winner}" but endDate ${c.endDate} is in the future`
       );
