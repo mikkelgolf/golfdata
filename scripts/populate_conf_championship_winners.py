@@ -137,12 +137,32 @@ def process_stroke(page, leg: dict[str, Any], timeout_ms: int) -> bool:
 
 
 def process_match(page, leg: dict[str, Any], timeout_ms: int) -> bool:
-    """Fill leg['winner'/'runnerUp'/'finalScore']. Returns True iff anything changed."""
+    """Fill leg['winner'/'runnerUp'/'finalScore']. Returns True iff anything changed.
+
+    If ``leg`` already has a ``winner`` set (typically from the manual-winner
+    pipeline or an earlier extractor run) and the new extractor result
+    disagrees, we log a warning and skip the leg entirely — better to leave
+    the manual entry alone than to risk Clippd's row-1 misread silently
+    overwriting it. Use ``--force`` to override this guard.
+    """
     tid = leg["tournamentId"]
     detail = extract_match_play_final(tid, timeout_ms=timeout_ms, page=page)
+    extracted_winner = detail.get("winner")
+    existing_winner = leg.get("winner")
+    if (
+        existing_winner
+        and extracted_winner
+        and existing_winner != extracted_winner
+    ):
+        log(
+            f"   WARN: existing winner={existing_winner!r} differs from "
+            f"extractor={extracted_winner!r} — leaving leg untouched"
+        )
+        return False
+
     changed = False
-    if detail.get("winner"):
-        leg["winner"] = detail["winner"]
+    if extracted_winner:
+        leg["winner"] = extracted_winner
         changed = True
     if detail.get("runnerUp"):
         leg["runnerUp"] = detail["runnerUp"]

@@ -46,6 +46,12 @@ CHAMP_FILES=(
     src/data/championships-women-2026.ts
 )
 
+# Conference-championship history database — populated alongside the .ts edit
+# so the Conference Championships page picks up the stroke-play medalist,
+# match-play runner-up, and final score for the conference we're updating.
+# See scripts/populate_conf_championship_winners.py.
+CONF_HISTORY_JSON="src/data/conference-championship-history.json"
+
 mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG_PATH") 2>&1
 
@@ -194,6 +200,39 @@ if ! npx --yes tsx scripts/verify-championships.ts 2>&1; then
 fi
 
 # ---------------------------------------------------------------------------
+# 3b. Populate conference-championship-history.json for this conference
+# ---------------------------------------------------------------------------
+# After the .ts edit + validator pass, run the Phase 2 populator scoped to
+# the conference + gender we just updated. This pulls the stroke-play
+# medalist, match-play runner-up, and final-score from Clippd into the
+# history JSON, which the Conference Championships UI uses to render the
+# medal / silver-trophy icons.
+#
+# Failure mode: populator partial-success returns rc=1 (some legs MISSed,
+# typical when the championship just concluded and Clippd hasn't surfaced
+# everything yet). We log + continue rather than abort — the manual winner
+# entry is the critical write; the JSON detail can catch up on the next
+# cron run via update-conference-winner-on-demand.sh's mirror integration.
+#
+# The populator's --include-2026 flag is required because by default the
+# script skips 2026 (Phase 1 seeded current-season data from the .ts files
+# and we don't want bulk re-extraction by accident).
+log "step 3b: populate conference-championship-history.json"
+POPULATE_ARGS=(
+    --season 2026
+    --gender "$gender"
+    --conference "$conference"
+    --include-2026
+)
+[ "$dry_run_mode" = "1" ] && POPULATE_ARGS+=( --dry-run )
+
+if python3 scripts/populate_conf_championship_winners.py "${POPULATE_ARGS[@]}" 2>&1; then
+    log "populate complete (all legs OK)"
+else
+    log "populate finished with partial-success rc — leaving any extracted data in place"
+fi
+
+# ---------------------------------------------------------------------------
 # 4. Synthesize champions-report for Discord summary
 # ---------------------------------------------------------------------------
 # post_daily_summary.build_success_message expects a dict with autoConfirmed /
@@ -240,8 +279,18 @@ if [ "$dry_run_mode" = "1" ]; then
     # In dry-run, revert the TS edit so the tree ends clean.
     git checkout -- "${CHAMP_FILES[@]}" 2>&1 || \
         log "WARN: couldn't revert TS edit in dry-run"
+    # Also revert any populator JSON edits.
+    if ! git diff --quiet -- "$CONF_HISTORY_JSON"; then
+        git checkout -- "$CONF_HISTORY_JSON" 2>&1 || \
+            log "WARN: couldn't revert JSON edit in dry-run"
+    fi
 else
+    # Stage the .ts edit and (if the populator wrote anything) the JSON.
     git add "${CHAMP_FILES[@]}" 2>&1
+    if ! git diff --quiet -- "$CONF_HISTORY_JSON" 2>/dev/null; then
+        log "staging populator JSON changes for commit"
+        git add "$CONF_HISTORY_JSON" 2>&1
+    fi
     if ! git commit -m "$COMMIT_MSG" 2>&1; then
         abort_hard "git commit failed"
     fi
