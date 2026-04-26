@@ -93,6 +93,28 @@ gitignored). Re-running the dispatcher rebuilds them all.
 launchctl kickstart -k gui/$(id -u)/com.local.CGDDeepDiveM2
 ```
 
+## Parallelism — `CGD_M2_MAX_CONCURRENT`
+
+The M2 dispatcher runs N job manifests in parallel. Set via the
+`CGD_M2_MAX_CONCURRENT` env var in the plist (or `--max-concurrent N`
+on the command line).
+
+Default in the committed plist: **2**. Bottleneck is Claude Max
+rate limits, not Mac Mini CPU. If overnight runs hit rate-limit
+backoff hard, drop to 1; if Claude Max is comfortably under quota,
+try 3.
+
+Concurrency safety:
+- `event-bridges.json` writes are guarded by an `fcntl.flock` +
+  atomic tmp-file rename in `extract-event-bridges.py::merge_bridges`.
+- `git add/commit/push` on `dev-mikkel` is serialized by an
+  in-process `threading.Lock` (`_GIT_LOCK`) in `dispatcher.py`.
+- The dispatcher's claim set (`_CLAIMED_JOBS`) prevents two workers
+  from grabbing the same manifest.
+
+To change the limit live: edit the plist, then
+`launchctl kickstart -k gui/$(id -u)/com.local.CGDDeepDiveM2`.
+
 ## Add a new team to the M2 queue
 
 ```bash

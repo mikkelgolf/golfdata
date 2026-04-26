@@ -147,50 +147,66 @@ def build_bridge_prompt(slug: str, gender: str, batch: list[dict], max_chars: in
 
 
 def merge_bridges(new: list[dict]) -> dict:
-    """Load existing event-bridges.json, merge new entries by
-    normalize_tournament_key. Newer/richer entries replace older skinnier ones."""
-    existing: list[dict] = []
-    if BRIDGES_PATH.exists():
-        try:
-            existing = json.loads(BRIDGES_PATH.read_text())
-        except Exception:
-            existing = []
-    by_key: dict[str, dict] = {}
-    for b in existing:
-        key = normalize_tournament_key(b.get("tournament_name", ""), b.get("year", 0))
-        by_key[key] = b
-    added = 0
-    enriched = 0
-    for b in new:
-        if not b.get("tournament_name") or not b.get("year"):
-            continue
-        if not isinstance(b.get("year"), int):
-            continue
-        if not isinstance(b.get("schools_present"), list) or len(b["schools_present"]) < 2:
-            continue
-        key = normalize_tournament_key(b["tournament_name"], b["year"])
-        prior = by_key.get(key)
-        if not prior:
+    """Read-merge-write event-bridges.json under an exclusive fcntl flock.
+
+    The lock makes this safe under N concurrent dispatcher workers — each
+    process's per-batch merge waits its turn instead of racing
+    read-modify-write. Both load AND write happen inside the lock, so the
+    file is always consistent. Returns the merge summary; the caller does
+    not write the file itself.
+    """
+    import fcntl
+    lock_path = BRIDGES_PATH.with_suffix(".json.lock")
+    BRIDGES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path, "w") as lockf:
+        fcntl.flock(lockf, fcntl.LOCK_EX)
+        existing: list[dict] = []
+        if BRIDGES_PATH.exists():
+            try:
+                existing = json.loads(BRIDGES_PATH.read_text())
+            except Exception:
+                existing = []
+        by_key: dict[str, dict] = {}
+        for b in existing:
+            key = normalize_tournament_key(b.get("tournament_name", ""), b.get("year", 0))
             by_key[key] = b
-            added += 1
-            continue
-        # Merge: union schools_present; prefer richer team_finishes /
-        # individual_top_finishers.
-        merged = dict(prior)
-        merged_schools = sorted(set(prior.get("schools_present", []) + b["schools_present"]))
-        merged["schools_present"] = merged_schools
-        if len(b.get("team_finishes") or []) > len(prior.get("team_finishes") or []):
-            merged["team_finishes"] = b["team_finishes"]
-        if len(b.get("individual_top_finishers") or []) > len(prior.get("individual_top_finishers") or []):
-            merged["individual_top_finishers"] = b["individual_top_finishers"]
-        if not prior.get("course") and b.get("course"):
-            merged["course"] = b["course"]
-        if not prior.get("host_school") and b.get("host_school"):
-            merged["host_school"] = b["host_school"]
-        merged["sources"] = sorted(set((prior.get("sources") or [prior.get("source_url")]) + [b.get("source_url")]))
-        by_key[key] = merged
-        enriched += 1
-    sorted_out = sorted(by_key.values(), key=lambda x: (x.get("year", 0), x.get("tournament_name", "")))
+        added = 0
+        enriched = 0
+        for b in new:
+            if not b.get("tournament_name") or not b.get("year"):
+                continue
+            if not isinstance(b.get("year"), int):
+                continue
+            if not isinstance(b.get("schools_present"), list) or len(b["schools_present"]) < 2:
+                continue
+            key = normalize_tournament_key(b["tournament_name"], b["year"])
+            prior = by_key.get(key)
+            if not prior:
+                by_key[key] = b
+                added += 1
+                continue
+            # Merge: union schools_present; prefer richer team_finishes /
+            # individual_top_finishers.
+            merged = dict(prior)
+            merged_schools = sorted(set(prior.get("schools_present", []) + b["schools_present"]))
+            merged["schools_present"] = merged_schools
+            if len(b.get("team_finishes") or []) > len(prior.get("team_finishes") or []):
+                merged["team_finishes"] = b["team_finishes"]
+            if len(b.get("individual_top_finishers") or []) > len(prior.get("individual_top_finishers") or []):
+                merged["individual_top_finishers"] = b["individual_top_finishers"]
+            if not prior.get("course") and b.get("course"):
+                merged["course"] = b["course"]
+            if not prior.get("host_school") and b.get("host_school"):
+                merged["host_school"] = b["host_school"]
+            merged["sources"] = sorted(set((prior.get("sources") or [prior.get("source_url")]) + [b.get("source_url")]))
+            by_key[key] = merged
+            enriched += 1
+        sorted_out = sorted(by_key.values(), key=lambda x: (x.get("year", 0), x.get("tournament_name", "")))
+        # Atomic write: tmp file + rename so a SIGKILL mid-write doesn't
+        # corrupt the registry.
+        tmp_path = BRIDGES_PATH.with_suffix(".json.tmp")
+        tmp_path.write_text(json.dumps(sorted_out, indent=2))
+        tmp_path.replace(BRIDGES_PATH)
     return {"all": sorted_out, "added": added, "enriched": enriched}
 
 
@@ -256,9 +272,8 @@ def main() -> None:
         for b in res:
             b["extracted_from_team"] = args.slug
             b["extracted_at"] = now
+        # merge_bridges does its own locked read-merge-write atomically.
         merge_summary = merge_bridges(res)
-        BRIDGES_PATH.parent.mkdir(parents=True, exist_ok=True)
-        BRIDGES_PATH.write_text(json.dumps(merge_summary["all"], indent=2))
         cumulative += len(res)
         for ev in batch:
             if ev.get("url"):

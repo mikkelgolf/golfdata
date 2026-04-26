@@ -34,10 +34,19 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
+
+# Serialize git ops across worker threads — only one commit_and_push at a
+# time. The git index is per-process; concurrent writes would race.
+_GIT_LOCK = threading.Lock()
+# Per-job claim set so two workers don't grab the same manifest.
+_CLAIMED_JOBS: set[str] = set()
+_CLAIM_LOCK = threading.Lock()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 JOBS_DIR = REPO_ROOT / "data" / "team-deep-dive" / "jobs"
@@ -109,7 +118,15 @@ def commit_and_push_team(slug: str, gender: str) -> dict:
     Stages only the per-team record-book JSON (the file M2 actually
     touches). Returns a dict with status + commit_sha + push_ok for the
     Discord milestone. Never raises — failures are reported, not fatal.
+
+    Serialized via _GIT_LOCK because git operations on a shared worktree
+    are not thread-safe (the index would race).
     """
+    with _GIT_LOCK:
+        return _commit_and_push_team_locked(slug, gender)
+
+
+def _commit_and_push_team_locked(slug: str, gender: str) -> dict:
     g = "men" if gender in ("m", "men") else "women"
     record_book_rel = f"src/data/teams/{slug}-{g}-record-book.json"
     record_book_abs = REPO_ROOT / record_book_rel
@@ -378,33 +395,87 @@ def run_job(manifest_path: Path) -> None:
         )
 
 
+def _run_job_safe(j: Path) -> None:
+    """Wrap run_job with try/except + claim release. Designed to run in
+    a ThreadPoolExecutor worker.
+    """
+    try:
+        run_job(j)
+    except Exception:
+        tb = traceback.format_exc()
+        print(f"[dispatch] FATAL on {j}:\n{tb}", file=sys.stderr)
+        discord_ping(f"💥 /team-deep-dive dispatcher crashed on {j.name}\n```\n{tb[-800:]}\n```", urgent=True)
+        update_manifest(j, {"status": "failed", "error": tb[-1000:]})
+    finally:
+        with _CLAIM_LOCK:
+            _CLAIMED_JOBS.discard(j.name)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--idle-seconds", type=int, default=600)
+    ap.add_argument(
+        "--max-concurrent",
+        type=int,
+        default=int(os.environ.get("CGD_M2_MAX_CONCURRENT", "1")),
+        help="How many job manifests to run in parallel. Bottleneck is "
+             "Claude Max rate limits; safe default 1, try 2 to start.",
+    )
     args = ap.parse_args()
 
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
     JOBS_DIR.mkdir(parents=True, exist_ok=True)
 
-    while True:
-        jobs = list_pending_jobs()
-        if not jobs:
-            if args.once:
-                print("[dispatch] no pending jobs; exiting (--once)")
-                return
-            print(f"[dispatch] no pending jobs, sleeping {args.idle_seconds}s")
-            time.sleep(args.idle_seconds)
-            continue
-        for j in jobs:
-            try:
-                run_job(j)
-            except Exception:
-                tb = traceback.format_exc()
-                print(f"[dispatch] FATAL on {j}:\n{tb}", file=sys.stderr)
-                discord_ping(f"💥 /team-deep-dive dispatcher crashed on {j.name}\n```\n{tb[-800:]}\n```", urgent=True)
-                update_manifest(j, {"status": "failed", "error": tb[-1000:]})
-            if args.once:
+    print(f"[dispatch] starting with max_concurrent={args.max_concurrent}")
+
+    if args.max_concurrent <= 1:
+        # Sequential path — kept simple.
+        while True:
+            jobs = list_pending_jobs()
+            if not jobs:
+                if args.once:
+                    print("[dispatch] no pending jobs; exiting (--once)")
+                    return
+                print(f"[dispatch] no pending jobs, sleeping {args.idle_seconds}s")
+                time.sleep(args.idle_seconds)
+                continue
+            for j in jobs:
+                _run_job_safe(j)
+                if args.once:
+                    return
+        return
+
+    # Parallel path: long-lived ThreadPoolExecutor that pulls jobs as
+    # workers free up. Claim set prevents two workers from grabbing the
+    # same manifest. Workers re-poll for new manifests when their slot
+    # frees.
+    with ThreadPoolExecutor(max_workers=args.max_concurrent) as ex:
+        in_flight: dict = {}
+        while True:
+            # Submit new jobs up to capacity.
+            jobs = list_pending_jobs()
+            for j in jobs:
+                if len(in_flight) >= args.max_concurrent:
+                    break
+                with _CLAIM_LOCK:
+                    if j.name in _CLAIMED_JOBS:
+                        continue
+                    _CLAIMED_JOBS.add(j.name)
+                fut = ex.submit(_run_job_safe, j)
+                in_flight[fut] = j
+            if not in_flight:
+                if args.once:
+                    print("[dispatch] no pending jobs; exiting (--once)")
+                    return
+                print(f"[dispatch] queue idle, sleeping {args.idle_seconds}s")
+                time.sleep(args.idle_seconds)
+                continue
+            # Wait for at least one to finish, then loop and refill.
+            done = next(as_completed(in_flight))
+            j = in_flight.pop(done)
+            print(f"[dispatch] worker free after {j.name}")
+            if args.once and not in_flight:
                 return
 
 
