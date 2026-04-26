@@ -122,6 +122,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "Practice round Apr 21, stroke play 22-24, match play 25-26.",
     sourceUrl: "https://www.seaisland.com/golf/course-schedule/",
+    winner: "Ole Miss",
   },
   {
     id: 5,
