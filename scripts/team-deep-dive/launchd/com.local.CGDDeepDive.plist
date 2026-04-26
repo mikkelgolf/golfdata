@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.local.CGDDeepDive</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/mikkelbjerchandresen/projects/collegegolfdata/scripts/team-deep-dive/queue-drainer.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+    <key>StandardOutPath</key>
+    <string>/Users/mikkelbjerchandresen/Library/Logs/cgd-deep-dive.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/mikkelbjerchandresen/Library/Logs/cgd-deep-dive.stderr.log</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/mikkelbjerchandresen/projects/collegegolfdata</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/mikkelbjerchandresen</string>
+        <key>PATH</key>
+        <string>/Users/mikkelbjerchandresen/venv/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONIOENCODING</key>
+        <string>utf-8</string>
+    </dict>
+</dict>
+</plist>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.local.CGDDeepDiveM2</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/mikkelbjerchandresen/venv/bin/python</string>
+        <string>/Users/mikkelbjerchandresen/projects/collegegolfdata-m2/scripts/team-deep-dive/dispatcher.py</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/mikkelbjerchandresen/projects/collegegolfdata-m2</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/mikkelbjerchandresen</string>
+        <key>PATH</key>
+        <string>/Users/mikkelbjerchandresen/venv/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONIOENCODING</key>
+        <string>utf-8</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+        <key>Crashed</key>
+        <true/>
+    </dict>
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
+    <key>StandardOutPath</key>
+    <string>/Users/mikkelbjerchandresen/Library/Logs/cgd-deep-dive-m2.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/mikkelbjerchandresen/Library/Logs/cgd-deep-dive-m2.stderr.log</string>
+</dict>
+</plist>
