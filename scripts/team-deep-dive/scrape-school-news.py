@@ -247,9 +247,21 @@ def main() -> None:
     print(f"[news] total unique URLs: {len(all_urls)}")
 
     written = 0
+    skipped_existing = 0
+    slug_evidence_dir = EVIDENCE_ROOT / args.slug
     for i, url in enumerate(all_urls, 1):
         # Skip non-article URLs (index pages, etc.)
         if url.rstrip("/") in (f"https://{domain}{news_path}", f"https://{domain}{news_path.rstrip('/')}"):
+            continue
+        # Resumability: if evidence already on disk from a prior (perhaps
+        # timed-out) run, skip the fetch + parse entirely. The 2h news
+        # phase timeout would otherwise cap us at ~2400 articles per run
+        # for sites with deep archives.
+        h = hashlib.sha1(url.encode()).hexdigest()
+        if (slug_evidence_dir / f"{h}.json").exists():
+            skipped_existing += 1
+            if i % 100 == 0:
+                print(f"[news] {i}/{len(all_urls)} processed, {written} written, {skipped_existing} resume-skipped")
             continue
         status, html, cached = http.get(url)
         if status != 200:

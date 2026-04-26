@@ -64,7 +64,7 @@ PHASES = [
     # 1. Schedule discovery — establish ground-truth list of expected events.
     {"name": "schedule_discovery", "kind": "py_script_per_team", "script": "scrape-school-schedule.py"},
     # 2. School news archive — articles + writeups + outbound PDF links.
-    {"name": "news_archive", "kind": "py_script_per_team", "script": "scrape-school-news.py"},
+    {"name": "news_archive", "kind": "py_script_per_team", "script": "scrape-school-news.py", "timeout_seconds": 14400},
     # 3. PDF leaderboards linked from articles → pdftotext → evidence files.
     {"name": "leaderboard_pdfs", "kind": "py_script_per_team", "script": "scrape-leaderboard-pdfs.py"},
     # 4-7. Other source crawls.
