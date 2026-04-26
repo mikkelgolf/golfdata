@@ -16,7 +16,11 @@ import {
 } from "@/lib/championships";
 import type { TeamData } from "@/data/rankings-men";
 import type { Championship } from "@/data/championships-men-2026";
-import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink, Trophy } from "lucide-react";
+import { Search, ChevronRight, ChevronUp, ChevronDown, ChevronsUpDown, Plane, Calendar, ExternalLink, Trophy, Medal } from "lucide-react";
+import {
+  getConferenceResult2026,
+  getTeamHonours,
+} from "@/lib/conference-results-2026";
 import ChampionshipsMap from "@/components/championships-map";
 import { ChampionshipsBeeswarm } from "@/components/championships-beeswarm";
 import { AnimatedNumber } from "@/components/animated-number";
@@ -629,6 +633,13 @@ function ChampionshipCard({
   const [expanded, setExpanded] = useState(false);
   const [drillTeam, setDrillTeam] = useState<string | null>(null);
   const tbd = isVenueTBD(championship);
+  // Per-conference championship result (stroke-play / match-play winners + runner-up).
+  // Sourced from conference-championship-history.json so this stays in sync with the
+  // long-term database. `undefined` if no row exists for this (gender, conference).
+  const conferenceResult = useMemo(
+    () => getConferenceResult2026(gender, championship.conference),
+    [gender, championship.conference]
+  );
   const teamsWithCoords = teams.filter((t) => t.lat !== 0 || t.lng !== 0);
   const totalDistance = teamsWithCoords.reduce(
     (sum, t) => sum + t.distanceMiles,
@@ -835,6 +846,61 @@ function ChampionshipCard({
                           {isDrilled ? "▾" : "▸"}
                         </span>{" "}
                         {t.team}
+                        {(() => {
+                          const honours = getTeamHonours(conferenceResult, t.team);
+                          return (
+                            <>
+                              {honours.strokeplayMedal && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Stroke-play winner — ${championship.conferenceFull}`}
+                                  aria-label="Stroke-play winner"
+                                >
+                                  <Medal
+                                    className="h-3.5 w-3.5 text-amber-300"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                              {honours.matchplayChampion && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Match-play champion — ${championship.conferenceFull}`}
+                                  aria-label="Match-play champion"
+                                >
+                                  <Trophy
+                                    className="h-3.5 w-3.5 text-amber-300"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                              {honours.matchplayRunnerUp && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Match-play runner-up — ${championship.conferenceFull}`}
+                                  aria-label="Match-play runner-up"
+                                >
+                                  <Trophy
+                                    className="h-3.5 w-3.5 text-slate-400"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                              {honours.strokeplayChampion && (
+                                <span
+                                  className="ml-1 inline-flex items-center align-middle"
+                                  title={`Conference champion — ${championship.conferenceFull}`}
+                                  aria-label="Conference champion"
+                                >
+                                  <Trophy
+                                    className="h-3.5 w-3.5 text-amber-300"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
                         {!t.eligible && (
                           <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
                             Below .500
@@ -843,22 +909,9 @@ function ChampionshipCard({
                       </td>
                       <td className="px-3 py-1.5 text-center">
                         {t.isAutoQualifier ? (
-                          championship.winner ? (
-                            <span
-                              className="inline-flex items-center justify-center"
-                              title={`Conference champion — ${championship.winner}`}
-                              aria-label="Conference champion"
-                            >
-                              <Trophy
-                                className="h-3.5 w-3.5 text-amber-300"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
-                              AQ
-                            </span>
-                          )
+                          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/15 text-primary">
+                            AQ
+                          </span>
                         ) : (
                           <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-secondary text-muted-foreground">
                             AL
