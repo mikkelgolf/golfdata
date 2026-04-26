@@ -49,7 +49,10 @@ def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
     ap.add_argument("slug")
     ap.add_argument("gender", choices=["men", "women", "m", "w"])
-    ap.add_argument("--from-season", type=int, default=2010)
+    # Go as far back as the live site + Wayback can support. ~1990 is a
+    # reasonable floor for athletics-site schedule data; pre-1990 era is
+    # better covered by school PDFs + LoC newspapers.
+    ap.add_argument("--from-season", type=int, default=1990)
     ap.add_argument("--to-season", type=int, default=datetime.now().year)
     return ap.parse_args()
 
@@ -150,17 +153,16 @@ def llm_extract_schedule(cli: ClaudeCLI, html: str, year: int, source_url: str) 
     # 1. Try the Nuxt hydration blob first.
     nuxt_m = re.search(r"window\.__NUXT__\s*=\s*\(?function[\s\S]+?</script>", html)
     if nuxt_m:
-        snippet = nuxt_m.group(0)[:80000]
+        snippet = nuxt_m.group(0)[:120000]
     # 2. Fall back to a window around the first s-game-card occurrence.
     if not snippet or len(snippet) < 5000:
         card_m = re.search(r"s-game-card s-game-card--standard", html)
         if card_m:
             start = max(0, card_m.start() - 5000)
-            snippet = html[start : start + 80000]
-    # 3. Last resort: head + tail concatenation. Front 30k for any inline
-    #    schedule, last 50k for the JSON dump.
+            snippet = html[start : start + 120000]
+    # 3. Last resort: head + tail concatenation.
     if not snippet or len(snippet) < 5000:
-        snippet = html[:30000] + "\n\n[...truncated middle...]\n\n" + html[-50000:]
+        snippet = html[:40000] + "\n\n[...truncated middle...]\n\n" + html[-80000:]
     prompt = f"""You are extracting a college golf team's schedule for the {year}-{str(year+1)[-2:]} academic year from this raw HTML.
 
 Return ONLY a JSON array. Each entry is one tournament the team played (or has scheduled) that season:
@@ -174,8 +176,16 @@ Return ONLY a JSON array. Each entry is one tournament the team played (or has s
   }}
 
 Rules:
-  - Only include actual scheduled/played events. Skip navigation links, recap teasers, future-season previews, ranking widgets.
+  - Extract **EVERY single event** the team has on the page — do NOT cap at 10. Top programs play 11-15 events per year including postseason. Specifically include:
+    * Regular-season tournaments (typically 8-11)
+    * **Conference Championship** (e.g. Big 12 Championship, SEC Championship, ACC Championship)
+    * **NCAA Regional** (e.g. NCAA Stillwater Regional, NCAA Bremerton Regional)
+    * **NCAA Championship** — both Stroke Play AND Match Play if both are on the page
+    * **East Lake Cup** if invited
+    * Match Play events when listed
+  - Skip nav links, recap teasers, future-season previews, ranking widgets, individual-tournament Pro-Am events the team did not play in.
   - Include events with no posted finish (future-scheduled or in-progress).
+  - If a season has 11-13 events you should output 11-13 — not 10.
   - Strict JSON. No markdown. No prose.
   - If you can't find a single real event, return [].
 
@@ -212,6 +222,63 @@ Return the JSON array now."""
     return events
 
 
+def wayback_fallback(
+    http: HttpCache, cli: ClaudeCLI, domain: str, year: int, slug: str
+) -> list[dict]:
+    """For years when the live athletics site has no schedule (pre-Sidearm
+    era or removed pages), walk Wayback CDX snapshots of every candidate URL
+    and try the largest snapshot. Pre-2014 athletics sites used different
+    domains entirely (cstv.com, collegesports.com); we'll need richer
+    discovery later but Wayback often has the modern domain back to ~2010.
+    """
+    cdx_base = "http://web.archive.org/cdx/search/cdx"
+    seasons_y2 = str(year + 1)[-2:]
+    candidate_archived = [
+        f"https://{domain}/sports/mens-golf/schedule?season={year}-{seasons_y2}",
+        f"https://{domain}/sports/mens-golf/schedule",
+        f"https://{domain}/sport/m-golf/",
+        # Pre-2014 patterns that historic athletics URLs sometimes used.
+        f"http://www.{domain}/sports/m-golf/auto_pdf/",
+        f"http://{domain}/sports/m-golf/",
+    ]
+    for archived in candidate_archived:
+        cdx_url = (
+            f"{cdx_base}?url={archived}&output=json"
+            f"&from={year}0101&to={year+1}0731"
+            f"&filter=statuscode:200&filter=mimetype:text/html"
+            f"&collapse=timestamp:6"
+        )
+        status, text, _ = http.get(cdx_url)
+        if status != 200 or not text.strip():
+            continue
+        try:
+            rows = json.loads(text)
+        except json.JSONDecodeError:
+            continue
+        if len(rows) < 2:
+            continue
+        # Pick the LATEST snapshot in the year — most likely to have full season.
+        rows = rows[1:]  # skip header
+        rows.sort(key=lambda r: r[1], reverse=True)  # by timestamp desc
+        for row in rows[:3]:  # try up to 3 snapshots per URL
+            ts, original = row[1], row[2]
+            snap_url = f"https://web.archive.org/web/{ts}/{original}"
+            status, html, _ = http.get(snap_url)
+            if status != 200 or not html or len(html) < 1500:
+                continue
+            events = parse_schedule_html(html, year, snap_url)
+            if len(events) < 5:
+                events = llm_extract_schedule(cli, html, year, snap_url)
+            if events:
+                # Tag as wayback for provenance.
+                for e in events:
+                    e["extraction_method"] = (e.get("extraction_method") or "regex") + ":wayback"
+                    e["wayback_timestamp"] = ts
+                print(f"[schedule] {slug} {year}: {len(events)} events from Wayback {ts[:8]} ({original})")
+                return events
+    return []
+
+
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_SITES:
@@ -244,8 +311,20 @@ def main() -> None:
                 seasons_with_data.append(year)
                 seasoned = True
                 break  # don't try more URL patterns for this season
+
+        # Wayback Machine fallback: if no events from the live site, walk
+        # CDX snapshots of every candidate URL and try the most-substantial
+        # snapshot. Captures pre-Sidearm-era schedules + recently-removed
+        # archive pages.
         if not seasoned:
-            print(f"[schedule] {args.slug} {year}: no schedule page found")
+            wb_events = wayback_fallback(http, cli, domain, year, args.slug)
+            if wb_events:
+                all_events.extend(wb_events)
+                seasons_with_data.append(year)
+                seasoned = True
+
+        if not seasoned:
+            print(f"[schedule] {args.slug} {year}: no schedule page found (live + wayback)")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUT_DIR / f"expected-schedule-{args.slug}.json"
