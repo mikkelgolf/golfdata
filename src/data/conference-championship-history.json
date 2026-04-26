@@ -2105,14 +2105,16 @@
         "name": "2026 SEC Men's Golf Championship (Stroke Play)",
         "endDate": "2026-04-24",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/244176",
-        "winner": null
+        "winner": "Auburn"
       },
       "matchplay": {
         "tournamentId": "244177",
         "name": "SEC Men's Golf Championship (Match Play)",
         "endDate": "2026-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/244177",
-        "winner": "Ole Miss"
+        "winner": "Ole Miss",
+        "runnerUp": "Florida",
+        "finalScore": "4-1"
       }
     },
     {
