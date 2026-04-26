@@ -774,19 +774,46 @@ function ChampionshipCard({
               </span>
             )}
             {top && (
-              <span className="text-[10px] mt-0.5 text-foreground/70 truncate max-w-[120px]">
+              <div className="text-[10px] mt-0.5 text-foreground/70 max-w-[140px] flex flex-col items-end">
                 {championship.winner ? (
                   <>
-                    <Trophy
-                      className="inline h-2.5 w-2.5 mr-0.5 text-amber-300"
-                      aria-hidden="true"
-                    />
-                    {championship.winner}
+                    <span className="truncate max-w-full">
+                      <Trophy
+                        className="inline h-2.5 w-2.5 mr-0.5 text-amber-300"
+                        aria-hidden="true"
+                      />
+                      {championship.winner}
+                    </span>
+                    {/* For mixed-format championships (SP + MP), also list the
+                        match-play runner-up (silver trophy) and the stroke-play
+                        winner (gold medal) — even if it's the same team that
+                        won both legs, since the medal/trophy split is part of
+                        the conference's award structure. */}
+                    {conferenceResult?.hasMatchplay &&
+                      conferenceResult.matchplayRunnerUp && (
+                        <span className="truncate max-w-full">
+                          <Trophy
+                            className="inline h-2.5 w-2.5 mr-0.5 text-slate-400"
+                            aria-hidden="true"
+                          />
+                          {conferenceResult.matchplayRunnerUp}
+                        </span>
+                      )}
+                    {conferenceResult?.hasMatchplay &&
+                      conferenceResult.strokeplayWinner && (
+                        <span className="truncate max-w-full">
+                          <Medal
+                            className="inline h-2.5 w-2.5 mr-0.5 text-amber-300"
+                            aria-hidden="true"
+                          />
+                          {conferenceResult.strokeplayWinner}
+                        </span>
+                      )}
                   </>
                 ) : (
-                  <>AQ: {top.team}</>
+                  <span className="truncate max-w-full">AQ: {top.team}</span>
                 )}
-              </span>
+              </div>
             )}
           </div>
         </div>
