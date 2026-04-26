@@ -1,0 +1,2619 @@
+{
+  "generatedAt": "2026-04-26T14:46:04.367Z",
+  "source": "clippd-scoreboard",
+  "seasonsCovered": [
+    2024,
+    2025,
+    2026
+  ],
+  "rows": [
+    {
+      "conference": "A10",
+      "conferenceFull": "Atlantic 10 Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231462",
+        "name": "Atlantic 10 Men's Golf Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231462",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "AAC",
+      "conferenceFull": "American Athletic Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232323",
+        "name": "2024 American Athletic Conference Men's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232323",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "ACC",
+      "conferenceFull": "Atlantic Coast Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232315",
+        "name": "ACC 2024 Men's Golf Championship - Stroke Play",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232315",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232318",
+        "name": "ACC 2024 Men's Golf Championship - Match Play",
+        "endDate": "2024-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232318",
+        "winner": null
+      }
+    },
+    {
+      "conference": "ASUN",
+      "conferenceFull": "ASUN Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231452",
+        "name": "Atlantic Sun Men's Golf Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231452",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B10",
+      "conferenceFull": "Big Ten Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232387",
+        "name": "2024 Big Ten Men's Golf Championships",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232387",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B12",
+      "conferenceFull": "Big 12 Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232500",
+        "name": "Big 12 Conference Championship",
+        "endDate": "2024-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232500",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BIGSKY",
+      "conferenceFull": "Big Sky Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232715",
+        "name": "Big Sky Conference Championship",
+        "endDate": "2024-04-25",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232715",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BIGSOUTH",
+      "conferenceFull": "Big South Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232454",
+        "name": "2024 Big South Men's Golf Championship - Stroke Play",
+        "endDate": "2024-04-20",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232454",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232455",
+        "name": "2024 Big South Men's Golf Championship - Match Play",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232455",
+        "winner": null
+      }
+    },
+    {
+      "conference": "BWEST",
+      "conferenceFull": "Big West Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232367",
+        "name": "2024 Big West Men's Golf Championship",
+        "endDate": "2024-04-30",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232367",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CAA",
+      "conferenceFull": "Coastal Athletic Association",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231451",
+        "name": "CAA Men's Golf Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231451",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CUSA",
+      "conferenceFull": "Conference USA",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232667",
+        "name": "2024 Conference USA Championship",
+        "endDate": "2024-04-25",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232667",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232751",
+        "name": "2024 Conference USA Championship - Match Play",
+        "endDate": "2024-04-25",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232751",
+        "winner": null
+      }
+    },
+    {
+      "conference": "HORIZON",
+      "conferenceFull": "Horizon League",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232724",
+        "name": "Horizon League Men's Golf Championship",
+        "endDate": "2024-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232724",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "IVY",
+      "conferenceFull": "Ivy League",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232272",
+        "name": "Ivy League Men's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232272",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAAC",
+      "conferenceFull": "Metro Atlantic Athletic Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232319",
+        "name": "2024 MAAC Men's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232319",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAC",
+      "conferenceFull": "Mid-American Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231675",
+        "name": "Mid-American Conference Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231675",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MVC",
+      "conferenceFull": "Missouri Valley Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232400",
+        "name": "2024 Missouri Valley Conference Men's Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232400",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MWC",
+      "conferenceFull": "Mountain West Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232734",
+        "name": "2024 Mountain West Men's Golf Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232734",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "NEC",
+      "conferenceFull": "Northeast Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232872",
+        "name": "NEC Men's Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232872",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "OVC",
+      "conferenceFull": "Ohio Valley Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232358",
+        "name": "2024 OVC Men's Golf Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232358",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232359",
+        "name": "2024 OVC Men's Golf Championship - Match Play",
+        "endDate": "2024-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232359",
+        "winner": null
+      }
+    },
+    {
+      "conference": "PAC12",
+      "conferenceFull": "Pac-12 Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231945",
+        "name": "PAC-12 Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231945",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "PATRIOT",
+      "conferenceFull": "Patriot League",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232767",
+        "name": "2024 Patriot League Men's Golf Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232767",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SEC",
+      "conferenceFull": "Southeastern Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232553",
+        "name": "2024 SEC Men's Golf Championship - Stroke Play",
+        "endDate": "2024-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232553",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232557",
+        "name": "2024 SEC Men's Golf Championship - Match Play",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232557",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SOCON",
+      "conferenceFull": "Southern Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231457",
+        "name": "2024 SoCon Men's Golf Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231457",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOUTHLAND",
+      "conferenceFull": "Southland Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232386",
+        "name": "2024 Southland Conference Men's Golf Championship",
+        "endDate": "2024-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232386",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUMMIT",
+      "conferenceFull": "The Summit League",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232780",
+        "name": "2024 Summit League Men's Golf Championship",
+        "endDate": "2024-04-30",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232780",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUNBELT",
+      "conferenceFull": "Sun Belt Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232556",
+        "name": "2024 Sun Belt Conference Men's Golf Stroke Play Championship",
+        "endDate": "2024-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232556",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SWAC",
+      "conferenceFull": "Southwestern Athletic Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232504",
+        "name": "2024 SWAC Men Golf Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232504",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WAC",
+      "conferenceFull": "Western Athletic Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232725",
+        "name": "2024 WAC Men's Golf Championship",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232725",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WCC",
+      "conferenceFull": "West Coast Conference",
+      "gender": "men",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232759",
+        "name": "2024 WCC Men's Golf Championship - Stroke Play",
+        "endDate": "2024-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232759",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232760",
+        "name": "2024 WCC Men's Golf Championship - Match Play",
+        "endDate": "2024-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232760",
+        "winner": null
+      }
+    },
+    {
+      "conference": "AAC",
+      "conferenceFull": "American Athletic Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232280",
+        "name": "American Athletic Conference Women's Golf Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232280",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "ACC",
+      "conferenceFull": "Atlantic Coast Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232392",
+        "name": "2024 ACC Women's Golf Championship",
+        "endDate": "2024-04-20",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232392",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232394",
+        "name": "2024 ACC Women's Golf Match Play Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232394",
+        "winner": null
+      }
+    },
+    {
+      "conference": "ASUN",
+      "conferenceFull": "ASUN Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232292",
+        "name": "2024 Atlantic Sun Conference Championship",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232292",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B10",
+      "conferenceFull": "Big Ten Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232530",
+        "name": "Big Ten Women's Golf Championships",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232530",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B12",
+      "conferenceFull": "Big 12 Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232460",
+        "name": "2024 Big 12 Women's Golf Championship",
+        "endDate": "2024-04-20",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232460",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BEAST",
+      "conferenceFull": "Big East Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232673",
+        "name": "BIG EAST Conference Women's Golf Championships",
+        "endDate": "2024-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232673",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BSKY",
+      "conferenceFull": "Big Sky Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232714",
+        "name": "Big Sky Conference Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232714",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BSOUTH",
+      "conferenceFull": "Big South Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232452",
+        "name": "2024 Big South Women's Golf Championship - Stroke Play",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232452",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232453",
+        "name": "2024 Big South Women's Golf Championship - Match Play",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232453",
+        "winner": null
+      }
+    },
+    {
+      "conference": "BWEST",
+      "conferenceFull": "Big West Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232366",
+        "name": "2024 Big West Women's Golf Championship",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232366",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CAA",
+      "conferenceFull": "Coastal Athletic Association",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231404",
+        "name": "CAA Women's Golf Championship",
+        "endDate": "2024-04-14",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231404",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CUSA",
+      "conferenceFull": "Conference USA",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232532",
+        "name": "Conference USA Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232532",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "HORIZON",
+      "conferenceFull": "Horizon League",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232700",
+        "name": "Horizon League Women's Golf Championship",
+        "endDate": "2024-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232700",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "IVY",
+      "conferenceFull": "Ivy League",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232273",
+        "name": "Ivy League Women's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232273",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAAC",
+      "conferenceFull": "Metro Atlantic Athletic Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232320",
+        "name": "2024 MAAC Women's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232320",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAC",
+      "conferenceFull": "Mid-American Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231455",
+        "name": "Mid-American Conference Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231455",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MVC",
+      "conferenceFull": "Missouri Valley Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232399",
+        "name": "2024 Missouri Valley Conference Women's Championship",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232399",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MWC",
+      "conferenceFull": "Mountain West Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232716",
+        "name": "2024 Mountain West Women's Golf Championship",
+        "endDate": "2024-04-18",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232716",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "NEC",
+      "conferenceFull": "Northeast Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232698",
+        "name": "NEC Women's Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232698",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "OVC",
+      "conferenceFull": "Ohio Valley Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232357",
+        "name": "2024 OVC Women's Golf Championship",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232357",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "PAC12",
+      "conferenceFull": "Pac-12 Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232726",
+        "name": "2024 Pac-12 Women's Golf Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232726",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "PATRIOT",
+      "conferenceFull": "Patriot League",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232697",
+        "name": "Patriot League Women's Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232697",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SEC",
+      "conferenceFull": "Southeastern Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232611",
+        "name": "2024 SEC Women's Golf Championship - Stroke Play",
+        "endDate": "2024-04-14",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232611",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232616",
+        "name": "2024 SEC Women's Golf Championship - Match Play",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232616",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SOCON",
+      "conferenceFull": "Southern Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "231418",
+        "name": "2024 SoCon Women's Golf Championship",
+        "endDate": "2024-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/231418",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOUTHLAND",
+      "conferenceFull": "Southland Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232385",
+        "name": "2024 Southland Conference Women's Golf Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232385",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUMMIT",
+      "conferenceFull": "The Summit League",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232707",
+        "name": "2024 Summit League Women's Golf Championship",
+        "endDate": "2024-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232707",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUNBELT",
+      "conferenceFull": "Sun Belt Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232554",
+        "name": "Sun Belt Conference Women's Golf Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232554",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "232555",
+        "name": "Sun Belt Conference Women's Golf Match Play Championship",
+        "endDate": "2024-04-18",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232555",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SWAC",
+      "conferenceFull": "Southwestern Athletic Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232505",
+        "name": "2024 SWAC Women Golf Championship",
+        "endDate": "2024-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232505",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WAC",
+      "conferenceFull": "Western Athletic Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232720",
+        "name": "2024 WAC Women's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232720",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WCC",
+      "conferenceFull": "West Coast Conference",
+      "gender": "women",
+      "season": 2024,
+      "strokeplay": {
+        "tournamentId": "232434",
+        "name": "2024 WCC Women's Golf Championship",
+        "endDate": "2024-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/232434",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "A10",
+      "conferenceFull": "Atlantic 10 Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234523",
+        "name": "Atlantic 10 Men's Golf Championship",
+        "endDate": "2025-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234523",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "AAC",
+      "conferenceFull": "American Athletic Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233593",
+        "name": "2025 Men's American Athletic Conference Championship",
+        "endDate": "2025-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233593",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "ACC",
+      "conferenceFull": "Atlantic Coast Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234020",
+        "name": "ACC 2025 Men's Golf Championship",
+        "endDate": "2025-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234020",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "234022",
+        "name": "ACC 2025 Men's Golf Match Play Championship",
+        "endDate": "2025-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234022",
+        "winner": null
+      }
+    },
+    {
+      "conference": "ASUN",
+      "conferenceFull": "ASUN Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234414",
+        "name": "2025 Atlantic Sun Conference Championship",
+        "endDate": "2025-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234414",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B10",
+      "conferenceFull": "Big Ten Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233800",
+        "name": "Big Ten Men's Golf Championships",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233800",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B12",
+      "conferenceFull": "Big 12 Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233986",
+        "name": "Big 12 Conference Men's Golf Championship",
+        "endDate": "2025-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233986",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BE",
+      "conferenceFull": "Big East Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237326",
+        "name": "2025 BIG EAST Men's Golf Championships",
+        "endDate": "2025-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237326",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BIGSOUTH",
+      "conferenceFull": "Big South Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234640",
+        "name": "2025 Big South Men's Golf Championship",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234640",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "234641",
+        "name": "2025 Big South Men's Golf Championship",
+        "endDate": "2025-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234641",
+        "winner": null
+      }
+    },
+    {
+      "conference": "BWEST",
+      "conferenceFull": "Big West Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234272",
+        "name": "2025 Big West Men's Golf Championship",
+        "endDate": "2025-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234272",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CAA",
+      "conferenceFull": "Coastal Athletic Association",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237845",
+        "name": "2025 CAA Men's Golf Championship",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237845",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CUSA",
+      "conferenceFull": "Conference USA",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "235233",
+        "name": "2025 Conference USA Men's Golf Championship - Stroke Play",
+        "endDate": "2025-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/235233",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "235239",
+        "name": "2025 Conference USA Men's Golf Championship - Match Play",
+        "endDate": "2025-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/235239",
+        "winner": null
+      }
+    },
+    {
+      "conference": "HORIZON",
+      "conferenceFull": "Horizon League",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237669",
+        "name": "2025 Horizon League Men's Golf Championship",
+        "endDate": "2025-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237669",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "IVY",
+      "conferenceFull": "Ivy League",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "235223",
+        "name": "Ivy League Men's Golf Championship",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/235223",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAAC",
+      "conferenceFull": "Metro Atlantic Athletic Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237652",
+        "name": "2025 MAAC Men's Golf Championship",
+        "endDate": "2025-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237652",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAC",
+      "conferenceFull": "Mid-American Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234314",
+        "name": "MAC Championship",
+        "endDate": "2025-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234314",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MVC",
+      "conferenceFull": "Missouri Valley Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234434",
+        "name": "2025 Missouri Valley Conference Men's Golf Championship",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234434",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MWC",
+      "conferenceFull": "Mountain West Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233900",
+        "name": "2025 Credit Union 1 Mountain West Men’s Golf Championship",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233900",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "NEC",
+      "conferenceFull": "Northeast Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "238181",
+        "name": "2025 Northeast Conference Men's Golf Championship",
+        "endDate": "2025-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/238181",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "OVC",
+      "conferenceFull": "Ohio Valley Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234477",
+        "name": "2025 OVC Men's Golf Championship - Stroke Play",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234477",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "234478",
+        "name": "2025 OVC Men's Golf Championship - Match Play",
+        "endDate": "2025-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234478",
+        "winner": null
+      }
+    },
+    {
+      "conference": "PATRIOT",
+      "conferenceFull": "Patriot League",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234233",
+        "name": "2025 Patriot League Men's Golf Championship",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234233",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SEC",
+      "conferenceFull": "Southeastern Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234143",
+        "name": "2025 SEC Men's Golf Championship Stroke Play",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234143",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOCON",
+      "conferenceFull": "Southern Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233816",
+        "name": "2025 SoCon Men's Golf Championship",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233816",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOUTHLAND",
+      "conferenceFull": "Southland Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234249",
+        "name": "Southland Conference Men's Golf Championship",
+        "endDate": "2025-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234249",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUMMIT",
+      "conferenceFull": "The Summit League",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237974",
+        "name": "2025 Summit League Men's Golf Championship",
+        "endDate": "2025-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237974",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUNBELT",
+      "conferenceFull": "Sun Belt Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "236341",
+        "name": "Sun Belt Conference Men's Championship- Stroke Play",
+        "endDate": "2025-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/236341",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "236343",
+        "name": "Sun Belt Conference Men's Championship- Match Play",
+        "endDate": "2025-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/236343",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SWAC",
+      "conferenceFull": "Southwestern Athletic Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237991",
+        "name": "2025 SWAC Men's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237991",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WAC",
+      "conferenceFull": "Western Athletic Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "236909",
+        "name": "2025 WAC Men's Golf Championship",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/236909",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WCC",
+      "conferenceFull": "West Coast Conference",
+      "gender": "men",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234108",
+        "name": "2025 WCC Men's Golf Championship",
+        "endDate": "2025-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234108",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "234110",
+        "name": "2025 WCC Men's Golf Championship",
+        "endDate": "2025-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234110",
+        "winner": null
+      }
+    },
+    {
+      "conference": "A10",
+      "conferenceFull": "Atlantic 10 Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237760",
+        "name": "2025 Atlantic 10 Women's Golf Championship",
+        "endDate": "2025-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237760",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "AAC",
+      "conferenceFull": "American Athletic Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233864",
+        "name": "2025 American Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233864",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "ACC",
+      "conferenceFull": "Atlantic Coast Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233820",
+        "name": "2025 ACC Women's Golf Championship",
+        "endDate": "2025-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233820",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "233821",
+        "name": "2025 ACC Women's Golf Match Play Championship",
+        "endDate": "2025-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233821",
+        "winner": null
+      }
+    },
+    {
+      "conference": "ASUN",
+      "conferenceFull": "ASUN Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234416",
+        "name": "2025 Atlantic Sun Conference Championship",
+        "endDate": "2025-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234416",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B10",
+      "conferenceFull": "Big Ten Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233801",
+        "name": "Big Ten Women's Golf Championships",
+        "endDate": "2025-04-20",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233801",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B12",
+      "conferenceFull": "Big 12 Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233987",
+        "name": "Big 12 Conference Women's Golf Championship",
+        "endDate": "2025-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233987",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BEAST",
+      "conferenceFull": "Big East Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237327",
+        "name": "2025 BIG EAST Women's Golf Championships",
+        "endDate": "2025-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237327",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BSKY",
+      "conferenceFull": "Big Sky Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237689",
+        "name": "Big Sky Conference Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237689",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BSOUTH",
+      "conferenceFull": "Big South Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234637",
+        "name": "2025 Big South Women's Golf Championship",
+        "endDate": "2025-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234637",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "234639",
+        "name": "2025 Big South Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234639",
+        "winner": null
+      }
+    },
+    {
+      "conference": "BWEST",
+      "conferenceFull": "Big West Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234273",
+        "name": "2025 Big West Women's Golf Championship",
+        "endDate": "2025-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234273",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CAA",
+      "conferenceFull": "Coastal Athletic Association",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237822",
+        "name": "2025 CAA Women's Golf Championship",
+        "endDate": "2025-04-13",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237822",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CUSA",
+      "conferenceFull": "Conference USA",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "235230",
+        "name": "2025 Conference USA Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/235230",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "HORIZON",
+      "conferenceFull": "Horizon League",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237686",
+        "name": "2025 Horizon League Women's Golf Championship",
+        "endDate": "2025-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237686",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "IVY",
+      "conferenceFull": "Ivy League",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "235202",
+        "name": "Ivy League Women's Golf Championship",
+        "endDate": "2025-04-20",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/235202",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAAC",
+      "conferenceFull": "Metro Atlantic Athletic Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237654",
+        "name": "2025 MAAC Women's Golf Championship",
+        "endDate": "2025-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237654",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAC",
+      "conferenceFull": "Mid-American Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234229",
+        "name": "Mid-American Conference Championship",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234229",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MVC",
+      "conferenceFull": "Missouri Valley Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234435",
+        "name": "2025 Missouri Valley Conference Women's Golf Championship",
+        "endDate": "2025-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234435",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MWC",
+      "conferenceFull": "Mountain West Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "233899",
+        "name": "2025 Credit Union 1 Mountain West Women's Golf Championship",
+        "endDate": "2025-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/233899",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "NEC",
+      "conferenceFull": "Northeast Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237986",
+        "name": "2025 Northeast Conference Women's Golf Championship",
+        "endDate": "2025-04-13",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237986",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "OVC",
+      "conferenceFull": "Ohio Valley Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234475",
+        "name": "2025 OVC Women's Golf Championship",
+        "endDate": "2025-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234475",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "PATRIOT",
+      "conferenceFull": "Patriot League",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234234",
+        "name": "2025 Patriot League Women's Golf Championship",
+        "endDate": "2025-04-20",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234234",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SEC",
+      "conferenceFull": "Southeastern Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237656",
+        "name": "2025 SEC Women's Golf Conference Championship (SP)",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237656",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "234144",
+        "name": "SEC Women's Golf Championship Match Play",
+        "endDate": "2025-04-18",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234144",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SOCON",
+      "conferenceFull": "Southern Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234025",
+        "name": "2025 SoCon Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234025",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOUTHLAND",
+      "conferenceFull": "Southland Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234251",
+        "name": "Southland Conference Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234251",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUMMIT",
+      "conferenceFull": "The Summit League",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237861",
+        "name": "2025 Summit League Women's Golf Championship",
+        "endDate": "2025-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237861",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUNBELT",
+      "conferenceFull": "Sun Belt Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "236339",
+        "name": "Sun Belt Conference Women's Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/236339",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "236340",
+        "name": "Sun Belt Conference Women's Championship",
+        "endDate": "2025-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/236340",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SWAC",
+      "conferenceFull": "Southwestern Athletic Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "237985",
+        "name": "2025 SWAC Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/237985",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WAC",
+      "conferenceFull": "Western Athletic Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "236907",
+        "name": "2025 WAC Women's Golf Championship",
+        "endDate": "2025-04-16",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/236907",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WCC",
+      "conferenceFull": "West Coast Conference",
+      "gender": "women",
+      "season": 2025,
+      "strokeplay": {
+        "tournamentId": "234107",
+        "name": "2025 WCC Women's Golf Championship",
+        "endDate": "2025-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/234107",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "A10",
+      "conferenceFull": "Atlantic 10 Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244394",
+        "name": "2026 Atlantic 10 Men's Golf Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244394",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "AAC",
+      "conferenceFull": "American Athletic Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239888",
+        "name": "2026 American Conference Men’s Golf Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239888",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "ACC",
+      "conferenceFull": "Atlantic Coast Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239965",
+        "name": "2026 ACC Men's Golf Championship - Stroke Play",
+        "endDate": "2026-04-25",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239965",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "239966",
+        "name": "2026 ACC Men's Golf Championship - Match Play",
+        "endDate": "2026-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239966",
+        "winner": null
+      }
+    },
+    {
+      "conference": "ASUN",
+      "conferenceFull": "ASUN Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "241132",
+        "name": "2026 Atlantic Sun Conference Men's Golf Championship",
+        "endDate": "2026-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/241132",
+        "winner": "Florida Gulf Coast"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B10",
+      "conferenceFull": "Big Ten Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239794",
+        "name": "Big Ten Men's Golf Championships",
+        "endDate": "2026-05-03",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239794",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B12",
+      "conferenceFull": "Big 12 Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239632",
+        "name": "Big 12 Men's Golf Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239632",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BE",
+      "conferenceFull": "Big East Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239967",
+        "name": "2026 BIG EAST Men's Golf Championships",
+        "endDate": "2026-05-04",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239967",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BIGSKY",
+      "conferenceFull": "Big Sky Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242923",
+        "name": "Big Sky Conference Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242923",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BIGSOUTH",
+      "conferenceFull": "Big South Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242780",
+        "name": "2026 Big South Men's Golf Championship (Stroke Play)",
+        "endDate": "2026-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242780",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "242781",
+        "name": "2026 Big South Men's Golf Championship (Match Play)",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242781",
+        "winner": null
+      }
+    },
+    {
+      "conference": "BWEST",
+      "conferenceFull": "Big West Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240005",
+        "name": "2026 Big West Men's Golf Championship",
+        "endDate": "2026-05-05",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240005",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CAA",
+      "conferenceFull": "Coastal Athletic Association",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244036",
+        "name": "2026 CAA Men's Golf Championship",
+        "endDate": "2026-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244036",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CUSA",
+      "conferenceFull": "Conference USA",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "241757",
+        "name": "2026 Conference USA Men's Golf Championship - Stroke Play",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/241757",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "241762",
+        "name": "2026 Conference USA Men's Golf Championship - Match Play",
+        "endDate": "2026-04-30",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/241762",
+        "winner": null
+      }
+    },
+    {
+      "conference": "HORIZON",
+      "conferenceFull": "Horizon League",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244037",
+        "name": "2026 Horizon League Men's Golf Championship",
+        "endDate": "2026-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244037",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "IVY",
+      "conferenceFull": "Ivy League",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240112",
+        "name": "Ivy League Men's Golf Championship",
+        "endDate": "2026-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240112",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAAC",
+      "conferenceFull": "Metro Atlantic Athletic Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "238584",
+        "name": "2026 MAAC Men's Golf Championship",
+        "endDate": "2026-04-30",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/238584",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAC",
+      "conferenceFull": "Mid-American Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244563",
+        "name": "Mid-American Men’s Golf Championship 2026",
+        "endDate": "2026-05-05",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244563",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MVC",
+      "conferenceFull": "Missouri Valley Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "241041",
+        "name": "2026 Missouri Valley Conference Men's Golf Championship",
+        "endDate": "2026-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/241041",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MWC",
+      "conferenceFull": "Mountain West Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240304",
+        "name": "Mountain West Men's Golf Championship",
+        "endDate": "2026-05-05",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240304",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "NEC",
+      "conferenceFull": "Northeast Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244171",
+        "name": "2026 NEC Men's Golf Championships",
+        "endDate": "2026-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244171",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "OVC",
+      "conferenceFull": "Ohio Valley Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "238690",
+        "name": "2026 OVC Men's Golf Championship - Stroke Play",
+        "endDate": "2026-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/238690",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "238691",
+        "name": "2026 OVC Men's Golf Championship - Match Play",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/238691",
+        "winner": null
+      }
+    },
+    {
+      "conference": "PATRIOT",
+      "conferenceFull": "Patriot League",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242447",
+        "name": "2026 Patriot League Men's Golf Championship",
+        "endDate": "2026-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242447",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SEC",
+      "conferenceFull": "Southeastern Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244176",
+        "name": "2026 SEC Men's Golf Championship (Stroke Play)",
+        "endDate": "2026-04-24",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244176",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "244177",
+        "name": "SEC Men's Golf Championship (Match Play)",
+        "endDate": "2026-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244177",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SOCON",
+      "conferenceFull": "Southern Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239629",
+        "name": "2026 SoCon Men's Golf Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239629",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOUTHLAND",
+      "conferenceFull": "Southland Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240398",
+        "name": "2026 Southland Conference Men’s Golf Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240398",
+        "winner": "UTRGV"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUMMIT",
+      "conferenceFull": "The Summit League",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240164",
+        "name": "2026 Summit League Men’s Golf Championship",
+        "endDate": "2026-05-05",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240164",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUNBELT",
+      "conferenceFull": "Sun Belt Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "243204",
+        "name": "Sun Belt Conference Men's Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/243204",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "243205",
+        "name": "Sun Belt Conference Men's Championship Match Play",
+        "endDate": "2026-04-30",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/243205",
+        "winner": null
+      }
+    },
+    {
+      "conference": "SWAC",
+      "conferenceFull": "Southwestern Athletic Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244124",
+        "name": "2026 SWAC Men's Golf Championship",
+        "endDate": "2026-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244124",
+        "winner": "Arkansas-Pine Bluff"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WAC",
+      "conferenceFull": "Western Athletic Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242538",
+        "name": "2026 WAC Men's Golf Championship",
+        "endDate": "2026-04-29",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242538",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WCC",
+      "conferenceFull": "West Coast Conference",
+      "gender": "men",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240240",
+        "name": "West Coast Conference Men’s Golf Championship",
+        "endDate": "2026-05-02",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240240",
+        "winner": null
+      },
+      "matchplay": {
+        "tournamentId": "240291",
+        "name": "West Coast Conference Men’s Golf Championship - Match Play",
+        "endDate": "2026-05-03",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240291",
+        "winner": null
+      }
+    },
+    {
+      "conference": "A10",
+      "conferenceFull": "Atlantic 10 Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244342",
+        "name": "2026 Atlantic 10 Women's Golf Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244342",
+        "winner": "Richmond"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "AAC",
+      "conferenceFull": "American Athletic Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239910",
+        "name": "2026 American Conference Women’s Golf Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239910",
+        "winner": "Tulsa"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "ACC",
+      "conferenceFull": "Atlantic Coast Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239962",
+        "name": "2026 ACC Women's Golf Championship - Stroke Play",
+        "endDate": "2026-04-17",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239962",
+        "winner": "Stanford"
+      },
+      "matchplay": {
+        "tournamentId": "239963",
+        "name": "2026 ACC Women's Golf Championship - Match Play",
+        "endDate": "2026-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239963",
+        "winner": "Stanford"
+      }
+    },
+    {
+      "conference": "ASUN",
+      "conferenceFull": "ASUN Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239818",
+        "name": "2026 Atlantic Sun Conference Women’s Golf Championship",
+        "endDate": "2026-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239818",
+        "winner": "North Florida"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B10",
+      "conferenceFull": "Big Ten Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239793",
+        "name": "Big Ten Women's Golf Championships",
+        "endDate": "2026-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239793",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "B12",
+      "conferenceFull": "Big 12 Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239631",
+        "name": "2026 Big 12 Women's Golf Championship",
+        "endDate": "2026-04-25",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239631",
+        "winner": "Iowa State"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BEAST",
+      "conferenceFull": "Big East Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239969",
+        "name": "2026 BIG EAST Women's Golf Championships",
+        "endDate": "2026-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239969",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BSKY",
+      "conferenceFull": "Big Sky Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242922",
+        "name": "Big Sky Conference Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242922",
+        "winner": "Northern Arizona"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "BSOUTH",
+      "conferenceFull": "Big South Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242778",
+        "name": "2026 Big South Women's Golf Championship (Stroke Play)",
+        "endDate": "2026-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242778",
+        "winner": "High Point"
+      },
+      "matchplay": {
+        "tournamentId": "242779",
+        "name": "2026 Big South Women's Golf Championship (Match Play)",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242779",
+        "winner": "High Point"
+      }
+    },
+    {
+      "conference": "BWEST",
+      "conferenceFull": "Big West Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240004",
+        "name": "2026 Big West Women's Golf Championship",
+        "endDate": "2026-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240004",
+        "winner": "Cal Poly"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CAA",
+      "conferenceFull": "Coastal Athletic Association",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244035",
+        "name": "2026 CAA Women's Golf Championship",
+        "endDate": "2026-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244035",
+        "winner": "Charleston"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "CUSA",
+      "conferenceFull": "Conference USA",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "241756",
+        "name": "2026 Conference USA Women's Golf Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/241756",
+        "winner": "Western Kentucky"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "HORIZON",
+      "conferenceFull": "Horizon League",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244039",
+        "name": "2026 Horizon League Women's Golf Championship",
+        "endDate": "2026-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244039",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "IVY",
+      "conferenceFull": "Ivy League",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240113",
+        "name": "Ivy League Women's Golf Championship",
+        "endDate": "2026-04-26",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240113",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAAC",
+      "conferenceFull": "Metro Atlantic Athletic Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "238585",
+        "name": "2026 MAAC Women's Golf Championship",
+        "endDate": "2026-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/238585",
+        "winner": "Quinnipiac"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MAC",
+      "conferenceFull": "Mid-American Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244269",
+        "name": "MAC Women's Golf Championships",
+        "endDate": "2026-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244269",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MVC",
+      "conferenceFull": "Missouri Valley Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "241040",
+        "name": "2026 Missouri Valley Conference Women's Golf Championship",
+        "endDate": "2026-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/241040",
+        "winner": "Murray State"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "MWC",
+      "conferenceFull": "Mountain West Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240303",
+        "name": "2026 CU1 Mountain West Women's Golf Championship",
+        "endDate": "2026-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240303",
+        "winner": "UNLV"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "NEC",
+      "conferenceFull": "Northeast Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244168",
+        "name": "2026 NEC Women's Golf Championships",
+        "endDate": "2026-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244168",
+        "winner": "Howard"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "OVC",
+      "conferenceFull": "Ohio Valley Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "238689",
+        "name": "2026 OVC Women's Golf Championship",
+        "endDate": "2026-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/238689",
+        "winner": "Little Rock"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "PATRIOT",
+      "conferenceFull": "Patriot League",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242448",
+        "name": "2026 Patriot League Women's Golf Championship",
+        "endDate": "2026-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242448",
+        "winner": "Navy"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SEC",
+      "conferenceFull": "Southeastern Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244173",
+        "name": "2026 SEC Women's Golf Championship (Stroke Play)",
+        "endDate": "2026-04-19",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244173",
+        "winner": "Tennessee"
+      },
+      "matchplay": {
+        "tournamentId": "244174",
+        "name": "2026 SEC Women's Golf Championship (Match Play)",
+        "endDate": "2026-04-21",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244174",
+        "winner": "Tennessee"
+      }
+    },
+    {
+      "conference": "SOCON",
+      "conferenceFull": "Southern Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239628",
+        "name": "SoCon Women's Golf Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239628",
+        "winner": "Furman"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SOUTHLAND",
+      "conferenceFull": "Southland Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "239985",
+        "name": "2026 Southland Conference Women’s Golf Championship",
+        "endDate": "2026-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/239985",
+        "winner": "UTRGV"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUMMIT",
+      "conferenceFull": "The Summit League",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240162",
+        "name": "2026 Summit League Women’s Golf Championship",
+        "endDate": "2026-04-28",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240162",
+        "winner": null
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "SUNBELT",
+      "conferenceFull": "Sun Belt Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "243201",
+        "name": "Sun Belt Conference Women's Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/243201",
+        "winner": "ULM"
+      },
+      "matchplay": {
+        "tournamentId": "243202",
+        "name": "Sun Belt Conference Women's Championship Match Play",
+        "endDate": "2026-04-23",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/243202",
+        "winner": "ULM"
+      }
+    },
+    {
+      "conference": "SWAC",
+      "conferenceFull": "Southwestern Athletic Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "244122",
+        "name": "2026 SWAC Women's Golf Championship",
+        "endDate": "2026-04-15",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/244122",
+        "winner": "Prairie View A&M"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WAC",
+      "conferenceFull": "Western Athletic Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "242536",
+        "name": "2026 WAC Women's Golf Championship",
+        "endDate": "2026-04-22",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/242536",
+        "winner": "Tarleton State"
+      },
+      "matchplay": null
+    },
+    {
+      "conference": "WCC",
+      "conferenceFull": "West Coast Conference",
+      "gender": "women",
+      "season": 2026,
+      "strokeplay": {
+        "tournamentId": "240237",
+        "name": "West Coast Conference Women’s Golf Championship",
+        "endDate": "2026-04-27",
+        "clippdUrl": "https://scoreboard.clippd.com/tournaments/240237",
+        "winner": null
+      },
+      "matchplay": null
+    }
+  ]
+}
