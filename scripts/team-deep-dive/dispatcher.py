@@ -90,11 +90,13 @@ PHASES = [
     # 12. GolfStat backfill — resolve TIDs for gaps; logs queue (does NOT
     #     invoke the upstream scraper unless --no-resolve-only is passed).
     {"name": "golfstat_backfill", "kind": "py_script_per_team", "script": "golfstat-backfill.py", "extra_args": ["--resolve-only"]},
-    # 13-16. LLM extraction → reconcile → synthesis → record book rebuild.
+    # 13-16. LLM extract → record-book rebuild → reconcile (merges facts
+    #         INTO the record book, so it must run AFTER the rebuild) →
+    #         synthesis (reads merged record book).
     {"name": "llm_extract", "kind": "py_script_per_team", "script": "extract-facts.py", "extra_args": ["--resume"]},
+    {"name": "record_book_rebuild", "kind": "ts_script_per_team", "script": "build-record-book.ts"},
     {"name": "reconcile", "kind": "ts_script_per_team", "script": "reconcile-facts.ts"},
     {"name": "synthesize_insights", "kind": "py_script_per_team", "script": "synthesize-insights.py", "timeout_seconds": 1800},
-    {"name": "record_book_rebuild", "kind": "ts_script_per_team", "script": "build-record-book.ts"},
     {"name": "validate", "kind": "noop", "script": None},
 ]
 
