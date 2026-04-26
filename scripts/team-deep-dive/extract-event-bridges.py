@@ -205,12 +205,30 @@ def main() -> None:
     if not candidates:
         return
 
+    # Per-team checkpoint file — tracks which evidence files have been
+    # processed already so a SIGKILL'd or timeout-killed run can resume
+    # cleanly from the next batch.
+    ckpt_path = BRIDGES_PATH.parent / f"bridges-checkpoint-{args.slug}.json"
+    processed_urls: set[str] = set()
+    if ckpt_path.exists():
+        try:
+            processed_urls = set(json.loads(ckpt_path.read_text()).get("processed_urls", []))
+            print(f"[bridges] resume: {len(processed_urls)} URLs already processed in prior run")
+        except Exception:
+            processed_urls = set()
+
+    # Filter out already-processed candidates.
+    candidates = [c for c in candidates if c.get("url") not in processed_urls]
+    print(f"[bridges] {len(candidates)} candidates remain after resume filter")
+    if not candidates:
+        return
+
     cli = ClaudeCLI(timeout_seconds=900)
     n_batches = (len(candidates) + args.batch_size - 1) // args.batch_size
     if args.max_batches:
         n_batches = min(n_batches, args.max_batches)
 
-    new_bridges: list[dict] = []
+    cumulative = 0
     for batch_i in range(n_batches):
         batch = candidates[batch_i * args.batch_size : (batch_i + 1) * args.batch_size]
         prompt = build_bridge_prompt(args.slug, args.gender, batch, args.max_chars_per_doc)
@@ -219,23 +237,39 @@ def main() -> None:
             res = cli.extract_json(prompt)
         except Exception as e:
             print(f"[bridges]   batch failed: {e}", file=sys.stderr)
+            # Mark these URLs processed anyway so we don't infinite-loop on a
+            # consistently-failing batch.
+            for ev in batch:
+                if ev.get("url"):
+                    processed_urls.add(ev["url"])
+            ckpt_path.write_text(json.dumps({"processed_urls": sorted(processed_urls)}, indent=2))
             continue
         if not isinstance(res, list):
             print(f"[bridges]   unexpected response type {type(res).__name__}", file=sys.stderr)
+            for ev in batch:
+                if ev.get("url"):
+                    processed_urls.add(ev["url"])
+            ckpt_path.write_text(json.dumps({"processed_urls": sorted(processed_urls)}, indent=2))
             continue
-        new_bridges.extend(res)
-        print(f"[bridges]   batch yielded {len(res)} bridges (cumulative {len(new_bridges)})")
+        # Stamp + persist this batch's bridges immediately.
+        now = datetime.now().isoformat(timespec="seconds") + "Z"
+        for b in res:
+            b["extracted_from_team"] = args.slug
+            b["extracted_at"] = now
+        merge_summary = merge_bridges(res)
+        BRIDGES_PATH.parent.mkdir(parents=True, exist_ok=True)
+        BRIDGES_PATH.write_text(json.dumps(merge_summary["all"], indent=2))
+        cumulative += len(res)
+        for ev in batch:
+            if ev.get("url"):
+                processed_urls.add(ev["url"])
+        ckpt_path.write_text(json.dumps({"processed_urls": sorted(processed_urls)}, indent=2))
+        print(
+            f"[bridges]   batch yielded {len(res)} bridges (registry now {len(merge_summary['all'])}, "
+            f"+{merge_summary['added']} new, +{merge_summary['enriched']} enriched)"
+        )
 
-    # Stamp + merge.
-    now = datetime.now().isoformat(timespec="seconds") + "Z"
-    for b in new_bridges:
-        b["extracted_from_team"] = args.slug
-        b["extracted_at"] = now
-
-    merged = merge_bridges(new_bridges)
-    BRIDGES_PATH.parent.mkdir(parents=True, exist_ok=True)
-    BRIDGES_PATH.write_text(json.dumps(merged["all"], indent=2))
-    print(f"\n[bridges] {len(merged['all'])} total bridges in registry; +{merged['added']} new, +{merged['enriched']} enriched")
+    print(f"\n[bridges] done — extracted {cumulative} new bridge entries this run")
 
 
 if __name__ == "__main__":
