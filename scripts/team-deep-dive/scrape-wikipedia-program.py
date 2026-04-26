@@ -171,7 +171,7 @@ SCHOOL_DISPLAY_NAMES: dict[str, str] = {
     "ucla": "UCLA Bruins",
     "usc": "USC Trojans",
     "southern-california": "USC Trojans",
-    "byu": "BYU Cougars",
+    "brigham-young": "BYU Cougars",
     "tcu": "TCU Horned Frogs",
     "smu": "SMU Mustangs",
     "houston": "Houston Cougars",

@@ -139,9 +139,9 @@ function schoolAliasesForSlug(slug: string, allTeams: Array<{ team: string }>): 
     "texas-tech": ["Texas Tech", "Texas Tech University", "TTU"],
     "oklahoma-state": ["Oklahoma State", "Oklahoma St.", "Oklahoma St"],
     "north-carolina": ["North Carolina", "UNC"],
-    "north-carolina-state": ["NC State", "North Carolina State", "N.C. State"],
+    "nc-state": ["NC State", "North Carolina State", "N.C. State"],
     "ucla": ["UCLA", "U.C.L.A.", "California-Los Angeles"],
-    "byu": ["BYU", "Brigham Young"],
+    "brigham-young": ["BYU", "Brigham Young"],
     "ole-miss": ["Ole Miss", "Mississippi"],
     "lsu": ["LSU", "Louisiana State"],
   };

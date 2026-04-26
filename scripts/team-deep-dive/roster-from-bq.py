@@ -50,7 +50,7 @@ SCHOOL_ALIASES: dict[str, list[str]] = {
     "north-carolina": ["North Carolina", "UNC", "North Carolina-Chapel Hill"],
     "nc-state": ["NC State", "North Carolina State", "N.C. State"],
     "ucla": ["UCLA", "California-Los Angeles", "California Los Angeles"],
-    "byu": ["BYU", "Brigham Young"],
+    "brigham-young": ["BYU", "Brigham Young", "Brigham Young University"],
     "ole-miss": ["Ole Miss", "Mississippi"],
     "lsu": ["LSU", "Louisiana State"],
     "auburn": ["Auburn"],
@@ -113,7 +113,6 @@ SCHOOL_ALIASES: dict[str, list[str]] = {
     "texas-aandm": ["Texas A&M", "Texas A&M University", "Texas A and M"],
     "southern-california": ["Southern California", "USC"],
     "ucf": ["UCF", "Central Florida"],
-    "north-carolina-state": ["NC State", "North Carolina State", "N.C. State"],
 }
 
 
