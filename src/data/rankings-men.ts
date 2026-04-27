@@ -22,7 +22,7 @@ export interface TeamData {
 /**
  * NCAA D1 Men's golf rankings - 2025-26 season.
  *
- * Auto-generated from Clippd leaderboard API on 2026-04-26.
+ * Auto-generated from Clippd leaderboard API on 2026-04-27.
  * Source: scoreboard.clippd.com/rankings
  */
 export const rankingsMen: TeamData[] = [
