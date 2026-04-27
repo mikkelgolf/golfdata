@@ -2438,7 +2438,7 @@ function ScurveSnakeTable({
         {/* Regional headers */}
         <div
           className="grid gap-0.5"
-          style={{ gridTemplateColumns: `24px repeat(${numRegionals}, 1fr)` }}
+          style={{ gridTemplateColumns: `24px repeat(${numRegionals}, minmax(0, 1fr))` }}
         >
           <div />
           {orderedRegionals.map((r) => (
@@ -2460,7 +2460,7 @@ function ScurveSnakeTable({
             <Fragment key={tierIdx}>
               <div
                 className="grid gap-0.5 mt-0.5"
-                style={{ gridTemplateColumns: `24px repeat(${numRegionals}, 1fr)` }}
+                style={{ gridTemplateColumns: `24px repeat(${numRegionals}, minmax(0, 1fr))` }}
               >
                 <div className="flex items-center justify-center text-[9px] font-mono tabular-nums text-muted-foreground">
                   {tierIdx + 1}
@@ -2575,7 +2575,7 @@ function VisualScurve({
               <div key={tierIdx} className="relative">
                 <div
                   className="grid gap-0.5 mb-0.5"
-                  style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}
+                  style={{ gridTemplateColumns: `repeat(${numRegionals}, minmax(0, 1fr))` }}
                 >
                   {row.map((team, colIdx) => {
                     const r = orderedRegionals[colIdx];
