@@ -238,8 +238,11 @@ if [ "$RANKINGS_CHANGED" = "yes" ] || [ "$CHAMPIONS_CHANGED" = "yes" ]; then
             abort_hard "git push origin main failed"
         fi
 
-        log "step 6b: vercel --prod --yes"
-        if vercel --prod --yes > "$DEPLOY_LOG" 2>&1; then
+        log "step 6b: vercel --prod --yes --archive=tgz"
+        # --archive=tgz is required: the repo carries >15k files (PDFs,
+        # snapshots, cached scrape JSON) and Vercel's bare upload path tops
+        # out at 15000.
+        if vercel --prod --yes --archive=tgz > "$DEPLOY_LOG" 2>&1; then
             DEPLOY_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.vercel\.app' "$DEPLOY_LOG" | head -1)
             log "deploy complete: ${DEPLOY_URL:-<url missing>}"
         else

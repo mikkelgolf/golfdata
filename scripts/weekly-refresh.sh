@@ -141,9 +141,11 @@ fi
 # ---------------------------------------------------------------------------
 # 6. Deploy to Vercel
 # ---------------------------------------------------------------------------
-log "step 6: vercel --prod --yes"
+log "step 6: vercel --prod --yes --archive=tgz"
 DEPLOY_LOG="/tmp/cgd-weekly-deploy-$(date -u +%Y%m%d).log"
-if vercel --prod --yes > "$DEPLOY_LOG" 2>&1; then
+# --archive=tgz is required: the repo carries >15k files (PDFs, snapshots,
+# cached scrape JSON) and Vercel's bare upload path tops out at 15000.
+if vercel --prod --yes --archive=tgz > "$DEPLOY_LOG" 2>&1; then
     DEPLOY_URL=$(grep -E "^https://" "$DEPLOY_LOG" | head -1)
     log "deploy complete: ${DEPLOY_URL:-<url missing from log>}"
 else
