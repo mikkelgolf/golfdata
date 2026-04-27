@@ -6,6 +6,7 @@ import { ExternalLink } from "lucide-react";
 import type { Championship } from "@/data/championships-men-2026";
 import type { Gender } from "@/data/records-types";
 import { getConferenceResult2026 } from "@/lib/conference-results-2026";
+import { getConferenceChampionshipUrl } from "@/data/conference-championship-urls";
 import { LeaderboardBadges } from "@/components/leaderboard-badges";
 
 type EventState =
@@ -57,6 +58,15 @@ export default function UpcomingEvent({
     [gender, championship.conference]
   );
 
+  // Conference's own championship landing page (e.g.
+  // https://www.secsports.com/championships/womens-golf). Used to link the
+  // championship title — NOT championship.sourceUrl, which points at the
+  // course/venue. Falls back to plain text when no URL is recorded.
+  const conferenceUrl = useMemo(
+    () => getConferenceChampionshipUrl(gender, championship.conference),
+    [gender, championship.conference]
+  );
+
   const pill =
     state?.kind === "live"
       ? {
@@ -103,9 +113,9 @@ export default function UpcomingEvent({
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <div className="text-[13px] font-medium text-foreground leading-tight">
-            {championship.sourceUrl ? (
+            {conferenceUrl ? (
               <a
-                href={championship.sourceUrl}
+                href={conferenceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-0.5 hover:text-primary transition-colors underline-offset-2 hover:underline"
