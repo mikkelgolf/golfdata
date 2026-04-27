@@ -215,6 +215,30 @@ const SCHOOL_COORDS: Record<string, { lat: number; lng: number }> = {
   "Florida A&M": { lat: 30.4239, lng: -84.2876 },            // Tallahassee, FL
   "Fairfield": { lat: 41.1412, lng: -73.2637 },              // Fairfield, CT
   "New Haven": { lat: 41.2707, lng: -72.9470 },              // West Haven, CT
+  // ---- Atlantic 10 women's coords. Clippd ships Dayton at Akron's lat/lng
+  // ---- and Duquesne / Saint Josephs at 0,0 with empty conference; the
+  // ---- override pair (here + CONFERENCE_OVERRIDES below) makes the daily
+  // ---- refresh emit correct campus + conference for these three.
+  "Dayton": { lat: 39.7404, lng: -84.1827 },                 // Dayton, OH
+  "Duquesne": { lat: 40.4359, lng: -79.9930 },               // Pittsburgh, PA
+  "Saint Josephs": { lat: 40.0072, lng: -75.2451 },          // Philadelphia, PA
+};
+
+// ---------------------------------------------------------------------------
+// Conference overrides — applied AFTER abbreviateConf(t.conference). Use this
+// when Clippd's `conference` field is blank or wrong for a given team. Keyed
+// by `${gender}:${boardName}` so the men's and women's programs at the same
+// school can diverge.
+//
+// As of 2026-04-27: Clippd lists women's Dayton under MAAC and gives women's
+// Duquesne / Saint Josephs an empty conference. All three are Atlantic 10.
+// Without this override the championships page only shows 3 A10 women's
+// teams (Richmond, Loyola-Chicago, LaSalle) instead of the actual 6.
+// ---------------------------------------------------------------------------
+const CONFERENCE_OVERRIDES: Record<string, string> = {
+  "women:Dayton": "A10",
+  "women:Duquesne": "A10",
+  "women:Saint Josephs": "A10",
 };
 
 // ---------------------------------------------------------------------------
@@ -413,7 +437,8 @@ function generateTsFile(
 
   for (const t of teams) {
     const { wins, losses, ties } = parseWLT(t.winLossTie);
-    const conf = abbreviateConf(t.conference);
+    const overrideKey = `${gender}:${t.boardName}`;
+    const conf = CONFERENCE_OVERRIDES[overrideKey] ?? abbreviateConf(t.conference);
     // Coordinate lookup priority:
     //   1. SCHOOL_COORDS (canonical hardcoded map in this file)
     //   2. Existing non-zero coords already in src/data/rankings-{gender}.ts

@@ -334,6 +334,30 @@ const MANUAL_OVERRIDES = {
   "UIC": { lat: 41.8715, lng: -87.6502 },                       // Chicago, IL     (was hitting Rock Island)
   "Fairfield": { lat: 41.1412, lng: -73.2637 },                 // Fairfield, CT   (campus, current 14-seed)
   "New Haven": { lat: 41.2707, lng: -72.9470 },                 // West Haven, CT  (campus, current 14-seed)
+  // ---- Atlantic 10 women's coords. Clippd ships Dayton at Akron's lat/lng
+  // ---- and Duquesne / Saint Josephs at 0,0 with empty conference; the
+  // ---- override pair (here + CONFERENCE_OVERRIDES below) makes the daily
+  // ---- refresh emit correct campus + conference for these three.
+  "Dayton": { lat: 39.7404, lng: -84.1827 },                    // Dayton, OH
+  "Duquesne": { lat: 40.4359, lng: -79.9930 },                  // Pittsburgh, PA
+  "Saint Josephs": { lat: 40.0072, lng: -75.2451 },             // Philadelphia, PA
+};
+
+// ---------------------------------------------------------------------------
+// Conference overrides — applied AFTER normalizeConference(). Use this when
+// Clippd's `conference` field is blank or wrong for a given team. Keyed by
+// `${gender}:${boardName}` so the men's and women's programs at the same
+// school can diverge.
+//
+// As of 2026-04-27: Clippd lists women's Dayton under MAAC and gives women's
+// Duquesne / Saint Josephs an empty conference. All three are Atlantic 10.
+// Without this override the championships page only shows 3 A10 women's
+// teams (Richmond, Loyola-Chicago, LaSalle) instead of the actual 6.
+// ---------------------------------------------------------------------------
+const CONFERENCE_OVERRIDES = {
+  "women:Dayton": "A10",
+  "women:Duquesne": "A10",
+  "women:Saint Josephs": "A10",
 };
 
 // ---------------------------------------------------------------------------
@@ -601,7 +625,10 @@ function buildTeams(rawTeams, gender, schoolIdx, cityCentroids, diagnostics) {
   const collisions = [];
 
   for (const t of rawTeams) {
-    const conf = normalizeConference(t.conference, gender);
+    const overrideKey = `${gender}:${t.boardName}`;
+    const conf =
+      CONFERENCE_OVERRIDES[overrideKey] ??
+      normalizeConference(t.conference, gender);
     if (conf === null) {
       droppedNoConf.push({ team: t.boardName, schoolName: t.schoolName, conference: t.conference });
       continue;

@@ -2,7 +2,7 @@
 // Source: data/clippd/rankings-2026-04-27.json
 // Run `npm run build:teams` to refresh after a Clippd pull.
 //
-// 284 D1 women's golf teams. Coordinates resolved via:
+// 286 D1 women's golf teams. Coordinates resolved via:
 //   1) campus-precise SCHOOL_COORDS lookup
 //   2) Supabase schools city/state + Census Geocoding centroid
 //   3) {lat:0,lng:0} for unresolved (rendered in cards but not on map)
@@ -236,7 +236,7 @@ export const allTeamsWomen2026: TeamData[] = [
   { rank: 222, team: "Idaho State", conference: "BSKY", events: 10, wins: 20, losses: 69, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 42.8620287, lng: -112.450627 },
   { rank: 223, team: "Lamar", conference: "SOUTHLAND", events: 10, wins: 30, losses: 61, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 30.0829344, lng: -94.0984277 },
   { rank: 224, team: "Eastern Washington", conference: "BSKY", events: 10, wins: 20, losses: 95, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 47.4892246, lng: -117.579304 },
-  { rank: 225, team: "Dayton", conference: "MAAC", events: 11, wins: 44, losses: 60, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.1513108, lng: -81.3578047 },
+  { rank: 225, team: "Dayton", conference: "A10", events: 11, wins: 44, losses: 60, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.7404, lng: -84.1827 },
   { rank: 226, team: "East Texas A&M", conference: "SOUTHLAND", events: 10, wins: 20, losses: 85, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 33.2436492, lng: -95.9026927 },
   { rank: 227, team: "Gardner-Webb", conference: "BSOUTH", events: 12, wins: 33, losses: 95, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 35.254292, lng: -81.6670407 },
   { rank: 228, team: "Evansville", conference: "MVC", events: 11, wins: 39, losses: 50, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 37.970495, lng: -87.5715641 },
@@ -250,6 +250,7 @@ export const allTeamsWomen2026: TeamData[] = [
   { rank: 236, team: "Presbyterian", conference: "BSOUTH", events: 10, wins: 20, losses: 79, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.4726277, lng: -81.8806562 },
   { rank: 237, team: "Montana", conference: "BSKY", events: 10, wins: 14, losses: 97, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 46.8597, lng: -113.9852 },
   { rank: 238, team: "Green Bay", conference: "HORIZON", events: 8, wins: 19, losses: 39, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 43.0386475, lng: -87.9090751 },
+  { rank: 239, team: "Duquesne", conference: "A10", events: 8, wins: 39, losses: 50, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.4359, lng: -79.993 },
   { rank: 240, team: "UIC", conference: "MVC", events: 10, wins: 36, losses: 43, ties: 1, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.8715, lng: -87.6502 },
   { rank: 241, team: "Monmouth", conference: "CAA", events: 10, wins: 54, losses: 69, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.2779, lng: -74.0038 },
   { rank: 242, team: "Northern Kentucky", conference: "HORIZON", events: 9, wins: 24, losses: 54, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.0330902, lng: -84.4521512 },
@@ -293,6 +294,7 @@ export const allTeamsWomen2026: TeamData[] = [
   { rank: 280, team: "Delaware State", conference: "NEC", events: 8, wins: 6, losses: 73, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.158168, lng: -75.5243682 },
   { rank: 281, team: "Niagara", conference: "MAAC", events: 8, wins: 7, losses: 64, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 43.1366031, lng: -79.0348892 },
   { rank: 282, team: "Iona", conference: "MAAC", events: 10, wins: 6, losses: 96, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.9115386, lng: -73.7826363 },
+  { rank: 283, team: "Saint Josephs", conference: "A10", events: 10, wins: 12, losses: 64, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.0072, lng: -75.2451 },
   { rank: 284, team: "LaSalle", conference: "A10", events: 11, wins: 2, losses: 86, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.0418, lng: -75.1522 },
   { rank: 285, team: "Western Illinois", conference: "OVC", events: 7, wins: 1, losses: 41, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 40.4588934, lng: -90.6713939 },
   { rank: 100000, team: "Arkansas Pine Bluff", conference: "SWAC", events: 1, wins: 0, losses: 3, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 34.2228884, lng: -92.004334 },
