@@ -2484,16 +2484,34 @@ function ScurveSnakeTable({
         <thead>
           <tr>
             <th className="w-6 p-0" aria-hidden="true" />
-            {orderedRegionals.map((r) => (
-              <th
-                key={r.id}
-                scope="col"
-                className="text-center text-[9px] font-medium uppercase tracking-wide py-1 px-1 text-muted-foreground whitespace-nowrap"
-                style={{ borderBottom: `2px solid ${r.color}` }}
-              >
-                {r.name.replace(/ Regional$/, "")}
-              </th>
-            ))}
+            {orderedRegionals.map((r) => {
+              const label = r.name.replace(/ Regional$/, "");
+              return (
+                <th
+                  key={r.id}
+                  scope="col"
+                  className="text-center text-[11px] font-semibold uppercase tracking-wide py-1 px-1 whitespace-nowrap"
+                  style={{ borderBottom: `2px solid ${r.color}`, color: r.color }}
+                >
+                  {r.clippdUrl ? (
+                    <a
+                      href={r.clippdUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 hover:opacity-80"
+                      title={`Live scoreboard for ${r.name} on Clippd`}
+                      aria-label={`Live scoreboard for ${r.name} on Clippd`}
+                      style={{ color: r.color }}
+                    >
+                      {label}
+                      <ExternalLink className="h-3 w-3 opacity-70" />
+                    </a>
+                  ) : (
+                    label
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
