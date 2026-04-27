@@ -21,6 +21,7 @@ export const regionalsWomen2026: Regional[] = [
     lat: 37.4275,
     lng: -122.1697,
     color: "#5fb7b0",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243262",
   },
   {
     id: 2,
@@ -30,6 +31,7 @@ export const regionalsWomen2026: Regional[] = [
     lat: 35.9049,
     lng: -79.0469,
     color: "#7ba8d3",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243257",
   },
   {
     id: 3,
@@ -39,6 +41,7 @@ export const regionalsWomen2026: Regional[] = [
     lat: 31.5497,
     lng: -97.1143,
     color: "#92c785",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243265",
   },
   {
     id: 4,
@@ -48,6 +51,7 @@ export const regionalsWomen2026: Regional[] = [
     lat: 42.2808,
     lng: -83.7430,
     color: "#d6b173",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243256",
   },
   {
     id: 5,
@@ -57,6 +61,7 @@ export const regionalsWomen2026: Regional[] = [
     lat: 30.4418,
     lng: -84.2985,
     color: "#d68a8a",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243263",
   },
   {
     id: 6,
@@ -66,5 +71,6 @@ export const regionalsWomen2026: Regional[] = [
     lat: 38.2226,
     lng: -85.3554,
     color: "#a895c9",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243260",
   },
 ];

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
-import { Plane } from "lucide-react";
+import { Plane, ExternalLink } from "lucide-react";
 import { geoAlbersUsa, geoPath } from "d3-geo";
 import { feature, mesh } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
@@ -399,6 +399,19 @@ export default function USMap({ assignments, regionals, regionalSeeds }: USMapPr
                 <Plane className="inline h-3 w-3 mr-0.5" />
                 {activeTotalDist.toLocaleString()} mi total travel
               </p>
+              {activeRegionalData.clippdUrl && (
+                <a
+                  href={activeRegionalData.clippdUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-text-tertiary hover:text-foreground underline decoration-dotted underline-offset-2"
+                  title="Live scoreboard on Clippd"
+                  aria-label={`Live scoreboard for ${activeRegionalData.name} on Clippd`}
+                >
+                  Live scoreboard
+                  <ExternalLink className="h-3 w-3 opacity-70" />
+                </a>
+              )}
             </div>
             <div className="mt-2 space-y-0.5 max-h-[200px] overflow-y-auto">
               {activeTeams
@@ -474,7 +487,7 @@ export default function USMap({ assignments, regionals, regionalSeeds }: USMapPr
                   Close
                 </button>
               </div>
-              <div className="mt-1.5 flex items-center gap-3">
+              <div className="mt-1.5 flex items-center gap-3 flex-wrap">
                 <p className="text-[11px] text-muted-foreground">
                   {activeTeams.length} teams
                 </p>
@@ -482,6 +495,19 @@ export default function USMap({ assignments, regionals, regionalSeeds }: USMapPr
                   <Plane className="inline h-3 w-3 mr-0.5" />
                   {activeTotalDist.toLocaleString()} mi
                 </p>
+                {activeRegionalData.clippdUrl && (
+                  <a
+                    href={activeRegionalData.clippdUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] text-text-tertiary hover:text-foreground underline decoration-dotted underline-offset-2"
+                    title="Live scoreboard on Clippd"
+                    aria-label={`Live scoreboard for ${activeRegionalData.name} on Clippd`}
+                  >
+                    Live scoreboard
+                    <ExternalLink className="h-3 w-3 opacity-70" />
+                  </a>
+                )}
               </div>
               <div className="mt-2 max-h-[28vh] overflow-y-auto pr-1 -mr-1">
                 {activeTeams

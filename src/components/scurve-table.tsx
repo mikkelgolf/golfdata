@@ -19,6 +19,7 @@ import {
   Info,
   MapPin,
   Plane,
+  ExternalLink,
 } from "lucide-react";
 import HeadToHeadMatrix from "@/components/head-to-head-matrix";
 import { ConferenceBadge } from "@/components/conference-badge";
@@ -1732,6 +1733,20 @@ function RegionalGroup({
                 {avgDistance.toLocaleString()} mi avg
               </span>
               <span>{teams.length} teams</span>
+              {regional.clippdUrl && (
+                <a
+                  href={regional.clippdUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 text-text-tertiary hover:text-foreground underline decoration-dotted underline-offset-2"
+                  title="Live scoreboard on Clippd"
+                  aria-label={`Live scoreboard for ${regional.name} on Clippd`}
+                >
+                  Live scoreboard
+                  <ExternalLink className="h-3 w-3 opacity-70" />
+                </a>
+              )}
             </div>
           </div>
         </td>
@@ -2133,32 +2148,48 @@ function MobileRegionalGroup({
   return (
     <div className="mt-1 first:mt-0">
       {/* Regional header - single line, bottom border only, no background */}
-      <button
-        onClick={() => setExpanded(!expanded)}
+      <div
         className="w-full flex items-center gap-1.5 px-0.5 py-1 border-b border-border/40"
         style={{ borderLeftColor: regional.color, borderLeftWidth: "2px", paddingLeft: "4px" }}
       >
-        <ChevronRight
-          className={cn(
-            "h-5 w-5 shrink-0 transition-transform",
-            expanded && "rotate-90"
-          )}
-          style={{ color: regional.color }}
-        />
-        <span
-          className="font-bold text-[22px] leading-none"
-          style={{ color: regional.color }}
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex-1 min-w-0 flex items-center gap-1.5 text-left"
         >
-          {regionalSeed !== undefined && (
-            <span className="font-mono tabular-nums text-muted-foreground mr-1">#{regionalSeed}</span>
-          )}
-          {regional.name.replace(/ Regional$/, "")}
-        </span>
-        <span className="text-[16px] text-muted-foreground">{regional.city}</span>
-        <span className="ml-auto text-[16px] text-muted-foreground tabular-nums shrink-0">
-          {teams.length}t
-        </span>
-      </button>
+          <ChevronRight
+            className={cn(
+              "h-5 w-5 shrink-0 transition-transform",
+              expanded && "rotate-90"
+            )}
+            style={{ color: regional.color }}
+          />
+          <span
+            className="font-bold text-[22px] leading-none"
+            style={{ color: regional.color }}
+          >
+            {regionalSeed !== undefined && (
+              <span className="font-mono tabular-nums text-muted-foreground mr-1">#{regionalSeed}</span>
+            )}
+            {regional.name.replace(/ Regional$/, "")}
+          </span>
+          <span className="text-[16px] text-muted-foreground">{regional.city}</span>
+          <span className="ml-auto text-[16px] text-muted-foreground tabular-nums shrink-0">
+            {teams.length}t
+          </span>
+        </button>
+        {regional.clippdUrl && (
+          <a
+            href={regional.clippdUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 px-1.5 py-1 text-text-tertiary hover:text-foreground"
+            title="Live scoreboard on Clippd"
+            aria-label={`Live scoreboard for ${regional.name} on Clippd`}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        )}
+      </div>
 
       {/* Expanded detail — full content, same shape as desktop. */}
       {expanded && (
@@ -2308,15 +2339,33 @@ function MobileVisualScurve({
           >
             {/* Regional header — fixed height + single-line truncate so every
                 box stays the same size and team rows align across the 2-col grid */}
-            <div
-              className="h-[18px] px-1.5 flex items-center gap-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60 overflow-hidden"
-              style={{ borderBottom: `1px solid ${r.color}30` }}
-            >
-              {regionalSeeds.get(r.id) !== undefined && (
-                <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
-              )}
-              <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
-            </div>
+            {r.clippdUrl ? (
+              <a
+                href={r.clippdUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-[22px] px-1.5 flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wide bg-card/60 overflow-hidden hover:opacity-80"
+                style={{ borderBottom: `1px solid ${r.color}30`, color: r.color }}
+                title={`Live scoreboard for ${r.name} on Clippd`}
+                aria-label={`Live scoreboard for ${r.name} on Clippd`}
+              >
+                {regionalSeeds.get(r.id) !== undefined && (
+                  <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
+                )}
+                <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
+                <ExternalLink className="ml-auto h-2.5 w-2.5 shrink-0 opacity-70" />
+              </a>
+            ) : (
+              <div
+                className="h-[22px] px-1.5 flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wide bg-card/60 overflow-hidden"
+                style={{ borderBottom: `1px solid ${r.color}30`, color: r.color }}
+              >
+                {regionalSeeds.get(r.id) !== undefined && (
+                  <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
+                )}
+                <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
+              </div>
+            )}
 
             {/* Column headers */}
             <div
@@ -2453,16 +2502,34 @@ function ScurveSnakeTable({
         <thead>
           <tr>
             <th className="w-6 p-0" aria-hidden="true" />
-            {orderedRegionals.map((r) => (
-              <th
-                key={r.id}
-                scope="col"
-                className="text-center text-[9px] font-medium uppercase tracking-wide py-1 px-1 text-muted-foreground whitespace-nowrap"
-                style={{ borderBottom: `2px solid ${r.color}` }}
-              >
-                {r.name.replace(/ Regional$/, "")}
-              </th>
-            ))}
+            {orderedRegionals.map((r) => {
+              const label = r.name.replace(/ Regional$/, "");
+              return (
+                <th
+                  key={r.id}
+                  scope="col"
+                  className="text-center text-[11px] font-semibold uppercase tracking-wide py-1 px-1 whitespace-nowrap"
+                  style={{ borderBottom: `2px solid ${r.color}`, color: r.color }}
+                >
+                  {r.clippdUrl ? (
+                    <a
+                      href={r.clippdUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 hover:opacity-80"
+                      title={`Live scoreboard for ${r.name} on Clippd`}
+                      aria-label={`Live scoreboard for ${r.name} on Clippd`}
+                      style={{ color: r.color }}
+                    >
+                      {label}
+                      <ExternalLink className="h-3 w-3 opacity-70" />
+                    </a>
+                  ) : (
+                    label
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
@@ -2575,18 +2642,44 @@ function VisualScurve({
         <div className="min-w-[700px]">
           {/* Regional headers */}
           <div className="grid gap-0.5 mb-0.5" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
-            {orderedRegionals.map((r) => (
-              <div
-                key={r.id}
-                className="text-center text-[10px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
-                style={{ borderBottom: `2px solid ${r.color}` }}
-              >
-                {regionalSeeds.get(r.id) !== undefined && (
-                  <span className="mr-1 font-mono tabular-nums">#{regionalSeeds.get(r.id)}</span>
-                )}
-                {r.name.replace(/ Regional$/, "")}
-              </div>
-            ))}
+            {orderedRegionals.map((r) => {
+              const label = r.name.replace(/ Regional$/, "");
+              const seed = regionalSeeds.get(r.id);
+              const inner = (
+                <>
+                  {seed !== undefined && (
+                    <span className="mr-1 font-mono tabular-nums">#{seed}</span>
+                  )}
+                  {label}
+                  {r.clippdUrl && (
+                    <ExternalLink className="inline h-3 w-3 ml-1 opacity-70 align-[-1px]" />
+                  )}
+                </>
+              );
+              return (
+                <div
+                  key={r.id}
+                  className="text-center text-[12px] font-semibold uppercase tracking-wide py-1"
+                  style={{ borderBottom: `2px solid ${r.color}`, color: r.color }}
+                >
+                  {r.clippdUrl ? (
+                    <a
+                      href={r.clippdUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center hover:opacity-80"
+                      title={`Live scoreboard for ${r.name} on Clippd`}
+                      aria-label={`Live scoreboard for ${r.name} on Clippd`}
+                      style={{ color: r.color }}
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    inner
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Tiers */}
