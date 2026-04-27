@@ -135,6 +135,55 @@ EOF
 # Dispatcher picks it up next idle cycle (~10 min) automatically.
 ```
 
+## Resume after Claude Max monthly quota hit
+
+Claude Max has a monthly usage cap. When hit, the CLI returns
+`api_error_status: 429` with `result: "You've hit your org's monthly
+usage limit"`. Every LLM-bound phase (extract_event_bridges,
+llm_extract, synthesize_insights) will fail until the window resets.
+
+**Why we stop the LaunchAgent on this:** `extract-event-bridges.py`
+marks URLs as processed in its checkpoint file *even when the LLM call
+fails*. That's by design — prevents an infinite loop on a poison batch.
+But under a sustained 429, every batch fails and every URL gets marked
+"processed" with no actual bridges extracted. The checkpoint silently
+fills up with empty entries and the team's bridge data is lost.
+
+**To pause cleanly when the quota hits:**
+
+```bash
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.local.CGDDeepDiveM2.plist
+# Reset any in-flight running/failed jobs to pending so they re-claim cleanly later
+~/venv/bin/python -c "
+import json, glob
+for p in glob.glob('/Users/mikkelbjerchandresen/projects/collegegolfdata/data/team-deep-dive/jobs/*.json'):
+    d = json.load(open(p))
+    if d.get('status') in ('running', 'failed'):
+        d['status'] = 'pending'; d.pop('error', None)
+        json.dump(d, open(p,'w'), indent=2)
+"
+```
+
+**Verify quota is back before restarting:**
+
+```bash
+echo "say hi" | claude --print --output-format json --no-color
+```
+
+If the JSON has `"is_error":false` and a real `result` string, you're
+good. If it has `"api_error_status":429`, wait longer.
+
+**Restart:**
+
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.local.CGDDeepDiveM2.plist
+```
+
+Bridge extractors resume from their `bridges-checkpoint-<slug>.json`
+(skipping URLs already processed cleanly under the prior quota).
+news_archive resumes via the on-disk evidence-file existence check.
+Teams already on synthesize_insights or later just retry that one phase.
+
 ## Reset a failed job
 
 ```bash
