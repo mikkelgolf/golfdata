@@ -157,6 +157,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#4a5a8a",
     sourceUrl:
       "https://patriotleague.org/news/2025/8/14/general-patriot-league-announces-2025-26-championship-schedule.aspx",
+    winner: "Navy",
   },
   {
     id: 7,
@@ -174,6 +175,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#8a324a",
     notes: "Combined men's & women's championship at Baltusrol Lower.",
     sourceUrl: "https://ivyleague.com/feature/26GOLFChampionships",
+    winner: "Harvard",
   },
   {
     id: 8,
@@ -192,6 +194,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "Same venue as NEC women's championship; verified via NEC member athletic releases.",
     sourceUrl: "https://scoreboard.clippd.com/tournaments/244168",
+    winner: "Howard",
   },
   {
     id: 9,
