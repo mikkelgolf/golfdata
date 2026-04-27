@@ -455,6 +455,7 @@ export const championshipsWomen2026: Championship[] = [
     notes:
       "Includes Oregon State and Washington State as Pac-12 affiliates; OSU defending champion.",
     sourceUrl: "https://wccsports.com/tournaments/?id=142",
+    winner: "Pepperdine",
   },
   {
     id: 24,
