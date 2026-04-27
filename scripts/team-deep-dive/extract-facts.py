@@ -95,10 +95,10 @@ def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
     ap.add_argument("slug")
     ap.add_argument("gender", choices=["men", "women", "m", "w"])
-    ap.add_argument("--batch-size", type=int, default=20, help="Articles per LLM call")
+    ap.add_argument("--batch-size", type=int, default=8, help="Articles per LLM call")
     ap.add_argument("--max-batches", type=int, default=None, help="Cap total batches")
     ap.add_argument("--resume", action="store_true", help="Skip articles already in extracted-facts")
-    ap.add_argument("--max-chars-per-article", type=int, default=4000)
+    ap.add_argument("--max-chars-per-article", type=int, default=3000)
     return ap.parse_args()
 
 
@@ -211,7 +211,7 @@ def main() -> None:
         evidence = [e for e in evidence if e.get("url") not in seen_urls]
         print(f"[extract] resume: skipping {len(seen_urls)} already-processed URLs; {len(evidence)} remaining")
 
-    cli = ClaudeCLI(timeout_seconds=600, retries=3)
+    cli = ClaudeCLI(timeout_seconds=1200, retries=3)
     total_facts = 0
     n_batches = (len(evidence) + args.batch_size - 1) // args.batch_size
     if args.max_batches:
