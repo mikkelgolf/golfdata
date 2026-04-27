@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ExternalLink } from "lucide-react";
+
 import type { Championship } from "@/data/championships-men-2026";
+import type { Gender } from "@/data/records-types";
+import { getConferenceResult2026 } from "@/lib/conference-results-2026";
+import { getConferenceChampionshipUrl } from "@/data/conference-championship-urls";
+import { LeaderboardBadges } from "@/components/leaderboard-badges";
 
 type EventState =
   | { kind: "upcoming"; daysUntil: number }
@@ -29,8 +35,10 @@ function eventStateOn(
 
 export default function UpcomingEvent({
   championship,
+  gender,
 }: {
   championship: Championship;
+  gender: Gender;
 }) {
   const [state, setState] = useState<EventState | null>(null);
 
@@ -41,6 +49,23 @@ export default function UpcomingEvent({
     }, 60_000);
     return () => clearInterval(interval);
   }, [championship.startDate, championship.endDate]);
+
+  // Per-conference championship result — same source the chronological tab
+  // uses to render the Stroke Play / Match Play leaderboard badges. May be
+  // undefined for conferences whose 2026 leg URLs aren't published yet.
+  const conferenceResult = useMemo(
+    () => getConferenceResult2026(gender, championship.conference),
+    [gender, championship.conference]
+  );
+
+  // Conference's own championship landing page (e.g.
+  // https://www.secsports.com/championships/womens-golf). Used to link the
+  // championship title — NOT championship.sourceUrl, which points at the
+  // course/venue. Falls back to plain text when no URL is recorded.
+  const conferenceUrl = useMemo(
+    () => getConferenceChampionshipUrl(gender, championship.conference),
+    [gender, championship.conference]
+  );
 
   const pill =
     state?.kind === "live"
@@ -80,12 +105,28 @@ export default function UpcomingEvent({
       ? "rounded-lg border border-border/60 bg-card/40 ring-1 ring-red-500/40 px-3 py-2 transition-colors"
       : "rounded-lg border border-border/60 bg-card/40 px-3 py-2 transition-colors hover:border-border-medium";
 
+  const hasBadges =
+    !!conferenceResult?.strokeplayUrl || !!conferenceResult?.matchplayUrl;
+
   return (
     <div className={liveShell}>
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <div className="text-[13px] font-medium text-foreground leading-tight">
-            {championship.name}
+            {conferenceUrl ? (
+              <a
+                href={conferenceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 hover:text-primary transition-colors underline-offset-2 hover:underline"
+                title="View on conference site"
+              >
+                {championship.name}
+                <ExternalLink className="h-3 w-3 opacity-60" />
+              </a>
+            ) : (
+              championship.name
+            )}
           </div>
           <div className="mt-0.5 text-[11px] text-text-tertiary">
             {championship.courseName} · {championship.city}
@@ -104,6 +145,11 @@ export default function UpcomingEvent({
           </span>
         )}
       </div>
+      {hasBadges && (
+        <div className="mt-1.5">
+          <LeaderboardBadges result={conferenceResult} size="md" />
+        </div>
+      )}
       {championship.winner && (
         <div className="mt-1 text-[11px] text-primary">
           Winner: {championship.winner}
