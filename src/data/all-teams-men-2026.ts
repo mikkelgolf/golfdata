@@ -208,7 +208,7 @@ export const allTeamsMen2026: TeamData[] = [
   { rank: 194, team: "DePaul", conference: "BE", events: 10, wins: 60, losses: 75, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.7571701, lng: -88.3147539 },
   { rank: 195, team: "South Dakota", conference: "SUMMIT", events: 9, wins: 70, losses: 47, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 35.0457219, lng: -85.3094883 },
   { rank: 196, team: "Loyola-Chicago", conference: "A10", events: 10, wins: 55, losses: 69, ties: 5, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.8755616, lng: -87.6244212 },
-  { rank: 197, team: "Dayton", conference: "A10", events: 10, wins: 61, losses: 67, ties: 5, eligible: false, isAutoQualifier: false, aqConference: null, lat: 41.1513108, lng: -81.3578047 },
+  { rank: 197, team: "Dayton", conference: "A10", events: 10, wins: 61, losses: 67, ties: 5, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.7404, lng: -84.1827 },
   { rank: 198, team: "Kansas City", conference: "SUMMIT", events: 9, wins: 48, losses: 56, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 39.100105, lng: -94.5781416 },
   { rank: 199, team: "Samford", conference: "SOCON", events: 10, wins: 67, losses: 56, ties: 1, eligible: true, isAutoQualifier: false, aqConference: null, lat: 33.5206824, lng: -86.8024326 },
   { rank: 200, team: "Fairfield", conference: "MAAC", events: 9, wins: 79, losses: 27, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 41.1412, lng: -73.2637 },
