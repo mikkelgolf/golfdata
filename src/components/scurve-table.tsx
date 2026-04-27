@@ -19,6 +19,7 @@ import {
   Info,
   MapPin,
   Plane,
+  ExternalLink,
 } from "lucide-react";
 import HeadToHeadMatrix from "@/components/head-to-head-matrix";
 import { ConferenceBadge } from "@/components/conference-badge";
@@ -1732,6 +1733,20 @@ function RegionalGroup({
                 {avgDistance.toLocaleString()} mi avg
               </span>
               <span>{teams.length} teams</span>
+              {regional.clippdUrl && (
+                <a
+                  href={regional.clippdUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1 text-text-tertiary hover:text-foreground underline decoration-dotted underline-offset-2"
+                  title="Live scoreboard on Clippd"
+                  aria-label={`Live scoreboard for ${regional.name} on Clippd`}
+                >
+                  Live scoreboard
+                  <ExternalLink className="h-3 w-3 opacity-70" />
+                </a>
+              )}
             </div>
           </div>
         </td>
@@ -2133,32 +2148,48 @@ function MobileRegionalGroup({
   return (
     <div className="mt-1 first:mt-0">
       {/* Regional header - single line, bottom border only, no background */}
-      <button
-        onClick={() => setExpanded(!expanded)}
+      <div
         className="w-full flex items-center gap-1.5 px-0.5 py-1 border-b border-border/40"
         style={{ borderLeftColor: regional.color, borderLeftWidth: "2px", paddingLeft: "4px" }}
       >
-        <ChevronRight
-          className={cn(
-            "h-5 w-5 shrink-0 transition-transform",
-            expanded && "rotate-90"
-          )}
-          style={{ color: regional.color }}
-        />
-        <span
-          className="font-bold text-[22px] leading-none"
-          style={{ color: regional.color }}
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex-1 min-w-0 flex items-center gap-1.5 text-left"
         >
-          {regionalSeed !== undefined && (
-            <span className="font-mono tabular-nums text-muted-foreground mr-1">#{regionalSeed}</span>
-          )}
-          {regional.name.replace(/ Regional$/, "")}
-        </span>
-        <span className="text-[16px] text-muted-foreground">{regional.city}</span>
-        <span className="ml-auto text-[16px] text-muted-foreground tabular-nums shrink-0">
-          {teams.length}t
-        </span>
-      </button>
+          <ChevronRight
+            className={cn(
+              "h-5 w-5 shrink-0 transition-transform",
+              expanded && "rotate-90"
+            )}
+            style={{ color: regional.color }}
+          />
+          <span
+            className="font-bold text-[22px] leading-none"
+            style={{ color: regional.color }}
+          >
+            {regionalSeed !== undefined && (
+              <span className="font-mono tabular-nums text-muted-foreground mr-1">#{regionalSeed}</span>
+            )}
+            {regional.name.replace(/ Regional$/, "")}
+          </span>
+          <span className="text-[16px] text-muted-foreground">{regional.city}</span>
+          <span className="ml-auto text-[16px] text-muted-foreground tabular-nums shrink-0">
+            {teams.length}t
+          </span>
+        </button>
+        {regional.clippdUrl && (
+          <a
+            href={regional.clippdUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 px-1.5 py-1 text-text-tertiary hover:text-foreground"
+            title="Live scoreboard on Clippd"
+            aria-label={`Live scoreboard for ${regional.name} on Clippd`}
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        )}
+      </div>
 
       {/* Expanded detail — full content, same shape as desktop. */}
       {expanded && (

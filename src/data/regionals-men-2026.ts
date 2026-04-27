@@ -17,6 +17,8 @@ export interface Regional {
   lng: number;
   color: string;
   preview?: RegionalPreview;
+  /** Public Clippd live-scoreboard URL once posted, otherwise omit. */
+  clippdUrl?: string;
 }
 
 // Pastel regional palette tuned for clearer hue separation on dark bg
@@ -31,6 +33,7 @@ export const regionalsMen2026: Regional[] = [
     lat: 44.5646,
     lng: -123.2620,
     color: "#5fb7b0",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243261",
   },
   {
     id: 2,
@@ -40,6 +43,7 @@ export const regionalsMen2026: Regional[] = [
     lat: 33.9519,
     lng: -83.3576,
     color: "#d68a8a",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243264",
   },
   {
     id: 3,
@@ -49,6 +53,7 @@ export const regionalsMen2026: Regional[] = [
     lat: 32.4367,
     lng: -111.2257,
     color: "#d6b173",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243255",
   },
   {
     id: 4,
@@ -58,6 +63,7 @@ export const regionalsMen2026: Regional[] = [
     lat: 36.0048,
     lng: -80.4218,
     color: "#a895c9",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243254",
   },
   {
     id: 5,
@@ -67,6 +73,7 @@ export const regionalsMen2026: Regional[] = [
     lat: 30.6744,
     lng: -96.3698,
     color: "#7ba8d3",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243259",
   },
   {
     id: 6,
@@ -76,5 +83,6 @@ export const regionalsMen2026: Regional[] = [
     lat: 40.0067,
     lng: -83.0305,
     color: "#92c785",
+    clippdUrl: "https://scoreboard.clippd.com/tournaments/243258",
   },
 ];
