@@ -31,6 +31,11 @@ import { recordsWomen } from "@/data/records-women";
 
 import { StatCard } from "@/components/stat-card";
 import { ConferenceBadge } from "@/components/conference-badge";
+import { TeamHonoursIcons } from "@/components/team-honours-icons";
+import {
+  getConferenceResult2026,
+  getTeamHonours,
+} from "@/lib/conference-results-2026";
 import RegionalTimeline from "@/components/team-page/regional-timeline";
 import RegionalPerformance from "@/components/team-page/regional-performance";
 import NationalTimeline, {
@@ -234,6 +239,13 @@ export default function TeamPage({ params }: { params: Params }) {
   const ranking = findRanking(team, gender);
   const stats = computeTeamStats(team, gender);
   const championship = record ? findChampionship(record.conference, gender) : null;
+  // 2026 conference championship honours for this team (gold medal /
+  // gold trophy / silver runner-up trophy). Same source the chronological
+  // tab uses, so the icons next to the conference badge match exactly.
+  const conferenceResult2026 = record
+    ? getConferenceResult2026(gender, record.conference)
+    : undefined;
+  const honours2026 = getTeamHonours(conferenceResult2026, team);
   const label = gender === "men" ? "Men's" : "Women's";
 
   const allTeams = gender === "men" ? rankingsMen : rankingsWomen;
@@ -530,7 +542,15 @@ export default function TeamPage({ params }: { params: Params }) {
                 )}
               </div>
               <div className="flex items-center gap-2 text-[10px] flex-wrap w-full sm:w-auto sm:ml-auto">
-                {record?.conference && <ConferenceBadge conference={record.conference} size="sm" />}
+                {record?.conference && (
+                  <span className="inline-flex items-center">
+                    <ConferenceBadge conference={record.conference} size="sm" />
+                    <TeamHonoursIcons
+                      honours={honours2026}
+                      conferenceFull={championship?.conferenceFull ?? record.conference}
+                    />
+                  </span>
+                )}
                 <span className="text-text-tertiary uppercase tracking-wider">
                   {label} · 2025-26
                 </span>
