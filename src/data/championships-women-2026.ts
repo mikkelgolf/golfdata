@@ -400,6 +400,7 @@ export const championshipsWomen2026: Championship[] = [
     notes:
       "First year at Oakmont CC (Glendale, CA — not the famous Pittsburgh Oakmont). 43rd Big Ten Championship.",
     sourceUrl: "https://bigten.org/wgolf/article/59345/",
+    winner: "Southern California",
   },
   {
     id: 21,
