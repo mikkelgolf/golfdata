@@ -619,13 +619,13 @@ export default function TeamPage({ params }: { params: Params }) {
           </div>
         )}
 
-        {/* Upcoming conference event */}
+        {/* 2026 conference championship */}
         {championship && (
           <section className="mt-5">
             <h2 className="text-[10px] font-semibold uppercase tracking-wider text-text-tertiary mb-1.5">
-              Upcoming conference championship
+              2026 conference championship
             </h2>
-            <UpcomingEvent championship={championship} />
+            <UpcomingEvent championship={championship} gender={gender} />
           </section>
         )}
 
