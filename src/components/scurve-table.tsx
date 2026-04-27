@@ -2339,15 +2339,33 @@ function MobileVisualScurve({
           >
             {/* Regional header — fixed height + single-line truncate so every
                 box stays the same size and team rows align across the 2-col grid */}
-            <div
-              className="h-[18px] px-1.5 flex items-center gap-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60 overflow-hidden"
-              style={{ borderBottom: `1px solid ${r.color}30` }}
-            >
-              {regionalSeeds.get(r.id) !== undefined && (
-                <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
-              )}
-              <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
-            </div>
+            {r.clippdUrl ? (
+              <a
+                href={r.clippdUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-[22px] px-1.5 flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wide bg-card/60 overflow-hidden hover:opacity-80"
+                style={{ borderBottom: `1px solid ${r.color}30`, color: r.color }}
+                title={`Live scoreboard for ${r.name} on Clippd`}
+                aria-label={`Live scoreboard for ${r.name} on Clippd`}
+              >
+                {regionalSeeds.get(r.id) !== undefined && (
+                  <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
+                )}
+                <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
+                <ExternalLink className="ml-auto h-2.5 w-2.5 shrink-0 opacity-70" />
+              </a>
+            ) : (
+              <div
+                className="h-[22px] px-1.5 flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wide bg-card/60 overflow-hidden"
+                style={{ borderBottom: `1px solid ${r.color}30`, color: r.color }}
+              >
+                {regionalSeeds.get(r.id) !== undefined && (
+                  <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
+                )}
+                <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
+              </div>
+            )}
 
             {/* Column headers */}
             <div
@@ -2624,18 +2642,44 @@ function VisualScurve({
         <div className="min-w-[700px]">
           {/* Regional headers */}
           <div className="grid gap-0.5 mb-0.5" style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}>
-            {orderedRegionals.map((r) => (
-              <div
-                key={r.id}
-                className="text-center text-[10px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
-                style={{ borderBottom: `2px solid ${r.color}` }}
-              >
-                {regionalSeeds.get(r.id) !== undefined && (
-                  <span className="mr-1 font-mono tabular-nums">#{regionalSeeds.get(r.id)}</span>
-                )}
-                {r.name.replace(/ Regional$/, "")}
-              </div>
-            ))}
+            {orderedRegionals.map((r) => {
+              const label = r.name.replace(/ Regional$/, "");
+              const seed = regionalSeeds.get(r.id);
+              const inner = (
+                <>
+                  {seed !== undefined && (
+                    <span className="mr-1 font-mono tabular-nums">#{seed}</span>
+                  )}
+                  {label}
+                  {r.clippdUrl && (
+                    <ExternalLink className="inline h-3 w-3 ml-1 opacity-70 align-[-1px]" />
+                  )}
+                </>
+              );
+              return (
+                <div
+                  key={r.id}
+                  className="text-center text-[12px] font-semibold uppercase tracking-wide py-1"
+                  style={{ borderBottom: `2px solid ${r.color}`, color: r.color }}
+                >
+                  {r.clippdUrl ? (
+                    <a
+                      href={r.clippdUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center hover:opacity-80"
+                      title={`Live scoreboard for ${r.name} on Clippd`}
+                      aria-label={`Live scoreboard for ${r.name} on Clippd`}
+                      style={{ color: r.color }}
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    inner
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Tiers */}
