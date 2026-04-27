@@ -115,8 +115,11 @@ def main() -> None:
     args = parse_args()
     gaps_path = OUT_DIR / f"coverage-gaps-{args.slug}.json"
     if not gaps_path.exists():
-        print(f"[backfill] no coverage-gaps file for {args.slug}; run validate-coverage.py first")
-        sys.exit(1)
+        # No coverage-gaps file means coverage_validation either skipped
+        # (no expected-schedule for this slug) or hasn't run yet. Either
+        # way there's nothing to backfill — exit clean.
+        print(f"[backfill] no coverage-gaps file for {args.slug}; skipping golfstat_backfill")
+        sys.exit(0)
     gaps = json.loads(gaps_path.read_text())
     missing = [g for g in gaps if g["gap_severity"] in ("missing", "partial")]
     if args.max:

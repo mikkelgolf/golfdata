@@ -195,8 +195,10 @@ def build_batch_prompt(slug: str, school_display: str, batch: list[dict], max_ch
 def main() -> None:
     args = parse_args()
     if args.slug not in SCHOOL_DISPLAY:
-        print(f"WARN: no display name for {args.slug}", file=sys.stderr)
-        sys.exit(1)
+        # Bridge-seeded jobs may target unregistered slugs; skip clean
+        # so downstream phases (record_book_rebuild) still run.
+        print(f"WARN: no display name for {args.slug}; skipping llm_extract", file=sys.stderr)
+        sys.exit(0)
     school_display = SCHOOL_DISPLAY[args.slug]
 
     evidence = load_evidence(args.slug)
