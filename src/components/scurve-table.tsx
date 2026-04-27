@@ -2303,15 +2303,16 @@ function MobileVisualScurve({
             className="rounded border border-border/60 overflow-hidden"
             style={{ borderLeftColor: r.color, borderLeftWidth: "2px" }}
           >
-            {/* Regional header */}
+            {/* Regional header — fixed height + single-line truncate so every
+                box stays the same size and team rows align across the 2-col grid */}
             <div
-              className="px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60"
+              className="h-[18px] px-1.5 flex items-center gap-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60 overflow-hidden"
               style={{ borderBottom: `1px solid ${r.color}30` }}
             >
               {regionalSeeds.get(r.id) !== undefined && (
-                <span className="mr-0.5">#{regionalSeeds.get(r.id)}</span>
+                <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
               )}
-              {r.name.replace(/ Regional$/, "")}
+              <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
             </div>
 
             {/* Column headers */}
