@@ -157,6 +157,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#4a5a8a",
     sourceUrl:
       "https://patriotleague.org/news/2025/8/14/general-patriot-league-announces-2025-26-championship-schedule.aspx",
+    winner: "Navy",
   },
   {
     id: 7,
