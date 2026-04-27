@@ -194,6 +194,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "Same venue as NEC women's championship; verified via NEC member athletic releases.",
     sourceUrl: "https://scoreboard.clippd.com/tournaments/244168",
+    winner: "Howard",
   },
   {
     id: 9,
