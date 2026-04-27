@@ -1987,7 +1987,7 @@
         "name": "Ivy League Men's Golf Championship",
         "endDate": "2026-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/240112",
-        "winner": null
+        "winner": "Harvard"
       },
       "matchplay": null
     },
@@ -2057,7 +2057,7 @@
         "name": "2026 NEC Men's Golf Championships",
         "endDate": "2026-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/244171",
-        "winner": null
+        "winner": "Howard"
       },
       "matchplay": null
     },
@@ -2091,7 +2091,7 @@
         "name": "2026 Patriot League Men's Golf Championship",
         "endDate": "2026-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242447",
-        "winner": null
+        "winner": "Navy"
       },
       "matchplay": null
     },
@@ -2301,7 +2301,7 @@
         "name": "Big Ten Women's Golf Championships",
         "endDate": "2026-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239793",
-        "winner": null
+        "winner": "Southern California"
       },
       "matchplay": null
     },
@@ -2435,7 +2435,7 @@
         "name": "Ivy League Women's Golf Championship",
         "endDate": "2026-04-26",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/240113",
-        "winner": null
+        "winner": "Columbia"
       },
       "matchplay": null
     },
