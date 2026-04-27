@@ -472,6 +472,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#7390a0",
     notes: "Longtime host (Las Colinas / El Campeon courses).",
     sourceUrl: "https://horizonleague.org/tournaments/?id=112",
+    winner: "Oakland",
   },
   {
     id: 25,
