@@ -1815,14 +1815,16 @@
         "name": "2026 ACC Men's Golf Championship - Stroke Play",
         "endDate": "2026-04-25",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239965",
-        "winner": null
+        "winner": "Stanford"
       },
       "matchplay": {
         "tournamentId": "239966",
         "name": "2026 ACC Men's Golf Championship - Match Play",
         "endDate": "2026-04-27",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239966",
-        "winner": null
+        "winner": "Virginia",
+        "runnerUp": "Stanford",
+        "finalScore": "3-2"
       }
     },
     {

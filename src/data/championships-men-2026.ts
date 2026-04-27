@@ -140,6 +140,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#4a73c2",
     notes: "Stroke play Thu-Sat then match play quarters/semis Sun, final Mon.",
     sourceUrl: "https://theacc.com/feature/mens-golf-championship",
+    winner: "Virginia",
   },
   {
     id: 6,
