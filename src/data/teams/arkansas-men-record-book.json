@@ -1,0 +1,4141 @@
+{
+  "school_slug": "arkansas",
+  "gender": "m",
+  "built_at": "2026-04-26T21:52:56.147Z",
+  "coverage_note": "Sources merged: BigQuery granular_master (≈2010+) 67 players; school media-guide PDF arkansas-record-book-2526.pdf (back to 1934); Wikipedia infobox (Arkansas Razorbacks men's golf). Empty sections still need their respective source modules — see /team-deep-dive SKILL.md. | M2 web reconciliation merged.",
+  "sections": {
+    "career_individual_records": {
+      "career_wins": [
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 2,
+          "years": "2011–2014"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 2,
+          "years": "2026"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 1,
+          "years": "2019–2022"
+        },
+        {
+          "player_id": "455a54cac4a0",
+          "player_name": "Emma Lavy",
+          "value": 1,
+          "years": "2011–2014"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 1,
+          "years": "2026"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 1,
+          "years": "2013–2016"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 1,
+          "years": "2026"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 1,
+          "years": "2019–2024"
+        },
+        {
+          "player_id": "f739f033ede3",
+          "player_name": "Maria Fassi",
+          "value": 1,
+          "years": "2017–2020"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": 1,
+          "years": "2017–2022"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 1,
+          "years": "2022–2024"
+        },
+        {
+          "player_id": "3dd64bc1aa12",
+          "player_name": "Samantha Marks",
+          "value": 1,
+          "years": "2016"
+        }
+      ],
+      "career_top5s": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 4,
+          "years": "2011–2014"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 4,
+          "years": "2026"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 4,
+          "years": "2013–2016"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 4,
+          "years": "2026"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 4,
+          "years": "2022–2024"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 3,
+          "years": "2019–2022"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 3,
+          "years": "2026"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 3,
+          "years": "2019–2024"
+        },
+        {
+          "player_id": "635fe1f79dff",
+          "player_name": "Luis Garza",
+          "value": 3,
+          "years": "2017–2021"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": 3,
+          "years": "2019–2022"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": 2,
+          "years": "2026"
+        },
+        {
+          "player_id": "f9b6e5bca5e9",
+          "player_name": "Dylan Kim",
+          "value": 2,
+          "years": "2018–2020"
+        },
+        {
+          "player_id": "3481b854223d",
+          "player_name": "Kelli Shean",
+          "value": 2,
+          "years": "2011–2012"
+        },
+        {
+          "player_id": "5da146b303a1",
+          "player_name": "Manuel Lozada",
+          "value": 2,
+          "years": "2021–2026"
+        }
+      ],
+      "career_top10s": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 8,
+          "years": "2026"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 7,
+          "years": "2026"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 5,
+          "years": "2011–2014"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 5,
+          "years": "2013–2016"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "635fe1f79dff",
+          "player_name": "Luis Garza",
+          "value": 5,
+          "years": "2017–2021"
+        },
+        {
+          "player_id": "4a79821de27e",
+          "player_name": "Thomas Curry",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 4,
+          "years": "2026"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 4,
+          "years": "2019–2024"
+        },
+        {
+          "player_id": "5da146b303a1",
+          "player_name": "Manuel Lozada",
+          "value": 4,
+          "years": "2021–2026"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": 4,
+          "years": "2017–2022"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 4,
+          "years": "2022–2024"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": 4,
+          "years": "2019–2022"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 3,
+          "years": "2019–2022"
+        }
+      ],
+      "career_events": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 26,
+          "years": "2026"
+        },
+        {
+          "player_id": "4a79821de27e",
+          "player_name": "Thomas Curry",
+          "value": 26,
+          "years": "2026"
+        },
+        {
+          "player_id": "5da146b303a1",
+          "player_name": "Manuel Lozada",
+          "value": 24,
+          "years": "2021–2026"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 20,
+          "years": "2026"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 20,
+          "years": "2026"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 19,
+          "years": "2019–2024"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": 16,
+          "years": "2017–2022"
+        },
+        {
+          "player_id": "d9fa6fd15903",
+          "player_name": "Segundo Pinto",
+          "value": 15,
+          "years": "2021–2024"
+        },
+        {
+          "player_id": "8333ff4e6461",
+          "player_name": "Wil Gibson",
+          "value": 14,
+          "years": "2019–2024"
+        },
+        {
+          "player_id": "326b8cd9200b",
+          "player_name": "William Buhl",
+          "value": 13,
+          "years": "2017–2022"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 12,
+          "years": "2011–2014"
+        },
+        {
+          "player_id": "455a54cac4a0",
+          "player_name": "Emma Lavy",
+          "value": 12,
+          "years": "2011–2014"
+        },
+        {
+          "player_id": "635fe1f79dff",
+          "player_name": "Luis Garza",
+          "value": 12,
+          "years": "2017–2021"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 11,
+          "years": "2026"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 11,
+          "years": "2026"
+        }
+      ],
+      "career_scoring_avg": [
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": -4.5,
+          "years": "2013–2016",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": -3.82,
+          "years": "2026",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": -2.2,
+          "years": "2026",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "987a43231882",
+          "player_name": "Ethan Tracy",
+          "value": -1.4,
+          "years": "2011–2012",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": -1.36,
+          "years": "2022–2024",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": -1.14,
+          "years": "2019–2022",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": -0.42,
+          "years": "2019–2024",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": 0,
+          "years": "2019–2022",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "1f6d09f6a22e",
+          "player_name": "Niilo Maki-Petaja",
+          "value": 0.17,
+          "years": "2026",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "f739f033ede3",
+          "player_name": "Maria Fassi",
+          "value": 0.4,
+          "years": "2017–2020",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": 0.94,
+          "years": "2017–2022",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "99118cd6e12d",
+          "player_name": "Sebastian Cappelen",
+          "value": 1,
+          "years": "2011–2015",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 1.5,
+          "years": "2026",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": 2.25,
+          "years": "2026",
+          "detail": "min 5 events"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 2.25,
+          "years": "2026",
+          "detail": "min 5 events"
+        }
+      ],
+      "career_low_to_par": [
+        {
+          "player_id": "f1f37b06e8a6",
+          "player_name": "Olivia Lavy",
+          "value": -64,
+          "years": "2016",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": -59,
+          "years": "2013–2016",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "3dd64bc1aa12",
+          "player_name": "Samantha Marks",
+          "value": -51,
+          "years": "2016",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": -17,
+          "years": "2019–2022",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": -13,
+          "years": "2026",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "d9fa6fd15903",
+          "player_name": "Segundo Pinto",
+          "value": -13,
+          "years": "2021–2024",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": -12,
+          "years": "2026",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": -11,
+          "years": "2011–2014",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": -10,
+          "years": "2026",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": -10,
+          "years": "2026",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": -10,
+          "years": "2017–2022",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": -10,
+          "years": "2022–2024",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "eaa65a3a7e08",
+          "player_name": "Christian Castillo",
+          "value": -9,
+          "years": "2023–2026",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": -9,
+          "years": "2019–2022",
+          "detail": "lowest single-event to par"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": -8,
+          "years": "2026",
+          "detail": "lowest single-event to par"
+        }
+      ]
+    },
+    "single_season_records": {
+      "single_season_wins": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 2,
+          "years": "2026"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 1,
+          "years": "2022"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 1,
+          "years": "2012"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 1,
+          "years": "2014"
+        },
+        {
+          "player_id": "455a54cac4a0",
+          "player_name": "Emma Lavy",
+          "value": 1,
+          "years": "2013"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 1,
+          "years": "2026"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 1,
+          "years": "2013"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 1,
+          "years": "2026"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 1,
+          "years": "2023"
+        },
+        {
+          "player_id": "f739f033ede3",
+          "player_name": "Maria Fassi",
+          "value": 1,
+          "years": "2019"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": 1,
+          "years": "2022"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 1,
+          "years": "2023"
+        },
+        {
+          "player_id": "3dd64bc1aa12",
+          "player_name": "Samantha Marks",
+          "value": 1,
+          "years": "2016"
+        }
+      ],
+      "single_season_top5s": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 4,
+          "years": "2026"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 4,
+          "years": "2026"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 4,
+          "years": "2023"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 3,
+          "years": "2026"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 2,
+          "years": "2022"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": 2,
+          "years": "2026"
+        },
+        {
+          "player_id": "f9b6e5bca5e9",
+          "player_name": "Dylan Kim",
+          "value": 2,
+          "years": "2019"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 2,
+          "years": "2013"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 2,
+          "years": "2013"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 2,
+          "years": "2023"
+        },
+        {
+          "player_id": "3481b854223d",
+          "player_name": "Kelli Shean",
+          "value": 2,
+          "years": "2012"
+        },
+        {
+          "player_id": "4a79821de27e",
+          "player_name": "Thomas Curry",
+          "value": 2,
+          "years": "2026"
+        },
+        {
+          "player_id": "326b8cd9200b",
+          "player_name": "William Buhl",
+          "value": 1,
+          "years": "2021"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 1,
+          "years": "2021"
+        }
+      ],
+      "single_season_top10s": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 8,
+          "years": "2026"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 7,
+          "years": "2026"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "4a79821de27e",
+          "player_name": "Thomas Curry",
+          "value": 5,
+          "years": "2026"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 4,
+          "years": "2026"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 4,
+          "years": "2023"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 2,
+          "years": "2022"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": 2,
+          "years": "2026"
+        },
+        {
+          "player_id": "f9b6e5bca5e9",
+          "player_name": "Dylan Kim",
+          "value": 2,
+          "years": "2019"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 2,
+          "years": "2013"
+        },
+        {
+          "player_id": "455a54cac4a0",
+          "player_name": "Emma Lavy",
+          "value": 2,
+          "years": "2013"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 2,
+          "years": "2013"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 2,
+          "years": "2014"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 2,
+          "years": "2021"
+        }
+      ],
+      "single_season_events": [
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 26,
+          "years": "2026"
+        },
+        {
+          "player_id": "4a79821de27e",
+          "player_name": "Thomas Curry",
+          "value": 26,
+          "years": "2026"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 20,
+          "years": "2026"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 20,
+          "years": "2026"
+        },
+        {
+          "player_id": "5da146b303a1",
+          "player_name": "Manuel Lozada",
+          "value": 12,
+          "years": "2026"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 11,
+          "years": "2026"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 11,
+          "years": "2026"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": 8,
+          "years": "2026"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 8,
+          "years": "2023"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 7,
+          "years": "2023"
+        },
+        {
+          "player_id": "d9fa6fd15903",
+          "player_name": "Segundo Pinto",
+          "value": 7,
+          "years": "2023"
+        },
+        {
+          "player_id": "8333ff4e6461",
+          "player_name": "Wil Gibson",
+          "value": 7,
+          "years": "2023"
+        },
+        {
+          "player_id": "c0b3e77fef73",
+          "player_name": "Mark Stockdale",
+          "value": 6,
+          "years": "2026"
+        },
+        {
+          "player_id": "c1e1e5a9d1f9",
+          "player_name": "Matthis Lefevre",
+          "value": 6,
+          "years": "2026"
+        },
+        {
+          "player_id": "1f6d09f6a22e",
+          "player_name": "Niilo Maki-Petaja",
+          "value": 6,
+          "years": "2026"
+        }
+      ],
+      "single_season_scoring_avg": [
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": -3.82,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": -2.2,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": -1.25,
+          "years": "2023",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": -0.71,
+          "years": "2023",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "987a43231882",
+          "player_name": "Ethan Tracy",
+          "value": -0.5,
+          "years": "2012",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "99118cd6e12d",
+          "player_name": "Sebastian Cappelen",
+          "value": -0.5,
+          "years": "2012",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "1f6d09f6a22e",
+          "player_name": "Niilo Maki-Petaja",
+          "value": 0.17,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 1.5,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 2,
+          "years": "2013",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "eaa65a3a7e08",
+          "player_name": "Christian Castillo",
+          "value": 2.2,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "91aa69f3344b",
+          "player_name": "Cam Smith",
+          "value": 2.25,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 2.25,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 2.35,
+          "years": "2026",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "455a54cac4a0",
+          "player_name": "Emma Lavy",
+          "value": 3,
+          "years": "2013",
+          "detail": "min 4 events"
+        },
+        {
+          "player_id": "4a79821de27e",
+          "player_name": "Thomas Curry",
+          "value": 3.08,
+          "years": "2026",
+          "detail": "min 4 events"
+        }
+      ]
+    },
+    "tournament_records": {
+      "low_18_hole": [
+        {
+          "player_id": "f1f37b06e8a6",
+          "player_name": "Olivia Lavy",
+          "value": 7,
+          "years": "2016",
+          "detail": "Rhodes Mirimichi SpringClassic (-64), R1"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 12,
+          "years": "2016",
+          "detail": "Rhodes Mirimichi SpringClassic (-59), R1"
+        },
+        {
+          "player_id": "3dd64bc1aa12",
+          "player_name": "Samantha Marks",
+          "value": 20,
+          "years": "2016",
+          "detail": "Rhodes Mirimichi SpringClassic (-51), R1"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 63,
+          "years": "2022",
+          "detail": "Wake Forest Invitational (-9), R1"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 63,
+          "years": "2012",
+          "detail": "The Aggie Invitational (-9), R1"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 64,
+          "years": "2022",
+          "detail": "Wake Forest Invitational (-8), R2"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 64,
+          "years": "2022",
+          "detail": "Wake Forest Invitational (-8), R3"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": 64,
+          "years": "2026",
+          "detail": "Valspar Collegiate Invitational (-7), R3"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 64,
+          "years": "2022",
+          "detail": "NCAA Fall Preview-D3 (-8), R2"
+        },
+        {
+          "player_id": "99118cd6e12d",
+          "player_name": "Sebastian Cappelen",
+          "value": 64,
+          "years": "2012",
+          "detail": "Schenkel Invitational (-8), R2"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": 64,
+          "years": "2019",
+          "detail": "Sun Belt Conference - Match (-8), R1"
+        },
+        {
+          "player_id": "2743b526f2df",
+          "player_name": "Alvaro Ortiz",
+          "value": 65,
+          "years": "2018",
+          "detail": "2018 Southeastern Collegiate (-5), R3"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 65,
+          "years": "2026",
+          "detail": "Valspar Collegiate Invitational (-6), R1"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 65,
+          "years": "2026",
+          "detail": "Seminole Intercollegiate (-7), R2"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": 65,
+          "years": "2026",
+          "detail": "Jackson T. Stephens Cup - Stroke Play (-7), R3"
+        }
+      ],
+      "low_36_hole": [
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": -17,
+          "years": "2022",
+          "detail": "Wake Forest Invitational (36-hole)"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": -13,
+          "years": "2012",
+          "detail": "The Aggie Invitational (36-hole)"
+        },
+        {
+          "player_id": "d9fa6fd15903",
+          "player_name": "Segundo Pinto",
+          "value": -12,
+          "years": "2024",
+          "detail": "ODAC Men's Championship (36-hole)"
+        },
+        {
+          "player_id": "99118cd6e12d",
+          "player_name": "Sebastian Cappelen",
+          "value": -11,
+          "years": "2012",
+          "detail": "Schenkel Invitational (36-hole)"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": -10,
+          "years": "2018",
+          "detail": "NWC Fall Classic (36-hole)"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": -10,
+          "years": "2019",
+          "detail": "Sun Belt Conference - Match (36-hole)"
+        },
+        {
+          "player_id": "8333ff4e6461",
+          "player_name": "Wil Gibson",
+          "value": -10,
+          "years": "2024",
+          "detail": "ODAC Men's Championship (36-hole)"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": -9,
+          "years": "2026",
+          "detail": "SEC Stroke Play hosted by Jerry Pate (36-hole)"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": -9,
+          "years": "2023",
+          "detail": "Oregon Duck Invitational (36-hole)"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": -8,
+          "years": "2026",
+          "detail": "Palmas del Mar Collegiate (36-hole)"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": -8,
+          "years": "2026",
+          "detail": "Blessings Collegiate Invitational (36-hole)"
+        },
+        {
+          "player_id": "635fe1f79dff",
+          "player_name": "Luis Garza",
+          "value": -8,
+          "years": "2021",
+          "detail": "Grove City MBA Invitational (36-hole)"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": -8,
+          "years": "2021",
+          "detail": "Wind River Invitational (36-hole)"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": -7,
+          "years": "2021",
+          "detail": "Skidmore vs. RPI (36-hole)"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": -7,
+          "years": "2026",
+          "detail": "Palmas del Mar Collegiate (36-hole)"
+        }
+      ],
+      "low_54_hole": [
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": -25,
+          "years": "2022",
+          "detail": "Wake Forest Invitational (54-hole)"
+        },
+        {
+          "player_id": "99118cd6e12d",
+          "player_name": "Sebastian Cappelen",
+          "value": -17,
+          "years": "2012",
+          "detail": "Schenkel Invitational (54-hole)"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": -15,
+          "years": "2023",
+          "detail": "Oregon Duck Invitational (54-hole)"
+        },
+        {
+          "player_id": "073bb3579534",
+          "player_name": "Gerardo Gomez",
+          "value": -13,
+          "years": "2026",
+          "detail": "Valspar Collegiate Invitational (54-hole)"
+        },
+        {
+          "player_id": "d9fa6fd15903",
+          "player_name": "Segundo Pinto",
+          "value": -13,
+          "years": "2024",
+          "detail": "ODAC Men's Championship (54-hole)"
+        },
+        {
+          "player_id": "4fc6a90f898a",
+          "player_name": "Jacob Skov Olesen",
+          "value": -12,
+          "years": "2026",
+          "detail": "Jackson T. Stephens Cup - Stroke Play (54-hole)"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": -11,
+          "years": "2012",
+          "detail": "The Aggie Invitational (54-hole)"
+        },
+        {
+          "player_id": "5da146b303a1",
+          "player_name": "Manuel Lozada",
+          "value": -11,
+          "years": "2023",
+          "detail": "Vincennes Invitational (54-hole)"
+        },
+        {
+          "player_id": "8333ff4e6461",
+          "player_name": "Wil Gibson",
+          "value": -11,
+          "years": "2024",
+          "detail": "ODAC Men's Championship (54-hole)"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": -10,
+          "years": "2026",
+          "detail": "Palmas del Mar Collegiate (54-hole)"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": -10,
+          "years": "2026",
+          "detail": "Jackson T. Stephens Cup - Stroke Play (54-hole)"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": -10,
+          "years": "2018",
+          "detail": "NWC Fall Classic (54-hole)"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": -10,
+          "years": "2024",
+          "detail": "ODAC Men's Championship (54-hole)"
+        },
+        {
+          "player_id": "f91e3e5f7517",
+          "player_name": "Tyson Reeder",
+          "value": -10,
+          "years": "2021",
+          "detail": "Wind River Invitational (54-hole)"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": -9,
+          "years": "2021",
+          "detail": "Skidmore vs. RPI (54-hole)"
+        }
+      ],
+      "low_72_hole": [
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 2,
+          "years": "2023",
+          "detail": "Central Plains Invitational (72-hole)"
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 6,
+          "years": "2023",
+          "detail": "Wolfpack Intercollegiate (72-hole)"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 8,
+          "years": "2023",
+          "detail": "Central Plains Invitational (72-hole)"
+        },
+        {
+          "player_id": "d9fa6fd15903",
+          "player_name": "Segundo Pinto",
+          "value": 8,
+          "years": "2023",
+          "detail": "Central Plains Invitational (72-hole)"
+        },
+        {
+          "player_id": "8333ff4e6461",
+          "player_name": "Wil Gibson",
+          "value": 32,
+          "years": "2023",
+          "detail": "Central Plains Invitational (72-hole)"
+        }
+      ],
+      "best_finish": [
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 1,
+          "years": "2022",
+          "detail": "Wake Forest Invitational"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 1,
+          "years": "2012",
+          "detail": "The Aggie Invitational"
+        },
+        {
+          "player_id": "2d628f4c812b",
+          "player_name": "Emily Tubert",
+          "value": 1,
+          "years": "2014",
+          "detail": "Windon Memorial"
+        },
+        {
+          "player_id": "455a54cac4a0",
+          "player_name": "Emma Lavy",
+          "value": 1,
+          "years": "2013",
+          "detail": "Big Ten Championship"
+        },
+        {
+          "player_id": "48f83d062327",
+          "player_name": "Erich Fortlage",
+          "value": 1,
+          "years": "2026",
+          "detail": "Palmas del Mar Collegiate"
+        },
+        {
+          "player_id": "afaf9407a4eb",
+          "player_name": "Gaby Lopez",
+          "value": 1,
+          "years": "2013",
+          "detail": "NCAA D2 Men's Midwest/Cen Reg"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 1,
+          "years": "2026",
+          "detail": "Columbia Spring Invitational"
+        },
+        {
+          "player_id": "674adc1d3991",
+          "player_name": "John Daly II",
+          "value": 1,
+          "years": "2026",
+          "detail": "Blessings Collegiate Invitational"
+        },
+        {
+          "player_id": "2c0b48ec59d3",
+          "player_name": "John Driscoll",
+          "value": 1,
+          "years": "2026",
+          "detail": "Blessings Collegiate Invitational"
+        },
+        {
+          "player_id": "d51da4996e7b",
+          "player_name": "Julian Perico",
+          "value": 1,
+          "years": "2023",
+          "detail": "GNAC Championship"
+        },
+        {
+          "player_id": "f739f033ede3",
+          "player_name": "Maria Fassi",
+          "value": 1,
+          "years": "2019",
+          "detail": "The Arch Cup"
+        },
+        {
+          "player_id": "aa8438906117",
+          "player_name": "Mason Overstreet",
+          "value": 1,
+          "years": "2022",
+          "detail": "Bank of Tennessee Intercolleg."
+        },
+        {
+          "player_id": "42b13321af2b",
+          "player_name": "Mateo Fernandez De Oliveira",
+          "value": 1,
+          "years": "2023",
+          "detail": "NCAA DII Atlantic/East Reg. Pr"
+        },
+        {
+          "player_id": "3dd64bc1aa12",
+          "player_name": "Samantha Marks",
+          "value": 1,
+          "years": "2016",
+          "detail": "Rhodes Mirimichi SpringClassic"
+        },
+        {
+          "player_id": "9a97687a2078",
+          "player_name": "Brooke Matthews",
+          "value": 2,
+          "years": "2021",
+          "detail": "Skidmore vs. RPI"
+        }
+      ]
+    },
+    "all_time_roster": [
+      {
+        "player_id": "00ba154b7227",
+        "player_name": "Alana Uriell",
+        "events_total": 3,
+        "seasons": [
+          2017,
+          2018,
+          2019
+        ],
+        "first_season": 2017,
+        "last_season": 2019,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "d462b5c7b1d3",
+        "player_name": "Alec Tahy",
+        "events_total": 0,
+        "seasons": [],
+        "first_season": null,
+        "last_season": null,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "2743b526f2df",
+        "player_name": "Alvaro Ortiz",
+        "events_total": 7,
+        "seasons": [
+          2016,
+          2017,
+          2018
+        ],
+        "first_season": 2016,
+        "last_season": 2018,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "3adfc119d94b",
+        "player_name": "Blake Biddle",
+        "events_total": 1,
+        "seasons": [
+          2014
+        ],
+        "first_season": 2014,
+        "last_season": 2014,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "9a97687a2078",
+        "player_name": "Brooke Matthews",
+        "events_total": 7,
+        "seasons": [
+          2019,
+          2020,
+          2021,
+          2022
+        ],
+        "first_season": 2019,
+        "last_season": 2022,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "46630e10a123",
+        "player_name": "Bud Still",
+        "events_total": 0,
+        "seasons": [],
+        "first_season": null,
+        "last_season": null,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "91aa69f3344b",
+        "player_name": "Cam Smith",
+        "events_total": 8,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "8dd4f813ce30",
+        "player_name": "Cara Gorlei",
+        "events_total": 3,
+        "seasons": [
+          2017,
+          2018,
+          2019
+        ],
+        "first_season": 2017,
+        "last_season": 2019,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "abcca5b996f9",
+        "player_name": "Charles Kim",
+        "events_total": 4,
+        "seasons": [
+          2016,
+          2017,
+          2018
+        ],
+        "first_season": 2016,
+        "last_season": 2018,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "eaa65a3a7e08",
+        "player_name": "Christian Castillo",
+        "events_total": 9,
+        "seasons": [
+          2023,
+          2024,
+          2026
+        ],
+        "first_season": 2023,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "066b129f6554",
+        "player_name": "Corinna Rees",
+        "events_total": 4,
+        "seasons": [
+          2011,
+          2012
+        ],
+        "first_season": 2011,
+        "last_season": 2012,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "ff8596f86b40",
+        "player_name": "Craig Lile",
+        "events_total": 0,
+        "seasons": [],
+        "first_season": null,
+        "last_season": null,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "b9b2b14ab426",
+        "player_name": "David Lingmerth",
+        "events_total": 0,
+        "seasons": [],
+        "first_season": null,
+        "last_season": null,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "71cffe8b3d14",
+        "player_name": "Denver Davis",
+        "events_total": 3,
+        "seasons": [
+          2021,
+          2022,
+          2023
+        ],
+        "first_season": 2021,
+        "last_season": 2023,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "f9b6e5bca5e9",
+        "player_name": "Dylan Kim",
+        "events_total": 4,
+        "seasons": [
+          2018,
+          2019,
+          2020
+        ],
+        "first_season": 2018,
+        "last_season": 2020,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "93d21a5c4aca",
+        "player_name": "Dylan Naidoo",
+        "events_total": 5,
+        "seasons": [
+          2017,
+          2018
+        ],
+        "first_season": 2017,
+        "last_season": 2018,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "df28c47db5c9",
+        "player_name": "Emily Podzielinski",
+        "events_total": 1,
+        "seasons": [
+          2013
+        ],
+        "first_season": 2013,
+        "last_season": 2013,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "2d628f4c812b",
+        "player_name": "Emily Tubert",
+        "events_total": 12,
+        "seasons": [
+          2011,
+          2012,
+          2013,
+          2014
+        ],
+        "first_season": 2011,
+        "last_season": 2014,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "455a54cac4a0",
+        "player_name": "Emma Lavy",
+        "events_total": 12,
+        "seasons": [
+          2011,
+          2012,
+          2013,
+          2014
+        ],
+        "first_season": 2011,
+        "last_season": 2014,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "3b1671d1e9b4",
+        "player_name": "Enrique Dimayuga",
+        "events_total": 1,
+        "seasons": [
+          2022
+        ],
+        "first_season": 2022,
+        "last_season": 2022,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "48f83d062327",
+        "player_name": "Erich Fortlage",
+        "events_total": 20,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "987a43231882",
+        "player_name": "Ethan Tracy",
+        "events_total": 5,
+        "seasons": [
+          2011,
+          2012
+        ],
+        "first_season": 2011,
+        "last_season": 2012,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "afaf9407a4eb",
+        "player_name": "Gaby Lopez",
+        "events_total": 8,
+        "seasons": [
+          2013,
+          2014,
+          2016
+        ],
+        "first_season": 2013,
+        "last_season": 2016,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "073bb3579534",
+        "player_name": "Gerardo Gomez",
+        "events_total": 20,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "c55553d77668",
+        "player_name": "Gonzalo Rubio",
+        "events_total": 1,
+        "seasons": [
+          2016
+        ],
+        "first_season": 2016,
+        "last_season": 2016,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "7f4ce941a92a",
+        "player_name": "Grace St-Germain",
+        "events_total": 1,
+        "seasons": [
+          2020
+        ],
+        "first_season": 2020,
+        "last_season": 2020,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "038616b8d197",
+        "player_name": "Hally Leadbetter",
+        "events_total": 1,
+        "seasons": [
+          2013
+        ],
+        "first_season": 2013,
+        "last_season": 2013,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "4fc6a90f898a",
+        "player_name": "Jacob Skov Olesen",
+        "events_total": 11,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "674adc1d3991",
+        "player_name": "John Daly II",
+        "events_total": 26,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "2c0b48ec59d3",
+        "player_name": "John Driscoll",
+        "events_total": 11,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "b4c2107fc968",
+        "player_name": "Jordy LaBarbera",
+        "events_total": 2,
+        "seasons": [
+          2016,
+          2019
+        ],
+        "first_season": 2016,
+        "last_season": 2019,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "d51da4996e7b",
+        "player_name": "Julian Perico",
+        "events_total": 19,
+        "seasons": [
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "first_season": 2019,
+        "last_season": 2024,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "45b55384176f",
+        "player_name": "Kaylee Benton",
+        "events_total": 4,
+        "seasons": [
+          2018,
+          2019,
+          2020
+        ],
+        "first_season": 2018,
+        "last_season": 2020,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "3481b854223d",
+        "player_name": "Kelli Shean",
+        "events_total": 4,
+        "seasons": [
+          2011,
+          2012
+        ],
+        "first_season": 2011,
+        "last_season": 2012,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "3b9eb2100c7a",
+        "player_name": "Kevin Vanden Heuvel",
+        "events_total": 1,
+        "seasons": [
+          2012
+        ],
+        "first_season": 2012,
+        "last_season": 2012,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "89edefcf2b86",
+        "player_name": "Kolton Crawford",
+        "events_total": 7,
+        "seasons": [
+          2012,
+          2014,
+          2015,
+          2016
+        ],
+        "first_season": 2012,
+        "last_season": 2016,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "635fe1f79dff",
+        "player_name": "Luis Garza",
+        "events_total": 12,
+        "seasons": [
+          2017,
+          2018,
+          2019,
+          2020,
+          2021
+        ],
+        "first_season": 2017,
+        "last_season": 2021,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "5da146b303a1",
+        "player_name": "Manuel Lozada",
+        "events_total": 24,
+        "seasons": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2026
+        ],
+        "first_season": 2021,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "f739f033ede3",
+        "player_name": "Maria Fassi",
+        "events_total": 5,
+        "seasons": [
+          2017,
+          2018,
+          2019,
+          2020
+        ],
+        "first_season": 2017,
+        "last_season": 2020,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "c0b3e77fef73",
+        "player_name": "Mark Stockdale",
+        "events_total": 6,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "aa8438906117",
+        "player_name": "Mason Overstreet",
+        "events_total": 16,
+        "seasons": [
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022
+        ],
+        "first_season": 2017,
+        "last_season": 2022,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "42b13321af2b",
+        "player_name": "Mateo Fernandez De Oliveira",
+        "events_total": 11,
+        "seasons": [
+          2022,
+          2023,
+          2024
+        ],
+        "first_season": 2022,
+        "last_season": 2024,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "34c78f00d2e4",
+        "player_name": "Mateo Pulcini",
+        "events_total": 2,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "734acf7089ce",
+        "player_name": "Matthew Griggs",
+        "events_total": 3,
+        "seasons": [
+          2023,
+          2024
+        ],
+        "first_season": 2023,
+        "last_season": 2024,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "c1e1e5a9d1f9",
+        "player_name": "Matthis Lefevre",
+        "events_total": 6,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "9dc0cd7446d7",
+        "player_name": "Mauricio Figueroa",
+        "events_total": 2,
+        "seasons": [
+          2021
+        ],
+        "first_season": 2021,
+        "last_season": 2021,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "0a2e51c4f2b5",
+        "player_name": "Meagan Roberts",
+        "events_total": 1,
+        "seasons": [
+          2012
+        ],
+        "first_season": 2012,
+        "last_season": 2012,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "cf83236b198e",
+        "player_name": "Nicolas Echavarria",
+        "events_total": 4,
+        "seasons": [
+          2014,
+          2015,
+          2016
+        ],
+        "first_season": 2014,
+        "last_season": 2016,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "1f6d09f6a22e",
+        "player_name": "Niilo Maki-Petaja",
+        "events_total": 6,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "f1f37b06e8a6",
+        "player_name": "Olivia Lavy",
+        "events_total": 1,
+        "seasons": [
+          2016
+        ],
+        "first_season": 2016,
+        "last_season": 2016,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "ae311a5e40f2",
+        "player_name": "Pablo Garcia Terol",
+        "events_total": 2,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "5189d6ac916d",
+        "player_name": "Regina Plasencia",
+        "events_total": 9,
+        "seasons": [
+          2013,
+          2014,
+          2016,
+          2017
+        ],
+        "first_season": 2013,
+        "last_season": 2017,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "3dd64bc1aa12",
+        "player_name": "Samantha Marks",
+        "events_total": 2,
+        "seasons": [
+          2016
+        ],
+        "first_season": 2016,
+        "last_season": 2016,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "99118cd6e12d",
+        "player_name": "Sebastian Cappelen",
+        "events_total": 8,
+        "seasons": [
+          2011,
+          2012,
+          2014,
+          2015
+        ],
+        "first_season": 2011,
+        "last_season": 2015,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "d9fa6fd15903",
+        "player_name": "Segundo Pinto",
+        "events_total": 15,
+        "seasons": [
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "first_season": 2021,
+        "last_season": 2024,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "5c636f369aae",
+        "player_name": "Summar Roachell",
+        "events_total": 3,
+        "seasons": [
+          2014,
+          2016,
+          2017
+        ],
+        "first_season": 2014,
+        "last_season": 2017,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "20b7a9a4b1c6",
+        "player_name": "Taylor Moore",
+        "events_total": 5,
+        "seasons": [
+          2014,
+          2015,
+          2016,
+          2017
+        ],
+        "first_season": 2014,
+        "last_season": 2017,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "4a79821de27e",
+        "player_name": "Thomas Curry",
+        "events_total": 26,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "5740c17b911d",
+        "player_name": "Thomas Sorensen",
+        "events_total": 3,
+        "seasons": [
+          2012,
+          2015
+        ],
+        "first_season": 2012,
+        "last_season": 2015,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "f91e3e5f7517",
+        "player_name": "Tyson Reeder",
+        "events_total": 10,
+        "seasons": [
+          2019,
+          2020,
+          2021,
+          2022
+        ],
+        "first_season": 2019,
+        "last_season": 2022,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "4429ff589df2",
+        "player_name": "Victoria Vela",
+        "events_total": 10,
+        "seasons": [
+          2011,
+          2012,
+          2013,
+          2014
+        ],
+        "first_season": 2011,
+        "last_season": 2014,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "8333ff4e6461",
+        "player_name": "Wil Gibson",
+        "events_total": 14,
+        "seasons": [
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "first_season": 2019,
+        "last_season": 2024,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "7a6deed33892",
+        "player_name": "Will Meason",
+        "events_total": 0,
+        "seasons": [],
+        "first_season": null,
+        "last_season": null,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "326b8cd9200b",
+        "player_name": "William Buhl",
+        "events_total": 13,
+        "seasons": [
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022
+        ],
+        "first_season": 2017,
+        "last_season": 2022,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "e44a3339b2e7",
+        "player_name": "William Buhl",
+        "events_total": 0,
+        "seasons": [],
+        "first_season": null,
+        "last_season": null,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "e58e7256e028",
+        "player_name": "Willie Gordon",
+        "events_total": 1,
+        "seasons": [
+          2026
+        ],
+        "first_season": 2026,
+        "last_season": 2026,
+        "source": "granular_master"
+      },
+      {
+        "player_id": "66fdc40b67fd",
+        "player_name": "Ximena Gonzalez",
+        "events_total": 3,
+        "seasons": [
+          2019,
+          2020,
+          2022
+        ],
+        "first_season": 2019,
+        "last_season": 2022,
+        "source": "granular_master"
+      }
+    ],
+    "year_by_year_team_results": [
+      {
+        "year": 2026,
+        "events_count": 32,
+        "team_wins": 6,
+        "best_team_finish": 1,
+        "best_team_finish_event": "Watersound Invitational",
+        "individual_winners": [
+          {
+            "player_id": "674adc1d3991",
+            "player_name": "John Daly II",
+            "tournament": "Blessings Collegiate Invitational"
+          },
+          {
+            "player_id": "674adc1d3991",
+            "player_name": "John Daly II",
+            "tournament": "Columbia Spring Invitational"
+          },
+          {
+            "player_id": "48f83d062327",
+            "player_name": "Erich Fortlage",
+            "tournament": "Palmas del Mar Collegiate"
+          },
+          {
+            "player_id": "2c0b48ec59d3",
+            "player_name": "John Driscoll",
+            "tournament": "Blessings Collegiate Invitational"
+          }
+        ]
+      },
+      {
+        "year": 2024,
+        "events_count": 3,
+        "team_wins": 0,
+        "best_team_finish": 2,
+        "best_team_finish_event": "ODAC Men's Championship",
+        "individual_winners": []
+      },
+      {
+        "year": 2023,
+        "events_count": 8,
+        "team_wins": 0,
+        "best_team_finish": 2,
+        "best_team_finish_event": "Oregon Duck Invitational",
+        "individual_winners": [
+          {
+            "player_id": "42b13321af2b",
+            "player_name": "Mateo Fernandez De Oliveira",
+            "tournament": "NCAA DII Atlantic/East Reg. Pr"
+          },
+          {
+            "player_id": "d51da4996e7b",
+            "player_name": "Julian Perico",
+            "tournament": "GNAC Championship"
+          }
+        ]
+      },
+      {
+        "year": 2022,
+        "events_count": 6,
+        "team_wins": 2,
+        "best_team_finish": 1,
+        "best_team_finish_event": "Old Town Collegiate",
+        "individual_winners": [
+          {
+            "player_id": "9a97687a2078",
+            "player_name": "Brooke Matthews",
+            "tournament": "Wake Forest Invitational"
+          },
+          {
+            "player_id": "aa8438906117",
+            "player_name": "Mason Overstreet",
+            "tournament": "Bank of Tennessee Intercolleg."
+          }
+        ]
+      },
+      {
+        "year": 2021,
+        "events_count": 7,
+        "team_wins": 0,
+        "best_team_finish": 3,
+        "best_team_finish_event": "Grove City MBA Invitational",
+        "individual_winners": []
+      },
+      {
+        "year": 2020,
+        "events_count": 4,
+        "team_wins": 1,
+        "best_team_finish": 1,
+        "best_team_finish_event": "2020 Southeastern Collegiate",
+        "individual_winners": []
+      },
+      {
+        "year": 2019,
+        "events_count": 4,
+        "team_wins": 1,
+        "best_team_finish": 1,
+        "best_team_finish_event": "The Arch Cup",
+        "individual_winners": [
+          {
+            "player_id": "f739f033ede3",
+            "player_name": "Maria Fassi",
+            "tournament": "The Arch Cup"
+          }
+        ]
+      },
+      {
+        "year": 2018,
+        "events_count": 4,
+        "team_wins": 1,
+        "best_team_finish": 1,
+        "best_team_finish_event": "F & M Invitational",
+        "individual_winners": []
+      },
+      {
+        "year": 2017,
+        "events_count": 5,
+        "team_wins": 1,
+        "best_team_finish": 1,
+        "best_team_finish_event": "Al Jones Memorial Invit.",
+        "individual_winners": []
+      },
+      {
+        "year": 2016,
+        "events_count": 3,
+        "team_wins": 1,
+        "best_team_finish": 1,
+        "best_team_finish_event": "Rhodes Mirimichi SpringClassic",
+        "individual_winners": [
+          {
+            "player_id": "3dd64bc1aa12",
+            "player_name": "Samantha Marks",
+            "tournament": "Rhodes Mirimichi SpringClassic"
+          }
+        ]
+      },
+      {
+        "year": 2015,
+        "events_count": 1,
+        "team_wins": 0,
+        "best_team_finish": 6,
+        "best_team_finish_event": "GNAC Championships",
+        "individual_winners": []
+      },
+      {
+        "year": 2014,
+        "events_count": 5,
+        "team_wins": 0,
+        "best_team_finish": 2,
+        "best_team_finish_event": "Windon Memorial",
+        "individual_winners": [
+          {
+            "player_id": "2d628f4c812b",
+            "player_name": "Emily Tubert",
+            "tournament": "Windon Memorial"
+          }
+        ]
+      },
+      {
+        "year": 2013,
+        "events_count": 4,
+        "team_wins": 1,
+        "best_team_finish": 1,
+        "best_team_finish_event": "NCAA D2 Men's Midwest/Cen Reg",
+        "individual_winners": [
+          {
+            "player_id": "455a54cac4a0",
+            "player_name": "Emma Lavy",
+            "tournament": "Big Ten Championship"
+          },
+          {
+            "player_id": "afaf9407a4eb",
+            "player_name": "Gaby Lopez",
+            "tournament": "NCAA D2 Men's Midwest/Cen Reg"
+          }
+        ]
+      },
+      {
+        "year": 2012,
+        "events_count": 8,
+        "team_wins": 4,
+        "best_team_finish": 1,
+        "best_team_finish_event": "19th Annual SEKI",
+        "individual_winners": [
+          {
+            "player_id": "2d628f4c812b",
+            "player_name": "Emily Tubert",
+            "tournament": "The Aggie Invitational"
+          }
+        ]
+      },
+      {
+        "year": 2011,
+        "events_count": 2,
+        "team_wins": 0,
+        "best_team_finish": 3,
+        "best_team_finish_event": "Puerto Rico Classic",
+        "individual_winners": []
+      }
+    ],
+    "all_americans_from_ncaa_record_book": [],
+    "all_americans_from_school_pdf": [],
+    "program_appearances": {
+      "ncaa_championships": [
+        {
+          "year": 2023,
+          "position": "MC",
+          "madeCut": false
+        },
+        {
+          "year": 2022,
+          "position": "9",
+          "madeCut": true
+        },
+        {
+          "year": 2021,
+          "position": "T11",
+          "madeCut": true
+        },
+        {
+          "year": 2018,
+          "position": "12",
+          "madeCut": true
+        },
+        {
+          "year": 2016,
+          "position": "12",
+          "madeCut": true
+        },
+        {
+          "year": 2014,
+          "position": "T18",
+          "madeCut": true
+        },
+        {
+          "year": 2013,
+          "position": "10",
+          "madeCut": true
+        },
+        {
+          "year": 2011,
+          "position": "15",
+          "madeCut": true
+        },
+        {
+          "year": 2009,
+          "position": "T3",
+          "madeCut": true
+        },
+        {
+          "year": 2005,
+          "position": "MC",
+          "madeCut": false
+        },
+        {
+          "year": 2003,
+          "position": "MC",
+          "madeCut": false
+        },
+        {
+          "year": 1999,
+          "position": "MC",
+          "madeCut": false
+        },
+        {
+          "year": 1997,
+          "position": "MC",
+          "madeCut": false
+        },
+        {
+          "year": 1996,
+          "position": "11",
+          "madeCut": true
+        },
+        {
+          "year": 1994,
+          "position": "4",
+          "madeCut": true
+        },
+        {
+          "year": 1993,
+          "position": "7",
+          "madeCut": true
+        },
+        {
+          "year": 1992,
+          "position": "8",
+          "madeCut": true
+        },
+        {
+          "year": 1991,
+          "position": "9",
+          "madeCut": true
+        },
+        {
+          "year": 1990,
+          "position": "30",
+          "madeCut": true
+        },
+        {
+          "year": 1988,
+          "position": "12",
+          "madeCut": true
+        },
+        {
+          "year": 1987,
+          "position": "6",
+          "madeCut": true
+        },
+        {
+          "year": 1986,
+          "position": "16",
+          "madeCut": true
+        },
+        {
+          "year": 1985,
+          "position": "6",
+          "madeCut": true
+        },
+        {
+          "year": 1984,
+          "position": "MC",
+          "madeCut": false
+        },
+        {
+          "year": 1971,
+          "position": "MC",
+          "madeCut": false
+        }
+      ],
+      "ncaa_regionals": [
+        {
+          "year": 2025,
+          "position": "7"
+        },
+        {
+          "year": 2024,
+          "position": "10"
+        },
+        {
+          "year": 2023,
+          "position": "2"
+        },
+        {
+          "year": 2022,
+          "position": "4"
+        },
+        {
+          "year": 2021,
+          "position": "2"
+        },
+        {
+          "year": 2019,
+          "position": "6"
+        },
+        {
+          "year": 2018,
+          "position": "4"
+        },
+        {
+          "year": 2017,
+          "position": "8"
+        },
+        {
+          "year": 2016,
+          "position": "2"
+        },
+        {
+          "year": 2015,
+          "position": "11"
+        },
+        {
+          "year": 2014,
+          "position": "2"
+        },
+        {
+          "year": 2013,
+          "position": "2"
+        },
+        {
+          "year": 2012,
+          "position": "6"
+        },
+        {
+          "year": 2011,
+          "position": "5"
+        },
+        {
+          "year": 2010,
+          "position": "8"
+        },
+        {
+          "year": 2009,
+          "position": "2"
+        },
+        {
+          "year": 2008,
+          "position": "19"
+        },
+        {
+          "year": 2005,
+          "position": "6"
+        },
+        {
+          "year": 2004,
+          "position": "17"
+        },
+        {
+          "year": 2003,
+          "position": "7"
+        },
+        {
+          "year": 1999,
+          "position": "8"
+        },
+        {
+          "year": 1998,
+          "position": "13"
+        },
+        {
+          "year": 1997,
+          "position": "4"
+        },
+        {
+          "year": 1996,
+          "position": "3"
+        },
+        {
+          "year": 1995,
+          "position": "13"
+        },
+        {
+          "year": 1994,
+          "position": "5"
+        },
+        {
+          "year": 1993,
+          "position": "6"
+        },
+        {
+          "year": 1992,
+          "position": "2"
+        },
+        {
+          "year": 1991,
+          "position": "1"
+        },
+        {
+          "year": 1990,
+          "position": "10"
+        },
+        {
+          "year": 1989,
+          "position": "6"
+        }
+      ]
+    },
+    "ncaa_regional_appearances_pdf": [],
+    "ncaa_championships_appearances_pdf": [],
+    "southwest_conference_championships": [],
+    "coaching_history": [],
+    "walker_cup_from_school_pdf": [],
+    "walker_cup_from_wikipedia": [],
+    "palmer_cup_from_school_pdf": [],
+    "palmer_cup_from_wikipedia": [],
+    "walker_cup": [],
+    "palmer_cup": [],
+    "masters_appearances": [],
+    "major_amateur_titles": [],
+    "all_conference_selections": {
+      "entries": [],
+      "needs_source": "school media guide PDF / conference archives"
+    },
+    "hall_of_fame": {
+      "entries": [],
+      "needs_source": "school media guide PDF (TT 2022 PDF does not include this section)"
+    },
+    "notable_pros": [],
+    "conference_titles": [],
+    "ncaa_championships_from_wikipedia": [],
+    "ncaa_runner_up_from_wikipedia": [],
+    "ncaa_match_play_berths_from_wikipedia": [],
+    "individual_ncaa_champions": [],
+    "wikipedia_meta": {
+      "title": "Arkansas Razorbacks men's golf",
+      "url": "https://en.wikipedia.org/wiki/Arkansas_Razorbacks_men%27s_golf",
+      "scraped_at": "2026-04-26T12:05:27Z"
+    },
+    "web_extracted_facts": {
+      "individual_tournament_win": [
+        {
+          "source_url": "https://web.archive.org/web/20201031000815/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "Julian Perico",
+          "school": "arkansas",
+          "tournament": "Vanderbilt Legends Collegiate",
+          "year": 2020,
+          "position": "1",
+          "supporting_quote": "Julian Perico eagled the 18th hole...to win the Vanderbilt Legends Collegiate",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000001",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20211201205318/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "Mateo Fernandez de Oliveira",
+          "school": "arkansas",
+          "tournament": "Jackson T. Stephens Cup",
+          "year": 2021,
+          "position": "1",
+          "supporting_quote": "reeled off three pars in a playoff...seal his first career collegiate win",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000004",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20190301153338/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "Julian Perico",
+          "school": "arkansas",
+          "tournament": "Jerry Pate National Intercollegiate",
+          "year": 2018,
+          "position": "1",
+          "score": 197,
+          "supporting_quote": "three-round total of 197, breaking the school's 54-hole scoring record",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000005",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20190901145403/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "William Buhl",
+          "school": "arkansas",
+          "tournament": "Canadian Men's Amateur Championship",
+          "year": 2019,
+          "position": "1",
+          "supporting_quote": "William Buhl...capture the 115th Canadian Men's Amateur Championship",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000009",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20220119020207/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "Mateo Fernandez de Oliveira",
+          "school": "arkansas",
+          "tournament": "South America Amateur Championship",
+          "year": 2022,
+          "position": "1",
+          "supporting_quote": "fired a final round 69...win the 2022 South America Amateur Championship",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000016",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20230203171313/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "Mateo Fernandez de Oliveira",
+          "school": "arkansas",
+          "tournament": "Latin America Amateur Championship",
+          "year": 2023,
+          "position": "1",
+          "score": 265,
+          "supporting_quote": "finishing 23-under par with a score of 265 – to win the 2023 Latin America",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000018",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20201201154422/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_tournament_win",
+          "player_name": "Julian Perico",
+          "school": "arkansas",
+          "year": 2020,
+          "tournament": "Vanderbilt Legends Collegiate",
+          "supporting_quote": "Julian Perico eagled the 18th hole...to win the Vanderbilt Legends Collegiate",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000070",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "signing": [
+        {
+          "source_url": "https://web.archive.org/web/20211201205318/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Kaelen Dulany",
+          "school": "arkansas",
+          "supporting_quote": "signing of Kaelen Dulany and Enrique Dimayuga to National Letters of Intent",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000002",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20211201205318/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Enrique Dimayuga",
+          "school": "arkansas",
+          "supporting_quote": "signing of Kaelen Dulany and Enrique Dimayuga to National Letters of Intent",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000003",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20161201170908/http://www.arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Kyle Robinson",
+          "school": "arkansas",
+          "supporting_quote": "Kyle Robinson and...Landon Ernst have signed National Letters of Intent",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000019",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20161201170908/http://www.arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Landon Ernst",
+          "school": "arkansas",
+          "supporting_quote": "Kyle Robinson and...Landon Ernst have signed National Letters of Intent",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000020",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20251216030719/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Lev Grinberg",
+          "school": "Arkansas",
+          "supporting_quote": "Lev Grinberg, Neo Berg and Guus Lafeber",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000037",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20251216030719/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Neo Berg",
+          "school": "Arkansas",
+          "supporting_quote": "Lev Grinberg, Neo Berg and Guus Lafeber",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000038",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20251216030719/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Guus Lafeber",
+          "school": "Arkansas",
+          "supporting_quote": "Lev Grinberg, Neo Berg and Guus Lafeber",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000039",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20220901152059/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Christian Castillo",
+          "school": "Arkansas",
+          "supporting_quote": "Christian Castillo will join the Arkansas men's golf program",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000046",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20221201160317/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Erik Plenge",
+          "school": "Arkansas",
+          "supporting_quote": "Erik Plenge signed a National Letter of Intent Tuesday",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000048",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20221201160317/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Thomas Curry",
+          "school": "Arkansas",
+          "supporting_quote": "Thomas Curry (Texarkana, Ark.), Rex Hargrove (Houston, Texas)",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000049",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20221201160317/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Rex Hargrove",
+          "school": "Arkansas",
+          "supporting_quote": "Rex Hargrove (Houston, Texas) and John Driscoll II",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000050",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20221201160317/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "John Driscoll II",
+          "school": "Arkansas",
+          "supporting_quote": "John Driscoll II (Northwestern University) have signed",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000051",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20231201213724/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Gerardo Gomez",
+          "school": "Arkansas",
+          "supporting_quote": "#14 Gerardo Gomez (Mexico)",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000058",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20231201213724/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Erich Fortlage",
+          "school": "Arkansas",
+          "supporting_quote": "#22 Erich Fortlage (Paraguay)",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000059",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20231201213724/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Jackson McLaughlin",
+          "school": "Arkansas",
+          "supporting_quote": "Jackson McLaughlin (Little Rock Episcopal)",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000060",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20231201213724/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Pablo Garcia Terol",
+          "school": "Arkansas",
+          "supporting_quote": "Pablo Garcia Terol (Spain)",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000061",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20191115080159/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Juan Camilo Vesga",
+          "school": "Arkansas",
+          "supporting_quote": "Juan Camilo Vesga (Bucaramanga, Colombia) and Damin Strydom",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000062",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20191115080159/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Damin Strydom",
+          "school": "Arkansas",
+          "supporting_quote": "Damin Strydom (Kingwood, Texas) have signed a National Letter",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000063",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20191201145325/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Juan Camilo Vesga",
+          "school": "arkansas",
+          "year": 2019,
+          "supporting_quote": "Juan Camilo Vesga (Bucaramanga, Colombia)...have signed a National Letter of Intent",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000073",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20191201145325/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "signing",
+          "player_name": "Damin Strydom",
+          "school": "arkansas",
+          "year": 2019,
+          "supporting_quote": "Damin Strydom (Kingwood, Texas) have signed a National Letter of Intent",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000074",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "team_ranking": [
+        {
+          "source_url": "https://web.archive.org/web/20190301153338/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2019,
+          "position": "20",
+          "supporting_quote": "Arkansas men's golf team is ranked 20th in the latest...Coaches Poll",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000006",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20190901145403/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2019,
+          "position": "26",
+          "supporting_quote": "ranked 26th in the opening Bushnell Golfweek Coaches Poll",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000013",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2024,
+          "position": "17",
+          "supporting_quote": "Arkansas is ranked 17th in the preseason Bushnell/Golfweek DI Coaches Poll",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000021",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20231031210924/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2023,
+          "position": "8",
+          "supporting_quote": "The #8 Arkansas men's golf team",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000032",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20241005125236/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2024,
+          "position": "23",
+          "supporting_quote": "The 23rd-ranked Arkansas men's golf team",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000033",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20171004033611/http://www.arkansasrazorbacks.com:80/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2017,
+          "position": "16",
+          "supporting_quote": "checking in at No. 16 in the nation",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000035",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20251216030719/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2025,
+          "position": "5",
+          "supporting_quote": "Arkansas men's golf program is #5",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000040",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240304140225/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2024,
+          "position": "9",
+          "supporting_quote": "The #9 Arkansas men's golf program",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000042",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240304140225/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2024,
+          "position": "8",
+          "supporting_quote": "The #8 Arkansas men's golf program",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000043",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20221201160317/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2022,
+          "position": "26",
+          "supporting_quote": "The #26 Arkansas men's golf program finished third",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000052",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20210301153456/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2021,
+          "position": "6",
+          "supporting_quote": "The #6 Arkansas men's golf team",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000053",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20191115080159/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2019,
+          "position": "22",
+          "supporting_quote": "The 22nd-ranked Arkansas men's golf team",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000064",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20191115080159/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "Arkansas",
+          "year": 2019,
+          "position": "13",
+          "supporting_quote": "The Arkansas men's golf program, ranked 13th nationally",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000065",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20251101070819/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2025,
+          "position": "23",
+          "supporting_quote": "entered the Bushnell/Golfweek DI Coaches Poll at #23",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000067",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20201201154422/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2020,
+          "position": "6",
+          "supporting_quote": "Arkansas, coming in at #6 nationally",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000069",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20181001231948/http://www.arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2018,
+          "position": "19",
+          "supporting_quote": "The 19th-ranked Arkansas men's golf team",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000071",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20200301162613/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2020,
+          "position": "21",
+          "supporting_quote": "The 21st-ranked Arkansas men's golf program",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000072",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20211005163852/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2021,
+          "position": "14",
+          "supporting_quote": "climbed five spots to 14th in the Bushnell/Golfweek Coaches Poll",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000075",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20211005163852/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_ranking",
+          "school": "arkansas",
+          "year": 2021,
+          "position": "19",
+          "supporting_quote": "to lead #19 Arkansas to a third-place finish at the Carmel Cup",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000076",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "individual_ranking": [
+        {
+          "source_url": "https://web.archive.org/web/20190301153338/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_ranking",
+          "player_name": "William Buhl",
+          "school": "arkansas",
+          "year": 2019,
+          "position": "20",
+          "supporting_quote": "William Buhl is 20th on...the first spring Arnold Palmer Cup Ranking",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000007",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20220901152059/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_ranking",
+          "player_name": "Mateo Fernandez de Oliveira",
+          "year": 2022,
+          "position": "10",
+          "supporting_quote": "ranked 10th on the pre-season PGA TOUR University Velocity Global",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000047",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20201201154422/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "individual_ranking",
+          "player_name": "Julian Perico",
+          "school": "arkansas",
+          "year": 2020,
+          "supporting_quote": "Julian Perico is one of 20 players that landed on the Haskins Award Watch List",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000068",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "conference_title": [
+        {
+          "source_url": "https://web.archive.org/web/20190901145403/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "conference_title",
+          "school": "arkansas",
+          "year": 2019,
+          "tournament": "SEC Championship",
+          "supporting_quote": "All five starters returning from last year's SEC Championship team",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000008",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20221001084012/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "conference_title",
+          "school": "Arkansas",
+          "tournament": "SEC Match Play",
+          "year": 2021,
+          "position": "1",
+          "supporting_quote": "won four matches over three days to claim the inaugural SEC Match Play title",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000034",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "us_amateur_appearance": [
+        {
+          "source_url": "https://web.archive.org/web/20190901145403/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "us_amateur_appearance",
+          "player_name": "William Buhl",
+          "school": "arkansas",
+          "year": 2019,
+          "tournament": "U.S. Amateur Championship",
+          "supporting_quote": "Tyson Reeder, Luis Garza and William Buhl – will play in the 119th U.S. Amateur",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000010",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20190901145403/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "us_amateur_appearance",
+          "player_name": "Luis Garza",
+          "school": "arkansas",
+          "year": 2019,
+          "tournament": "U.S. Amateur Championship",
+          "supporting_quote": "Tyson Reeder, Luis Garza and William Buhl – will play in the 119th U.S. Amateur",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000011",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20190901145403/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "us_amateur_appearance",
+          "player_name": "Tyson Reeder",
+          "school": "arkansas",
+          "year": 2019,
+          "tournament": "U.S. Amateur Championship",
+          "supporting_quote": "Tyson Reeder, Luis Garza and William Buhl – will play in the 119th U.S. Amateur",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000012",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20220901152059/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "us_amateur_appearance",
+          "player_name": "Mateo Fernandez de Oliveira",
+          "tournament": "U.S. Amateur Championship",
+          "year": 2022,
+          "supporting_quote": "lost his opening match at the 2022 U.S. Amateur Championship",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000045",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "tour_win": [
+        {
+          "source_url": "https://web.archive.org/web/20170127123332/http://www.arkansasrazorbacks.com:80/sport/m-golf/",
+          "fact_type": "tour_win",
+          "player_name": "Andrew Landry",
+          "school": "arkansas",
+          "tournament": "Bahamas Great Abaco Classic",
+          "year": 2017,
+          "position": "1",
+          "supporting_quote": "former Razorback Andrew Landry has captured a victory on the Web.com Tour",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000014",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20241201172058/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "tour_win",
+          "player_name": "Nicolas Echavarria",
+          "tournament": "Zozo Championship",
+          "year": 2024,
+          "position": "1",
+          "supporting_quote": "claimed the 2024 Zozo Championship for his second PGA Tour victory",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000030",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20171201145824/http://www.arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "tour_win",
+          "player_name": "Austin Cook",
+          "tournament": "RSM Classic",
+          "year": 2017,
+          "position": "1",
+          "supporting_quote": "former Razorback Austin Cook entered the weekend with a one-shot lead",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000036",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "team_tournament_win": [
+        {
+          "source_url": "https://web.archive.org/web/20211105092536/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_tournament_win",
+          "school": "arkansas",
+          "tournament": "SEC Match Play Championship",
+          "year": 2021,
+          "position": "1",
+          "supporting_quote": "Arkansas a 3-2 victory over #15 Vanderbilt in the inaugural SEC Match Play",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000015",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20231031210924/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_tournament_win",
+          "school": "Arkansas",
+          "tournament": "Blessings Collegiate Invitational",
+          "year": 2023,
+          "position": "1",
+          "score": 563,
+          "supporting_quote": "Men's Team Title: Arkansas (-13, 563)",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000031",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240304140225/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_tournament_win",
+          "school": "Arkansas",
+          "tournament": "Palmas del Mar Collegiate",
+          "year": 2024,
+          "position": "1",
+          "score": 837,
+          "supporting_quote": "win the 16-team Palmas del Mar Collegiate by seven strokes",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000041",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20251101070819/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "team_tournament_win",
+          "school": "arkansas",
+          "year": 2025,
+          "tournament": "Blessings Collegiate Invitational",
+          "supporting_quote": "three, top-three finishes to start the season with a win at the Blessings Collegiate",
+          "extracted_at": "2026-04-26T23:48:01Z",
+          "batch_id": 3,
+          "fact_id": "f-0000066",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "all_american": [
+        {
+          "source_url": "https://web.archive.org/web/20220119020207/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "all_american",
+          "player_name": "John Daly",
+          "school": "arkansas",
+          "supporting_quote": "former Razorback All-American John Daly teamed up to win the 2021 PNC",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000017",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "all_american",
+          "player_name": "Jacob Skov Olesen",
+          "school": "arkansas",
+          "supporting_quote": "Razorback All-Americans Jacob Skov Olesen, John Daly and Taylor Moore",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000022",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "all_american",
+          "player_name": "Taylor Moore",
+          "school": "arkansas",
+          "supporting_quote": "Razorback All-Americans Jacob Skov Olesen, John Daly and Taylor Moore",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000023",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20241201172058/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "all_american",
+          "player_name": "Nicolas Echavarria",
+          "school": "Arkansas",
+          "supporting_quote": "Razorback All-American Nicolas Echavarria claimed the 2024 Zozo",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000029",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 2,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20220901152059/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "all_american",
+          "player_name": "Mateo Fernandez de Oliveira",
+          "school": "Arkansas",
+          "supporting_quote": "Razorback men's golf All-American Mateo Fernandez de Oliveira",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000044",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "major_appearance": [
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "major_appearance",
+          "player_name": "Jacob Skov Olesen",
+          "school": "arkansas",
+          "tournament": "The Open Championship",
+          "year": 2024,
+          "supporting_quote": "Olesen, John Daly and Taylor Moore are set to compete at The Open",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000024",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "major_appearance",
+          "player_name": "John Daly",
+          "school": "arkansas",
+          "tournament": "The Open Championship",
+          "year": 2024,
+          "supporting_quote": "Olesen, John Daly and Taylor Moore are set to compete at The Open",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000025",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "major_appearance",
+          "player_name": "Taylor Moore",
+          "school": "arkansas",
+          "tournament": "The Open Championship",
+          "year": 2024,
+          "supporting_quote": "Olesen, John Daly and Taylor Moore are set to compete at The Open",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000026",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "palmer_cup": [
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "palmer_cup",
+          "player_name": "Jacob Skov Olesen",
+          "school": "arkansas",
+          "year": 2024,
+          "supporting_quote": "Olesen and Jose Marin Set for Arnold Palmer Cup",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000027",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20240901180440/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "palmer_cup",
+          "player_name": "Jose Marin",
+          "school": "arkansas",
+          "year": 2024,
+          "supporting_quote": "Olesen and Jose Marin Set for Arnold Palmer Cup",
+          "extracted_at": "2026-04-26T23:37:42Z",
+          "batch_id": 1,
+          "fact_id": "f-0000028",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "coach_hire": [
+        {
+          "source_url": "https://web.archive.org/web/20230901164020/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "coach_hire",
+          "player_name": "Gustavo Morantes",
+          "school": "Arkansas",
+          "year": 2023,
+          "supporting_quote": "Gustavo Morantes was named Arkansas men's golf associate head coach",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000054",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ],
+      "transfer_in": [
+        {
+          "source_url": "https://web.archive.org/web/20230901164020/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "transfer_in",
+          "player_name": "Jacob Skov Olesen",
+          "school": "Arkansas",
+          "supporting_quote": "Arkansas adds TCU transfer Jacob Skov Olesen",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000055",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20230901164020/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "transfer_in",
+          "player_name": "Mateo Pulcini",
+          "school": "Arkansas",
+          "supporting_quote": "NCAA DII thee-time All-American Mateo Pulcini",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000056",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        },
+        {
+          "source_url": "https://web.archive.org/web/20230901164020/https://arkansasrazorbacks.com/sport/m-golf/",
+          "fact_type": "transfer_in",
+          "player_name": "Matthis Lefevre",
+          "school": "Arkansas",
+          "supporting_quote": "2023 JuCo Jack Nicklaus Award winner Matthis Lefevre",
+          "extracted_at": "2026-04-26T23:45:27Z",
+          "batch_id": 2,
+          "fact_id": "f-0000057",
+          "sources": [
+            "wayback"
+          ],
+          "source_count": 1,
+          "confidence": 0.7,
+          "winning_source_kind": "wayback"
+        }
+      ]
+    }
+  }
+}
