@@ -418,6 +418,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#8a324a",
     notes: "Combined men's/women's at same venue.",
     sourceUrl: "https://ivyleague.com/feature/26GOLFChampionships",
+    winner: "Columbia",
   },
   {
     id: 22,
