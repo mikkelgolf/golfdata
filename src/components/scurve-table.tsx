@@ -2294,13 +2294,16 @@ function MobileVisualScurve({
   const { orderedRegionals, byRegional } = useScurveGrid(assignments, regionals, regionalSeeds);
 
   return (
-    <div className="mt-3 grid grid-cols-2 gap-1.5">
+    <div
+      className="mt-3 grid gap-1.5"
+      style={{ gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}
+    >
       {orderedRegionals.map((r) => {
         const teams = byRegional.get(r.id) ?? [];
         return (
           <div
             key={r.id}
-            className="rounded border border-border/60 overflow-hidden"
+            className="min-w-0 rounded border border-border/60 overflow-hidden"
             style={{ borderLeftColor: r.color, borderLeftWidth: "2px" }}
           >
             {/* Regional header — fixed height + single-line truncate so every
@@ -2318,10 +2321,10 @@ function MobileVisualScurve({
             {/* Column headers */}
             <div
               className="text-[6px] uppercase tracking-wider text-muted-foreground/40 px-0.5 pt-px"
-              style={{ display: "grid", gridTemplateColumns: "16px 1fr 20px" }}
+              style={{ display: "grid", gridTemplateColumns: "16px minmax(0, 1fr) 20px" }}
             >
               <span className="text-right">#</span>
-              <span className="pl-0.5 overflow-hidden">Team</span>
+              <span className="pl-0.5 truncate">Team</span>
               <span className="text-right pr-0.5">Rk</span>
             </div>
 
@@ -2345,12 +2348,12 @@ function MobileVisualScurve({
                         "h-[15px] items-center leading-none px-0.5 overflow-hidden",
                         isAboveLine ? "bg-secondary/40" : ""
                       )}
-                      style={{ display: "grid", gridTemplateColumns: "16px 1fr 20px" }}
+                      style={{ display: "grid", gridTemplateColumns: "16px minmax(0, 1fr) 20px" }}
                     >
                       <span className="font-mono text-[7px] text-muted-foreground text-right tabular-nums">
                         {index + 1}
                       </span>
-                      <span className="font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
+                      <span className="min-w-0 font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
                         <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                           {team.team}
                         </TeamLink>
