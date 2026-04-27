@@ -436,6 +436,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#4f4f7a",
     notes: "Presented by Jeep.",
     sourceUrl: "https://goxavier.com/news/2025/8/7/womens-golf-announces-2025-26-schedule",
+    winner: "Xavier",
   },
   {
     id: 23,
