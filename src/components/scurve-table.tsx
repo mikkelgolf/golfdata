@@ -2294,33 +2294,37 @@ function MobileVisualScurve({
   const { orderedRegionals, byRegional } = useScurveGrid(assignments, regionals, regionalSeeds);
 
   return (
-    <div className="mt-3 grid grid-cols-2 gap-1.5">
+    <div
+      className="mt-3 grid gap-1.5"
+      style={{ gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}
+    >
       {orderedRegionals.map((r) => {
         const teams = byRegional.get(r.id) ?? [];
         return (
           <div
             key={r.id}
-            className="rounded border border-border/60 overflow-hidden"
+            className="min-w-0 rounded border border-border/60 overflow-hidden"
             style={{ borderLeftColor: r.color, borderLeftWidth: "2px" }}
           >
-            {/* Regional header */}
+            {/* Regional header — fixed height + single-line truncate so every
+                box stays the same size and team rows align across the 2-col grid */}
             <div
-              className="px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60"
+              className="h-[18px] px-1.5 flex items-center gap-0.5 text-[8px] font-semibold uppercase tracking-wide text-muted-foreground bg-card/60 overflow-hidden"
               style={{ borderBottom: `1px solid ${r.color}30` }}
             >
               {regionalSeeds.get(r.id) !== undefined && (
-                <span className="mr-0.5">#{regionalSeeds.get(r.id)}</span>
+                <span className="shrink-0">#{regionalSeeds.get(r.id)}</span>
               )}
-              {r.name.replace(/ Regional$/, "")}
+              <span className="truncate">{r.name.replace(/ Regional$/, "")}</span>
             </div>
 
             {/* Column headers */}
             <div
               className="text-[6px] uppercase tracking-wider text-muted-foreground/40 px-0.5 pt-px"
-              style={{ display: "grid", gridTemplateColumns: "16px 1fr 20px" }}
+              style={{ display: "grid", gridTemplateColumns: "16px minmax(0, 1fr) 20px" }}
             >
               <span className="text-right">#</span>
-              <span className="pl-0.5 overflow-hidden">Team</span>
+              <span className="pl-0.5 truncate">Team</span>
               <span className="text-right pr-0.5">Rk</span>
             </div>
 
@@ -2344,12 +2348,12 @@ function MobileVisualScurve({
                         "h-[15px] items-center leading-none px-0.5 overflow-hidden",
                         isAboveLine ? "bg-secondary/40" : ""
                       )}
-                      style={{ display: "grid", gridTemplateColumns: "16px 1fr 20px" }}
+                      style={{ display: "grid", gridTemplateColumns: "16px minmax(0, 1fr) 20px" }}
                     >
                       <span className="font-mono text-[7px] text-muted-foreground text-right tabular-nums">
                         {index + 1}
                       </span>
-                      <span className="font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
+                      <span className="min-w-0 font-medium text-foreground truncate pl-0.5 text-[8px] overflow-hidden whitespace-nowrap">
                         <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
                           {team.team}
                         </TeamLink>
@@ -2430,95 +2434,115 @@ function ScurveSnakeTable({
 
   return (
     <div className="mt-3 overflow-x-auto">
-      <div style={{ minWidth: `${numRegionals * 105 + 28}px` }}>
-        {/* Regional headers */}
-        <div
-          className="grid gap-0.5"
-          style={{ gridTemplateColumns: `24px repeat(${numRegionals}, 1fr)` }}
-        >
-          <div />
-          {orderedRegionals.map((r) => (
-            <div
-              key={r.id}
-              className="text-center text-[9px] font-medium uppercase tracking-wide py-1 text-muted-foreground"
-              style={{ borderBottom: `2px solid ${r.color}` }}
-            >
-              {r.name.replace(/ Regional$/, "")}
-            </div>
-          ))}
-        </div>
-
-        {/* Tier rows */}
-        {grid.map((row, tierIdx) => {
-          const isSnakeBack = tierIdx % 2 === 1;
-
-          return (
-            <Fragment key={tierIdx}>
-              <div
-                className="grid gap-0.5 mt-0.5"
-                style={{ gridTemplateColumns: `24px repeat(${numRegionals}, 1fr)` }}
+      {/*
+        Use a real <table> so each column is auto-sized by the browser to the
+        widest cell in that column (header included) and every row reuses the
+        same column tracks. With independent CSS-grid rows, a long team name
+        in one tier (e.g. "Southern Illinois" in Athens, tier 12) only
+        widened that single row's track, leaving headers + other rows
+        misaligned. table-layout: auto fixes that for free.
+      */}
+      <table
+        className="border-separate"
+        style={{
+          minWidth: `${numRegionals * 105 + 28}px`,
+          borderSpacing: "2px 2px",
+          tableLayout: "auto",
+        }}
+      >
+        <thead>
+          <tr>
+            <th className="w-6 p-0" aria-hidden="true" />
+            {orderedRegionals.map((r) => (
+              <th
+                key={r.id}
+                scope="col"
+                className="text-center text-[9px] font-medium uppercase tracking-wide py-1 px-1 text-muted-foreground whitespace-nowrap"
+                style={{ borderBottom: `2px solid ${r.color}` }}
               >
-                <div className="flex items-center justify-center text-[9px] font-mono tabular-nums text-muted-foreground">
-                  {tierIdx + 1}
-                  <span className="ml-px text-[7px] text-text-tertiary">{isSnakeBack ? "\u2190" : "\u2192"}</span>
-                </div>
-                {row.map((team, colIdx) => {
-                  if (!team) {
-                    return <div key={`empty-${tierIdx}-${colIdx}`} className="h-6" />;
-                  }
+                {r.name.replace(/ Regional$/, "")}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {grid.map((row, tierIdx) => {
+            const isSnakeBack = tierIdx % 2 === 1;
+            const showAdvanceLine =
+              tierIdx === TEAMS_ADVANCING - 1 && grid.length > TEAMS_ADVANCING;
 
-                  const r = orderedRegionals[colIdx];
-                  const isAboveLine = tierIdx < TEAMS_ADVANCING;
+            return (
+              <Fragment key={tierIdx}>
+                <tr>
+                  <td className="p-0 text-center align-middle text-[9px] font-mono tabular-nums text-muted-foreground whitespace-nowrap">
+                    {tierIdx + 1}
+                    <span className="ml-px text-[7px] text-text-tertiary">{isSnakeBack ? "\u2190" : "\u2192"}</span>
+                  </td>
+                  {row.map((team, colIdx) => {
+                    if (!team) {
+                      return <td key={`empty-${tierIdx}-${colIdx}`} className="p-0 h-6" />;
+                    }
 
-                  return (
-                    <motion.div
-                      key={`${team.team}-${team.seed}`}
-                      initial={{ opacity: 0, scale: 0.92 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        duration: 0.22,
-                        ease: "easeOut",
-                        delay: team.seed * 0.018,
-                      }}
-                      className={cn(
-                        "h-6 px-1 flex items-center text-[10px] rounded-sm",
-                        isAboveLine ? "bg-secondary/70" : "bg-secondary/25"
-                      )}
-                      style={{ borderLeft: `2px solid ${r?.color ?? "#888"}` }}
-                      title={`#${team.seed} ${team.team} - Rank ${team.rank}`}
-                    >
-                      <span className="font-mono tabular-nums text-[8px] text-muted-foreground shrink-0 w-3.5 text-right mr-1">
-                        {team.seed}
-                      </span>
-                      <span className={cn(
-                        "truncate font-medium min-w-0",
-                        isAboveLine ? "text-foreground" : "text-muted-foreground"
-                      )}>
-                        <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
-                          {team.team}
-                        </TeamLink>
-                      </span>
-                      <span className="ml-auto pl-1 font-mono tabular-nums text-[8px] text-muted-foreground shrink-0">
-                        {team.rank}
-                      </span>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                    const r = orderedRegionals[colIdx];
+                    const isAboveLine = tierIdx < TEAMS_ADVANCING;
 
-              {tierIdx === TEAMS_ADVANCING - 1 && grid.length > TEAMS_ADVANCING && (
-                <div className="flex items-center gap-2 px-1 py-0.5">
-                  <div className="flex-1 border-t border-dashed border-destructive/40" />
-                  <span className="text-[8px] font-medium uppercase tracking-wider text-destructive/70">
-                    Advancing
-                  </span>
-                  <div className="flex-1 border-t border-dashed border-destructive/40" />
-                </div>
-              )}
-            </Fragment>
-          );
-        })}
-      </div>
+                    return (
+                      <td key={`${team.team}-${team.seed}`} className="p-0 align-middle">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.92 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            duration: 0.22,
+                            ease: "easeOut",
+                            delay: team.seed * 0.018,
+                          }}
+                          className={cn(
+                            "h-6 px-1 flex items-center text-[10px] rounded-sm whitespace-nowrap",
+                            isAboveLine ? "bg-secondary/70" : "bg-secondary/25"
+                          )}
+                          style={{ borderLeft: `2px solid ${r?.color ?? "#888"}` }}
+                          title={`#${team.seed} ${team.team} - Rank ${team.rank}`}
+                        >
+                          <span className="font-mono tabular-nums text-[8px] text-muted-foreground shrink-0 w-3.5 text-right mr-1">
+                            {team.seed}
+                          </span>
+                          <span
+                            className={cn(
+                              "font-medium",
+                              isAboveLine ? "text-foreground" : "text-muted-foreground"
+                            )}
+                          >
+                            <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
+                              {team.team}
+                            </TeamLink>
+                          </span>
+                          <span className="ml-auto pl-1 font-mono tabular-nums text-[8px] text-muted-foreground shrink-0">
+                            {team.rank}
+                          </span>
+                        </motion.div>
+                      </td>
+                    );
+                  })}
+                </tr>
+
+                {showAdvanceLine && (
+                  <tr>
+                    <td colSpan={numRegionals + 1} className="px-1 py-0.5">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 border-t border-dashed border-destructive/40" />
+                        <span className="text-[8px] font-medium uppercase tracking-wider text-destructive/70">
+                          Advancing
+                        </span>
+                        <div className="flex-1 border-t border-dashed border-destructive/40" />
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -2571,7 +2595,7 @@ function VisualScurve({
               <div key={tierIdx} className="relative">
                 <div
                   className="grid gap-0.5 mb-0.5"
-                  style={{ gridTemplateColumns: `repeat(${numRegionals}, 1fr)` }}
+                  style={{ gridTemplateColumns: `repeat(${numRegionals}, minmax(0, 1fr))` }}
                 >
                   {row.map((team, colIdx) => {
                     const r = orderedRegionals[colIdx];
