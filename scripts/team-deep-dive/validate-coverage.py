@@ -174,8 +174,12 @@ def main() -> None:
 
     expected_path = OUT_DIR / f"expected-schedule-{args.slug}.json"
     if not expected_path.exists():
-        print(f"[coverage] no expected-schedule for {args.slug}; run scrape-school-schedule.py first")
-        sys.exit(1)
+        # Bridge-seeded jobs (or any team without a registered athletics
+        # site) skip schedule_discovery, so there's no expected schedule
+        # to diff against. Exit clean — coverage validation just doesn't
+        # apply for these teams.
+        print(f"[coverage] no expected-schedule for {args.slug}; skipping coverage_validation")
+        sys.exit(0)
     expected = json.loads(expected_path.read_text())
 
     print(f"[coverage] {args.slug}: {len(expected)} expected events; querying granular_master ...")

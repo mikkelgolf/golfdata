@@ -81,7 +81,7 @@ PHASES = [
     #      we process expands the universe of teams we have ground truth on.
     # extract-event-bridges.py auto-resumes from bridges-checkpoint-<slug>.json
     # if it exists, so kill+restart is safe — picks up at the next batch.
-    {"name": "extract_event_bridges", "kind": "py_script_per_team", "script": "extract-event-bridges.py", "timeout_seconds": 10800},
+    {"name": "extract_event_bridges", "kind": "py_script_per_team", "script": "extract-event-bridges.py", "timeout_seconds": 21600},
     # 10c. Apply bridges — fill expected-schedule for seeded teams from
     #      bridges; auto-queue unseeded teams seen in 3+ bridge events.
     {"name": "apply_event_bridges", "kind": "py_script_global_once", "script": "apply-event-bridges.py"},
