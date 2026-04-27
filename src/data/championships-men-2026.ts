@@ -175,6 +175,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#8a324a",
     notes: "Combined men's & women's championship at Baltusrol Lower.",
     sourceUrl: "https://ivyleague.com/feature/26GOLFChampionships",
+    winner: "Harvard",
   },
   {
     id: 8,
