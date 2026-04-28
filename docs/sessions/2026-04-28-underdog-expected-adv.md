@@ -108,8 +108,62 @@ Lower totals are expected — the new logic correctly excludes teams that
 where 6 seeds advanced). The leaderboard ordering is similar to before,
 just slightly tighter at the top.
 
+## Follow-up — Regionals History accuracy + cleanup (2026-04-28)
+
+David flagged a discrepancy: the "NAT" column on `/regionals-history`
+disagreed with the per-team page's PROGRAM HISTORY > Advanced count.
+Examples (men): Auburn 17 vs 26, Texas 25 vs 32. Root cause was that
+the table relied solely on `RegionalFinish.advanced` (basic position-
+based fallback), while the team page already uses an OR-combined
+helper that also consults the rich sheet's `Team Advanced` column +
+NCAA championships history.
+
+### Changes
+
+1. **Sheet ingestion** — `scripts/build-regional-history.py` now reads
+   the spreadsheet's "Team Advanced" column and emits a `teamAdvanced`
+   field on every row. Once David re-runs the ingest with
+   `REGIONALS_SHEET_ID=…` the JSON will populate; until then the field
+   is null on existing rows and the helper gracefully OR-falls back.
+2. **Type** — `RegionalFinishRich.teamAdvanced?: boolean | null` added
+   to `src/data/records-types.ts` (optional so legacy rows still type-
+   check).
+3. **Helper** — `src/lib/streaks.ts` now exports
+   `didAdvanceFromRegional({ richTeamAdvanced, ncaaAppearance, basicAdvanced })`
+   and uses it inside `effectiveAdvancedYears` for the team-page
+   `nationalStreak`/`totalAdvancements`. Truth is OR of all three
+   signals.
+4. **Regionals History table** — `src/components/regionals-results-table.tsx`
+   now joins `championshipsHistory` + `regionalsRich.teamAdvanced` per
+   `(team, year)` and feeds them into `buildRows`, which uses the
+   shared helper. NAT count + the per-year cell coloring (advanced =
+   emerald, missed = rose) now agree with the team page.
+5. **Table cleanup** — same component:
+   - "Apps" → "Regional Appearances" (header widened from 48px → 72px)
+   - "Nat" → "Adv to NCAAs" (header widened from 48px → 72px)
+   - All non-Team columns center-justified (header + cells).
+   - `SortableHeader` gained `align?: "right" | "center"`.
+
+### Verification
+
+- Typecheck clean after all edits.
+- Sample matches confirmed earlier in conversation: Auburn men
+  17 → 26 ✅, Texas men 25 → 32 ✅, etc.
+
+## Still pending (Commit C — separate)
+
+Task #1 from David's follow-up: team-name flexibility on sheet ingest.
+- Add `scripts/team-name-aliases.json` (shared file).
+- Extend Python script to load + apply it.
+- Audit + populate known aliases (BYU↔Brigham Young, Central Florida↔UCF
+  on the women's side, CSU - Fullerton variants, etc).
+- Deliver list of remaining unmatched teams (~17 men + ~18 women last
+  count) so David can decide canonical names.
+
 ## Progress log
 
 - 2026-04-28: branch + session doc created
 - 2026-04-28: spec confirmed, helper + filters + UI + subtitle text all
   shipped; typecheck clean; ready for review
+- 2026-04-28: Commit B — Regionals History NAT accuracy + table cleanup
+  (column rename + center alignment + widened header). Typecheck clean.

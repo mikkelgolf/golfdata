@@ -6,6 +6,7 @@ import { allSlugs, unslugify } from "@/lib/team-slug";
 import {
   computeTeamChampionshipStats,
   computeTeamStats,
+  didAdvanceFromRegional,
   isCancelled,
   isChampion,
   isRegionalWin,
@@ -317,13 +318,15 @@ export default function TeamPage({ params }: { params: Params }) {
     const r = historyByYear.get(y);
     if (r) {
       const win = isRegionalWin(r.position);
-      // If the team appeared at the NCAA Championship that year, they must
-      // have advanced through the Regional — trust NCAA presence over the
-      // regional row's `advanced` flag, which is unreliable in pre-modern
-      // eras (e.g., Auburn men 1993-1995 have regional rows flagged
-      // advanced:false despite showing up at Nationals).
-      const advanced = r.advanced || ncaaByYear.has(y);
       const rich = richByYear.get(y);
+      // Combine the three "did they advance?" signals (sheet truth,
+      // NCAA appearance, basic position-based fallback). See
+      // didAdvanceFromRegional in lib/streaks for the precedence rules.
+      const advanced = didAdvanceFromRegional({
+        richTeamAdvanced: rich?.teamAdvanced ?? null,
+        ncaaAppearance: ncaaByYear.has(y),
+        basicAdvanced: r.advanced,
+      });
       timelineResults.push({
         year: y,
         position: r.position,

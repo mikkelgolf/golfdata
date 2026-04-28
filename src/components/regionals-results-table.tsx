@@ -22,8 +22,9 @@ import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { regionalsRich } from "@/data/regionals-rich";
+import { championshipsHistory } from "@/data/championships-history";
 import { teamHref } from "@/lib/team-link";
-import { isRegionalWin } from "@/lib/streaks";
+import { didAdvanceFromRegional, isRegionalWin } from "@/lib/streaks";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
 import YearByYearWinnersGrid, {
   type YearWinners,
@@ -141,7 +142,9 @@ function buildConferenceMap(gender: Gender): Map<string, string> {
 
 function buildRows(
   entries: RegionalFinish[],
-  conferenceMap: Map<string, string>
+  conferenceMap: Map<string, string>,
+  ncaaByTeamYear: Set<string>,
+  richAdvancedByTeamYear: Map<string, boolean | null>
 ): { rows: TeamRow[]; years: number[] } {
   const years = new Set<number>();
   const byTeam = new Map<string, TeamRow>();
@@ -162,10 +165,19 @@ function buildRows(
       byTeam.set(e.team, r);
     }
     const win = isRegionalWin(e.position);
-    r.byYear.set(e.year, { position: e.position, advanced: e.advanced, win });
+    // Combined advance truth — same OR-logic as the Team page's PROGRAM
+    // HISTORY > Advanced stat, so the table's NAT count agrees with the
+    // per-team page. See didAdvanceFromRegional in lib/streaks.
+    const key = `${e.team}|${e.year}`;
+    const advanced = didAdvanceFromRegional({
+      richTeamAdvanced: richAdvancedByTeamYear.get(key) ?? null,
+      ncaaAppearance: ncaaByTeamYear.has(key),
+      basicAdvanced: e.advanced,
+    });
+    r.byYear.set(e.year, { position: e.position, advanced, win });
     r.apps += 1;
     if (win) r.wins += 1;
-    if (e.advanced) r.nationals += 1;
+    if (advanced) r.nationals += 1;
     const posNum = parseInt(e.position, 10);
     if (Number.isFinite(posNum) && posNum > 0) {
       if (r.bestFinish === null || posNum < r.bestFinish) r.bestFinish = posNum;
@@ -269,9 +281,35 @@ export default function RegionalsResultsTable({ entries }: Props) {
 
   const conferenceMap = useMemo(() => buildConferenceMap(gender), [gender]);
 
+  // (team|year) sets used by buildRows to compute the combined "advanced"
+  // signal — keeps the NAT count in sync with the Team page's PROGRAM
+  // HISTORY > Advanced stat.
+  const ncaaByTeamYear = useMemo(() => {
+    const s = new Set<string>();
+    for (const c of championshipsHistory) {
+      if (c.gender === gender) s.add(`${c.team}|${c.year}`);
+    }
+    return s;
+  }, [gender]);
+
+  const richAdvancedByTeamYear = useMemo(() => {
+    const m = new Map<string, boolean | null>();
+    for (const r of regionalsRich) {
+      if (r.gender !== gender) continue;
+      m.set(`${r.team}|${r.year}`, r.teamAdvanced ?? null);
+    }
+    return m;
+  }, [gender]);
+
   const { rows, years } = useMemo(
-    () => buildRows(entries.filter((e) => e.gender === gender), conferenceMap),
-    [entries, gender, conferenceMap]
+    () =>
+      buildRows(
+        entries.filter((e) => e.gender === gender),
+        conferenceMap,
+        ncaaByTeamYear,
+        richAdvancedByTeamYear
+      ),
+    [entries, gender, conferenceMap, ncaaByTeamYear, richAdvancedByTeamYear]
   );
 
   const winnersByYear = useMemo(
@@ -539,7 +577,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
               }
         }
       >
-        <div className="grid grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
+        <div className="grid grid-cols-[24px_minmax(140px,1fr)_72px_72px_56px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
           <span />
           <SortableHeader
             label="Team"
@@ -548,23 +586,24 @@ export default function RegionalsResultsTable({ entries }: Props) {
             onClick={() => toggleSort("team")}
           />
           <SortableHeader
-            label="Apps"
-            align="right"
+            label="Regional Appearances"
+            align="center"
+            title="Total Regional appearances"
             active={sortKey === "apps"}
             dir={sortDir}
             onClick={() => toggleSort("apps")}
           />
           <SortableHeader
-            label="Nat"
-            align="right"
-            title="Nationals appearances"
+            label="Adv to NCAAs"
+            align="center"
+            title="Times advanced from Regional to the NCAA Championship"
             active={sortKey === "nationals"}
             dir={sortDir}
             onClick={() => toggleSort("nationals")}
           />
           <SortableHeader
             label="Wins"
-            align="right"
+            align="center"
             title="Regional wins"
             active={sortKey === "wins"}
             dir={sortDir}
@@ -572,7 +611,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
           />
           <SortableHeader
             label="Best"
-            align="right"
+            align="center"
             title="Best regional finish"
             active={sortKey === "bestFinish"}
             dir={sortDir}
@@ -580,7 +619,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
           />
           <SortableHeader
             label="Last"
-            align="right"
+            align="center"
             title="Last year making regionals"
             active={sortKey === "lastAppearance"}
             dir={sortDir}
@@ -588,6 +627,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
           />
           <SortableHeader
             label="Conf."
+            align="center"
             title="2025-26 conference (not historical)"
             active={sortKey === "currentConference"}
             dir={sortDir}
@@ -604,7 +644,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
           {sorted.map((r, rowIdx) => {
             const isOpen = expanded.has(r.team);
             const rowBase =
-              "grid w-full grid-cols-[24px_minmax(140px,1fr)_48px_48px_48px_48px_56px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
+              "grid w-full grid-cols-[24px_minmax(140px,1fr)_72px_72px_56px_48px_56px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
             const rowCls = isOpen ? rowBase : `${rowBase} hover:shadow-raised`;
             // Only stagger the first 24 rows, and only on initial mount.
             const shouldStagger =
@@ -622,18 +662,18 @@ export default function RegionalsResultsTable({ entries }: Props) {
                 >
                   {r.team}
                 </Link>
-                <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
-                <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
-                <span className="text-right font-mono tabular-nums font-semibold text-foreground">
+                <span className="text-center font-mono tabular-nums text-foreground">{r.apps}</span>
+                <span className="text-center font-mono tabular-nums text-foreground">{r.nationals}</span>
+                <span className="text-center font-mono tabular-nums font-semibold text-foreground">
                   {r.wins}
                 </span>
-                <span className="text-right font-mono tabular-nums text-foreground">
+                <span className="text-center font-mono tabular-nums text-foreground">
                   {r.bestFinish ?? "—"}
                 </span>
-                <span className="text-right font-mono tabular-nums text-muted-foreground">
+                <span className="text-center font-mono tabular-nums text-muted-foreground">
                   {r.lastAppearance ?? "—"}
                 </span>
-                <span className="truncate text-[11px] text-muted-foreground">
+                <span className="truncate text-center text-[11px] text-muted-foreground">
                   {r.currentConference}
                 </span>
               </>
@@ -870,7 +910,7 @@ function SortableHeader({
   onClick,
 }: {
   label: string;
-  align?: "right";
+  align?: "right" | "center";
   title?: string;
   active: boolean;
   dir: SortDir;
@@ -882,7 +922,13 @@ function SortableHeader({
       : ChevronDown
     : ChevronsUpDown;
   const iconClass = active ? "text-foreground/70" : "text-muted-foreground/40";
-  const base = `label-caps inline-flex items-center gap-1 ${align === "right" ? "justify-end text-right ml-auto" : "justify-start text-left"} hover:text-foreground transition-colors rounded px-1 py-0.5`;
+  const alignCls =
+    align === "right"
+      ? "justify-end text-right ml-auto"
+      : align === "center"
+        ? "justify-center text-center mx-auto"
+        : "justify-start text-left";
+  const base = `label-caps inline-flex items-center gap-1 ${alignCls} hover:text-foreground transition-colors rounded px-1 py-0.5 leading-tight`;
   const cls = active ? `${base} btn-lift` : base;
   return (
     <button type="button" onClick={onClick} title={title} className={cls}>

@@ -174,6 +174,18 @@ export interface RegionalFinishRich {
   seed: number | null;
   /** Committee-expected-to-advance flag. Null for years before the stat was kept. */
   expectedAdv: boolean | null;
+  /**
+   * Authoritative "did this team advance from the Regional to NCAAs?"
+   * flag, sourced from the spreadsheet's "Team Advanced" column. Null
+   * for years where the column wasn't filled in (older years and any
+   * row not yet re-ingested under the column-aware Python script).
+   *
+   * Optional on the type so existing JSON without the field still
+   * type-checks. Use `didAdvanceFromRegional` (src/lib/streaks.ts'
+   * `effectiveAdvancedYears`) to combine this with NCAA appearance
+   * truth and the basic position-based fallback.
+   */
+  teamAdvanced?: boolean | null;
   /** Display finish ("1", "T2", "5", …). */
   result: string | null;
   /** Numeric finish with ties flattened to the base integer. */

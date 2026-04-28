@@ -5,6 +5,7 @@ import type {
 } from "@/data/records-types";
 import { regionalsHistory } from "@/data/regionals-history";
 import { championshipsHistory } from "@/data/championships-history";
+import { regionalsRich } from "@/data/regionals-rich";
 
 export const MOST_RECENT_SEASON = Math.max(
   ...regionalsHistory.map((r) => r.year)
@@ -114,16 +115,20 @@ export function isRegionalWin(position: string): boolean {
 
 /**
  * Years the team effectively advanced from their Regional to the NCAA
- * Championship. Combines two signals:
- *   1. `r.advanced === true` on the regional row (authoritative when set), and
- *   2. team appearance in championshipsHistory for that year (backstop for
- *      pre-modern eras where the regional `advanced` flag is unreliable —
- *      e.g. Auburn men 1993-1995 are flagged advanced:false yet did show up
- *      at Nationals).
+ * Championship. Combines three signals (any truthy = advanced):
+ *   1. `rich.teamAdvanced === true` — the spreadsheet's "Team Advanced"
+ *      column. The most authoritative signal, but only available for
+ *      years inside the rich-data window (men 2002+, women 2000+) and
+ *      only after the column-aware Python ingest has been re-run.
+ *   2. team appearance in championshipsHistory that year — strong
+ *      cross-check, since being in the bracket implies they advanced.
+ *   3. `basic.advanced === true` (position <= 5) — pre-modern fallback
+ *      for years outside the rich window. Imperfect (the number of
+ *      advancing seeds varied by era) but the only signal we have.
  * Requires a regional row to exist for the year, so pre-Regional-era NCAA
  * appearances aren't double-counted as "advanced" (there was no Regional to
  * advance from).
- * 2020 is absent from both datasets (COVID cancellation) and is skipped by
+ * 2020 is absent from all datasets (COVID cancellation) and is skipped by
  * the streak code separately via `nextExpectedYear`.
  */
 function effectiveAdvancedYears(team: string, gender: Gender): number[] {
@@ -132,9 +137,37 @@ function effectiveAdvancedYears(team: string, gender: Gender): number[] {
       .filter((r) => r.team === team && r.gender === gender)
       .map((r) => r.year)
   );
+  const richAdvancedYears = new Set(
+    regionalsRich
+      .filter(
+        (r) => r.team === team && r.gender === gender && r.teamAdvanced === true
+      )
+      .map((r) => r.year)
+  );
   return filterRows(team, gender)
-    .filter((r) => r.advanced || ncaaYears.has(r.year))
+    .filter(
+      (r) =>
+        richAdvancedYears.has(r.year) || ncaaYears.has(r.year) || r.advanced
+    )
     .map((r) => r.year);
+}
+
+/**
+ * Stateless predicate for "did the team advance?" — used by table /
+ * grid components that already have the relevant lookups in hand and
+ * don't want to refilter the global arrays. Same OR-logic as
+ * `effectiveAdvancedYears`, just without the data-fetching half.
+ */
+export function didAdvanceFromRegional(opts: {
+  richTeamAdvanced?: boolean | null;
+  ncaaAppearance?: boolean;
+  basicAdvanced?: boolean;
+}): boolean {
+  return Boolean(
+    opts.richTeamAdvanced === true ||
+      opts.ncaaAppearance ||
+      opts.basicAdvanced
+  );
 }
 
 export function computeRegionalStreak(team: string, gender: Gender): StreakResult {
