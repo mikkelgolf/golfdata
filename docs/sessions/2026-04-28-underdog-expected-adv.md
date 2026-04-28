@@ -51,6 +51,65 @@ rather than a blunt seed-bucket threshold.
 - Update the tooltip / label on the tile if the definition changes meaningfully
 - Wrap with PR
 
+## Decisions (from David, 2026-04-28)
+
+- **New definition:** within the seeding-data window, "underdog" =
+  `expectedAdv !== true` AND advanced to NCAAs. Null counts as underdog
+  (treats missing data as "not expected"); only an explicit `true` means
+  "expected to advance".
+- **Year window:** computed dynamically per gender as the set of years
+  in which any team has `expectedAdv === true`. Currently resolves to
+  2002-2025 for men and 2000-2025 for women (gap at 2020 in both, COVID).
+- **Outside the window:** rows are excluded from the count entirely
+  (we have no truth to call anyone an underdog there).
+- **Scope:** Team page + /regionals-leaderboard. Both use the new helper.
+- **Tile text (team page only):**
+  - "Advanced as underdog" subtitle → "Advanced to NCAAs unexpectedly
+    based on seeding"
+  - "Seeded years" subtitle → "Seeding data available: {minYear}-present"
+    (using the dynamic min year for the gender)
+- **Wrap:** added a `wrapDetail` prop on `StatCard` so longer subtitles
+  wrap onto multiple lines instead of getting truncated by ellipsis.
+- **Spelling note:** David wrote "Seeding data **availed**" — used
+  "available" since "availed" doesn't quite fit grammatically. Flagged
+  for confirmation.
+
+## Implementation
+
+Files changed:
+- `src/data/regionals-seeding.ts` — new helper `getSeedingWindow(gender)`
+  returning `{ minYear, maxYear, years: Set<number> }`. Cached per gender.
+- `src/components/stat-card.tsx` — new `wrapDetail` prop; when true, the
+  detail line uses `whitespace-normal break-words leading-snug` instead
+  of `truncate`.
+- `src/components/team-page/regional-performance.tsx` — new
+  `seedingMinYear` prop; updated both subtitles; both tiles set
+  `wrapDetail`.
+- `src/app/teams/[gender]/[slug]/page.tsx` — replaced the seed >= 5 +
+  NCAA filter with the new window/expectedAdv-based filter; passes
+  `seedingMinYear` to `RegionalPerformance`.
+- `src/app/regionals-leaderboard/page.tsx` — same filter swap inside
+  `buildAggregates`.
+- `src/components/regionals-leaderboard-tabs.tsx` — updated the
+  "Most advanced as underdog" subtitle to match the new definition
+  (was "Seeded 5 or lower and still made it to the NCAA Championship.").
+
+## Sanity check
+
+Compared old vs new counts across all teams:
+
+| Gender | Total old | Total new | #1 old             | #1 new            |
+|--------|-----------|-----------|--------------------|-------------------|
+| Men    | 313       | 188       | varies             | SMU (6, was 7)    |
+| Women  | 303       | 163       | varies             | Purdue (9, was 13)|
+
+Lower totals are expected — the new logic correctly excludes teams that
+*were* expected to advance but had seed >= 5 (e.g. a 5-seed at a Regional
+where 6 seeds advanced). The leaderboard ordering is similar to before,
+just slightly tighter at the top.
+
 ## Progress log
 
-- 2026-04-28: branch + session doc created, awaiting definition confirmation
+- 2026-04-28: branch + session doc created
+- 2026-04-28: spec confirmed, helper + filters + UI + subtitle text all
+  shipped; typecheck clean; ready for review

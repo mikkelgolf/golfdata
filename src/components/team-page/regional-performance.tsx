@@ -24,12 +24,22 @@ export interface RegionalPerformanceProps {
   bestSgRegional: string | null;
   /** Number of Regional appearances where the team's final position beat its seed. */
   beatSeedCount: number;
-  /** Number of appearances where the team was seeded ≥5 AND advanced to NCAAs. */
+  /**
+   * Number of appearances where the team was NOT expected to advance
+   * (per the spreadsheet's "Expected to Adv" flag) but made it to NCAAs
+   * anyway. Only years within the seeding-data window count.
+   */
   underdogAdvanceCount: number;
   /** Total Regional appearances ever (with and without seed data). */
   totalAppearances: number;
   /** Bucketed seed performance (entries / titles / advanced per band). */
   seedBuckets: SeedBucket[];
+  /**
+   * Earliest year for which seeding-expectation data is available for
+   * this gender (e.g. 2000 for women, 2002 for men). Drives the
+   * "Seeded years" tile subtitle. Null if no data is available.
+   */
+  seedingMinYear: number | null;
 }
 
 function fmtSg(v: number | null): string {
@@ -50,6 +60,7 @@ export default function RegionalPerformance(props: RegionalPerformanceProps) {
     underdogAdvanceCount,
     totalAppearances,
     seedBuckets,
+    seedingMinYear,
   } = props;
 
   const bestSgDetail =
@@ -87,12 +98,18 @@ export default function RegionalPerformance(props: RegionalPerformanceProps) {
         <StatCard
           label="Advanced as underdog"
           value={`${underdogAdvanceCount}×`}
-          detail="seed ≥5 and made NCAAs"
+          detail="Advanced to NCAAs unexpectedly based on seeding"
+          wrapDetail
         />
         <StatCard
           label="Seeded years"
           value={seededYears}
-          detail="with committee seed on record"
+          detail={
+            seedingMinYear != null
+              ? `Seeding data available: ${seedingMinYear}-present`
+              : "with committee seed on record"
+          }
+          wrapDetail
         />
       </div>
 

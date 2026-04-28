@@ -17,6 +17,13 @@ interface Props {
    * (percentile / 100) * 60. >=75 uses --primary, else --muted-foreground.
    */
   percentile?: number;
+  /**
+   * When true, allow the `detail` line to wrap onto multiple lines instead
+   * of truncating with ellipsis. Useful for longer descriptive subtitles
+   * (e.g. "Advanced to NCAAs unexpectedly based on seeding") that should
+   * stay readable on narrow screens.
+   */
+  wrapDetail?: boolean;
   className?: string;
 }
 
@@ -71,6 +78,7 @@ export function StatCard({
   animate = true,
   accent = "default",
   percentile,
+  wrapDetail = false,
   className,
 }: Props) {
   const numericValue = typeof value === "number" ? value : Number(String(value).replace(/[^0-9.-]/g, ""));
@@ -104,7 +112,13 @@ export function StatCard({
       </div>
       {hasPercentile && <PercentileRail pct={percentile as number} />}
       {detail && (
-        <div className="mt-0.5 text-[10px] text-text-tertiary font-mono tabular-nums truncate" title={detail}>
+        <div
+          className={cn(
+            "mt-0.5 text-[10px] text-text-tertiary font-mono tabular-nums",
+            wrapDetail ? "whitespace-normal break-words leading-snug" : "truncate"
+          )}
+          title={wrapDetail ? undefined : detail}
+        >
           {detail}
         </div>
       )}

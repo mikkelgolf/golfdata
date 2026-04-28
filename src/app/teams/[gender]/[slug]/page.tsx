@@ -25,6 +25,7 @@ import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
 import { regionalsHistory } from "@/data/regionals-history";
 import { regionalsRich } from "@/data/regionals-rich";
+import { getSeedingWindow } from "@/data/regionals-seeding";
 import { championshipsHistory } from "@/data/championships-history";
 import { recordsMen } from "@/data/records-men";
 import { recordsWomen } from "@/data/records-women";
@@ -365,11 +366,19 @@ export default function TeamPage({ params }: { params: Params }) {
   const beatSeedCount = richRows.filter(
     (r) => r.seed != null && r.finalPos != null && (r.finalPos as number) < (r.seed as number)
   ).length;
-  // "Advanced as underdog" = seed >= 5 AND the team actually appeared at NCAAs
-  // that year (NCAA appearance is the reliable advance proxy per the existing
-  // timeline logic).
+  // "Advanced as underdog" = within the years for which we have committee
+  // expected-to-advance data (per gender — see getSeedingWindow), count
+  // appearances where the team was NOT flagged as expected to advance and
+  // still made it to NCAAs. Years outside the seeding-data window are
+  // excluded entirely — we have no truth there to call anyone an underdog.
+  // Note: in past eras different numbers of seeds advanced from each
+  // Regional, so a blunt "seed >= 5" rule was misleading.
+  const seedingWindow = getSeedingWindow(gender);
   const underdogAdvanceCount = richRows.filter(
-    (r) => r.seed != null && (r.seed as number) >= 5 && ncaaByYear.has(r.year)
+    (r) =>
+      seedingWindow.years.has(r.year) &&
+      r.expectedAdv !== true &&
+      ncaaByYear.has(r.year)
   ).length;
   // Seed buckets for a small "seed breakdown" chip grid.
   const bucketDefs: Array<{ range: string; test: (s: number) => boolean }> = [
@@ -777,6 +786,7 @@ export default function TeamPage({ params }: { params: Params }) {
               underdogAdvanceCount={underdogAdvanceCount}
               totalAppearances={totalRichAppearances}
               seedBuckets={seedBuckets}
+              seedingMinYear={seedingWindow.minYear}
             />
           </section>
         )}
