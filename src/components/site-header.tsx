@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "@/components/mobile-nav";
 
@@ -27,8 +28,16 @@ export function SiteHeader() {
       <nav className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
         <Link
           href="/"
-          className="text-[13px] font-semibold text-foreground hover:text-foreground/80 transition-colors tracking-tight"
+          className="flex items-center gap-2 text-[13px] font-semibold text-foreground hover:text-foreground/80 transition-colors tracking-tight"
         >
+          <Image
+            src="/logo.png"
+            alt=""
+            width={48}
+            height={48}
+            priority
+            className="h-6 w-6"
+          />
           College Golf Data
         </Link>
         <div className="hidden sm:flex items-center gap-4">
