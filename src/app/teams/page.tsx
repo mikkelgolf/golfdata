@@ -9,6 +9,7 @@ import {
   computeAllChampionshipStats,
 } from "@/lib/streaks";
 import { slugify } from "@/lib/team-slug";
+import { canonicalConferenceLabel } from "@/data/conference-codes";
 import TeamsIndex, { type TeamsIndexRow } from "@/components/teams-index";
 
 export const metadata: Metadata = {
@@ -24,12 +25,18 @@ function buildRows(gender: Gender): TeamsIndexRow[] {
 
   const byTeam = new Map<string, TeamsIndexRow>();
 
+  // Canonicalize the conference label per row so the filter chips and
+  // per-row "Conf." column dedupe to a single canonical short code (e.g.
+  // "NEC") even when Clippd ships multiple variants for the same
+  // conference. The ingestion script's CONF_MAP has been patched, but
+  // canonicalizing here too makes the Teams page resilient to any future
+  // variant we haven't seen yet.
   for (const t of rankings) {
     byTeam.set(t.team, {
       team: t.team,
       slug: slugify(t.team),
       rank: t.rank,
-      conference: t.conference,
+      conference: canonicalConferenceLabel(t.conference, gender),
       wins: t.wins,
       losses: t.losses,
       ties: t.ties,
@@ -47,7 +54,7 @@ function buildRows(gender: Gender): TeamsIndexRow[] {
         team: t.team,
         slug: slugify(t.team),
         rank: t.rank,
-        conference: t.conference,
+        conference: canonicalConferenceLabel(t.conference, gender),
         wins: t.wins,
         losses: t.losses,
         ties: t.ties,
