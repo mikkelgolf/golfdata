@@ -1,0 +1,184 @@
+[
+  {
+    "gender": "men",
+    "seed": 1,
+    "n_apps": 96,
+    "n_advanced": 90,
+    "rate": 0.9375
+  },
+  {
+    "gender": "men",
+    "seed": 2,
+    "n_apps": 96,
+    "n_advanced": 78,
+    "rate": 0.8125
+  },
+  {
+    "gender": "men",
+    "seed": 3,
+    "n_apps": 96,
+    "n_advanced": 82,
+    "rate": 0.8541666666666666
+  },
+  {
+    "gender": "men",
+    "seed": 4,
+    "n_apps": 96,
+    "n_advanced": 58,
+    "rate": 0.6041666666666666
+  },
+  {
+    "gender": "men",
+    "seed": 5,
+    "n_apps": 96,
+    "n_advanced": 46,
+    "rate": 0.4791666666666667
+  },
+  {
+    "gender": "men",
+    "seed": 6,
+    "n_apps": 96,
+    "n_advanced": 43,
+    "rate": 0.4479166666666667
+  },
+  {
+    "gender": "men",
+    "seed": 7,
+    "n_apps": 96,
+    "n_advanced": 26,
+    "rate": 0.2708333333333333
+  },
+  {
+    "gender": "men",
+    "seed": 8,
+    "n_apps": 96,
+    "n_advanced": 22,
+    "rate": 0.22916666666666666
+  },
+  {
+    "gender": "men",
+    "seed": 9,
+    "n_apps": 96,
+    "n_advanced": 23,
+    "rate": 0.23958333333333334
+  },
+  {
+    "gender": "men",
+    "seed": 10,
+    "n_apps": 96,
+    "n_advanced": 12,
+    "rate": 0.125
+  },
+  {
+    "gender": "men",
+    "seed": 11,
+    "n_apps": 96,
+    "n_advanced": 6,
+    "rate": 0.0625
+  },
+  {
+    "gender": "men",
+    "seed": 12,
+    "n_apps": 96,
+    "n_advanced": 3,
+    "rate": 0.03125
+  },
+  {
+    "gender": "men",
+    "seed": 13,
+    "n_apps": 96,
+    "n_advanced": 0,
+    "rate": 0
+  },
+  {
+    "gender": "men",
+    "seed": 14,
+    "n_apps": 47,
+    "n_advanced": 0,
+    "rate": 0
+  },
+  {
+    "gender": "women",
+    "seed": 1,
+    "n_apps": 24,
+    "n_advanced": 24,
+    "rate": 1
+  },
+  {
+    "gender": "women",
+    "seed": 2,
+    "n_apps": 24,
+    "n_advanced": 21,
+    "rate": 0.875
+  },
+  {
+    "gender": "women",
+    "seed": 3,
+    "n_apps": 24,
+    "n_advanced": 18,
+    "rate": 0.75
+  },
+  {
+    "gender": "women",
+    "seed": 4,
+    "n_apps": 24,
+    "n_advanced": 16,
+    "rate": 0.6666666666666666
+  },
+  {
+    "gender": "women",
+    "seed": 5,
+    "n_apps": 24,
+    "n_advanced": 15,
+    "rate": 0.625
+  },
+  {
+    "gender": "women",
+    "seed": 6,
+    "n_apps": 24,
+    "n_advanced": 11,
+    "rate": 0.4583333333333333
+  },
+  {
+    "gender": "women",
+    "seed": 7,
+    "n_apps": 24,
+    "n_advanced": 8,
+    "rate": 0.3333333333333333
+  },
+  {
+    "gender": "women",
+    "seed": 8,
+    "n_apps": 24,
+    "n_advanced": 5,
+    "rate": 0.20833333333333334
+  },
+  {
+    "gender": "women",
+    "seed": 9,
+    "n_apps": 24,
+    "n_advanced": 1,
+    "rate": 0.041666666666666664
+  },
+  {
+    "gender": "women",
+    "seed": 10,
+    "n_apps": 24,
+    "n_advanced": 1,
+    "rate": 0.041666666666666664
+  },
+  {
+    "gender": "women",
+    "seed": 11,
+    "n_apps": 24,
+    "n_advanced": 1,
+    "rate": 0.041666666666666664
+  },
+  {
+    "gender": "women",
+    "seed": 12,
+    "n_apps": 24,
+    "n_advanced": 0,
+    "rate": 0
+  }
+]
