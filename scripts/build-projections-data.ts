@@ -364,15 +364,14 @@ function lookupDistanceOR(
   distLift: any[],
   gender: Gender,
   miles: number,
-  tier: SeedTier,
-): { OR: number; bucket: DistanceBucket; n: number; level: "tier" | "aggregate" } {
+  // tier kept for call-site parity with host/zone but intentionally unused —
+  // tier-segmented distance ORs invert in low-n cells (women BOT 250-750 came
+  // out at OR=0.52 from 1 advance in 35; BOT 1500+ at OR=2.05 from 3 in 16),
+  // which made closer teams penalized and far teams boosted. Distance is a
+  // continuous physical effect; the aggregate stays monotonic and intuitive.
+  _tier: SeedTier,
+): { OR: number; bucket: DistanceBucket; n: number; level: "aggregate" } {
   const bucket = distanceBucket(miles);
-  const tierCell = distLift.find(
-    (c) => c.gender === gender && c.bucket === bucket && c.level === "tier" && c.tier === tier,
-  );
-  if (tierCell && tierCell.n >= MIN_CELL_N) {
-    return { OR: tierCell.oddsRatio, bucket, n: tierCell.n, level: "tier" };
-  }
   const agg = distLift.find(
     (c) => c.gender === gender && c.bucket === bucket && c.level === "aggregate",
   );

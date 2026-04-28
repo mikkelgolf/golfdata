@@ -6,10 +6,6 @@ import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { Plane, MapPin, Info } from "lucide-react";
 import perTeamData from "@/data/projections/per-team-2026.json";
-import seedBaseline from "@/data/projections/seed-baseline.json";
-import hostLift from "@/data/projections/host-lift.json";
-import distanceLift from "@/data/projections/distance-lift.json";
-import zoneLift from "@/data/projections/zone-lift.json";
 import type { Regional } from "@/data/regionals-men-2026";
 
 type Gender = "men" | "women";
@@ -271,21 +267,6 @@ function Th({
 function Methodology() {
   const [open, setOpen] = useState(false);
 
-  const seedRange = (g: Gender) => {
-    const cells = (seedBaseline as { gender: Gender; seed: number; n_apps: number }[]).filter(
-      (c) => c.gender === g,
-    );
-    const seasons =
-      g === "men" ? "2009–2025 excl. 2020 (16 seasons, 6×14 format)" : "2022–2025 (4 seasons, 6×12 format)";
-    const nMax = Math.max(...cells.map((c) => c.n_apps));
-    return `${seasons}, n up to ${nMax} per seed cell`;
-  };
-
-  const hostRow = (g: Gender) => (hostLift as any[]).find((c) => c.gender === g);
-  const distRows = (g: Gender) => (distanceLift as any[]).filter((c) => c.gender === g);
-  const zoneAgg = (g: Gender, io: "in" | "out") =>
-    (zoneLift as any[]).find((c) => c.gender === g && c.level === "aggregate" && c.in_or_out === io);
-
   return (
     <div className="mt-6 rounded-md border border-border bg-card">
       <button
@@ -295,107 +276,73 @@ function Methodology() {
       >
         <span className="inline-flex items-center gap-2">
           <Info className="h-3.5 w-3.5" />
-          Methodology
+          How these numbers are calculated
         </span>
         <span className="text-[11px] text-text-tertiary">{open ? "hide" : "show"}</span>
       </button>
       {open && (
-        <div className="space-y-4 border-t border-border px-3 py-3 text-[12px] leading-relaxed text-text-secondary">
-          <Section title="Layer 1 — Seed baseline">
+        <div className="space-y-4 border-t border-border px-3 py-3 text-[13px] leading-relaxed text-text-secondary">
+          <p>
+            Five teams advance from each regional to the NCAA Championship. The
+            Final % column is each team&apos;s estimated chance, built from four
+            things history says actually matter.
+          </p>
+
+          <Section title="1. Seed">
             <p>
-              For each (gender, regional seed) cell, advancement rate over the
-              format-stable era. Modern era only because field size and the
-              meaning of &quot;seed N&quot; depend on it. Men: {seedRange("men")}. Women:{" "}
-              {seedRange("women")}.
-            </p>
-            <p className="text-text-tertiary">
-              Advancement defined as finish ≤ 5. Ties at 5th flatten to 5 and
-              count as advanced (uniform across history).
+              The biggest signal by far. Top seeds advance over 90% of the time;
+              5-seeds about half the time; bottom seeds rarely. Every team starts
+              from the historical advancement rate for their seed.
             </p>
           </Section>
 
-          <Section title="Layer 2 — Host school lift">
-            {(["men", "women"] as const).map((g) => {
-              const c = hostRow(g);
-              if (!c) return null;
-              return (
-                <p key={g}>
-                  <span className="font-medium text-foreground">{g}:</span> n={c.n} host
-                  appearances; observed {(c.observed * 100).toFixed(0)}% advance vs
-                  seed-matched expected {(c.expected * 100).toFixed(0)}%. Odds-ratio{" "}
-                  <span className="font-medium text-foreground">{c.oddsRatio.toFixed(2)}×</span>.
-                </p>
-              );
-            })}
-            <p className="text-text-tertiary">
-              Host detection by campus-to-venue distance &lt; 30 miles.
-            </p>
-          </Section>
-
-          <Section title="Layer 3 — Travel distance lift">
-            {(["men", "women"] as const).map((g) => (
-              <div key={g}>
-                <p className="font-medium text-foreground">{g}:</p>
-                <ul className="ml-4 list-disc">
-                  {distRows(g).map((c) => (
-                    <li key={c.bucket}>
-                      {c.bucket} mi — n={c.n}, observed {(c.observed * 100).toFixed(0)}%, OR{" "}
-                      {c.oddsRatio.toFixed(2)}×
-                      {c.n < 15 && (
-                        <span className="ml-1 text-text-tertiary">(sparse → no effect applied)</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </Section>
-
-          <Section title="Layer 4 — Climate / agronomy zone">
+          <Section title="2. Playing at home">
             <p>
-              Four zones: PNW (WA + OR, bent-dominant), WEST (CA / AZ / NV / NM / HI,
-              poa + desert overseed), SOUTH (warm-season bermuda), NORTH (cool-season
-              interior + Northeast + Mid-Atlantic).
-            </p>
-            {(["men", "women"] as const).map((g) => {
-              const inZ = zoneAgg(g, "in");
-              const outZ = zoneAgg(g, "out");
-              if (!inZ || !outZ) return null;
-              return (
-                <p key={g}>
-                  <span className="font-medium text-foreground">{g}:</span>{" "}
-                  in-zone n={inZ.n} OR={inZ.oddsRatio.toFixed(2)}× · out-of-zone n=
-                  {outZ.n} OR={outZ.oddsRatio.toFixed(2)}×. Specific zone-pair lifts are
-                  used when n ≥ 15, else the in/out aggregate.
-                </p>
-              );
-            })}
-            <p className="text-text-tertiary">
-              PNW vs WEST split because Pacific Northwest leans bent rather than poa
-              and isn&apos;t equivalent to California / desert overseed for visiting teams.
+              Hosts advance noticeably more than their seed alone would predict.
+              The biggest bump goes to mid-seed hosts (4–7 seeds) — they have the
+              most room to outperform. Top-seed hosts are already favored, so the
+              extra lift is smaller in absolute terms.
             </p>
           </Section>
 
-          <Section title="Combination + normalization">
+          <Section title="3. Travel distance">
             <p>
-              Layers stacked as multiplicative odds-ratios on the seed baseline.
-              Pseudo-counts (Laplace α=0.5) avoid 0% / 100% edge cases. Within each
-              regional, probabilities are renormalized (log-odds shift) so the column
-              sums to {TEAMS_ADVANCING}.000 — the five advancing spots.
-            </p>
-            <p className="text-text-tertiary">
-              Built {new Date(PAYLOAD.builtAt).toLocaleString()}. Re-run{" "}
-              <code className="rounded bg-muted px-1 py-0.5">npx tsx
-              scripts/build-projections-data.ts</code> after a rankings refresh.
+              Teams within roughly 250 miles of the venue do measurably better.
+              Past that, longer trips hurt slightly and consistently — a
+              coast-to-coast haul is harder than a regional drive.
             </p>
           </Section>
 
-          <Section title="Future extensions (not in v1)">
+          <Section title="4. Climate and grass type">
             <p>
-              Elevation effects (Layer 5: Albuquerque / Mountain West regionals).
-              Roster-strength adjustment (current model is structural only).
-              PNW women&apos;s baseline tightening as 2026/2027 seasons accumulate (current
-              n=24 per seed).
+              Teams play differently on turf they&apos;re used to. We split college
+              golf into four zones by dominant agronomy: <strong>PNW</strong>{" "}
+              (Pacific Northwest, bent), <strong>West</strong> (California /
+              desert), <strong>South</strong> (warm-season bermuda), and{" "}
+              <strong>North</strong> (cool-season interior, Northeast,
+              Mid-Atlantic). Crossing zones — especially North ↔ South — costs a
+              few percentage points on average.
+            </p>
+          </Section>
+
+          <Section title="Why each regional sums to 500%">
+            <p>
+              Five teams advance, so each regional&apos;s column is calibrated to
+              total exactly 5.000. A clear favorite — say a top seed who&apos;s also
+              the host — gets pinned near 99% rather than dragging the math
+              around; the rest of the probability is spread across the more
+              contested middle of the field.
+            </p>
+          </Section>
+
+          <Section title="What this can't tell you">
+            <p>
+              This is a structural model, not a form model. Two teams with the
+              same seed get the same starting point regardless of how they&apos;re
+              actually playing right now. A team in late-season form is probably
+              underrated here; a slumping favorite is probably overrated. For
+              roster strength and current form, look at the head-to-head and
+              rankings tabs.
             </p>
           </Section>
         </div>

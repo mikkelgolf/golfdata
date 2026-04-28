@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-04-28T08:38:35.538Z",
+  "builtAt": "2026-04-28T09:19:01.777Z",
   "teamsAdvancing": 5,
   "regionals": [
     {
@@ -22,9 +22,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 93.29896907216495,
           "afterHostPct": 93.29896907216495,
-          "afterDistancePct": 91.14134962173979,
-          "afterZonePct": 92.41247418225302,
-          "finalPct": 92.20594288566622
+          "afterDistancePct": 93.17617529336147,
+          "afterZonePct": 94.1739874060025,
+          "finalPct": 93.30645907615356
         },
         {
           "team": "New Mexico",
@@ -36,9 +36,9 @@
           "zoneCrossing": "WEST->PNW",
           "baseRatePct": 85.05154639175258,
           "afterHostPct": 85.05154639175258,
-          "afterDistancePct": 80.78529583012079,
-          "afterZonePct": 81.90844185553762,
-          "finalPct": 81.47331275988188
+          "afterDistancePct": 84.80223997634164,
+          "afterZonePct": 85.73205524917196,
+          "finalPct": 83.82340112275315
         },
         {
           "team": "Arkansas",
@@ -50,9 +50,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 80.9278350515464,
           "afterHostPct": 80.9278350515464,
-          "afterDistancePct": 77.32134295844175,
-          "afterZonePct": 80.14346236235208,
-          "finalPct": 79.67641589701546
+          "afterDistancePct": 77.80255193811368,
+          "afterZonePct": 80.57982988178814,
+          "finalPct": 78.15754900881673
         },
         {
           "team": "Alabama",
@@ -64,9 +64,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 60.30927835051546,
           "afterHostPct": 60.30927835051546,
-          "afterDistancePct": 57.186626176167444,
-          "afterZonePct": 61.258916319840594,
-          "finalPct": 60.56624187100531
+          "afterDistancePct": 55.65661812547701,
+          "afterZonePct": 59.7720652284775,
+          "finalPct": 56.16624816095565
         },
         {
           "team": "Clemson",
@@ -78,9 +78,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 44.84536082474227,
           "afterHostPct": 44.84536082474227,
-          "afterDistancePct": 41.68252798549618,
-          "afterZonePct": 45.8326788251549,
-          "finalPct": 45.111322745755885
+          "afterDistancePct": 40.17805281585973,
+          "afterZonePct": 44.29217831201092,
+          "finalPct": 40.675960874427915
         },
         {
           "team": "Oregon State",
@@ -92,9 +92,9 @@
           "zoneCrossing": "PNW->PNW",
           "baseRatePct": 12.886597938144329,
           "afterHostPct": 26.777394234410234,
-          "afterDistancePct": 35.869178486904495,
-          "afterZonePct": 42.94556329205649,
-          "finalPct": 42.23421768722716
+          "afterDistancePct": 35.67908140535611,
+          "afterZonePct": 42.742958839162746,
+          "finalPct": 39.16430369793672
         },
         {
           "team": "Notre Dame",
@@ -106,9 +106,9 @@
           "zoneCrossing": "NORTH->PNW",
           "baseRatePct": 47.93814432989691,
           "afterHostPct": 47.93814432989691,
-          "afterDistancePct": 44.734100185162056,
-          "afterZonePct": 39.50352588998495,
-          "finalPct": 38.810411230213056
+          "afterDistancePct": 43.20107513996129,
+          "afterZonePct": 38.026415665950154,
+          "finalPct": 34.60399497014001
         },
         {
           "team": "UNLV",
@@ -120,9 +120,9 @@
           "zoneCrossing": "WEST->PNW",
           "baseRatePct": 27.31958762886598,
           "afterHostPct": 27.31958762886598,
-          "afterDistancePct": 24.667173720076693,
-          "afterZonePct": 26.06861899505822,
-          "finalPct": 25.51182176355864
+          "afterDistancePct": 25.58739358139242,
+          "afterZonePct": 27.02236667216726,
+          "finalPct": 24.20353516600048
         },
         {
           "team": "NC State",
@@ -134,9 +134,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 24.22680412371134,
           "afterHostPct": 24.22680412371134,
-          "afterDistancePct": 13.039617108276587,
-          "afterZonePct": 15.075122427207843,
-          "finalPct": 14.706426067307
+          "afterDistancePct": 20.892524264155814,
+          "afterZonePct": 23.81812492897566,
+          "finalPct": 21.236277429839646
         },
         {
           "team": "UNCW",
@@ -148,9 +148,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 23.195876288659793,
           "afterHostPct": 23.195876288659797,
-          "afterDistancePct": 12.406793220594825,
-          "afterZonePct": 14.359826112565994,
-          "finalPct": 14.00573882074522
+          "afterDistancePct": 19.966094445888157,
+          "afterZonePct": 22.799355048715327,
+          "finalPct": 20.29851593195487
         },
         {
           "team": "Rice",
@@ -162,9 +162,9 @@
           "zoneCrossing": "SOUTH->PNW",
           "baseRatePct": 6.701030927835052,
           "afterHostPct": 6.701030927835052,
-          "afterDistancePct": 3.2586650739533756,
-          "afterZonePct": 3.8346759692678187,
-          "finalPct": 3.7288196819389494
+          "afterDistancePct": 5.600506515263113,
+          "afterZonePct": 6.562387880112702,
+          "finalPct": 5.710817493145534
         },
         {
           "team": "Eastern Michigan",
@@ -176,9 +176,9 @@
           "zoneCrossing": "NORTH->PNW",
           "baseRatePct": 3.608247422680412,
           "afterHostPct": 3.608247422680412,
-          "afterDistancePct": 1.7252859861872836,
-          "afterZonePct": 1.3964842512413578,
-          "finalPct": 1.3569845262447593
+          "afterDistancePct": 2.999328535436614,
+          "afterZonePct": 2.4337351470006983,
+          "finalPct": 2.1058461413219587
         },
         {
           "team": "Idaho",
@@ -190,9 +190,9 @@
           "zoneCrossing": "PNW->PNW",
           "baseRatePct": 0.5154639175257731,
           "afterHostPct": 0.5154639175257731,
-          "afterDistancePct": 0.4691168655196241,
-          "afterZonePct": 0.6303059352038302,
-          "finalPct": 0.6123430729938617
+          "afterDistancePct": 0.4717499199436955,
+          "afterZonePct": 0.6338379485275975,
+          "finalPct": 0.5470833418293841
         }
       ]
     },
@@ -216,9 +216,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 93.29896907216495,
           "afterHostPct": 93.29896907216495,
-          "afterDistancePct": 97.69608692532276,
-          "afterZonePct": 97.8242354746404,
-          "finalPct": 95.99753818452469
+          "afterDistancePct": 95.47900160613008,
+          "afterZonePct": 95.72507304090726,
+          "finalPct": 93.65975604309436
         },
         {
           "team": "Vanderbilt",
@@ -230,9 +230,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 85.05154639175258,
           "afterHostPct": 85.05154639175258,
-          "afterDistancePct": 94.54402604035941,
-          "afterZonePct": 94.83823567941366,
-          "finalPct": 90.74185398539764
+          "afterDistancePct": 89.61607208557231,
+          "afterZonePct": 90.14832798411739,
+          "finalPct": 85.78874204961934
         },
         {
           "team": "Georgia",
@@ -244,23 +244,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 47.93814432989691,
           "afterHostPct": 82.07294488755849,
-          "afterDistancePct": 91.85616648254073,
-          "afterZonePct": 92.28348727673014,
-          "finalPct": 86.44934040967459
-        },
-        {
-          "team": "Florida State",
-          "rank": 24,
-          "conference": "ACC",
-          "seed": 4,
-          "isHost": false,
-          "travelMi": 249,
-          "zoneCrossing": "SOUTH->SOUTH",
-          "baseRatePct": 60.30927835051546,
-          "afterHostPct": 60.30927835051546,
-          "afterDistancePct": 78.91873712433174,
-          "afterZonePct": 79.87618486708233,
-          "finalPct": 67.92210734436796
+          "afterDistancePct": 87.41238090350114,
+          "afterZonePct": 88.04252113074338,
+          "finalPct": 82.92754702317326
         },
         {
           "team": "Illinois",
@@ -272,23 +258,23 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 80.9278350515464,
           "afterHostPct": 80.9278350515464,
-          "afterDistancePct": 77.06973812372222,
-          "afterZonePct": 79.35402351297176,
-          "finalPct": 67.21707202242125
+          "afterDistancePct": 79.51528538860472,
+          "afterZonePct": 81.61406741198574,
+          "finalPct": 74.54430035017052
         },
         {
-          "team": "South Carolina",
-          "rank": 37,
-          "conference": "SEC",
-          "seed": 7,
+          "team": "Florida State",
+          "rank": 24,
+          "conference": "ACC",
+          "seed": 4,
           "isHost": false,
-          "travelMi": 133,
+          "travelMi": 249,
           "zoneCrossing": "SOUTH->SOUTH",
-          "baseRatePct": 27.31958762886598,
-          "afterHostPct": 27.31958762886598,
-          "afterDistancePct": 48.08088221931908,
-          "afterZonePct": 49.54344545546879,
-          "finalPct": 34.374665072938896
+          "baseRatePct": 60.30927835051546,
+          "afterHostPct": 60.30927835051546,
+          "afterDistancePct": 69.74099180566449,
+          "afterZonePct": 70.96189444480609,
+          "finalPct": 61.71744194866684
         },
         {
           "team": "TCU",
@@ -300,9 +286,23 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 44.84536082474227,
           "afterHostPct": 44.84536082474227,
-          "afterDistancePct": 45.585939693565045,
-          "afterZonePct": 47.041372847254685,
-          "finalPct": 32.15052597384712
+          "afterDistancePct": 44.364140477625455,
+          "afterZonePct": 45.81340794459553,
+          "finalPct": 35.80544098121409
+        },
+        {
+          "team": "South Carolina",
+          "rank": 37,
+          "conference": "SEC",
+          "seed": 7,
+          "isHost": false,
+          "travelMi": 133,
+          "zoneCrossing": "SOUTH->SOUTH",
+          "baseRatePct": 27.31958762886598,
+          "afterHostPct": 27.31958762886598,
+          "afterDistancePct": 36.31213269443796,
+          "afterZonePct": 37.67649053519415,
+          "finalPct": 28.510782230390213
         },
         {
           "team": "Northwestern",
@@ -314,9 +314,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 24.22680412371134,
           "afterHostPct": 24.22680412371134,
-          "afterDistancePct": 22.53134177606077,
-          "afterZonePct": 24.95861652433392,
-          "finalPct": 15.068994360031601
+          "afterDistancePct": 22.629650946700405,
+          "afterZonePct": 25.064089916866518,
+          "finalPct": 18.076709792217986
         },
         {
           "team": "California",
@@ -328,23 +328,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 23.195876288659793,
           "afterHostPct": 23.195876288659797,
-          "afterDistancePct": 12.406793220594825,
-          "afterZonePct": 9.8231719364441,
-          "finalPct": 5.491918280745139
-        },
-        {
-          "team": "Southern Illinois",
-          "rank": 110,
-          "conference": "MVC",
-          "seed": 12,
-          "isHost": false,
-          "travelMi": 418,
-          "zoneCrossing": "NORTH->SOUTH",
-          "baseRatePct": 3.608247422680412,
-          "afterHostPct": 3.608247422680412,
-          "afterDistancePct": 3.2930228198534826,
-          "afterZonePct": 3.7480479020303172,
-          "finalPct": 2.0350020355054803
+          "afterDistancePct": 19.966094445888157,
+          "afterZonePct": 16.0976011036169,
+          "finalPct": 11.23512652316825
         },
         {
           "team": "Oregon",
@@ -356,9 +342,23 @@
           "zoneCrossing": "PNW->SOUTH",
           "baseRatePct": 12.886597938144329,
           "afterHostPct": 12.886597938144325,
-          "afterDistancePct": 6.48761836715899,
-          "afterZonePct": 2.8125302822255094,
-          "finalPct": 1.5203092419718611
+          "afterDistancePct": 10.888765156512495,
+          "afterZonePct": 4.849829760089451,
+          "finalPct": 3.2531479370072605
+        },
+        {
+          "team": "Southern Illinois",
+          "rank": 110,
+          "conference": "MVC",
+          "seed": 12,
+          "isHost": false,
+          "travelMi": 418,
+          "zoneCrossing": "NORTH->SOUTH",
+          "baseRatePct": 3.608247422680412,
+          "afterHostPct": 3.608247422680412,
+          "afterDistancePct": 3.310978601923848,
+          "afterZonePct": 3.7683881064768157,
+          "finalPct": 2.518320003381679
         },
         {
           "team": "Washington State",
@@ -370,9 +370,9 @@
           "zoneCrossing": "PNW->SOUTH",
           "baseRatePct": 6.701030927835052,
           "afterHostPct": 6.701030927835052,
-          "afterDistancePct": 3.2586650739533756,
-          "afterZonePct": 1.385602728285656,
-          "finalPct": 0.7439669563925583
+          "afterDistancePct": 5.600506515263113,
+          "afterZonePct": 2.4149692281907127,
+          "finalPct": 1.606369425294402
         },
         {
           "team": "VCU",
@@ -384,9 +384,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 0.5154639175257731,
           "afterHostPct": 0.5154639175257731,
-          "afterDistancePct": 0.4691168655196241,
-          "afterZonePct": 0.5361018672487722,
-          "finalPct": 0.28670366531024893
+          "afterDistancePct": 0.4717499199436955,
+          "afterZonePct": 0.539108857961042,
+          "finalPct": 0.35630669581397006
         }
       ]
     },
@@ -410,9 +410,9 @@
           "zoneCrossing": "WEST->WEST",
           "baseRatePct": 60.30927835051546,
           "afterHostPct": 88.31069530414493,
-          "afterDistancePct": 94.90130322436421,
-          "afterZonePct": 95.17222976424412,
-          "finalPct": 94.78196815548199
+          "afterDistancePct": 91.9739489997932,
+          "afterZonePct": 92.3879480624552,
+          "finalPct": 90.98745811256201
         },
         {
           "team": "Oklahoma State",
@@ -424,9 +424,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 93.29896907216495,
           "afterHostPct": 93.29896907216495,
-          "afterDistancePct": 91.14134962173979,
-          "afterZonePct": 89.56844539589245,
-          "finalPct": 88.77860224990528
+          "afterDistancePct": 93.17617529336147,
+          "afterZonePct": 91.9325858720553,
+          "finalPct": 90.45697069882486
         },
         {
           "team": "Oklahoma",
@@ -438,9 +438,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 85.05154639175258,
           "afterHostPct": 85.05154639175258,
-          "afterDistancePct": 80.78529583012079,
-          "afterZonePct": 77.82107464268503,
-          "finalPct": 76.37635707348282
+          "afterDistancePct": 84.80223997634164,
+          "afterZonePct": 82.3221027079306,
+          "finalPct": 79.48097652809393
         },
         {
           "team": "LSU",
@@ -452,9 +452,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 80.9278350515464,
           "afterHostPct": 80.9278350515464,
-          "afterDistancePct": 75.81928723993133,
-          "afterZonePct": 72.35116567724435,
-          "finalPct": 70.68436487361768
+          "afterDistancePct": 80.62542107950345,
+          "afterZonePct": 77.64336171899828,
+          "finalPct": 74.28517105992654
         },
         {
           "team": "UCLA",
@@ -466,9 +466,9 @@
           "zoneCrossing": "WEST->WEST",
           "baseRatePct": 44.84536082474227,
           "afterHostPct": 44.84536082474227,
-          "afterDistancePct": 41.462082829128164,
-          "afterZonePct": 42.862964962073406,
-          "finalPct": 40.871285204009226
+          "afterDistancePct": 42.654091046265904,
+          "afterZonePct": 44.064930686233325,
+          "finalPct": 39.58740638807042
         },
         {
           "team": "Duke",
@@ -480,9 +480,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 47.93814432989691,
           "afterHostPct": 47.93814432989691,
-          "afterDistancePct": 44.734100185162056,
-          "afterZonePct": 40.31711104740413,
-          "finalPct": 38.36429825802473
+          "afterDistancePct": 43.20107513996129,
+          "afterZonePct": 38.8291050972766,
+          "finalPct": 34.55493645244878
         },
         {
           "team": "Purdue",
@@ -494,23 +494,9 @@
           "zoneCrossing": "NORTH->WEST",
           "baseRatePct": 27.31958762886598,
           "afterHostPct": 27.31958762886598,
-          "afterDistancePct": 27.91723939901598,
-          "afterZonePct": 35.57470777278265,
-          "finalPct": 33.72181270981829
-        },
-        {
-          "team": "San Diego",
-          "rank": 44,
-          "conference": "WCC",
-          "seed": 8,
-          "isHost": false,
-          "travelMi": 348,
-          "zoneCrossing": "WEST->WEST",
-          "baseRatePct": 23.195876288659793,
-          "afterHostPct": 23.195876288659797,
-          "afterDistancePct": 21.55204053212931,
-          "afterZonePct": 22.539235550210513,
-          "finalPct": 21.142477537266796
+          "afterDistancePct": 26.934590384988017,
+          "afterZonePct": 34.45134703437663,
+          "finalPct": 30.419430183359204
         },
         {
           "team": "Cincinnati",
@@ -522,9 +508,23 @@
           "zoneCrossing": "NORTH->WEST",
           "baseRatePct": 24.22680412371134,
           "afterHostPct": 24.22680412371134,
-          "afterDistancePct": 13.039617108276587,
-          "afterZonePct": 17.613422126972765,
-          "finalPct": 16.45706405018215
+          "afterDistancePct": 20.892524264155814,
+          "afterZonePct": 27.354372290590227,
+          "finalPct": 23.850813576929237
+        },
+        {
+          "team": "San Diego",
+          "rank": 44,
+          "conference": "WCC",
+          "seed": 8,
+          "isHost": false,
+          "travelMi": 348,
+          "zoneCrossing": "WEST->WEST",
+          "baseRatePct": 23.195876288659793,
+          "afterHostPct": 23.195876288659797,
+          "afterDistancePct": 21.64727078651892,
+          "afterZonePct": 22.637569098538012,
+          "finalPct": 19.575349364965295
         },
         {
           "team": "Little Rock",
@@ -536,9 +536,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 12.886597938144329,
           "afterHostPct": 12.886597938144325,
-          "afterDistancePct": 13.058370357274764,
-          "afterZonePct": 11.138642290176467,
-          "finalPct": 10.353944730669609
+          "afterDistancePct": 12.66953999465485,
+          "afterZonePct": 10.79987367614929,
+          "finalPct": 9.149573194302132
         },
         {
           "team": "Chattanooga",
@@ -550,9 +550,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 6.701030927835052,
           "afterHostPct": 6.701030927835052,
-          "afterDistancePct": 6.796785581527828,
-          "afterZonePct": 5.736840534629085,
-          "finalPct": 5.3099505336818345
+          "afterDistancePct": 6.580290755577353,
+          "afterZonePct": 5.552096450089552,
+          "finalPct": 4.661786161789793
         },
         {
           "team": "Tarleton State",
@@ -564,9 +564,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 3.608247422680412,
           "afterHostPct": 3.608247422680412,
-          "afterDistancePct": 3.66154204360035,
-          "afterZonePct": 3.074403901719951,
-          "finalPct": 2.8396629851005604
+          "afterDistancePct": 3.5411184208365616,
+          "afterZonePct": 2.972694679414711,
+          "finalPct": 2.485122898097419
         },
         {
           "team": "Wright State",
@@ -578,9 +578,9 @@
           "zoneCrossing": "NORTH->WEST",
           "baseRatePct": 0.5154639175257731,
           "afterHostPct": 0.5154639175257731,
-          "afterDistancePct": 0.24241054605979737,
-          "afterZonePct": 0.34526090464463943,
-          "finalPct": 0.3182149651896056
+          "afterDistancePct": 0.4261679421182559,
+          "afterZonePct": 0.6065091877514657,
+          "finalPct": 0.5050115419536059
         }
       ]
     },
@@ -604,9 +604,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 93.29896907216495,
           "afterHostPct": 93.29896907216495,
-          "afterDistancePct": 91.68633623799077,
-          "afterZonePct": 92.12180402311625,
-          "finalPct": 90.11551373396007
+          "afterDistancePct": 92.72024797267949,
+          "afterZonePct": 93.10563197325898,
+          "finalPct": 91.52323835290439
         },
         {
           "team": "Wake Forest",
@@ -618,9 +618,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 44.84536082474227,
           "afterHostPct": 80.16911390151384,
-          "afterDistancePct": 90.87579769297088,
-          "afterZonePct": 91.34971574176969,
-          "finalPct": 89.1699181166211
+          "afterDistancePct": 85.97871844203463,
+          "afterZonePct": 86.66968346414207,
+          "finalPct": 83.86608686763131
         },
         {
           "team": "Ole Miss",
@@ -632,9 +632,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 80.9278350515464,
           "afterHostPct": 80.9278350515464,
-          "afterDistancePct": 77.06973812372222,
-          "afterZonePct": 78.08784553218665,
-          "finalPct": 73.53437120807403
+          "afterDistancePct": 79.51528538860472,
+          "afterZonePct": 80.45235056238242,
+          "finalPct": 76.6927844193238
         },
         {
           "team": "Pepperdine",
@@ -646,9 +646,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 85.05154639175258,
           "afterHostPct": 85.05154639175258,
-          "afterDistancePct": 82.05189700066754,
-          "afterZonePct": 77.85606872191416,
-          "finalPct": 73.27091631441891
+          "afterDistancePct": 82.45550592572168,
+          "afterZonePct": 78.32911156149517,
+          "finalPct": 74.2916764333772
         },
         {
           "team": "Brigham Young",
@@ -660,9 +660,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 60.30927835051546,
           "afterHostPct": 60.30927835051546,
-          "afterDistancePct": 57.186626176167444,
-          "afterZonePct": 60.43479743453227,
-          "finalPct": 54.35712486508274
+          "afterDistancePct": 55.65661812547701,
+          "afterZonePct": 58.937518584254825,
+          "finalPct": 53.43502103944798
         },
         {
           "team": "Southern California",
@@ -674,9 +674,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 47.93814432989691,
           "afterHostPct": 47.93814432989691,
-          "afterDistancePct": 44.734100185162056,
-          "afterZonePct": 38.36725039715515,
-          "finalPct": 32.675998157197554
+          "afterDistancePct": 43.20107513996129,
+          "afterZonePct": 36.90670756950137,
+          "finalPct": 31.864918369353102
         },
         {
           "team": "Kansas",
@@ -688,9 +688,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 27.31958762886598,
           "afterHostPct": 27.31958762886598,
-          "afterDistancePct": 27.91723939901598,
-          "afterZonePct": 30.69483565897851,
-          "finalPct": 25.667706044498257
+          "afterDistancePct": 26.934590384988017,
+          "afterZonePct": 29.65464033890246,
+          "finalPct": 25.20773433263527
         },
         {
           "team": "Colorado",
@@ -702,9 +702,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 23.195876288659793,
           "afterHostPct": 23.195876288659797,
-          "afterDistancePct": 23.468046730532276,
-          "afterZonePct": 25.962413141643975,
-          "finalPct": 21.470239183053586
+          "afterDistancePct": 22.85072117503331,
+          "afterZonePct": 25.301165212709474,
+          "finalPct": 21.309332322955
         },
         {
           "team": "West Virginia",
@@ -716,9 +716,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 24.22680412371134,
           "afterHostPct": 24.22680412371134,
-          "afterDistancePct": 22.53134177606077,
-          "afterZonePct": 24.95861652433392,
-          "finalPct": 20.591819687992167
+          "afterDistancePct": 22.629650946700405,
+          "afterZonePct": 25.064089916866518,
+          "finalPct": 21.09909606701734
         },
         {
           "team": "Houston",
@@ -730,9 +730,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 12.886597938144329,
           "afterHostPct": 12.886597938144325,
-          "afterDistancePct": 13.058370357274764,
-          "afterZonePct": 13.737473575912942,
-          "finalPct": 11.044980699784928
+          "afterDistancePct": 12.66953999465485,
+          "afterZonePct": 13.33152270518409,
+          "finalPct": 10.951309313643195
         },
         {
           "team": "Liberty",
@@ -744,9 +744,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 3.608247422680412,
           "afterHostPct": 3.608247422680412,
-          "afterDistancePct": 5.415138396228372,
-          "afterZonePct": 6.1447624181262395,
-          "finalPct": 4.8566289460245935
+          "afterDistancePct": 5.37291756379277,
+          "afterZonePct": 6.0972195553621695,
+          "finalPct": 4.935073398317904
         },
         {
           "team": "St. Mary's (CA)",
@@ -758,9 +758,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 6.701030927835052,
           "afterHostPct": 6.701030927835052,
-          "afterDistancePct": 3.2586650739533756,
-          "afterZonePct": 2.5251540624989697,
-          "finalPct": 1.9797972897565712
+          "afterDistancePct": 5.600506515263113,
+          "afterZonePct": 4.3636346128900705,
+          "finalPct": 3.519529776169978
         },
         {
           "team": "Howard",
@@ -772,9 +772,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 1.0416666666666665,
           "afterHostPct": 1.0416666666666665,
-          "afterDistancePct": 0.9484580644683457,
-          "afterZonePct": 1.0831431454473308,
-          "finalPct": 0.8465124475280574
+          "afterDistancePct": 0.9537557791675206,
+          "afterZonePct": 1.0891848857998627,
+          "finalPct": 0.872712038291139
         },
         {
           "team": "Harvard",
@@ -786,9 +786,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 0.5154639175257731,
           "afterHostPct": 0.5154639175257731,
-          "afterDistancePct": 0.4691168655196241,
-          "afterZonePct": 0.5361018672487722,
-          "finalPct": 0.41847586863377384
+          "afterDistancePct": 0.4717499199436955,
+          "afterZonePct": 0.539108857961042,
+          "finalPct": 0.4314853619585039
         }
       ]
     },
@@ -812,9 +812,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 93.29896907216495,
           "afterHostPct": 93.29896907216495,
-          "afterDistancePct": 97.69608692532276,
-          "afterZonePct": 97.8242354746404,
-          "finalPct": 97.1185877648449
+          "afterDistancePct": 95.47900160613008,
+          "afterZonePct": 95.72507304090726,
+          "finalPct": 94.28714547676664
         },
         {
           "team": "Texas A&M",
@@ -826,9 +826,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 47.93814432989691,
           "afterHostPct": 82.07294488755849,
-          "afterDistancePct": 91.85616648254073,
-          "afterZonePct": 92.28348727673014,
-          "finalPct": 89.96518927509331
+          "afterDistancePct": 87.41238090350114,
+          "afterZonePct": 88.04252113074338,
+          "finalPct": 84.44050012366333
         },
         {
           "team": "Tennessee",
@@ -840,9 +840,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 85.05154639175258,
           "afterHostPct": 85.05154639175258,
-          "afterDistancePct": 80.78529583012079,
-          "afterZonePct": 81.67765170620437,
-          "finalPct": 76.96824288575509
+          "afterDistancePct": 84.80223997634164,
+          "afterZonePct": 85.54143194731097,
+          "finalPct": 81.34562676050301
         },
         {
           "team": "Arizona State",
@@ -854,9 +854,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 80.9278350515464,
           "afterHostPct": 80.9278350515464,
-          "afterDistancePct": 75.81928723993133,
-          "afterZonePct": 70.68695178982526,
-          "finalPct": 64.38441456254938
+          "afterDistancePct": 80.62542107950345,
+          "afterZonePct": 76.19287445511354,
+          "finalPct": 70.22835726828588
         },
         {
           "team": "Georgia Tech",
@@ -868,9 +868,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 60.30927835051546,
           "afterHostPct": 60.30927835051546,
-          "afterDistancePct": 56.96427839008973,
-          "afterZonePct": 58.3931463853797,
-          "finalPct": 51.2695678309383
+          "afterDistancePct": 58.15917019551633,
+          "afterZonePct": 59.57651837785598,
+          "finalPct": 52.067906521885455
         },
         {
           "team": "Utah",
@@ -882,9 +882,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 44.84536082474227,
           "afterHostPct": 44.84536082474227,
-          "afterDistancePct": 45.585939693565045,
-          "afterZonePct": 48.92822062431136,
-          "finalPct": 41.79930132985311
+          "afterDistancePct": 44.364140477625455,
+          "afterZonePct": 47.695360622694906,
+          "finalPct": 40.19520488855038
         },
         {
           "team": "Mississippi State",
@@ -896,9 +896,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 27.31958762886598,
           "afterHostPct": 27.31958762886598,
-          "afterDistancePct": 24.667173720076693,
-          "afterZonePct": 25.77104234113326,
-          "finalPct": 20.651806898498975
+          "afterDistancePct": 25.58739358139242,
+          "afterZonePct": 26.717837340439587,
+          "finalPct": 21.180607889034704
         },
         {
           "team": "USF",
@@ -910,9 +910,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 24.22680412371134,
           "afterHostPct": 24.22680412371134,
-          "afterDistancePct": 24.507211203061733,
-          "afterZonePct": 25.606354630502576,
-          "finalPct": 20.510793758413513
+          "afterDistancePct": 23.87107659634297,
+          "afterZonePct": 24.95111913340569,
+          "finalPct": 19.681700895270566
         },
         {
           "team": "Arkansas State",
@@ -924,9 +924,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 23.195876288659793,
           "afterHostPct": 23.195876288659797,
-          "afterDistancePct": 21.55204053212931,
-          "afterZonePct": 22.558249514476643,
-          "finalPct": 17.923115028655197
+          "afterDistancePct": 21.64727078651892,
+          "afterZonePct": 22.6566417531479,
+          "finalPct": 17.757140451841604
         },
         {
           "team": "Florida Gulf Coast",
@@ -938,9 +938,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 12.886597938144329,
           "afterHostPct": 12.886597938144325,
-          "afterDistancePct": 13.058370357274764,
-          "afterZonePct": 13.737473575912942,
-          "finalPct": 10.6651726595998
+          "afterDistancePct": 12.66953999465485,
+          "afterZonePct": 13.33152270518409,
+          "finalPct": 10.183078062414717
         },
         {
           "team": "Southern Miss",
@@ -952,9 +952,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 6.701030927835052,
           "afterHostPct": 6.701030927835052,
-          "afterDistancePct": 6.132804468594909,
-          "afterZonePct": 6.478580465576729,
-          "finalPct": 4.936778977417909
+          "afterDistancePct": 6.165257495189342,
+          "afterZonePct": 6.5127362863878675,
+          "finalPct": 4.883906755246612
         },
         {
           "team": "Oral Roberts",
@@ -966,9 +966,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 3.608247422680412,
           "afterHostPct": 3.608247422680412,
-          "afterDistancePct": 3.2930228198534826,
-          "afterZonePct": 3.484631794011218,
-          "finalPct": 2.635266221850029
+          "afterDistancePct": 3.310978601923848,
+          "afterZonePct": 3.5035945061213014,
+          "finalPct": 2.6063670806391808
         },
         {
           "team": "Arkansas-Pine Bluff",
@@ -980,9 +980,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 1.0416666666666665,
           "afterHostPct": 1.0416666666666665,
-          "afterDistancePct": 0.9484580644683457,
-          "afterZonePct": 1.0050631889698505,
-          "finalPct": 0.7553528426496566
+          "afterDistancePct": 0.9537557791675206,
+          "afterZonePct": 1.0106738516039278,
+          "finalPct": 0.7469112619894389
         },
         {
           "team": "Winthrop",
@@ -994,9 +994,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 0.5154639175257731,
           "afterHostPct": 0.5154639175257731,
-          "afterDistancePct": 0.5233254444401768,
-          "afterZonePct": 0.5547002285283754,
-          "finalPct": 0.416412963196945
+          "afterDistancePct": 0.5055722687834312,
+          "afterZonePct": 0.5358884354349293,
+          "finalPct": 0.3955387921584773
         }
       ]
     },
@@ -1020,9 +1020,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 93.29896907216495,
           "afterHostPct": 93.29896907216495,
-          "afterDistancePct": 91.68633623799077,
-          "afterZonePct": 91.70401685701086,
-          "finalPct": 90.41105643041489
+          "afterDistancePct": 92.72024797267949,
+          "afterZonePct": 92.73590398472638,
+          "finalPct": 91.93091713028018
         },
         {
           "team": "Stanford",
@@ -1034,9 +1034,9 @@
           "zoneCrossing": "WEST->NORTH",
           "baseRatePct": 85.05154639175258,
           "afterHostPct": 85.05154639175258,
-          "afterDistancePct": 82.05189700066754,
-          "afterZonePct": 82.72236269713036,
-          "finalPct": 80.32983456322764
+          "afterDistancePct": 82.45550592572168,
+          "afterZonePct": 83.11399731199202,
+          "finalPct": 81.4559561067862
         },
         {
           "team": "North Carolina",
@@ -1048,23 +1048,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 80.9278350515464,
           "afterHostPct": 80.9278350515464,
-          "afterDistancePct": 77.06973812372222,
-          "afterZonePct": 76.17535005991009,
-          "finalPct": 73.17026357335867
-        },
-        {
-          "team": "Louisville",
-          "rank": 35,
-          "conference": "ACC",
-          "seed": 6,
-          "isHost": false,
-          "travelMi": 192,
-          "zoneCrossing": "NORTH->NORTH",
-          "baseRatePct": 44.84536082474227,
-          "afterHostPct": 44.84536082474227,
-          "afterDistancePct": 66.70216030035697,
-          "afterZonePct": 66.75370785918766,
-          "finalPct": 63.13534905235302
+          "afterDistancePct": 79.51528538860472,
+          "afterZonePct": 78.68991005079184,
+          "finalPct": 76.71914586427314
         },
         {
           "team": "Charlotte",
@@ -1076,9 +1062,23 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 60.30927835051546,
           "afterHostPct": 60.30927835051546,
-          "afterDistancePct": 56.96427839008973,
-          "afterZonePct": 55.73608136164111,
-          "finalPct": 51.78471517823067
+          "afterDistancePct": 58.15917019551633,
+          "afterZonePct": 56.93929638780087,
+          "finalPct": 54.12958667729379
+        },
+        {
+          "team": "Louisville",
+          "rank": 35,
+          "conference": "ACC",
+          "seed": 6,
+          "isHost": false,
+          "travelMi": 192,
+          "zoneCrossing": "NORTH->NORTH",
+          "baseRatePct": 44.84536082474227,
+          "afterHostPct": 44.84536082474227,
+          "afterDistancePct": 55.22349908690981,
+          "afterZonePct": 55.28090305737412,
+          "finalPct": 52.45334313267684
         },
         {
           "team": "Long Beach State",
@@ -1090,9 +1090,9 @@
           "zoneCrossing": "WEST->NORTH",
           "baseRatePct": 47.93814432989691,
           "afterHostPct": 47.93814432989691,
-          "afterDistancePct": 44.734100185162056,
-          "afterZonePct": 45.87910486203913,
-          "finalPct": 41.96404717582392
+          "afterDistancePct": 43.20107513996129,
+          "afterZonePct": 44.33832119652996,
+          "finalPct": 41.550420238937996
         },
         {
           "team": "San Diego State",
@@ -1104,9 +1104,9 @@
           "zoneCrossing": "WEST->NORTH",
           "baseRatePct": 27.31958762886598,
           "afterHostPct": 27.31958762886598,
-          "afterDistancePct": 24.836209570061147,
-          "afterZonePct": 25.70883143148272,
-          "finalPct": 22.790188687855558
+          "afterDistancePct": 23.692748039130567,
+          "afterZonePct": 24.538310210710677,
+          "finalPct": 22.49230770265219
         },
         {
           "team": "Georgia Southern",
@@ -1118,9 +1118,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 24.22680412371134,
           "afterHostPct": 24.22680412371134,
-          "afterDistancePct": 22.53134177606077,
-          "afterZonePct": 21.6716923413216,
-          "finalPct": 19.093579484019976
+          "afterDistancePct": 22.629650946700405,
+          "afterZonePct": 21.767304591897318,
+          "finalPct": 19.891445323185284
         },
         {
           "team": "Ohio State",
@@ -1132,9 +1132,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 6.701030927835052,
           "afterHostPct": 15.078326700822453,
-          "afterDistancePct": 21.356455664845132,
-          "afterZonePct": 21.395476961952742,
-          "finalPct": 18.842318835826777
+          "afterDistancePct": 21.217825121464042,
+          "afterZonePct": 21.256661584936428,
+          "finalPct": 19.413888060484524
         },
         {
           "team": "Charleston",
@@ -1146,9 +1146,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 23.195876288659793,
           "afterHostPct": 23.195876288659797,
-          "afterDistancePct": 21.55204053212931,
-          "afterZonePct": 20.71976155263875,
-          "finalPct": 18.228538442321998
+          "afterDistancePct": 21.64727078651892,
+          "afterZonePct": 20.812289932566465,
+          "finalPct": 18.998745009773867
         },
         {
           "team": "Kentucky",
@@ -1160,9 +1160,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 12.886597938144329,
           "afterHostPct": 12.886597938144325,
-          "afterDistancePct": 18.450429362817395,
-          "afterZonePct": 18.485389000574703,
-          "finalPct": 16.207891959906615
+          "afterDistancePct": 18.326266800799743,
+          "afterZonePct": 18.361044146535367,
+          "finalPct": 16.716007357722614
         },
         {
           "team": "Marquette",
@@ -1174,9 +1174,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 3.608247422680412,
           "afterHostPct": 3.608247422680412,
-          "afterDistancePct": 3.2930228198534826,
-          "afterZonePct": 3.300424738256321,
-          "finalPct": 2.828868816789451
+          "afterDistancePct": 3.310978601923848,
+          "afterZonePct": 3.318419495651053,
+          "finalPct": 2.972045831868483
         },
         {
           "team": "Fairfield",
@@ -1188,9 +1188,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 1.0416666666666665,
           "afterHostPct": 1.0416666666666665,
-          "afterDistancePct": 0.9484580644683457,
-          "afterZonePct": 0.9506417735785598,
-          "finalPct": 0.8119974320090311
+          "afterDistancePct": 0.9537557791675206,
+          "afterZonePct": 0.9559515679030424,
+          "finalPct": 0.8539920378607904
         },
         {
           "team": "Navy",
@@ -1202,9 +1202,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 0.5154639175257731,
           "afterHostPct": 0.5154639175257731,
-          "afterDistancePct": 0.4691168655196241,
-          "afterZonePct": 0.4702021888906474,
-          "finalPct": 0.4013426292303779
+          "afterDistancePct": 0.4717499199436955,
+          "afterZonePct": 0.4728413060670209,
+          "finalPct": 0.42218952934389836
         }
       ]
     },
@@ -1228,8 +1228,8 @@
           "zoneCrossing": "WEST->WEST",
           "baseRatePct": 98,
           "afterHostPct": 99.56233085250338,
-          "afterDistancePct": 99.89233701092759,
-          "afterZonePct": 99.92686031333118,
+          "afterDistancePct": 99.64084719789575,
+          "afterZonePct": 99.75581630094645,
           "finalPct": 99
         },
         {
@@ -1244,7 +1244,7 @@
           "afterHostPct": 86,
           "afterDistancePct": 85.86344470538002,
           "afterZonePct": 89.59845474980227,
-          "finalPct": 88.11994693511434
+          "finalPct": 88.10165401285505
         },
         {
           "team": "Vanderbilt",
@@ -1258,7 +1258,7 @@
           "afterHostPct": 74,
           "afterDistancePct": 73.78208032406792,
           "afterZonePct": 79.96426287325892,
-          "finalPct": 77.46081294069734
+          "finalPct": 77.43031082971802
         },
         {
           "team": "Oklahoma",
@@ -1270,9 +1270,9 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 66,
           "afterHostPct": 66,
-          "afterDistancePct": 64.32900081234769,
-          "afterZonePct": 71.89101617112308,
-          "finalPct": 68.77275077072895
+          "afterDistancePct": 62.44998266296812,
+          "afterZonePct": 70.22597003876393,
+          "finalPct": 66.96914492303637
         },
         {
           "team": "Kent State",
@@ -1284,9 +1284,9 @@
           "zoneCrossing": "NORTH->WEST",
           "baseRatePct": 62,
           "afterHostPct": 62,
-          "afterDistancePct": 61.79035415554369,
-          "afterZonePct": 63.10309617475569,
-          "finalPct": 59.55835790448268
+          "afterDistancePct": 61.73351253526377,
+          "afterZonePct": 63.04703953369574,
+          "finalPct": 59.45828558224049
         },
         {
           "team": "Virginia Tech",
@@ -1298,9 +1298,9 @@
           "zoneCrossing": "NORTH->WEST",
           "baseRatePct": 46,
           "afterHostPct": 46,
-          "afterDistancePct": 45.77927847876312,
-          "afterZonePct": 47.171805058118785,
-          "finalPct": 43.46769472214632
+          "afterDistancePct": 45.7195420009564,
+          "afterZonePct": 47.11183034247603,
+          "finalPct": 43.36566762126343
         },
         {
           "team": "Kansas",
@@ -1312,23 +1312,9 @@
           "zoneCrossing": "NORTH->WEST",
           "baseRatePct": 34,
           "afterHostPct": 34.00000000000001,
-          "afterDistancePct": 32.36789209203915,
-          "afterZonePct": 33.60531040919601,
-          "finalPct": 30.354389646886805
-        },
-        {
-          "team": "Western Kentucky",
-          "rank": 102,
-          "conference": "CUSA",
-          "seed": 11,
-          "isHost": false,
-          "travelMi": 2014,
-          "zoneCrossing": "NORTH->WEST",
-          "baseRatePct": 6,
-          "afterHostPct": 6,
-          "afterDistancePct": 11.547397769516724,
-          "afterZonePct": 12.131629949377617,
-          "finalPct": 10.625587974070335
+          "afterDistancePct": 30.621039603960416,
+          "afterZonePct": 31.82309910364826,
+          "finalPct": 28.63444051701479
         },
         {
           "team": "Oregon State",
@@ -1340,23 +1326,9 @@
           "zoneCrossing": "PNW->WEST",
           "baseRatePct": 22,
           "afterHostPct": 22.000000000000004,
-          "afterDistancePct": 12.793461039896293,
-          "afterZonePct": 11.656634172517828,
-          "finalPct": 10.202712163388878
-        },
-        {
-          "team": "UTRGV",
-          "rank": 184,
-          "conference": "SOUTHLAND",
-          "seed": 12,
-          "isHost": false,
-          "travelMi": 1598,
-          "zoneCrossing": "SOUTH->WEST",
-          "baseRatePct": 2,
-          "afterHostPct": 2,
-          "afterDistancePct": 4.006772009029345,
-          "afterZonePct": 5.588762701733414,
-          "finalPct": 4.850129893945613
+          "afterDistancePct": 22.618659071896925,
+          "afterZonePct": 20.817176033657795,
+          "finalPct": 18.433142156809545
         },
         {
           "team": "Tulsa",
@@ -1368,9 +1340,23 @@
           "zoneCrossing": "SOUTH->WEST",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.2303280686673235,
-          "afterZonePct": 4.520191627935465,
-          "finalPct": 3.9169261700042126
+          "afterDistancePct": 5.1851001504235645,
+          "afterZonePct": 7.197446267782315,
+          "finalPct": 6.250061719860709
+        },
+        {
+          "team": "Western Kentucky",
+          "rank": 102,
+          "conference": "CUSA",
+          "seed": 11,
+          "isHost": false,
+          "travelMi": 2014,
+          "zoneCrossing": "NORTH->WEST",
+          "baseRatePct": 6,
+          "afterHostPct": 6,
+          "afterDistancePct": 5.9366074262139055,
+          "afterZonePct": 6.257046701301981,
+          "finalPct": 5.426207312637915
         },
         {
           "team": "Cal Poly",
@@ -1382,9 +1368,23 @@
           "zoneCrossing": "WEST->WEST",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 5.873875664662323,
-          "afterZonePct": 4.2376997820129665,
-          "finalPct": 3.670686311834296
+          "afterDistancePct": 7.222307786163048,
+          "afterZonePct": 5.231400091661828,
+          "finalPct": 4.530169324175613
+        },
+        {
+          "team": "UTRGV",
+          "rank": 184,
+          "conference": "SOUTHLAND",
+          "seed": 12,
+          "isHost": false,
+          "travelMi": 1598,
+          "zoneCrossing": "SOUTH->WEST",
+          "baseRatePct": 2,
+          "afterHostPct": 2,
+          "afterDistancePct": 1.9779798567236793,
+          "afterZonePct": 2.7821601661230373,
+          "finalPct": 2.4009146442482665
         }
       ]
     },
@@ -1399,20 +1399,6 @@
       "venueZone": "SOUTH",
       "teams": [
         {
-          "team": "North Carolina",
-          "rank": 12,
-          "conference": "ACC",
-          "seed": 2,
-          "isHost": true,
-          "travelMi": 0,
-          "zoneCrossing": "SOUTH->SOUTH",
-          "baseRatePct": 86,
-          "afterHostPct": 96.61226970915551,
-          "afterDistancePct": 99.14760255162034,
-          "afterZonePct": 99.31049235397273,
-          "finalPct": 99
-        },
-        {
           "team": "Arkansas",
           "rank": 6,
           "conference": "SEC",
@@ -1422,9 +1408,23 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 98,
           "afterHostPct": 98,
-          "afterDistancePct": 97.35444113897152,
-          "afterZonePct": 97.85257528052898,
-          "finalPct": 97.21829463160067
+          "afterDistancePct": 97.67339298758218,
+          "afterZonePct": 98.1126357315753,
+          "finalPct": 97.54477834684184
+        },
+        {
+          "team": "North Carolina",
+          "rank": 12,
+          "conference": "ACC",
+          "seed": 2,
+          "isHost": true,
+          "travelMi": 0,
+          "zoneCrossing": "SOUTH->SOUTH",
+          "baseRatePct": 86,
+          "afterHostPct": 96.61226970915551,
+          "afterDistancePct": 97.20516074256876,
+          "afterZonePct": 97.730747818107,
+          "finalPct": 97.05144364176152
         },
         {
           "team": "Ole Miss",
@@ -1436,9 +1436,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 66,
           "afterHostPct": 66,
-          "afterDistancePct": 68.82390426963109,
-          "afterZonePct": 73.21613499699178,
-          "finalPct": 67.70654342993596
+          "afterDistancePct": 66.79638264913221,
+          "afterZonePct": 71.35537331707233,
+          "finalPct": 65.56269407810463
         },
         {
           "team": "NC State",
@@ -1450,9 +1450,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 22,
           "afterHostPct": 56.69920617893156,
-          "afterDistancePct": 56.143884531326385,
-          "afterZonePct": 61.31850288837678,
-          "finalPct": 54.87006841049534
+          "afterDistancePct": 61.49322650710515,
+          "afterZonePct": 66.41424492051607,
+          "finalPct": 60.179961459780785
         },
         {
           "team": "Iowa State",
@@ -1464,9 +1464,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 74,
           "afterHostPct": 74,
-          "afterDistancePct": 68.12721543914925,
-          "afterZonePct": 60.227333033462905,
-          "finalPct": 53.73424381330892
+          "afterDistancePct": 70.91720807726077,
+          "afterZonePct": 63.33669687993149,
+          "finalPct": 56.90185956034569
         },
         {
           "team": "Northwestern",
@@ -1478,23 +1478,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 62,
           "afterHostPct": 62,
-          "afterDistancePct": 64.97984744874522,
-          "afterZonePct": 56.79459583661364,
-          "finalPct": 50.204439597273264
-        },
-        {
-          "team": "Missouri",
-          "rank": 32,
-          "conference": "SEC",
-          "seed": 6,
-          "isHost": false,
-          "travelMi": 758,
-          "zoneCrossing": "NORTH->SOUTH",
-          "baseRatePct": 46,
-          "afterHostPct": 46,
-          "afterDistancePct": 44.17742796157951,
-          "afterZonePct": 35.92450760294052,
-          "finalPct": 30.070558278257455
+          "afterDistancePct": 62.83731944209329,
+          "afterZonePct": 54.501929909409554,
+          "finalPct": 47.79457749773342
         },
         {
           "team": "CSU Fullerton",
@@ -1506,23 +1492,23 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 34,
           "afterHostPct": 34.00000000000001,
-          "afterDistancePct": 33.80081661636785,
-          "afterZonePct": 35.51046290424856,
-          "finalPct": 29.692717394467827
+          "afterDistancePct": 33.746982198286176,
+          "afterZonePct": 35.45536391205459,
+          "finalPct": 29.568669826285372
         },
         {
-          "team": "UNLV",
-          "rank": 65,
-          "conference": "MWC",
-          "seed": 9,
+          "team": "Missouri",
+          "rank": 32,
+          "conference": "SEC",
+          "seed": 6,
           "isHost": false,
-          "travelMi": 2006,
-          "zoneCrossing": "WEST->SOUTH",
-          "baseRatePct": 6,
-          "afterHostPct": 6,
-          "afterDistancePct": 11.547397769516724,
-          "afterZonePct": 10.507954243647134,
-          "finalPct": 8.26165745791704
+          "travelMi": 758,
+          "zoneCrossing": "NORTH->SOUTH",
+          "baseRatePct": 46,
+          "afterHostPct": 46,
+          "afterDistancePct": 42.19082430047897,
+          "afterZonePct": 34.08243821028772,
+          "finalPct": 28.323663551647183
         },
         {
           "team": "Furman",
@@ -1534,9 +1520,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 5.873875664662323,
-          "afterZonePct": 7.1730617727468635,
-          "finalPct": 5.595097402943053
+          "afterDistancePct": 7.222307786163048,
+          "afterZonePct": 8.791882797436424,
+          "finalPct": 6.861539397368604
         },
         {
           "team": "Little Rock",
@@ -1548,9 +1534,23 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.2303280686673235,
-          "afterZonePct": 3.9694711976731876,
-          "finalPct": 3.072918410567668
+          "afterDistancePct": 5.1851001504235645,
+          "afterZonePct": 6.342207518761656,
+          "finalPct": 4.920697035493925
+        },
+        {
+          "team": "UNLV",
+          "rank": 65,
+          "conference": "MWC",
+          "seed": 9,
+          "isHost": false,
+          "travelMi": 2006,
+          "zoneCrossing": "WEST->SOUTH",
+          "baseRatePct": 6,
+          "afterHostPct": 6,
+          "afterDistancePct": 5.9366074262139055,
+          "afterZonePct": 5.371550252586563,
+          "finalPct": 4.157939503146202
         },
         {
           "team": "Oakland",
@@ -1562,9 +1562,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 2,
           "afterHostPct": 2,
-          "afterDistancePct": 1.0503381893860555,
-          "afterZonePct": 0.7463961904071091,
-          "finalPct": 0.5734664116601347
+          "afterDistancePct": 2.0711759035315866,
+          "afterZonePct": 1.4762357851728714,
+          "finalPct": 1.1321756659354298
         }
       ]
     },
@@ -1588,9 +1588,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 98,
           "afterHostPct": 98,
-          "afterDistancePct": 97.35444113897152,
-          "afterZonePct": 96.74035617109543,
-          "finalPct": 96.72339899963703
+          "afterDistancePct": 97.67339298758218,
+          "afterZonePct": 97.13116120566791,
+          "finalPct": 96.778649469734
         },
         {
           "team": "Baylor",
@@ -1604,7 +1604,7 @@
           "afterHostPct": 88.33768236270906,
           "afterDistancePct": 90.2323091336628,
           "afterZonePct": 91.96073582494807,
-          "finalPct": 91.9209908058567
+          "finalPct": 91.03156368240931
         },
         {
           "team": "Pepperdine",
@@ -1616,9 +1616,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 86,
           "afterHostPct": 86,
-          "afterDistancePct": 82.18520032706459,
-          "afterZonePct": 78.8162093884807,
-          "finalPct": 78.72651270152696
+          "afterDistancePct": 84.03303195774775,
+          "afterZonePct": 80.93241366743118,
+          "finalPct": 79.01940320758956
         },
         {
           "team": "UCF",
@@ -1630,9 +1630,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 74,
           "afterHostPct": 74,
-          "afterDistancePct": 68.12721543914925,
-          "afterZonePct": 72.57849188860675,
-          "finalPct": 72.47160831924454
+          "afterDistancePct": 70.91720807726077,
+          "afterZonePct": 75.12113191775941,
+          "finalPct": 72.8208850493764
         },
         {
           "team": "Eastern Michigan",
@@ -1644,9 +1644,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 66,
           "afterHostPct": 66,
-          "afterDistancePct": 64.32900081234769,
-          "afterZonePct": 56.09441292940179,
-          "finalPct": 55.96226305032761
+          "afterDistancePct": 62.44998266296812,
+          "afterZonePct": 54.09118813129582,
+          "finalPct": 51.111942457888205
         },
         {
           "team": "LSU",
@@ -1658,23 +1658,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 46,
           "afterHostPct": 46,
-          "afterDistancePct": 49.20663219825279,
-          "afterZonePct": 54.53696867228788,
-          "finalPct": 54.40394146698095
-        },
-        {
-          "team": "Michigan State",
-          "rank": 39,
-          "conference": "B10",
-          "seed": 7,
-          "isHost": false,
-          "travelMi": 1036,
-          "zoneCrossing": "NORTH->SOUTH",
-          "baseRatePct": 34,
-          "afterHostPct": 34.00000000000001,
-          "afterDistancePct": 32.36789209203915,
-          "afterZonePct": 25.320452357634988,
-          "finalPct": 25.219158297480604
+          "afterDistancePct": 46.88785918603253,
+          "afterZonePct": 52.22527670908755,
+          "finalPct": 49.23857705308413
         },
         {
           "team": "Texas Tech",
@@ -1686,37 +1672,23 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 22,
           "afterHostPct": 22.000000000000004,
-          "afterDistancePct": 12.793461039896293,
-          "afterZonePct": 15.373158498073822,
-          "finalPct": 15.303503751026494
+          "afterDistancePct": 22.618659071896925,
+          "afterZonePct": 26.575775387904322,
+          "finalPct": 24.309544912584336
         },
         {
-          "team": "Prairie View A&M",
-          "rank": 244,
-          "conference": "SWAC",
-          "seed": 12,
+          "team": "Michigan State",
+          "rank": 39,
+          "conference": "B10",
+          "seed": 7,
           "isHost": false,
-          "travelMi": 121,
-          "zoneCrossing": "SOUTH->SOUTH",
-          "baseRatePct": 2,
-          "afterHostPct": 2,
-          "afterDistancePct": 1.9562087284643255,
-          "afterZonePct": 2.411079778999217,
-          "finalPct": 2.3984908065286974
-        },
-        {
-          "team": "Columbia",
-          "rank": 86,
-          "conference": "IVY",
-          "seed": 10,
-          "isHost": false,
-          "travelMi": 1435,
+          "travelMi": 1036,
           "zoneCrossing": "NORTH->SOUTH",
-          "baseRatePct": 6,
-          "afterHostPct": 6,
-          "afterDistancePct": 3.2303280686673235,
-          "afterZonePct": 2.310279460236909,
-          "finalPct": 2.2982044020460175
+          "baseRatePct": 34,
+          "afterHostPct": 34.00000000000001,
+          "afterDistancePct": 30.621039603960416,
+          "afterZonePct": 23.819985037029927,
+          "finalPct": 21.719239075439383
         },
         {
           "team": "Colorado",
@@ -1728,9 +1700,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.213290887385592,
-          "afterZonePct": 2.2979795072342926,
-          "finalPct": 2.2859672324332703
+          "afterDistancePct": 6.204515221271301,
+          "afterZonePct": 4.476557573118879,
+          "finalPct": 3.992355097861254
         },
         {
           "team": "Denver",
@@ -1742,9 +1714,37 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.213290887385592,
-          "afterZonePct": 2.2979795072342926,
-          "finalPct": 2.2859672324332703
+          "afterDistancePct": 6.204515221271301,
+          "afterZonePct": 4.476557573118879,
+          "finalPct": 3.992355097861254
+        },
+        {
+          "team": "Columbia",
+          "rank": 86,
+          "conference": "IVY",
+          "seed": 10,
+          "isHost": false,
+          "travelMi": 1435,
+          "zoneCrossing": "NORTH->SOUTH",
+          "baseRatePct": 6,
+          "afterHostPct": 6,
+          "afterDistancePct": 5.1851001504235645,
+          "afterZonePct": 3.729760111359156,
+          "finalPct": 3.3235238126193596
+        },
+        {
+          "team": "Prairie View A&M",
+          "rank": 244,
+          "conference": "SWAC",
+          "seed": 12,
+          "isHost": false,
+          "travelMi": 121,
+          "zoneCrossing": "SOUTH->SOUTH",
+          "baseRatePct": 2,
+          "afterHostPct": 2,
+          "afterDistancePct": 2.428488126920588,
+          "afterZonePct": 2.9898279481941117,
+          "finalPct": 2.661954814232282
         }
       ]
     },
@@ -1768,9 +1768,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 98,
           "afterHostPct": 98,
-          "afterDistancePct": 97.35444113897152,
-          "afterZonePct": 97.18362681715898,
-          "finalPct": 97.33163155435494
+          "afterDistancePct": 97.67339298758218,
+          "afterZonePct": 97.52264821235165,
+          "finalPct": 97.5964851852751
         },
         {
           "team": "Auburn",
@@ -1782,9 +1782,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 86,
           "afterHostPct": 86,
-          "afterDistancePct": 89.64671753730937,
-          "afterZonePct": 89.03429783976823,
-          "finalPct": 89.56457648093166
+          "afterDistancePct": 86.42428115266863,
+          "afterZonePct": 85.65175559869705,
+          "finalPct": 86.02871469267282
         },
         {
           "team": "Mississippi State",
@@ -1796,9 +1796,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 74,
           "afterHostPct": 74,
-          "afterDistancePct": 80.04727317910717,
-          "afterZonePct": 79.00004018034019,
-          "finalPct": 79.90604289751388
+          "afterDistancePct": 74.68088336334988,
+          "afterZonePct": 73.44542798263714,
+          "finalPct": 74.0458994057728
         },
         {
           "team": "Oklahoma State",
@@ -1810,9 +1810,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 66,
           "afterHostPct": 66,
-          "afterDistancePct": 64.32900081234769,
-          "afterZonePct": 62.839764647018804,
-          "finalPct": 64.12637353940596
+          "afterDistancePct": 62.44998266296812,
+          "afterZonePct": 60.929943876746584,
+          "finalPct": 61.6657100143571
         },
         {
           "team": "Houston",
@@ -1824,9 +1824,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 62,
           "afterHostPct": 62,
-          "afterDistancePct": 60.25080993520518,
-          "afterZonePct": 58.70062066366428,
-          "finalPct": 60.039407189444596
+          "afterDistancePct": 58.296235679214426,
+          "afterZonePct": 56.72456982259799,
+          "finalPct": 57.48427037459818
         },
         {
           "team": "Arizona",
@@ -1838,9 +1838,9 @@
           "zoneCrossing": "WEST->NORTH",
           "baseRatePct": 46,
           "afterHostPct": 46,
-          "afterDistancePct": 45.77927847876312,
-          "afterZonePct": 47.65861255848842,
-          "finalPct": 49.044628061968986
+          "afterDistancePct": 45.7195420009564,
+          "afterZonePct": 47.598576572943216,
+          "finalPct": 48.37267324049736
         },
         {
           "team": "TCU",
@@ -1852,9 +1852,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 34,
           "afterHostPct": 34.00000000000001,
-          "afterDistancePct": 32.36789209203915,
-          "afterZonePct": 30.97604158517871,
-          "finalPct": 32.17513108224269
+          "afterDistancePct": 30.621039603960416,
+          "afterZonePct": 29.27179439748834,
+          "finalPct": 29.91800989101811
         },
         {
           "team": "Indiana",
@@ -1866,9 +1866,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 22,
           "afterHostPct": 22.000000000000004,
-          "afterDistancePct": 12.793461039896293,
-          "afterZonePct": 13.046718505823865,
-          "finalPct": 13.689409328099837
+          "afterDistancePct": 22.618659071896925,
+          "afterZonePct": 23.01508378981082,
+          "finalPct": 23.569202159546148
         },
         {
           "team": "Xavier",
@@ -1880,9 +1880,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 5.873875664662323,
-          "afterZonePct": 5.999577837049559,
-          "finalPct": 6.320354413782968
+          "afterDistancePct": 7.222307786163048,
+          "afterZonePct": 7.374605818171206,
+          "finalPct": 7.589281451704729
         },
         {
           "team": "Navy",
@@ -1894,9 +1894,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.213290887385592,
-          "afterZonePct": 3.2840425105763793,
-          "finalPct": 3.464980756145316
+          "afterDistancePct": 6.204515221271301,
+          "afterZonePct": 6.336816791195429,
+          "finalPct": 6.5234099027858345
         },
         {
           "team": "ULM",
@@ -1908,9 +1908,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.2303280686673235,
-          "afterZonePct": 3.0351913092169047,
-          "finalPct": 3.202872849737811
+          "afterDistancePct": 5.1851001504235645,
+          "afterZonePct": 4.877832244434264,
+          "finalPct": 5.0237685634748015
         },
         {
           "team": "Quinnipiac",
@@ -1922,9 +1922,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 2,
           "afterHostPct": 2,
-          "afterDistancePct": 1.0503381893860555,
-          "afterZonePct": 1.0739934569092568,
-          "finalPct": 1.1345948633075644
+          "afterDistancePct": 2.0711759035315866,
+          "afterZonePct": 2.117330081632499,
+          "finalPct": 2.1825719518017737
         }
       ]
     },
@@ -1948,9 +1948,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 98,
           "afterHostPct": 98,
-          "afterDistancePct": 99.50212575520251,
-          "afterZonePct": 99.59754256759817,
-          "finalPct": 99
+          "afterDistancePct": 98.35415996117625,
+          "afterZonePct": 98.6666344441637,
+          "finalPct": 98.48383394129226
         },
         {
           "team": "Florida State",
@@ -1964,7 +1964,7 @@
           "afterHostPct": 88.33768236270906,
           "afterDistancePct": 90.2323091336628,
           "afterZonePct": 91.96073582494807,
-          "finalPct": 91.40879689470066
+          "finalPct": 90.9429682007134
         },
         {
           "team": "Wake Forest",
@@ -1976,9 +1976,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 86,
           "afterHostPct": 86,
-          "afterDistancePct": 89.64671753730937,
-          "afterZonePct": 91.46896968299578,
-          "finalPct": 90.88661423194047
+          "afterDistancePct": 86.42428115266863,
+          "afterZonePct": 88.742481815937,
+          "finalPct": 87.37322711493374
         },
         {
           "team": "UCLA",
@@ -1992,7 +1992,7 @@
           "afterHostPct": 74,
           "afterDistancePct": 73.78208032406792,
           "afterZonePct": 69.41534309295577,
-          "finalPct": 67.85657227960412
+          "finalPct": 66.58059487441653
         },
         {
           "team": "Arizona State",
@@ -2004,9 +2004,9 @@
           "zoneCrossing": "WEST->SOUTH",
           "baseRatePct": 66,
           "afterHostPct": 66,
-          "afterDistancePct": 65.80024924336836,
-          "afterZonePct": 67.47861417887408,
-          "finalPct": 65.8696689543806
+          "afterDistancePct": 65.74606597971085,
+          "afterZonePct": 67.4257736166055,
+          "finalPct": 64.5009258560612
         },
         {
           "team": "Virginia",
@@ -2018,9 +2018,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 46,
           "afterHostPct": 46,
-          "afterDistancePct": 49.20663219825279,
-          "afterZonePct": 40.69917776414373,
-          "finalPct": 38.96374366246726
+          "afterDistancePct": 46.88785918603253,
+          "afterZonePct": 38.47760969889504,
+          "finalPct": 35.44220153245681
         },
         {
           "team": "Kansas State",
@@ -2032,9 +2032,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 34,
           "afterHostPct": 34.00000000000001,
-          "afterDistancePct": 32.36789209203915,
-          "afterZonePct": 25.320452357634988,
-          "finalPct": 23.975648998832796
+          "afterDistancePct": 30.621039603960416,
+          "afterZonePct": 23.819985037029927,
+          "finalPct": 21.53611388132171
         },
         {
           "team": "Illinois",
@@ -2046,9 +2046,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 22,
           "afterHostPct": 22.000000000000004,
-          "afterDistancePct": 12.793461039896293,
-          "afterZonePct": 9.414671112041386,
-          "finalPct": 8.814930456029304
+          "afterDistancePct": 22.618659071896925,
+          "afterZonePct": 17.15547354844105,
+          "finalPct": 15.38157845783644
         },
         {
           "team": "North Florida",
@@ -2060,9 +2060,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 5.873875664662323,
-          "afterZonePct": 7.1730617727468635,
-          "finalPct": 6.7055473692860375
+          "afterDistancePct": 7.222307786163048,
+          "afterZonePct": 8.791882797436424,
+          "finalPct": 7.801354856792953
         },
         {
           "team": "Charleston",
@@ -2074,9 +2074,9 @@
           "zoneCrossing": "SOUTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.213290887385592,
-          "afterZonePct": 3.948694748976273,
-          "finalPct": 3.682995005353024
+          "afterDistancePct": 6.204515221271301,
+          "afterZonePct": 7.570950090278311,
+          "finalPct": 6.707860782776734
         },
         {
           "team": "Richmond",
@@ -2088,9 +2088,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.213290887385592,
-          "afterZonePct": 2.2979795072342926,
-          "finalPct": 2.140877377454589
+          "afterDistancePct": 6.204515221271301,
+          "afterZonePct": 4.476557573118879,
+          "finalPct": 3.9511496146025102
         },
         {
           "team": "Howard",
@@ -2102,9 +2102,9 @@
           "zoneCrossing": "NORTH->SOUTH",
           "baseRatePct": 2,
           "afterHostPct": 2,
-          "afterDistancePct": 1.0503381893860555,
-          "afterZonePct": 0.7463961904071091,
-          "finalPct": 0.6946144289617928
+          "afterDistancePct": 2.0711759035315866,
+          "afterZonePct": 1.4762357851728714,
+          "finalPct": 1.2981861188398256
         }
       ]
     },
@@ -2128,23 +2128,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 98,
           "afterHostPct": 98,
-          "afterDistancePct": 97.35444113897152,
-          "afterZonePct": 97.18362681715898,
-          "finalPct": 96.6349666873569
-        },
-        {
-          "team": "Tennessee",
-          "rank": 16,
-          "conference": "SEC",
-          "seed": 3,
-          "isHost": false,
-          "travelMi": 175,
-          "zoneCrossing": "SOUTH->NORTH",
-          "baseRatePct": 74,
-          "afterHostPct": 74,
-          "afterDistancePct": 92.06882369070469,
-          "afterZonePct": 91.58623011412678,
-          "finalPct": 90.05868124352622
+          "afterDistancePct": 97.67339298758218,
+          "afterZonePct": 97.52264821235165,
+          "finalPct": 97.09576147136602
         },
         {
           "team": "Oregon",
@@ -2158,21 +2144,21 @@
           "afterHostPct": 86,
           "afterDistancePct": 85.86344470538002,
           "afterZonePct": 83.04656296138003,
-          "finalPct": 80.30206219553277
+          "finalPct": 80.62090186837524
         },
         {
-          "team": "SMU",
-          "rank": 21,
-          "conference": "ACC",
-          "seed": 4,
+          "team": "Tennessee",
+          "rank": 16,
+          "conference": "SEC",
+          "seed": 3,
           "isHost": false,
-          "travelMi": 742,
+          "travelMi": 175,
           "zoneCrossing": "SOUTH->NORTH",
-          "baseRatePct": 66,
-          "afterHostPct": 66,
-          "afterDistancePct": 68.82390426963109,
-          "afterZonePct": 67.4273066781684,
-          "finalPct": 63.272529229332505
+          "baseRatePct": 74,
+          "afterHostPct": 74,
+          "afterDistancePct": 77.63415029574865,
+          "afterZonePct": 76.4974496454772,
+          "finalPct": 73.43450007193832
         },
         {
           "team": "Ohio State",
@@ -2186,7 +2172,21 @@
           "afterHostPct": 62,
           "afterDistancePct": 66.5533411697974,
           "afterZonePct": 67.05254732989512,
-          "finalPct": 62.87628638862369
+          "finalPct": 63.34844872255682
+        },
+        {
+          "team": "SMU",
+          "rank": 21,
+          "conference": "ACC",
+          "seed": 4,
+          "isHost": false,
+          "travelMi": 742,
+          "zoneCrossing": "SOUTH->NORTH",
+          "baseRatePct": 66,
+          "afterHostPct": 66,
+          "afterDistancePct": 66.79638264913221,
+          "afterZonePct": 65.3546795251862,
+          "finalPct": 61.56910224455059
         },
         {
           "team": "Kentucky",
@@ -2200,7 +2200,7 @@
           "afterHostPct": 46,
           "afterDistancePct": 50.95390867877438,
           "afterZonePct": 51.51632928886587,
-          "finalPct": 46.92942549913727
+          "finalPct": 47.43484878909105
         },
         {
           "team": "Purdue",
@@ -2214,7 +2214,7 @@
           "afterHostPct": 34.00000000000001,
           "afterDistancePct": 38.584997991661176,
           "afterZonePct": 39.119787491348866,
-          "finalPct": 34.843412839313174
+          "finalPct": 35.30526366934995
         },
         {
           "team": "Clemson",
@@ -2226,9 +2226,9 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 22,
           "afterHostPct": 22.000000000000004,
-          "afterDistancePct": 12.793461039896293,
-          "afterZonePct": 12.09282790437205,
-          "finalPct": 10.272394132536968
+          "afterDistancePct": 22.618659071896925,
+          "afterZonePct": 21.51268579057396,
+          "finalPct": 18.882514636062545
         },
         {
           "team": "Murray State",
@@ -2240,23 +2240,9 @@
           "zoneCrossing": "NORTH->NORTH",
           "baseRatePct": 2,
           "afterHostPct": 8.654538904899137,
-          "afterDistancePct": 8.477646748523316,
-          "afterZonePct": 8.653947162371773,
-          "finalPct": 7.308159079492727
-        },
-        {
-          "team": "Tarleton State",
-          "rank": 150,
-          "conference": "WAC",
-          "seed": 11,
-          "isHost": false,
-          "travelMi": 777,
-          "zoneCrossing": "SOUTH->NORTH",
-          "baseRatePct": 6,
-          "afterHostPct": 6,
-          "afterDistancePct": 3.2303280686673235,
-          "afterZonePct": 3.0351913092169047,
-          "finalPct": 2.538898116246735
+          "afterDistancePct": 10.358034701532713,
+          "afterZonePct": 10.568923760402413,
+          "finalPct": 9.12125913038484
         },
         {
           "team": "High Point",
@@ -2268,9 +2254,23 @@
           "zoneCrossing": "SOUTH->NORTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.213290887385592,
-          "afterZonePct": 3.0191511955765478,
-          "finalPct": 2.5254124604878747
+          "afterDistancePct": 6.204515221271301,
+          "afterZonePct": 5.840558250330274,
+          "finalPct": 5.004314008637346
+        },
+        {
+          "team": "Tarleton State",
+          "rank": 150,
+          "conference": "WAC",
+          "seed": 11,
+          "isHost": false,
+          "travelMi": 777,
+          "zoneCrossing": "SOUTH->NORTH",
+          "baseRatePct": 6,
+          "afterHostPct": 6,
+          "afterDistancePct": 5.1851001504235645,
+          "afterZonePct": 4.877832244434264,
+          "finalPct": 4.173320565618733
         },
         {
           "team": "Northern Arizona",
@@ -2282,9 +2282,9 @@
           "zoneCrossing": "WEST->NORTH",
           "baseRatePct": 6,
           "afterHostPct": 6,
-          "afterDistancePct": 3.2303280686673235,
-          "afterZonePct": 2.9148772552579407,
-          "finalPct": 2.4377623818916603
+          "afterDistancePct": 5.1851001504235645,
+          "afterZonePct": 4.688007854120666,
+          "finalPct": 4.009757047675825
         }
       ]
     }
