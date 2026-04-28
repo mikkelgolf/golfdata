@@ -341,6 +341,37 @@ const MANUAL_OVERRIDES = {
   "Dayton": { lat: 39.7404, lng: -84.1827 },                    // Dayton, OH
   "Duquesne": { lat: 40.4359, lng: -79.9930 },                  // Pittsburgh, PA
   "Saint Josephs": { lat: 40.0072, lng: -75.2451 },             // Philadelphia, PA
+  // ---- Supabase cache lists wrong city for these two MVC schools, so the
+  // ---- city-centroid fallback was geocoding to the wrong town. Pin to
+  // ---- campus coords so the daily refresh stops drifting them.
+  "Belmont": { lat: 36.1326, lng: -86.7954 },                   // Nashville, TN  (Supabase had "Sioux Falls, SD")
+  "Murray State": { lat: 36.6196, lng: -88.3174 },              // Murray, KY     (Supabase had "Louisville, KY")
+  // ---- 2026-04-28 audit-team-coords-v2 sweep. Each of these had a stored
+  // ---- coord more than 30 miles from the canonical campus location. Most
+  // ---- were drift from years of bad Supabase city/state hits; a couple
+  // ---- look like accidental copy-paste of a neighbor's row. Pinning here
+  // ---- so the daily refresh and any future regenerate stops moving them.
+  "Portland State": { lat: 45.5118, lng: -122.6861 },           // Portland, OR
+  "South Dakota": { lat: 42.7914, lng: -96.9254 },              // Vermillion, SD
+  "North Dakota": { lat: 47.9265, lng: -97.0721 },              // Grand Forks, ND
+  "Florida Intl.": { lat: 25.7554, lng: -80.3763 },             // Miami, FL  (FIU)
+  "Longwood": { lat: 37.3090, lng: -78.4017 },                  // Farmville, VA
+  "Tarleton State": { lat: 32.2147, lng: -98.2197 },            // Stephenville, TX
+  "Georgia State": { lat: 33.7536, lng: -84.3854 },             // Atlanta, GA
+  "Cornell": { lat: 42.4529, lng: -76.4801 },                   // Ithaca, NY
+  "Eastern Illinois": { lat: 39.4787, lng: -88.1791 },          // Charleston, IL
+  "CSU Bakersfield": { lat: 35.3494, lng: -119.1034 },          // Bakersfield, CA
+  "Stephen F. Austin": { lat: 31.6236, lng: -94.6434 },         // Nacogdoches, TX
+  "Central Arkansas": { lat: 35.0776, lng: -92.4580 },          // Conway, AR
+  "Eastern Michigan": { lat: 42.2522, lng: -83.6246 },          // Ypsilanti, MI
+  "Green Bay": { lat: 44.5328, lng: -87.9199 },                 // Green Bay, WI  (UW-Green Bay)
+  "Morehead State": { lat: 38.1910, lng: -83.4339 },            // Morehead, KY
+  "Boston": { lat: 42.3504, lng: -71.1032 },                    // Boston, MA  (Boston University)
+  "Indiana State": { lat: 39.4709, lng: -87.4092 },             // Terre Haute, IN
+  "Boston College": { lat: 42.3354, lng: -71.1683 },            // Chestnut Hill, MA
+  "Western Kentucky": { lat: 36.9845, lng: -86.4576 },          // Bowling Green, KY
+  "Wofford": { lat: 34.9612, lng: -81.9353 },                   // Spartanburg, SC
+  "DePaul": { lat: 41.9246, lng: -87.6507 },                    // Chicago, IL  (Lincoln Park)
 };
 
 // ---------------------------------------------------------------------------
