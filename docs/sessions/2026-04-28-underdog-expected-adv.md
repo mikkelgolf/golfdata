@@ -215,3 +215,102 @@ No further alias additions needed at this time.
   advanced (sheet leaves non-advancers blank, which the OR-helper
   treats as "fall through to NCAA appearance + basic"). Spot-checks:
   Auburn men 26 ✅, Texas men 32 ✅ — same totals as Commit B.
+
+## Wrap (2026-04-28)
+
+### Summary of work shipped
+
+This branch grew well beyond the original "swap underdog definition" ask
+into a multi-phase data-quality + UX pass on the Regionals surface. In
+roughly the order shipped:
+
+1. **Underdog redefinition (core):** `expectedAdv`-driven, gated to a
+   per-gender seeding-data window (men 2002-2025, women 2000-2025).
+   Shared by Team page tile + `/regionals-leaderboard`.
+2. **NAT count truth alignment:** Regionals History table now agrees
+   with each team's PROGRAM HISTORY > Advanced via the new
+   `didAdvanceFromRegional` helper (OR of rich `teamAdvanced`, NCAA
+   appearance, basic position fallback).
+3. **Sheet ingestion hardening:** new `teamAdvanced` column is read
+   from the spreadsheet; aliases moved out of the Python script into
+   a shared `scripts/team-name-aliases.json`; defensive aliases added
+   for BYU + CSU/CalState variants.
+4. **Data normalization:** when a row has a `seed` but `expectedAdv`
+   is null, coerce to `expectedAdv = false` (1,172 men + 1,077 women
+   rows flipped; no net change to seeding window since no new `true`s
+   were created).
+5. **Year-by-year grid polish (Team page + Regionals History):**
+   - Tied results render as "T5" using sheet's `Team Result` field.
+   - Seed `#` colored 3-state: green = expected, red = underdog,
+     muted = not seeded.
+   - Position colored: amber win, muted-rose missed, red expected-
+     but-didn't-advance, emerald advanced, muted cancelled, neutral.
+   - Two-line streak subtitles ("Active streak: N", "Longest streak: N")
+     via `wrapDetail` on `StatCard`.
+   - Legend updated to explain seed-color semantics.
+   - Per-team expanded grid in Regionals History now mirrors Team
+     page exactly.
+6. **Table layout polish (NCAA Championships + Teams index):**
+   horizontal scroll, center-justified non-Team columns, wider
+   columns, gap-2; `SortableHeader` gained `align="center"` with
+   wrap-friendly flex.
+7. **Label changes:** Teams index "Apps" → "Regional Apps", "Nat"
+   → "NCAA Apps". The latter now sourced from
+   `computeAllChampionshipStats()` so it matches the Team page
+   stat card exactly.
+
+### Audit findings (handed off — NOT fixed in this branch)
+
+Two-direction audit comparing `regionals-rich.json` (sheet) vs
+`regionals-history.json` (site truth):
+
+- **Women: 100% clean** across all 32 years, except one name
+  mismatch — 2013 women's West has site "North Dakota" vs sheet
+  "North Dakota State". Reconcile in `team-name-aliases.json` (or
+  fix at source if it's a typo on one side).
+- **Men: 13 missing teams** in 3 cells — all in early years where
+  bottom-of-leaderboard rows didn't make the original ingest:
+  - 1996 East: 6 (Central Connecticut, George Mason, James Madison,
+    Rhode Island, Temple, Yale)
+  - 2000 East: 6 (Dartmouth, James Madison, Richmond, Seton Hall,
+    VCU, Yale)
+  - 2002 Central: 1 (Jackson State)
+
+These are data-quality fixes outside this branch's scope; suggest a
+follow-up `ron/regionals-data-backfill` session to backfill them
+into `regionals-history.json`.
+
+### Diff stats vs `dev`
+
+```
+19 files changed, 7737 insertions(+), 2431 deletions(-)
+```
+
+Major file changes: `regionals-rich.json` (+9k lines after teamAdvanced
++ expectedAdv normalization), `teams-index.tsx`,
+`regionals-results-table.tsx`, `regional-timeline.tsx`,
+`teams/[gender]/[slug]/page.tsx`, `streaks.ts`, `regionals-seeding.ts`
+(new), `team-name-aliases.json` (new).
+
+### Verification
+
+- Typecheck clean throughout.
+- Florida women NCAA Advancement = 19 sanity check ✅ (before and
+  after data normalization).
+- Spot checks for Regionals History NAT alignment: Auburn men 26 ✅,
+  Texas men 32 ✅.
+- Seeding window unchanged after normalization (men 2002-2025,
+  women 2000-2025).
+- Vercel preview deployed and confirmed by David across all phases.
+
+### Open questions / learnings
+
+- **Spelling:** David wrote "Seeding data **availed**" — used
+  "available" since "availed" doesn't fit grammatically. Still
+  flagged for a final read.
+- **Data backfill:** men's 1996/2000/2002 gaps (13 rows) and 2013
+  women's North Dakota name mismatch should be the next data session.
+- **Pattern that worked well:** treating `regionals-rich.json` as
+  the rich detail layer with `regionals-history.json` as canonical
+  truth; OR-combining advancement signals via a single helper rather
+  than letting each consumer reimplement the precedence.
