@@ -44,7 +44,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   buildInitialGridState,
@@ -56,6 +56,12 @@ import {
   unserpentineIndex,
   type ManualGridState,
 } from "@/lib/manual-grid";
+import {
+  applyTravelBalance,
+  computeAffectedScope,
+  reorientCellsToColumns,
+  type CutoffMode,
+} from "@/lib/manual-grid-balance";
 import {
   TEAM_A_BG,
   TEAM_A_COLOR,
@@ -597,6 +603,136 @@ export function ManualGridTable({
     setHistory([]);
   }, [gender, teams, regionals, championships]);
 
+  // ---------------------------------------------------------------------
+  // Travel-balance optimizer (David, 2026-04-28).
+  // Reassigns teams within each affected tier so total mileage of that row
+  // is minimised. Hosts stay at their own regional; manual swaps are
+  // preserved unless overrideSwaps=true.
+  // ---------------------------------------------------------------------
+
+  // Committee defaults (used for swap-detection).
+  const committeeState = useMemo(() => {
+    const assignments = computeScurve(teams, regionals, "committee", gender, championships);
+    return defaultGridFromAssignments(assignments, regionals);
+  }, [teams, regionals, gender, championships]);
+
+  // Magic Number = worst-ranked at-large currently in the field. Default
+  // for the Overall Seed input is the seed (serpentine position) of that
+  // team in the current grid.
+  const magicNumberSeed = useMemo(() => {
+    let worstRank = -Infinity;
+    let worstTeam: string | null = null;
+    for (const row of internal.slots) {
+      for (const slot of row) {
+        if (!slot.team) continue;
+        const t = teamLookup.get(slot.team);
+        if (!t || t.isAutoQualifier) continue;
+        if (t.rank > worstRank) {
+          worstRank = t.rank;
+          worstTeam = slot.team;
+        }
+      }
+    }
+    if (!worstTeam) return 1;
+    return seedByTeam.get(worstTeam) ?? 1;
+  }, [internal, teamLookup, seedByTeam]);
+
+  const totalSeats = useMemo(() => {
+    return internal.slots.length * (internal.regionalIds.length || 1);
+  }, [internal]);
+
+  const numTiers = internal.slots.length;
+
+  const [balanceOpen, setBalanceOpen] = useState(false);
+  const [balanceMode, setBalanceMode] = useState<CutoffMode>("regional");
+  const [regionalSeedInput, setRegionalSeedInput] = useState<number>(8);
+  const [overallSeedInput, setOverallSeedInput] = useState<number>(magicNumberSeed);
+  const [overrideSwaps, setOverrideSwaps] = useState<boolean>(false);
+
+  // Keep the Overall Seed input in sync with the magic number when the user
+  // hasn't customised it yet (i.e., default state). We track whether the
+  // user has touched the field.
+  const userTouchedOverallRef = useRef(false);
+  useEffect(() => {
+    if (!userTouchedOverallRef.current) {
+      setOverallSeedInput(magicNumberSeed);
+    }
+  }, [magicNumberSeed]);
+
+  // Live "affects N teams · Y rows" preview.
+  const balancePreview = useMemo(() => {
+    const cells = internal.slots.map((row) => row.map((s) => s.team));
+    const defaultCells = reorientCellsToColumns(
+      committeeState.cells,
+      committeeState.regionalIds,
+      internal.regionalIds
+    );
+    const cutoffValue =
+      balanceMode === "regional" ? regionalSeedInput : overallSeedInput;
+    return computeAffectedScope({
+      cells,
+      regionalIds: internal.regionalIds,
+      regionals,
+      teamLookup,
+      cutoffMode: balanceMode,
+      cutoffValue,
+      overrideSwaps,
+      defaultCells,
+    });
+  }, [internal, committeeState, regionals, teamLookup, balanceMode, regionalSeedInput, overallSeedInput, overrideSwaps]);
+
+  const handleApplyBalance = useCallback(() => {
+    setInternal((prev) => {
+      const cells = prev.slots.map((row) => row.map((s) => s.team));
+      const defaultCells = reorientCellsToColumns(
+        committeeState.cells,
+        committeeState.regionalIds,
+        prev.regionalIds
+      );
+      const cutoffValue =
+        balanceMode === "regional" ? regionalSeedInput : overallSeedInput;
+      const balanced = applyTravelBalance({
+        cells,
+        regionalIds: prev.regionalIds,
+        regionals,
+        teamLookup,
+        cutoffMode: balanceMode,
+        cutoffValue,
+        overrideSwaps,
+        defaultCells,
+      });
+      // Detect no-op: if balanced cells equal current cells, skip the
+      // history push so the undo stack doesn't fill with empty steps.
+      let changed = false;
+      outer: for (let r = 0; r < cells.length; r++) {
+        for (let c = 0; c < cells[r].length; c++) {
+          if (cells[r][c] !== balanced[r][c]) {
+            changed = true;
+            break outer;
+          }
+        }
+      }
+      if (!changed) return prev;
+      // Re-attach slot IDs so dnd-kit's keys stay stable for moved teams.
+      const slotByTeam = new Map<string, Slot>();
+      for (const row of prev.slots) {
+        for (const slot of row) {
+          if (slot.team) slotByTeam.set(slot.team, slot);
+        }
+      }
+      const newSlots: Slot[][] = balanced.map((row) =>
+        row.map((teamName) =>
+          teamName
+            ? slotByTeam.get(teamName) ?? { id: `team:${teamName}`, team: teamName }
+            : { id: newEmptyId(), team: null }
+        )
+      );
+      setHistory((h) => [...h, prev]);
+      return { regionalIds: prev.regionalIds, slots: newSlots };
+    });
+    setBalanceOpen(false);
+  }, [committeeState, regionals, teamLookup, balanceMode, regionalSeedInput, overallSeedInput, overrideSwaps]);
+
   // Flatten header SortableContext items
   const headerItems = useMemo(
     () => internal.regionalIds.map((id) => `header:${id}`),
@@ -659,6 +795,46 @@ export function ManualGridTable({
             <RotateCcw className="h-3 w-3" />
             Reset All
           </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setBalanceOpen((o) => !o)}
+              aria-expanded={balanceOpen}
+              className={cn(
+                "inline-flex items-center gap-1 h-7 px-2 rounded-md border text-[11px] transition-colors",
+                balanceOpen
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-background text-foreground hover:bg-secondary/50"
+              )}
+              title="Optimize travel from a chosen seed onward"
+            >
+              <Sparkles className="h-3 w-3" />
+              Balance Travel
+            </button>
+            {balanceOpen && (
+              <BalancePopover
+                mode={balanceMode}
+                onModeChange={setBalanceMode}
+                regionalSeed={regionalSeedInput}
+                onRegionalSeedChange={(v) => {
+                  setRegionalSeedInput(v);
+                }}
+                overallSeed={overallSeedInput}
+                onOverallSeedChange={(v) => {
+                  userTouchedOverallRef.current = true;
+                  setOverallSeedInput(v);
+                }}
+                magicNumberSeed={magicNumberSeed}
+                overrideSwaps={overrideSwaps}
+                onOverrideSwapsChange={setOverrideSwaps}
+                numTiers={numTiers}
+                totalSeats={totalSeats}
+                preview={balancePreview}
+                onCancel={() => setBalanceOpen(false)}
+                onApply={handleApplyBalance}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -786,5 +962,206 @@ export function ManualGridTable({
         </DragOverlay>
       </DndContext>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Travel-balance popover — UI for picking the cutoff + applying the optimizer.
+// ---------------------------------------------------------------------------
+
+interface BalancePopoverProps {
+  mode: CutoffMode;
+  onModeChange: (m: CutoffMode) => void;
+  regionalSeed: number;
+  onRegionalSeedChange: (v: number) => void;
+  overallSeed: number;
+  onOverallSeedChange: (v: number) => void;
+  magicNumberSeed: number;
+  overrideSwaps: boolean;
+  onOverrideSwapsChange: (v: boolean) => void;
+  numTiers: number;
+  totalSeats: number;
+  preview: {
+    teams: number;
+    rows: number;
+    lockedHosts: number;
+    lockedSwaps: number;
+  };
+  onCancel: () => void;
+  onApply: () => void;
+}
+
+function BalancePopover({
+  mode,
+  onModeChange,
+  regionalSeed,
+  onRegionalSeedChange,
+  overallSeed,
+  onOverallSeedChange,
+  magicNumberSeed,
+  overrideSwaps,
+  onOverrideSwapsChange,
+  numTiers,
+  totalSeats,
+  preview,
+  onCancel,
+  onApply,
+}: BalancePopoverProps) {
+  const clamp = (v: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, v));
+
+  return (
+    <>
+      {/* Backdrop captures clicks outside the popover */}
+      <button
+        type="button"
+        aria-label="Close"
+        onClick={onCancel}
+        className="fixed inset-0 z-10 cursor-default"
+        tabIndex={-1}
+      />
+      <div
+        role="dialog"
+        aria-label="Balance travel"
+        className="absolute right-0 top-full mt-2 z-20 w-[320px] rounded-md border border-border bg-card shadow-xl p-3 space-y-3 text-foreground"
+      >
+        <div className="text-[12px] font-semibold flex items-center gap-1.5">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          Balance travel
+        </div>
+        <p className="text-[11px] text-muted-foreground leading-snug">
+          Pick a cutoff. Teams from there to the bottom of the grid get
+          reassigned within their tier so the row&apos;s total mileage is
+          minimised. Hosts always stay at their own site.
+        </p>
+
+        {/* Mode + numeric input rows */}
+        <div className="space-y-1.5">
+          <label className="flex items-center gap-2 text-[11px] cursor-pointer">
+            <input
+              type="radio"
+              name="balance-mode"
+              checked={mode === "regional"}
+              onChange={() => onModeChange("regional")}
+              className="accent-primary"
+            />
+            <span className="w-[110px]">Regional seed</span>
+            <input
+              type="number"
+              min={1}
+              max={numTiers}
+              value={regionalSeed}
+              onFocus={() => onModeChange("regional")}
+              onChange={(e) =>
+                onRegionalSeedChange(
+                  clamp(parseInt(e.target.value || "1", 10) || 1, 1, numTiers)
+                )
+              }
+              className={cn(
+                "w-[60px] h-7 px-1.5 rounded border bg-background text-center font-mono tabular-nums text-[12px]",
+                mode === "regional" ? "border-primary/60" : "border-border opacity-60"
+              )}
+              disabled={mode !== "regional"}
+            />
+            <span className="text-[10px] text-text-tertiary">of {numTiers}</span>
+          </label>
+          <label className="flex items-center gap-2 text-[11px] cursor-pointer">
+            <input
+              type="radio"
+              name="balance-mode"
+              checked={mode === "overall"}
+              onChange={() => onModeChange("overall")}
+              className="accent-primary"
+            />
+            <span className="w-[110px]">Overall seed</span>
+            <input
+              type="number"
+              min={1}
+              max={totalSeats}
+              value={overallSeed}
+              onFocus={() => onModeChange("overall")}
+              onChange={(e) =>
+                onOverallSeedChange(
+                  clamp(
+                    parseInt(e.target.value || "1", 10) || 1,
+                    1,
+                    totalSeats
+                  )
+                )
+              }
+              className={cn(
+                "w-[60px] h-7 px-1.5 rounded border bg-background text-center font-mono tabular-nums text-[12px]",
+                mode === "overall" ? "border-primary/60" : "border-border opacity-60"
+              )}
+              disabled={mode !== "overall"}
+            />
+            <span className="text-[10px] text-text-tertiary">
+              of {totalSeats} · magic # {magicNumberSeed}
+            </span>
+          </label>
+        </div>
+
+        {/* Override Manual Swaps toggle */}
+        <label className="flex items-start gap-2 text-[11px] cursor-pointer pt-1 border-t border-border/40">
+          <input
+            type="checkbox"
+            checked={overrideSwaps}
+            onChange={(e) => onOverrideSwapsChange(e.target.checked)}
+            className="accent-primary mt-[3px]"
+          />
+          <span className="leading-snug text-foreground/90">
+            Override manual swaps
+            <span className="block text-[10px] text-text-tertiary">
+              When off, slots you&apos;ve already moved stay put even inside
+              the affected range.
+            </span>
+          </span>
+        </label>
+
+        {/* Preview */}
+        <div className="rounded border border-border/60 bg-background/50 px-2.5 py-1.5 text-[11px] font-mono tabular-nums text-muted-foreground">
+          Affects{" "}
+          <span className="text-foreground">{preview.teams}</span>{" "}
+          team{preview.teams === 1 ? "" : "s"} ·{" "}
+          <span className="text-foreground">{preview.rows}</span>{" "}
+          row{preview.rows === 1 ? "" : "s"}
+          {(preview.lockedHosts > 0 || preview.lockedSwaps > 0) && (
+            <span className="block text-[10px] text-text-tertiary mt-0.5">
+              {preview.lockedHosts > 0 && (
+                <>{preview.lockedHosts} host-locked</>
+              )}
+              {preview.lockedHosts > 0 && preview.lockedSwaps > 0 && " · "}
+              {preview.lockedSwaps > 0 && (
+                <>{preview.lockedSwaps} swap-locked</>
+              )}
+            </span>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-2 pt-1">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="h-7 px-2.5 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onApply}
+            disabled={preview.teams < 2}
+            className="h-7 px-2.5 rounded-md border border-primary bg-primary/10 text-[11px] text-primary hover:bg-primary/20 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={
+              preview.teams < 2
+                ? "Need at least 2 free teams to optimize"
+                : "Apply the travel-balanced reassignment"
+            }
+          >
+            Apply
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
