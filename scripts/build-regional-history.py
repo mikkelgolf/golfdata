@@ -155,14 +155,27 @@ def _process_tab(
         if team not in canonical_teams:
             unmatched[team] = unmatched.get(team, 0) + 1
 
+        seed = _to_int(cell(row, "Initial Seeding"))
+        expected_adv = _to_bool(cell(row, "Expected to Adv"))
+        # Normalization rule (David, 2026-04-28): if a team has a Regional
+        # seed but the spreadsheet's "Expected to Adv" cell is empty, treat
+        # that as an explicit `false`. The cell is only ever blank for two
+        # reasons — (a) the team wasn't seeded that year (no seed value),
+        # in which case we genuinely don't know the expectation, OR (b) the
+        # spreadsheet author left it implicit. The seed-present case is
+        # always (b): committee-flagged-as-not-expected. Anything explicitly
+        # `true` stays `true`; existing `false` values stay `false`.
+        if seed is not None and expected_adv is None:
+            expected_adv = False
+
         out.append(
             {
                 "year": year,
                 "gender": gender,
                 "team": team,
                 "regional": regional,
-                "seed": _to_int(cell(row, "Initial Seeding")),
-                "expectedAdv": _to_bool(cell(row, "Expected to Adv")),
+                "seed": seed,
+                "expectedAdv": expected_adv,
                 "teamAdvanced": _to_bool(cell(row, "Team Advanced")),
                 "result": (cell(row, "Team Result") or "").strip() or None,
                 "finalPos": _to_int(cell(row, "FinalTeamPos")),
