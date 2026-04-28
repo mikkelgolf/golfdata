@@ -23,6 +23,7 @@ import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { regionalsRich } from "@/data/regionals-rich";
 import { championshipsHistory } from "@/data/championships-history";
+import { getSeedingWindow } from "@/data/regionals-seeding";
 import { teamHref } from "@/lib/team-link";
 import { didAdvanceFromRegional, isRegionalWin } from "@/lib/streaks";
 import { fadeSlideVariants, useReducedMotion } from "@/lib/animations";
@@ -144,7 +145,8 @@ function buildRows(
   entries: RegionalFinish[],
   conferenceMap: Map<string, string>,
   ncaaByTeamYear: Set<string>,
-  richAdvancedByTeamYear: Map<string, boolean | null>
+  richAdvancedByTeamYear: Map<string, boolean | null>,
+  seedingYears: Set<number>
 ): { rows: TeamRow[]; years: number[] } {
   const years = new Set<number>();
   const byTeam = new Map<string, TeamRow>();
@@ -165,14 +167,15 @@ function buildRows(
       byTeam.set(e.team, r);
     }
     const win = isRegionalWin(e.position);
-    // Combined advance truth — same OR-logic as the Team page's PROGRAM
-    // HISTORY > Advanced stat, so the table's NAT count agrees with the
-    // per-team page. See didAdvanceFromRegional in lib/streaks.
+    // Combined advance truth — same precedence as the Team page's
+    // PROGRAM HISTORY > Advanced stat, so the table's NAT count agrees
+    // with the per-team page. See didAdvanceFromRegional in lib/streaks.
     const key = `${e.team}|${e.year}`;
     const advanced = didAdvanceFromRegional({
       richTeamAdvanced: richAdvancedByTeamYear.get(key) ?? null,
       ncaaAppearance: ncaaByTeamYear.has(key),
       basicAdvanced: e.advanced,
+      yearInSeedingWindow: seedingYears.has(e.year),
     });
     r.byYear.set(e.year, { position: e.position, advanced, win });
     r.apps += 1;
@@ -301,15 +304,21 @@ export default function RegionalsResultsTable({ entries }: Props) {
     return m;
   }, [gender]);
 
+  // Inside the seeding-data window the rich sheet's "Team Advanced"
+  // column is authoritative; outside it we fall back to the OR of all
+  // signals. See didAdvanceFromRegional in lib/streaks.
+  const seedingYears = useMemo(() => getSeedingWindow(gender).years, [gender]);
+
   const { rows, years } = useMemo(
     () =>
       buildRows(
         entries.filter((e) => e.gender === gender),
         conferenceMap,
         ncaaByTeamYear,
-        richAdvancedByTeamYear
+        richAdvancedByTeamYear,
+        seedingYears
       ),
-    [entries, gender, conferenceMap, ncaaByTeamYear, richAdvancedByTeamYear]
+    [entries, gender, conferenceMap, ncaaByTeamYear, richAdvancedByTeamYear, seedingYears]
   );
 
   const winnersByYear = useMemo(

@@ -314,18 +314,22 @@ export default function TeamPage({ params }: { params: Params }) {
     margin?: number | null;
     titleCount?: number | null;
   }> = [];
+  // Used to gate didAdvanceFromRegional: inside the seeding-data window
+  // the rich sheet's "Team Advanced" column is authoritative; outside it
+  // we fall back to the OR of all signals.
+  const seedingYears = getSeedingWindow(gender).years;
   for (let y = maxYear; y >= minYear; y--) {
     const r = historyByYear.get(y);
     if (r) {
       const win = isRegionalWin(r.position);
       const rich = richByYear.get(y);
-      // Combine the three "did they advance?" signals (sheet truth,
-      // NCAA appearance, basic position-based fallback). See
+      // Combine the "did they advance?" signals. See
       // didAdvanceFromRegional in lib/streaks for the precedence rules.
       const advanced = didAdvanceFromRegional({
         richTeamAdvanced: rich?.teamAdvanced ?? null,
         ncaaAppearance: ncaaByYear.has(y),
         basicAdvanced: r.advanced,
+        yearInSeedingWindow: seedingYears.has(y),
       });
       timelineResults.push({
         year: y,

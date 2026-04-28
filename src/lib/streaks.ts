@@ -6,6 +6,7 @@ import type {
 import { regionalsHistory } from "@/data/regionals-history";
 import { championshipsHistory } from "@/data/championships-history";
 import { regionalsRich } from "@/data/regionals-rich";
+import { getSeedingWindow } from "@/data/regionals-seeding";
 
 export const MOST_RECENT_SEASON = Math.max(
   ...regionalsHistory.map((r) => r.year)
@@ -144,10 +145,15 @@ function effectiveAdvancedYears(team: string, gender: Gender): number[] {
       )
       .map((r) => r.year)
   );
+  const seedingWindow = getSeedingWindow(gender).years;
   return filterRows(team, gender)
-    .filter(
-      (r) =>
-        richAdvancedYears.has(r.year) || ncaaYears.has(r.year) || r.advanced
+    .filter((r) =>
+      didAdvanceFromRegional({
+        richTeamAdvanced: richAdvancedYears.has(r.year) ? true : null,
+        ncaaAppearance: ncaaYears.has(r.year),
+        basicAdvanced: r.advanced,
+        yearInSeedingWindow: seedingWindow.has(r.year),
+      })
     )
     .map((r) => r.year);
 }
@@ -155,14 +161,31 @@ function effectiveAdvancedYears(team: string, gender: Gender): number[] {
 /**
  * Stateless predicate for "did the team advance?" — used by table /
  * grid components that already have the relevant lookups in hand and
- * don't want to refilter the global arrays. Same OR-logic as
+ * don't want to refilter the global arrays. Same precedence rules as
  * `effectiveAdvancedYears`, just without the data-fetching half.
+ *
+ * Inside the seeding-data window the rich sheet's "Team Advanced"
+ * column is authoritative: only rows with `teamAdvanced === true` (or
+ * an NCAA championship appearance as a defensive secondary signal)
+ * count as advanced. The basic position-based `advanced` flag is
+ * IGNORED inside the window — that flag was a "top-N seed advanced"
+ * heuristic and gets edge cases wrong, e.g. a team that finished in a
+ * top advancing slot but lost a play-off (Texas A&M women 2025,
+ * Florida women 2022).
+ *
+ * Outside the window — i.e. older years where the sheet's column is
+ * empty across the board — fall back to the OR of all available
+ * signals, since we have no authoritative truth there.
  */
 export function didAdvanceFromRegional(opts: {
   richTeamAdvanced?: boolean | null;
   ncaaAppearance?: boolean;
   basicAdvanced?: boolean;
+  yearInSeedingWindow?: boolean;
 }): boolean {
+  if (opts.yearInSeedingWindow) {
+    return opts.richTeamAdvanced === true || Boolean(opts.ncaaAppearance);
+  }
   return Boolean(
     opts.richTeamAdvanced === true ||
       opts.ncaaAppearance ||
