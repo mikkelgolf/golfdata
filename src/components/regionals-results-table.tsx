@@ -565,7 +565,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
       )}
 
       <div
-        className="overflow-hidden rounded-md border border-border"
+        className="overflow-x-auto overflow-y-hidden rounded-md border border-border"
         style={
           reduced
             ? undefined
@@ -577,7 +577,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
               }
         }
       >
-        <div className="grid grid-cols-[24px_minmax(140px,1fr)_72px_72px_56px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
+        <div className="grid min-w-[660px] grid-cols-[24px_minmax(140px,1fr)_96px_96px_56px_48px_56px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
           <span />
           <SortableHeader
             label="Team"
@@ -644,7 +644,7 @@ export default function RegionalsResultsTable({ entries }: Props) {
           {sorted.map((r, rowIdx) => {
             const isOpen = expanded.has(r.team);
             const rowBase =
-              "grid w-full grid-cols-[24px_minmax(140px,1fr)_72px_72px_56px_48px_56px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
+              "grid w-full min-w-[660px] grid-cols-[24px_minmax(140px,1fr)_96px_96px_56px_48px_56px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
             const rowCls = isOpen ? rowBase : `${rowBase} hover:shadow-raised`;
             // Only stagger the first 24 rows, and only on initial mount.
             const shouldStagger =
@@ -928,13 +928,18 @@ function SortableHeader({
       : align === "center"
         ? "justify-center text-center mx-auto"
         : "justify-start text-left";
-  const base = `label-caps inline-flex items-center gap-1 ${alignCls} hover:text-foreground transition-colors rounded px-1 py-0.5 leading-tight`;
+  // `flex` (not inline-flex) + min-w-0 lets the label span wrap onto a
+  // second line when the column is narrower than the label. Short labels
+  // ("Wins", "Best") still render single-line; longer ones ("Regional
+  // Appearances", "Adv to NCAAs") wrap cleanly with the icon next to the
+  // wrapped block.
+  const base = `label-caps flex max-w-full items-center gap-1 ${alignCls} hover:text-foreground transition-colors rounded px-1 py-0.5 leading-tight`;
   const cls = active ? `${base} btn-lift` : base;
   return (
     <button type="button" onClick={onClick} title={title} className={cls}>
-      <span>{label}</span>
+      <span className="min-w-0 whitespace-normal break-words">{label}</span>
       <Icon
-        className={`h-3 w-3 transition-transform duration-150 ${iconClass}`}
+        className={`h-3 w-3 shrink-0 transition-transform duration-150 ${iconClass}`}
         aria-hidden="true"
       />
     </button>
