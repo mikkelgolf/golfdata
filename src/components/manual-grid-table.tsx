@@ -616,26 +616,22 @@ export function ManualGridTable({
     return defaultGridFromAssignments(assignments, regionals);
   }, [teams, regionals, gender, championships]);
 
-  // Magic Number = worst-ranked at-large currently in the field. Default
-  // for the Overall Seed input is the seed (serpentine position) of that
-  // team in the current grid.
-  const magicNumberSeed = useMemo(() => {
-    let worstRank = -Infinity;
-    let worstTeam: string | null = null;
+  // Magic Number = worst-ranked at-large currently in the field. This is
+  // the same value rendered above the "Magic Number · Field Cutoff" line in
+  // the Bubble Breakdown (men: 68; women: 51 in the 2025-26 cycle). Used
+  // as the default value of the Overall Seed input.
+  const magicNumberRank = useMemo(() => {
+    let worst = -Infinity;
     for (const row of internal.slots) {
       for (const slot of row) {
         if (!slot.team) continue;
         const t = teamLookup.get(slot.team);
         if (!t || t.isAutoQualifier) continue;
-        if (t.rank > worstRank) {
-          worstRank = t.rank;
-          worstTeam = slot.team;
-        }
+        if (t.rank > worst) worst = t.rank;
       }
     }
-    if (!worstTeam) return 1;
-    return seedByTeam.get(worstTeam) ?? 1;
-  }, [internal, teamLookup, seedByTeam]);
+    return worst > 0 ? worst : 1;
+  }, [internal, teamLookup]);
 
   const totalSeats = useMemo(() => {
     return internal.slots.length * (internal.regionalIds.length || 1);
@@ -646,7 +642,7 @@ export function ManualGridTable({
   const [balanceOpen, setBalanceOpen] = useState(false);
   const [balanceMode, setBalanceMode] = useState<CutoffMode>("regional");
   const [regionalSeedInput, setRegionalSeedInput] = useState<number>(8);
-  const [overallSeedInput, setOverallSeedInput] = useState<number>(magicNumberSeed);
+  const [overallSeedInput, setOverallSeedInput] = useState<number>(magicNumberRank);
   const [overrideSwaps, setOverrideSwaps] = useState<boolean>(false);
 
   // Keep the Overall Seed input in sync with the magic number when the user
@@ -655,9 +651,9 @@ export function ManualGridTable({
   const userTouchedOverallRef = useRef(false);
   useEffect(() => {
     if (!userTouchedOverallRef.current) {
-      setOverallSeedInput(magicNumberSeed);
+      setOverallSeedInput(magicNumberRank);
     }
-  }, [magicNumberSeed]);
+  }, [magicNumberRank]);
 
   // Live "affects N teams · Y rows" preview.
   const balancePreview = useMemo(() => {
@@ -760,17 +756,22 @@ export function ManualGridTable({
 
   return (
     <div className="mt-3">
-      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
-        <p className="text-[11px] text-text-tertiary leading-snug max-w-[640px]">
-          Long-press a team to highlight it as Team A or B for the
-          Head-to-Head + Travel Map below; long-press the same team again to
-          clear it. Keep holding past the haptic to drag a team to a
-          different cell. On desktop, click and drag works immediately. The
-          number to the <span className="text-foreground/80">left</span> of
-          each team is its overall seed; the number to the{" "}
-          <span className="text-foreground/80">right</span> is its true
-          ranking. Saved to this browser.
-        </p>
+      <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
+        <div className="text-[11px] text-text-tertiary leading-snug max-w-[640px] space-y-1.5">
+          <p>
+            Long-press a team to highlight it as Team A or B for the
+            Head-to-Head + Travel Map below; long-press the same team again
+            to clear it. Keep holding past the haptic to drag a team to a
+            different cell. On desktop, click and drag works immediately.
+            All changes here are saved to this browser only.
+          </p>
+          <p>
+            The number to the <span className="text-foreground/80">left</span>{" "}
+            of each team is its overall seed; the number to the{" "}
+            <span className="text-foreground/80">right</span> is its true
+            ranking.
+          </p>
+        </div>
         <div className="flex items-center gap-1.5">
           <button
             type="button"
@@ -824,7 +825,7 @@ export function ManualGridTable({
                   userTouchedOverallRef.current = true;
                   setOverallSeedInput(v);
                 }}
-                magicNumberSeed={magicNumberSeed}
+                magicNumberRank={magicNumberRank}
                 overrideSwaps={overrideSwaps}
                 onOverrideSwapsChange={setOverrideSwaps}
                 numTiers={numTiers}
@@ -976,7 +977,7 @@ interface BalancePopoverProps {
   onRegionalSeedChange: (v: number) => void;
   overallSeed: number;
   onOverallSeedChange: (v: number) => void;
-  magicNumberSeed: number;
+  magicNumberRank: number;
   overrideSwaps: boolean;
   onOverrideSwapsChange: (v: boolean) => void;
   numTiers: number;
@@ -998,7 +999,7 @@ function BalancePopover({
   onRegionalSeedChange,
   overallSeed,
   onOverallSeedChange,
-  magicNumberSeed,
+  magicNumberRank,
   overrideSwaps,
   onOverrideSwapsChange,
   numTiers,
@@ -1023,7 +1024,7 @@ function BalancePopover({
       <div
         role="dialog"
         aria-label="Balance travel"
-        className="absolute right-0 top-full mt-2 z-20 w-[320px] rounded-md border border-border bg-card shadow-xl p-3 space-y-3 text-foreground"
+        className="fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 w-[min(320px,calc(100vw-1.5rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-md border border-border bg-card shadow-xl p-3 space-y-3 text-foreground"
       >
         <div className="text-[12px] font-semibold flex items-center gap-1.5">
           <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -1096,7 +1097,7 @@ function BalancePopover({
               disabled={mode !== "overall"}
             />
             <span className="text-[10px] text-text-tertiary">
-              of {totalSeats} · magic # {magicNumberSeed}
+              of {totalSeats} · magic # {magicNumberRank}
             </span>
           </label>
         </div>
