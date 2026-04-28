@@ -51,19 +51,93 @@ spreadsheet (`regionals-rich.json`) vs the canonical site truth
    PROGRAM HISTORY > Regional Apps and year-by-year grids should now
    include the backfilled rows.
 
-## Open questions (to confirm before coding)
+## Decisions (from David, 2026-04-28)
 
-1. **Source for the 13 missing men's rows:** is the spreadsheet
-   sufficient, or do we want to cross-reference NCAA archive PDFs /
-   Golfstat? (Position values come straight from the sheet — I'll
-   surface them for review before committing.)
-2. **North Dakota vs North Dakota State:** which is canonical for
-   2013? Was North Dakota even a D1 program then?
-3. **Schema:** does `regionals-history.json` require any fields the
-   sheet doesn't have (e.g. team logo, conference for that year)? If
-   so, what's the fallback?
+- **Source of truth:** sheet is sufficient. All 13 missing men's rows
+  are recorded in the sheet as `result='DNF'` with no `finalPos` and
+  no `teamAdvanced` value — they're just bottom-of-leaderboard
+  placeholders. No NCAA-archive cross-reference needed.
+- **North Dakota:** sheet wins. Site row was a typo. Rename in place
+  (no alias needed — the sheet always uses "North Dakota State").
+- **Schema:** `regionals-history.json` rows are
+  `{year, gender, site, team, position, advanced}` — no `regional`
+  field, `site` is always empty across the file. `position` is a
+  string; consumer code does `parseInt(position, 10)` then filters
+  NaN, so a non-numeric `"DNF"` is safe (won't break `bestFinish`,
+  `regionalWins`, percentiles, etc.).
+
+## Schema findings
+
+`RegionalFinish` (in `src/data/records-types.ts`):
+```ts
+{
+  year: number;
+  gender: Gender;
+  site: string;     // always empty in the file
+  team: string;
+  position: string; // numeric string, "T2" tied, etc.
+  advanced: boolean;
+}
+```
+
+The `regional` (East/Central/West/etc.) is NOT carried on
+`RegionalFinish`; it lives on `RegionalFinishRich` and is used as a
+disambiguator only when a team appears in multiple regionals
+(extremely rare). Joins between the two are on
+`(year, gender, team)`.
+
+## Implementation
+
+### A. 13 DNF rows added to `regionals-history.json`
+
+| Year | Regional | Team                  | position | advanced |
+|------|----------|-----------------------|----------|----------|
+| 1996 | East     | Central Connecticut   | DNF      | false    |
+| 1996 | East     | George Mason          | DNF      | false    |
+| 1996 | East     | James Madison         | DNF      | false    |
+| 1996 | East     | Rhode Island          | DNF      | false    |
+| 1996 | East     | Temple                | DNF      | false    |
+| 1996 | East     | Yale                  | DNF      | false    |
+| 2000 | East     | Dartmouth             | DNF      | false    |
+| 2000 | East     | James Madison         | DNF      | false    |
+| 2000 | East     | Richmond              | DNF      | false    |
+| 2000 | East     | Seton Hall            | DNF      | false    |
+| 2000 | East     | VCU                   | DNF      | false    |
+| 2000 | East     | Yale                  | DNF      | false    |
+| 2002 | Central  | Jackson State         | DNF      | false    |
+
+### B. 2013 women rename
+
+`North Dakota` → `North Dakota State` (single row, position 23,
+West Regional). Verified the sheet uses `North Dakota State`
+consistently across all years; no alias needed.
+
+### C. Bonus: 18 duplicate UCF women rows removed
+
+Audit surfaced 18 byte-identical duplicate rows for UCF women across
+1995/1996/2000/2001/2002/2008/2009/2012/2013/2014/2015/2017/2019/
+2021/2022/2023/2024/2025. Each was an exact duplicate (same
+position, same advanced, same site) — almost certainly leftover from
+an earlier "Central Florida" → "UCF" alias migration. De-duped by
+`(year, gender, team, position, advanced, site)` tuple. UCF women's
+total Regional appearances drops from 36 → 18 (each year now counts
+once, as it should).
+
+## Verification
+
+- **Audit re-run after writes:**
+  - Direction A (sheet → site missing): **0**
+  - Direction B (site → sheet missing within sheet year range): **0**
+  - Per-year/gender team-count gaps: **0**
+- **Typecheck:** clean.
+- **Spot checks:**
+  - Yale men: 13 appearances, including 1996 (DNF) and 2000 (DNF) ✅
+  - James Madison men: 8 appearances, including 1996 (DNF) and 2000 (DNF) ✅
+  - North Dakota State women: 2 appearances (2013 + 2018) ✅
+  - UCF women: 18 appearances (was inflated to 36) ✅
 
 ## Progress log
 
-- 2026-04-28: branch + session doc created; awaiting answers on
-  open questions before backfilling rows.
+- 2026-04-28: branch + session doc created; surfaced open questions.
+- 2026-04-28: schema check; backfill + rename + dedupe applied; audit
+  + typecheck clean.
