@@ -209,3 +209,9 @@ No further alias additions needed at this time.
 - 2026-04-28: Commit C — extracted team-name aliases to
   `scripts/team-name-aliases.json`; ran audit (0 women + 2 men
   unmatched, both real-team gaps not alias issues); reported to David.
+- 2026-04-28: Commit D — re-ran `build-regional-history.py` against
+  the live sheet to populate the new `teamAdvanced` field on every
+  row of `regionals-rich.json`. 4,657 rows total; 1,818 marked
+  advanced (sheet leaves non-advancers blank, which the OR-helper
+  treats as "fall through to NCAA appearance + basic"). Spot-checks:
+  Auburn men 26 ✅, Texas men 32 ✅ — same totals as Commit B.
