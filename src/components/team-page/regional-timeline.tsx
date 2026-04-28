@@ -101,12 +101,16 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
                 : r.expectedAdv === true
                   ? "text-rose-400"
                   : "text-foreground/80";
-        // Seed color: green when the team was committee-flagged "Expected
-        // to Adv" for this year; otherwise the usual muted treatment.
+        // Seed color tracks committee expectation:
+        //   true  → green ("expected to advance")
+        //   false → red   ("not expected to advance")
+        //   null  → muted (no expectation data — outside the seeding window)
         const seedClass =
           r.expectedAdv === true
             ? "text-emerald-400/90"
-            : "text-text-tertiary/80";
+            : r.expectedAdv === false
+              ? "text-rose-400/90"
+              : "text-text-tertiary/80";
         const cellTitle = buildTooltip(r);
         const showSeed = r.seed != null && !r.cancelled && !r.missed;
 

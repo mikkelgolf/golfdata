@@ -4,7 +4,10 @@ import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
-import { computeAllTeamStats } from "@/lib/streaks";
+import {
+  computeAllTeamStats,
+  computeAllChampionshipStats,
+} from "@/lib/streaks";
 import { slugify } from "@/lib/team-slug";
 import TeamsIndex, { type TeamsIndexRow } from "@/components/teams-index";
 
@@ -33,7 +36,7 @@ function buildRows(gender: Gender): TeamsIndexRow[] {
       eligible: t.eligible,
       isAutoQualifier: t.isAutoQualifier,
       apps: 0,
-      nationals: 0,
+      ncaaApps: 0,
       regionalWins: 0,
       bestFinish: null,
     });
@@ -51,7 +54,7 @@ function buildRows(gender: Gender): TeamsIndexRow[] {
         eligible: t.eligible,
         isAutoQualifier: t.isAutoQualifier,
         apps: 0,
-        nationals: 0,
+        ncaaApps: 0,
         regionalWins: 0,
         bestFinish: null,
       });
@@ -63,9 +66,20 @@ function buildRows(gender: Gender): TeamsIndexRow[] {
     const row = byTeam.get(s.team);
     if (!row) continue;
     row.apps = s.totalAppearances;
-    row.nationals = s.totalAdvancements;
     row.regionalWins = s.regionalWins;
     row.bestFinish = s.bestFinish;
+  }
+
+  // NCAA Championship appearances — same source as the Team page's
+  // "NCAA apps" stat card (championships-history.json), so the two
+  // numbers always agree.
+  const champStats = computeAllChampionshipStats().filter(
+    (s) => s.gender === gender
+  );
+  for (const s of champStats) {
+    const row = byTeam.get(s.team);
+    if (!row) continue;
+    row.ncaaApps = s.appearances;
   }
 
   return [...byTeam.values()].sort((a, b) => a.rank - b.rank);

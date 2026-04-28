@@ -811,21 +811,43 @@ export default function RegionalsResultsTable({ entries }: Props) {
 
                             const win = cell.win;
                             const missed = !cell.advanced && !win;
+                            const expectedAdv = rich?.expectedAdv ?? null;
                             const boxClass = win
                               ? `rounded border border-amber-400/40 bg-amber-400/[0.06] px-1.5 py-1 text-center transition-colors duration-100 hover:border-amber-300/70 hover:bg-amber-400/10 hover:shadow-raised ${dim ? "opacity-25" : ""}`
                               : `rounded border border-border/40 bg-card/40 px-1.5 py-1 text-center transition-colors duration-100 hover:border-border-medium hover:shadow-raised ${dim ? "opacity-25" : ""}`;
+                            // Position color precedence — same rules as
+                            // team-page/regional-timeline:
+                            //   win → amber, advanced → emerald,
+                            //   missed → muted rose,
+                            //   appeared but expected to advance and didn't → red,
+                            //   appeared but not expected and didn't → neutral.
                             const posClass = win
                               ? "text-amber-300"
                               : cell.advanced
                                 ? "text-emerald-400"
                                 : missed
                                   ? "text-rose-400/80"
-                                  : "text-foreground/80";
+                                  : expectedAdv === true
+                                    ? "text-rose-400"
+                                    : "text-foreground/80";
+                            // Seed color tracks committee expectation:
+                            // true → green, false → red, null → muted.
+                            const seedClass =
+                              expectedAdv === true
+                                ? "text-emerald-400/90"
+                                : expectedAdv === false
+                                  ? "text-rose-400/90"
+                                  : "text-text-tertiary/80";
                             const cellTitle = buildRegionalTooltip(
                               cell,
                               rich
                             );
                             const seed = rich?.seed;
+                            // Prefer the rich sheet's "Team Result" string
+                            // (e.g. "T5") so ties are visible; fall back to
+                            // the basic numeric position when rich data is
+                            // absent (older rows / unmatched edge cases).
+                            const positionLabel = rich?.result ?? cell.position;
                             // Seed is shown whenever the team appeared that
                             // year and we have seed data (seeding era ~2002+).
                             // This matches team-page/regional-timeline, which
@@ -854,11 +876,11 @@ export default function RegionalsResultsTable({ entries }: Props) {
                                 </div>
                                 <div className="text-[12px] font-mono tabular-nums leading-tight">
                                   <span className={posClass}>
-                                    {cell.position}
+                                    {positionLabel}
                                   </span>
                                 </div>
                                 {showSeed ? (
-                                  <div className="text-[9px] font-mono tabular-nums leading-none text-text-tertiary/80">
+                                  <div className={`text-[9px] font-mono tabular-nums leading-none ${seedClass}`}>
                                     #{seed}
                                   </div>
                                 ) : null}
