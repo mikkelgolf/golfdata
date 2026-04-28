@@ -26,7 +26,7 @@ import {
 import {
   DndContext,
   DragOverlay,
-  PointerSensor,
+  MouseSensor,
   KeyboardSensor,
   TouchSensor,
   useSensor,
@@ -51,7 +51,6 @@ import {
   clearGridState,
   defaultGridFromAssignments,
   linearizeGrid,
-  relinearizeGrid,
   saveGridState,
   serpentineIndex,
   unserpentineIndex,
@@ -118,8 +117,13 @@ export interface ManualGridTableProps {
   regionals: Regional[];
   championships?: Championship[];
   gender: Gender;
-  /** Notifies parent when state changes — used to drive Breakdown view. */
+  /** Notifies parent when state changes — used to drive Breakdown / H2H view. */
   onChange?: (assignments: ScurveAssignment[]) => void;
+  /**
+   * Long-press (~1s hold + release) on a team fires this with the team name.
+   * The parent decides where the team lands (typically: A first, B as fallback).
+   */
+  onPlaceTeam?: (teamName: string) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -141,7 +145,7 @@ function SortableHeader({
     cursor: sortable.isDragging ? "grabbing" : "grab",
     borderBottom: `2px solid ${regional.color}`,
     color: regional.color,
-    touchAction: "none",
+    // Default touch-action so scroll works during the 3s pre-drag delay.
   };
   const label = regional.name.replace(/ Regional$/, "");
   return (
@@ -165,6 +169,15 @@ function SortableHeader({
 // Body cell — sortable
 // ---------------------------------------------------------------------------
 
+/**
+ * Long-press window: a press-and-release within this range fires onPlaceTeam.
+ * Below LONG_PRESS_MIN_MS it counts as a tap (no-op). At/above DRAG_DELAY_MS
+ * the TouchSensor takes over and a drag begins instead of a placement.
+ */
+const LONG_PRESS_MIN_MS = 1000;
+const LONG_PRESS_MAX_MS = 2500;
+const DRAG_DELAY_MS = 3000;
+
 function SortableCell({
   slot,
   team,
@@ -172,6 +185,9 @@ function SortableCell({
   regionalColor,
   isAboveLine,
   hostColor,
+  onPlaceTeam,
+  isLongPressArmed,
+  setLongPressArmedSlotId,
 }: {
   slot: Slot;
   team: TeamData | undefined;
@@ -179,14 +195,56 @@ function SortableCell({
   regionalColor: string;
   isAboveLine: boolean;
   hostColor: string | undefined;
+  onPlaceTeam?: (teamName: string) => void;
+  isLongPressArmed: boolean;
+  setLongPressArmedSlotId: (id: string | null) => void;
 }) {
   const sortable = useSortable({ id: slot.id });
+  const pressStartRef = useRef<number | null>(null);
+  const armTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearArmTimer = () => {
+    if (armTimerRef.current) {
+      clearTimeout(armTimerRef.current);
+      armTimerRef.current = null;
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (!slot.team || !onPlaceTeam) return;
+    pressStartRef.current = Date.now();
+    clearArmTimer();
+    armTimerRef.current = setTimeout(() => {
+      setLongPressArmedSlotId(slot.id);
+    }, LONG_PRESS_MIN_MS);
+    // Compose with dnd-kit's listener (it also wants pointerdown)
+    sortable.listeners?.onPointerDown?.(e);
+  };
+
+  const handlePointerUpOrCancel = () => {
+    const start = pressStartRef.current;
+    pressStartRef.current = null;
+    clearArmTimer();
+    setLongPressArmedSlotId(null);
+    if (start === null) return;
+    if (sortable.isDragging) return; // dnd-kit took over — skip placement
+    const elapsed = Date.now() - start;
+    if (
+      slot.team &&
+      onPlaceTeam &&
+      elapsed >= LONG_PRESS_MIN_MS &&
+      elapsed < LONG_PRESS_MAX_MS
+    ) {
+      onPlaceTeam(slot.team);
+    }
+  };
+
   const style: CSSProperties = {
     transform: CSS.Transform.toString(sortable.transform),
     transition: sortable.transition,
     opacity: sortable.isDragging ? 0.4 : 1,
     cursor: slot.team ? (sortable.isDragging ? "grabbing" : "grab") : "default",
-    touchAction: "none",
+    // Default touch-action so scroll works during the 3s pre-drag delay.
   };
   if (!slot.team) {
     // Empty slot: still a drop target (so cross-row insert works) but not
@@ -202,18 +260,28 @@ function SortableCell({
       </td>
     );
   }
+  // Spread sortable.listeners but override pointerdown so we can also fire
+  // our long-press timer alongside dnd-kit's drag detection.
+  const composedListeners = {
+    ...sortable.listeners,
+    onPointerDown: handlePointerDown,
+  };
   return (
     <td
       ref={sortable.setNodeRef}
       className="p-0 align-middle"
       style={style}
+      onPointerUp={handlePointerUpOrCancel}
+      onPointerCancel={handlePointerUpOrCancel}
+      onPointerLeave={handlePointerUpOrCancel}
       {...sortable.attributes}
-      {...sortable.listeners}
+      {...composedListeners}
     >
       <div
         className={cn(
-          "h-6 px-1 flex items-center text-[10px] rounded-sm whitespace-nowrap select-none",
-          isAboveLine ? "bg-secondary/70" : "bg-secondary/25"
+          "h-6 px-1 flex items-center text-[10px] rounded-sm whitespace-nowrap select-none transition-shadow",
+          isAboveLine ? "bg-secondary/70" : "bg-secondary/25",
+          isLongPressArmed && "ring-1 ring-primary/70 shadow-[0_0_0_2px_rgba(99,102,241,0.25)]"
         )}
         style={{ borderLeft: `2px solid ${regionalColor}` }}
         title={team ? `#${seed} ${team.team} - Rank ${team.rank}` : slot.team}
@@ -249,11 +317,17 @@ export function ManualGridTable({
   championships,
   gender,
   onChange,
+  onPlaceTeam,
 }: ManualGridTableProps) {
   // Build initial state (committee defaults merged with localStorage if any)
   const [internal, setInternal] = useState<InternalState>(() => {
     return toInternal(buildInitialGridState(teams, regionals, championships, gender));
   });
+
+  // Undo stack — every state change pushes the previous state. Cleared on
+  // gender/teams switch and on Reset All. Page reload also clears it (state
+  // is in component memory, not localStorage).
+  const [history, setHistory] = useState<InternalState[]>([]);
 
   // If gender / teams switch, rebuild from new defaults + new localStorage
   // bucket. We key on gender and the eligible-team-set hash to avoid
@@ -265,6 +339,7 @@ export function ManualGridTable({
     if (last && last.gender === gender && last.teamHash === teamHash) return;
     lastInputRef.current = { gender, teamHash };
     setInternal(toInternal(buildInitialGridState(teams, regionals, championships, gender)));
+    setHistory([]);
   }, [teams, regionals, championships, gender]);
 
   // Persist + notify parent on every change
@@ -335,10 +410,14 @@ export function ManualGridTable({
     return map;
   }, [derivedAssignments]);
 
-  // Sensors
+  // Sensors. Mouse uses a small distance threshold (so a click doesn't
+  // accidentally drag); touch requires a 3-second hold so horizontal scroll
+  // still works and accidental swipes don't move cells.
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 6 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: DRAG_DELAY_MS, tolerance: 8 },
+    }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
@@ -362,15 +441,16 @@ export function ManualGridTable({
     if (activeIsHeader !== overIsHeader) return;
 
     setInternal((prev) => {
+      let next: InternalState | null = null;
       if (activeIsHeader) {
-        // Reorder regionalIds AND apply same permutation to each cell row
+        // Reorder regionalIds only — cells stay put. Each cell's regional
+        // becomes whatever regional now sits at its column.
         const headerIds = prev.regionalIds.map((id) => `header:${id}`);
         const fromIdx = headerIds.indexOf(activeId);
         const toIdx = headerIds.indexOf(overId);
         if (fromIdx === -1 || toIdx === -1) return prev;
         const newRegionalIds = arrayMove(prev.regionalIds, fromIdx, toIdx);
-        const newSlots = prev.slots.map((row) => arrayMove(row, fromIdx, toIdx));
-        return { regionalIds: newRegionalIds, slots: newSlots };
+        next = { regionalIds: newRegionalIds, slots: prev.slots };
       } else {
         // Cell move — operate on the linearised array
         const numCols = prev.regionalIds.length;
@@ -395,17 +475,32 @@ export function ManualGridTable({
           const { row, col } = unserpentineIndex(i, numCols);
           if (row < numRows && col < numCols) newSlots[row][col] = moved[i];
         }
-        return { regionalIds: prev.regionalIds, slots: newSlots };
+        next = { regionalIds: prev.regionalIds, slots: newSlots };
       }
+      if (next) {
+        setHistory((h) => [...h, prev]);
+      }
+      return next ?? prev;
     });
   }, []);
 
-  // Reset button — wipe localStorage and rebuild from committee defaults
-  const handleReset = useCallback(() => {
+  // Undo the most recent change (one step back).
+  const handleResetLast = useCallback(() => {
+    setHistory((h) => {
+      if (h.length === 0) return h;
+      const last = h[h.length - 1];
+      setInternal(last);
+      return h.slice(0, -1);
+    });
+  }, []);
+
+  // Wipe history + localStorage and rebuild from committee defaults.
+  const handleResetAll = useCallback(() => {
     clearGridState(gender);
     const assignments = computeScurve(teams, regionals, "committee", gender, championships);
     const fresh = defaultGridFromAssignments(assignments, regionals);
     setInternal(toInternal(fresh));
+    setHistory([]);
   }, [gender, teams, regionals, championships]);
 
   // Flatten header SortableContext items
@@ -428,22 +523,43 @@ export function ManualGridTable({
 
   const numRegionals = internal.regionalIds.length;
   const grid = internal.slots; // already 2D in [tier][col]
+  const isDragging = activeId !== null;
+
+  // Slot ID currently armed for placement (visual ring while held).
+  const [longPressArmedSlotId, setLongPressArmedSlotId] = useState<string | null>(null);
 
   return (
     <div className="mt-3">
-      <div className="flex items-center justify-between gap-2 mb-2">
+      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
         <p className="text-[11px] text-text-tertiary leading-snug">
-          Drag any team or regional header to rearrange. Changes are saved to this browser.
+          Hold ~1s + release to send a team to Head-to-Head. Hold 3s to drag.
+          On desktop, click and drag works immediately. Saved to this browser.
         </p>
-        <button
-          type="button"
-          onClick={handleReset}
-          className="inline-flex items-center gap-1 h-7 px-2 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50 transition-colors"
-          title="Reset to Committee S-curve defaults"
-        >
-          <RotateCcw className="h-3 w-3" />
-          Reset
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={handleResetLast}
+            disabled={history.length === 0}
+            className="inline-flex items-center gap-1 h-7 px-2 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title={
+              history.length === 0
+                ? "Nothing to undo"
+                : `Undo last change (${history.length} step${history.length === 1 ? "" : "s"} available)`
+            }
+          >
+            <RotateCcw className="h-3 w-3" />
+            Reset Last
+          </button>
+          <button
+            type="button"
+            onClick={handleResetAll}
+            className="inline-flex items-center gap-1 h-7 px-2 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50 transition-colors"
+            title="Reset every cell to the Committee S-curve defaults"
+          >
+            <RotateCcw className="h-3 w-3" />
+            Reset All
+          </button>
+        </div>
       </div>
 
       <DndContext
@@ -453,7 +569,13 @@ export function ManualGridTable({
         onDragEnd={handleDragEnd}
         onDragCancel={() => setActiveId(null)}
       >
-        <div className="overflow-x-auto">
+        <div
+          className={cn(
+            "overflow-x-auto transition-opacity duration-150",
+            isDragging && "opacity-70"
+          )}
+          data-dragging={isDragging || undefined}
+        >
           <table
             className="border-separate"
             style={{
@@ -510,6 +632,9 @@ export function ManualGridTable({
                               regionalColor={r?.color ?? "#888"}
                               isAboveLine={isAboveLine}
                               hostColor={slot.team ? hostColorByTeam.get(slot.team) : undefined}
+                              onPlaceTeam={onPlaceTeam}
+                              isLongPressArmed={longPressArmedSlotId === slot.id}
+                              setLongPressArmedSlotId={setLongPressArmedSlotId}
                             />
                           );
                         })}

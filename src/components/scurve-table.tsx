@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState, useMemo, useCallback, useEffect, useTransition, useDeferredValue } from "react";
+import { Fragment, useState, useMemo, useCallback, useEffect, useRef, useTransition, useDeferredValue } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import { ManualGridTable } from "@/components/manual-grid-table";
+import HeadToHeadBrowser from "@/components/head-to-head-browser";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -598,8 +599,6 @@ export default function ScurveTable({
           teams={activeTeams}
           regionals={activeRegionals}
           championships={activeChampionships}
-          regionalMap={regionalMap}
-          hostColorByTeam={hostColorByTeam}
           gender={gender}
         />
       </div>
@@ -2478,27 +2477,36 @@ function ManualGridSection({
   teams,
   regionals,
   championships,
-  regionalMap,
-  hostColorByTeam,
   gender,
 }: {
   teams: TeamData[];
   regionals: Regional[];
   championships?: Championship[];
-  regionalMap: Map<number, Regional>;
-  hostColorByTeam: Map<string, string>;
   gender: Gender;
 }) {
-  const [manualAssignments, setManualAssignments] = useState<ScurveAssignment[]>([]);
+  // Live H2H slots fed by long-press placements from the grid above. A first,
+  // then B (regardless of B's current value), per the spec.
+  const [teamA, setTeamA] = useState<string | null>(null);
+  const [teamB, setTeamB] = useState<string | null>(null);
 
-  const regionalSeeds = useMemo(
-    () => computeRegionalSeeds(manualAssignments),
-    [manualAssignments]
-  );
-  const regionalPositions = useMemo(
-    () => computeRegionalPositions(manualAssignments),
-    [manualAssignments]
-  );
+  // Reset slots on gender switch — H2H data is gender-specific.
+  const lastGenderRef = useRef<Gender>(gender);
+  useEffect(() => {
+    if (lastGenderRef.current !== gender) {
+      lastGenderRef.current = gender;
+      setTeamA(null);
+      setTeamB(null);
+    }
+  }, [gender]);
+
+  const handlePlaceTeam = useCallback((teamName: string) => {
+    setTeamA((prevA) => {
+      if (prevA === null) return teamName;
+      // A is occupied → push into B regardless of B's current state.
+      setTeamB(teamName);
+      return prevA;
+    });
+  }, []);
 
   return (
     <>
@@ -2507,17 +2515,25 @@ function ManualGridSection({
         regionals={regionals}
         championships={championships}
         gender={gender}
-        onChange={setManualAssignments}
+        onPlaceTeam={handlePlaceTeam}
       />
-      <BreakdownView
-        teams={teams}
-        assignments={manualAssignments}
-        regionalMap={regionalMap}
-        regionalSeeds={regionalSeeds}
-        regionalPositions={regionalPositions}
-        hostColorByTeam={hostColorByTeam}
-        gender={gender}
-      />
+      <div className="mt-6">
+        <h3 className="text-[13px] font-semibold text-foreground mb-3">
+          Head-to-Head
+          <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+            Hold ~1s on a team above to send it here
+          </span>
+        </h3>
+        <HeadToHeadBrowser
+          embedded={{
+            gender,
+            teamA,
+            teamB,
+            onTeamAChange: setTeamA,
+            onTeamBChange: setTeamB,
+          }}
+        />
+      </div>
     </>
   );
 }
