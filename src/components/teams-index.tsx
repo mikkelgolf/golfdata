@@ -23,14 +23,20 @@ export interface TeamsIndexRow {
   ties: number;
   eligible: boolean;
   isAutoQualifier: boolean;
+  /** Total NCAA Regional appearances ever (regionals-history.json). */
   apps: number;
-  nationals: number;
+  /**
+   * Total NCAA Championship appearances ever (championships-history.json).
+   * Same source as the Team page's "NCAA apps" stat card so the numbers
+   * always agree.
+   */
+  ncaaApps: number;
   regionalWins: number;
   bestFinish: number | null;
 }
 
 type GenderSel = Gender | "both";
-type SortKey = "rank" | "team" | "apps" | "nationals" | "regionalWins" | "bestFinish" | "conference";
+type SortKey = "rank" | "team" | "apps" | "ncaaApps" | "regionalWins" | "bestFinish" | "conference";
 type SortDir = "asc" | "desc";
 
 interface Props {
@@ -52,8 +58,8 @@ function sortRows(rows: TeamsIndexRow[], key: SortKey, dir: SortDir): TeamsIndex
       case "apps":
         cmp = a.apps - b.apps;
         break;
-      case "nationals":
-        cmp = a.nationals - b.nationals;
+      case "ncaaApps":
+        cmp = a.ncaaApps - b.ncaaApps;
         break;
       case "regionalWins":
         cmp = a.regionalWins - b.regionalWins;
@@ -317,8 +323,12 @@ function TableBlock({
     return () => clearTimeout(t);
   }, []);
 
+  // Wider columns + larger gap so "Regional Apps" / "NCAA Apps" headers
+  // fit (with wrap support in SortableHeader as a fallback) and the
+  // numeric columns aren't squished. min-w-[680px] keeps the table from
+  // collapsing on narrow viewports — the parent gets overflow-x-auto.
   const rowCls =
-    "grid grid-cols-[44px_minmax(140px,1.2fr)_minmax(60px,0.7fr)_44px_44px_44px_44px] items-center gap-1 px-2 py-1.5 text-[12px] border-b border-border/40 last:border-b-0 ring-card shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out";
+    "grid w-full min-w-[680px] grid-cols-[44px_minmax(160px,1.4fr)_minmax(80px,0.8fr)_64px_64px_56px_56px] items-center gap-2 px-2 py-1.5 text-[12px] border-b border-border/40 last:border-b-0 ring-card shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out";
 
   const blurUpStyle = reduced
     ? undefined
@@ -341,15 +351,15 @@ function TableBlock({
           </span>
         )}
       </span>
-      <span className="truncate text-[11px] text-muted-foreground">
+      <span className="truncate text-center text-[11px] text-muted-foreground">
         {r.conference}
       </span>
-      <span className="text-right font-mono tabular-nums text-foreground">{r.apps}</span>
-      <span className="text-right font-mono tabular-nums text-foreground">{r.nationals}</span>
-      <span className="text-right font-mono tabular-nums font-semibold text-foreground">
+      <span className="text-center font-mono tabular-nums text-foreground">{r.apps}</span>
+      <span className="text-center font-mono tabular-nums text-foreground">{r.ncaaApps}</span>
+      <span className="text-center font-mono tabular-nums font-semibold text-foreground">
         {r.regionalWins}
       </span>
-      <span className="text-right font-mono tabular-nums text-foreground">
+      <span className="text-center font-mono tabular-nums text-foreground">
         {r.bestFinish ?? "—"}
       </span>
     </>
@@ -366,8 +376,8 @@ function TableBlock({
         </span>
       </div>
 
-      <div className="overflow-hidden rounded-md border border-border">
-        <div className="grid grid-cols-[44px_minmax(140px,1.2fr)_minmax(60px,0.7fr)_44px_44px_44px_44px] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
+      <div className="overflow-x-auto overflow-y-hidden rounded-md border border-border">
+        <div className="grid w-full min-w-[680px] grid-cols-[44px_minmax(160px,1.4fr)_minmax(80px,0.8fr)_64px_64px_56px_56px] items-center gap-2 bg-muted px-2 py-2 text-[10px]">
           <SortableHeader
             label="Rank"
             align="right"
@@ -383,29 +393,30 @@ function TableBlock({
           />
           <SortableHeader
             label="Conf."
+            align="center"
             active={sortKey === "conference"}
             dir={sortDir}
             onClick={() => onSort("conference")}
           />
           <SortableHeader
-            label="Apps"
-            align="right"
+            label="Regional Apps"
+            align="center"
             title="NCAA regional appearances since 1989"
             active={sortKey === "apps"}
             dir={sortDir}
             onClick={() => onSort("apps")}
           />
           <SortableHeader
-            label="Nat"
-            align="right"
-            title="Nationals appearances"
-            active={sortKey === "nationals"}
+            label="NCAA Apps"
+            align="center"
+            title="NCAA Championship appearances"
+            active={sortKey === "ncaaApps"}
             dir={sortDir}
-            onClick={() => onSort("nationals")}
+            onClick={() => onSort("ncaaApps")}
           />
           <SortableHeader
             label="Wins"
-            align="right"
+            align="center"
             title="Regional wins"
             active={sortKey === "regionalWins"}
             dir={sortDir}
@@ -413,7 +424,7 @@ function TableBlock({
           />
           <SortableHeader
             label="Best"
-            align="right"
+            align="center"
             title="Best regional finish"
             active={sortKey === "bestFinish"}
             dir={sortDir}
@@ -471,7 +482,7 @@ function SortableHeader({
   onClick,
 }: {
   label: string;
-  align?: "right";
+  align?: "right" | "center";
   title?: string;
   active: boolean;
   dir: SortDir;
@@ -483,13 +494,22 @@ function SortableHeader({
       : ChevronDown
     : ChevronsUpDown;
   const iconClass = active ? "text-foreground/70" : "text-muted-foreground/40";
-  const base = `label-caps inline-flex items-center gap-1 ${align === "right" ? "justify-end text-right ml-auto" : "justify-start text-left"} hover:text-foreground transition-colors rounded px-1 py-0.5`;
+  const alignCls =
+    align === "right"
+      ? "justify-end text-right ml-auto"
+      : align === "center"
+        ? "justify-center text-center mx-auto"
+        : "justify-start text-left";
+  // `flex` (not inline-flex) + min-w-0 lets long labels (e.g. "Regional
+  // Apps" / "NCAA Apps") wrap onto two lines when the column is narrower
+  // than the label.
+  const base = `label-caps flex max-w-full items-center gap-1 ${alignCls} hover:text-foreground transition-colors rounded px-1 py-0.5 leading-tight`;
   const cls = active ? `${base} btn-lift` : base;
   return (
     <button type="button" onClick={onClick} title={title} className={cls}>
-      <span>{label}</span>
+      <span className="min-w-0 whitespace-normal break-words">{label}</span>
       <Icon
-        className={`h-3 w-3 transition-transform duration-150 ${iconClass}`}
+        className={`h-3 w-3 shrink-0 transition-transform duration-150 ${iconClass}`}
         aria-hidden="true"
       />
     </button>

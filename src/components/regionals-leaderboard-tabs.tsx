@@ -167,7 +167,7 @@ function Boards({
       <LeaderboardSection
         gender={gender}
         title="Most advanced as underdog"
-        subtitle="Seeded 5 or lower and still made it to the NCAA Championship."
+        subtitle="Advanced to NCAAs despite not being expected to advance based on the committee's seeding."
         headers={["Underdog Advances", "Appearances"]}
         rows={boards.mostUnderdogAdvance}
       />

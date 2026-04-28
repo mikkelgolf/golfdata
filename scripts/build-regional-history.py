@@ -31,31 +31,27 @@ from google_sheets import read_tab  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_PATH = REPO_ROOT / "src" / "data" / "regionals-rich.json"
 
-# Known sheet-variant -> canonical-site-name used in regionals-history.json
-# and rankings. Mirrors the map in scripts/build-championships-history.ts but
-# kept local so this script has no TS build dependency.
-MEN_CANONICAL: dict[str, str] = {
-    "East Tennessee State": "ETSU",
-    "Central Florida": "UCF",
-    "Memphis State": "Memphis",
-    "North Texas State": "North Texas",
-    "Lamar Tech": "Lamar",
-    "Augusta State": "Augusta",
-    "Detroit": "Detroit Mercy",
-    "Kent": "Kent State",
-    "West Point": "Army",
-    "Louisiana-LaFayette": "Louisiana-Lafayette",
-}
+# Sheet-variant -> canonical-site-name aliases live in a shared JSON file so
+# they can be edited without touching code (and so a future ingest from a
+# different feed can reuse the same map). The file is keyed by gender; each
+# value maps a raw sheet name to the canonical name used in
+# regionals-history.json + rankings + all-teams. Add new aliases there as
+# they surface; this script prints a WARN line for every sheet team that
+# doesn't resolve to a known canonical name.
+ALIASES_PATH = REPO_ROOT / "scripts" / "team-name-aliases.json"
 
-# Women's canonical map. regionals-history.json uses "CSU - Northridge",
-# "CSU - Fullerton", and "Central Florida" for women (unlike the men's set,
-# which standardised on "UCF"). Normalise every sheet variant to that form.
-WOMEN_CANONICAL: dict[str, str] = {
-    "CSU Northridge": "CSU - Northridge",
-    "CSU Fullerton": "CSU - Fullerton",
-    "UCF": "Central Florida",
-    "East Tennessee State": "ETSU",
-}
+
+def _load_aliases() -> tuple[dict[str, str], dict[str, str]]:
+    raw = json.loads(ALIASES_PATH.read_text())
+    # Strip leading-underscore keys (used for inline schema/comment docs in
+    # the JSON file — not real gender entries).
+    return (
+        {k: v for k, v in raw.get("men", {}).items()},
+        {k: v for k, v in raw.get("women", {}).items()},
+    )
+
+
+MEN_CANONICAL, WOMEN_CANONICAL = _load_aliases()
 
 # Sheet column indices are resolved by header name at read time, so additions
 # to the sheet don't break us. Kept here as documentation.
@@ -65,6 +61,7 @@ WANTED_COLUMNS = [
     "Team",
     "Initial Seeding",
     "Expected to Adv",
+    "Team Advanced",
     "Team Result",
     "FinalTeamPos",
     "Team SG Total",
@@ -158,14 +155,28 @@ def _process_tab(
         if team not in canonical_teams:
             unmatched[team] = unmatched.get(team, 0) + 1
 
+        seed = _to_int(cell(row, "Initial Seeding"))
+        expected_adv = _to_bool(cell(row, "Expected to Adv"))
+        # Normalization rule (David, 2026-04-28): if a team has a Regional
+        # seed but the spreadsheet's "Expected to Adv" cell is empty, treat
+        # that as an explicit `false`. The cell is only ever blank for two
+        # reasons — (a) the team wasn't seeded that year (no seed value),
+        # in which case we genuinely don't know the expectation, OR (b) the
+        # spreadsheet author left it implicit. The seed-present case is
+        # always (b): committee-flagged-as-not-expected. Anything explicitly
+        # `true` stays `true`; existing `false` values stay `false`.
+        if seed is not None and expected_adv is None:
+            expected_adv = False
+
         out.append(
             {
                 "year": year,
                 "gender": gender,
                 "team": team,
                 "regional": regional,
-                "seed": _to_int(cell(row, "Initial Seeding")),
-                "expectedAdv": _to_bool(cell(row, "Expected to Adv")),
+                "seed": seed,
+                "expectedAdv": expected_adv,
+                "teamAdvanced": _to_bool(cell(row, "Team Advanced")),
                 "result": (cell(row, "Team Result") or "").strip() or None,
                 "finalPos": _to_int(cell(row, "FinalTeamPos")),
                 "sgTotal": _to_float(cell(row, "Team SG Total")),

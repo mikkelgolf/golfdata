@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { regionalsRich } from "@/data/regionals-rich";
 import { championshipsHistory } from "@/data/championships-history";
+import { getSeedingWindow } from "@/data/regionals-seeding";
 import type { Gender, RegionalFinishRich } from "@/data/records-types";
 import RegionalsLeaderboardTabs, {
   type LeaderboardBoards,
@@ -97,16 +98,20 @@ function buildAggregates(
     }
   }
 
-  // "Advanced as underdog" needs NCAA appearance truth (seed data alone
-  // can be misleading). Pre-index championship appearances by team/year
-  // for the relevant gender.
+  // "Advanced as underdog" — within the years for which we have committee
+  // expected-to-advance data (per gender), count appearances where the team
+  // was NOT flagged as expected to advance and still made it to NCAAs.
+  // NCAA appearance is the truth signal (seed data alone is misleading
+  // because the number of advancing seeds varied across eras).
+  const seedingWindow = getSeedingWindow(gender);
   const ncaaByTeamYear = new Set<string>();
   for (const r of championshipsHistory) {
     if (r.gender === gender) ncaaByTeamYear.add(`${r.team}|${r.year}`);
   }
   for (const r of rows) {
     if (r.gender !== gender) continue;
-    if (r.seed == null || r.seed < 5) continue;
+    if (!seedingWindow.years.has(r.year)) continue;
+    if (r.expectedAdv === true) continue;
     if (ncaaByTeamYear.has(`${r.team}|${r.year}`)) {
       const agg = out.get(r.team);
       if (agg) agg.underdogAdvanceCount += 1;

@@ -534,7 +534,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
       )}
 
       <div
-        className="overflow-hidden rounded-md border border-border"
+        className="overflow-x-auto overflow-y-hidden rounded-md border border-border"
         style={
           reduced
             ? undefined
@@ -546,7 +546,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
               }
         }
       >
-        <div className="grid grid-cols-[24px_minmax(140px,1fr)_44px_44px_44px_48px_44px_48px_minmax(80px,1fr)] items-center gap-1 bg-muted px-2 py-2 text-[10px]">
+        <div className="grid min-w-[720px] grid-cols-[24px_minmax(140px,1fr)_64px_64px_64px_64px_64px_64px_minmax(96px,1fr)] items-center gap-2 bg-muted px-2 py-2 text-[10px]">
           <span />
           <SortableHeader
             label="Team"
@@ -556,14 +556,14 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           />
           <SortableHeader
             label="Apps"
-            align="right"
+            align="center"
             active={sortKey === "apps"}
             dir={sortDir}
             onClick={() => toggleSort("apps")}
           />
           <SortableHeader
             label="Wins"
-            align="right"
+            align="center"
             title="Championship wins"
             active={sortKey === "wins"}
             dir={sortDir}
@@ -571,7 +571,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           />
           <SortableHeader
             label="Top 8"
-            align="right"
+            align="center"
             title="Match-play berths (top 8 of the stroke-play field)"
             active={sortKey === "topEight"}
             dir={sortDir}
@@ -579,7 +579,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           />
           <SortableHeader
             label="MP W"
-            align="right"
+            align="center"
             title="Match-play wins (QF + SF)"
             active={sortKey === "matchPlayWins"}
             dir={sortDir}
@@ -587,7 +587,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           />
           <SortableHeader
             label="Best"
-            align="right"
+            align="center"
             title="Best stroke-play finish (ignoring ties)"
             active={sortKey === "bestFinish"}
             dir={sortDir}
@@ -595,7 +595,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           />
           <SortableHeader
             label="Last"
-            align="right"
+            align="center"
             title="Last appearance"
             active={sortKey === "lastAppearance"}
             dir={sortDir}
@@ -603,6 +603,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           />
           <SortableHeader
             label="Conf."
+            align="center"
             title="2025-26 conference (not historical)"
             active={sortKey === "currentConference"}
             dir={sortDir}
@@ -619,7 +620,7 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
           {sorted.map((r, rowIdx) => {
             const isOpen = expanded.has(r.team);
             const rowBase =
-              "grid w-full grid-cols-[24px_minmax(140px,1fr)_44px_44px_44px_48px_44px_48px_minmax(80px,1fr)] items-center gap-1 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
+              "grid w-full min-w-[720px] grid-cols-[24px_minmax(140px,1fr)_64px_64px_64px_64px_64px_64px_minmax(96px,1fr)] items-center gap-2 px-2 py-1.5 text-left text-[12px] cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-ring ring-card shadow-flat transition-shadow duration-150 ease-out data-[active=true]:shadow-raised";
             const rowCls = isOpen ? rowBase : `${rowBase} hover:shadow-raised`;
             const shouldStagger = !reduced && !mounted && rowIdx < 24;
             const rowInner = (
@@ -635,27 +636,27 @@ export default function ChampionshipsHistoryTable({ entries }: Props) {
                 >
                   {r.team}
                 </Link>
-                <span className="text-right font-mono tabular-nums text-foreground">
+                <span className="text-center font-mono tabular-nums text-foreground">
                   {r.apps}
                 </span>
-                <span className="text-right font-mono tabular-nums font-semibold text-amber-300">
+                <span className="text-center font-mono tabular-nums font-semibold text-amber-300">
                   {r.wins > 0 ? r.wins : <span className="text-muted-foreground/60">—</span>}
                 </span>
-                <span className="text-right font-mono tabular-nums text-foreground">
+                <span className="text-center font-mono tabular-nums text-foreground">
                   {r.topEight > 0 ? r.topEight : <span className="text-muted-foreground/60">—</span>}
                 </span>
-                <span className="text-right font-mono tabular-nums text-foreground">
+                <span className="text-center font-mono tabular-nums text-foreground">
                   {r.matchPlayWins > 0
                     ? r.matchPlayWins
                     : <span className="text-muted-foreground/60">—</span>}
                 </span>
-                <span className="text-right font-mono tabular-nums text-foreground">
+                <span className="text-center font-mono tabular-nums text-foreground">
                   {r.bestFinish ?? "—"}
                 </span>
-                <span className="text-right font-mono tabular-nums text-muted-foreground">
+                <span className="text-center font-mono tabular-nums text-muted-foreground">
                   {r.lastAppearance ?? "—"}
                 </span>
-                <span className="truncate text-[11px] text-muted-foreground">
+                <span className="truncate text-center text-[11px] text-muted-foreground">
                   {r.currentConference}
                 </span>
               </>
@@ -966,7 +967,7 @@ function SortableHeader({
   onClick,
 }: {
   label: string;
-  align?: "right";
+  align?: "right" | "center";
   title?: string;
   active: boolean;
   dir: SortDir;
@@ -978,13 +979,21 @@ function SortableHeader({
       : ChevronDown
     : ChevronsUpDown;
   const iconClass = active ? "text-foreground/70" : "text-muted-foreground/40";
-  const base = `label-caps inline-flex items-center gap-1 ${align === "right" ? "justify-end text-right ml-auto" : "justify-start text-left"} hover:text-foreground transition-colors rounded px-1 py-0.5`;
+  const alignCls =
+    align === "right"
+      ? "justify-end text-right ml-auto"
+      : align === "center"
+        ? "justify-center text-center mx-auto"
+        : "justify-start text-left";
+  // `flex` (not inline-flex) + min-w-0 lets long labels wrap onto two
+  // lines when the column is narrower than the label.
+  const base = `label-caps flex max-w-full items-center gap-1 ${alignCls} hover:text-foreground transition-colors rounded px-1 py-0.5 leading-tight`;
   const cls = active ? `${base} btn-lift` : base;
   return (
     <button type="button" onClick={onClick} title={title} className={cls}>
-      <span>{label}</span>
+      <span className="min-w-0 whitespace-normal break-words">{label}</span>
       <Icon
-        className={`h-3 w-3 transition-transform duration-150 ${iconClass}`}
+        className={`h-3 w-3 shrink-0 transition-transform duration-150 ${iconClass}`}
         aria-hidden="true"
       />
     </button>

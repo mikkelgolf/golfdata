@@ -6,6 +6,7 @@ import { allSlugs, unslugify } from "@/lib/team-slug";
 import {
   computeTeamChampionshipStats,
   computeTeamStats,
+  didAdvanceFromRegional,
   isCancelled,
   isChampion,
   isRegionalWin,
@@ -25,6 +26,7 @@ import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
 import { regionalsHistory } from "@/data/regionals-history";
 import { regionalsRich } from "@/data/regionals-rich";
+import { getSeedingWindow } from "@/data/regionals-seeding";
 import { championshipsHistory } from "@/data/championships-history";
 import { recordsMen } from "@/data/records-men";
 import { recordsWomen } from "@/data/records-women";
@@ -229,6 +231,19 @@ function formatStreak(s: StreakResult): string {
   return s.longest > 0 ? `${s.longest} all-time longest` : "—";
 }
 
+/**
+ * Two-line streak detail used by the PROGRAM HISTORY metrics
+ * (Regional apps / Advanced / NCAA apps). Renders as:
+ *   Active streak: N
+ *   Longest streak: N
+ * Returns an empty array when neither value is meaningful so the
+ * StatCard hides the subtitle entirely.
+ */
+function streakDetailLines(s: StreakResult): string[] {
+  if (s.active === 0 && s.longest === 0) return [];
+  return [`Active streak: ${s.active}`, `Longest streak: ${s.longest}`];
+}
+
 export default function TeamPage({ params }: { params: Params }) {
   const gender = parseGender(params.gender);
   if (!gender) notFound();
@@ -307,28 +322,40 @@ export default function TeamPage({ params }: { params: Params }) {
     cancelled?: boolean;
     win?: boolean;
     seed?: number | null;
+    expectedAdv?: boolean | null;
     regional?: string | null;
     sgTotal?: number | null;
     margin?: number | null;
     titleCount?: number | null;
   }> = [];
+  // Used to gate didAdvanceFromRegional: inside the seeding-data window
+  // the rich sheet's "Team Advanced" column is authoritative; outside it
+  // we fall back to the OR of all signals.
+  const seedingYears = getSeedingWindow(gender).years;
   for (let y = maxYear; y >= minYear; y--) {
     const r = historyByYear.get(y);
     if (r) {
       const win = isRegionalWin(r.position);
-      // If the team appeared at the NCAA Championship that year, they must
-      // have advanced through the Regional — trust NCAA presence over the
-      // regional row's `advanced` flag, which is unreliable in pre-modern
-      // eras (e.g., Auburn men 1993-1995 have regional rows flagged
-      // advanced:false despite showing up at Nationals).
-      const advanced = r.advanced || ncaaByYear.has(y);
       const rich = richByYear.get(y);
+      // Combine the "did they advance?" signals. See
+      // didAdvanceFromRegional in lib/streaks for the precedence rules.
+      const advanced = didAdvanceFromRegional({
+        richTeamAdvanced: rich?.teamAdvanced ?? null,
+        ncaaAppearance: ncaaByYear.has(y),
+        basicAdvanced: r.advanced,
+        yearInSeedingWindow: seedingYears.has(y),
+      });
+      // Prefer the rich sheet's "Team Result" string (e.g. "T5") for
+      // display so ties are visible; fall back to the basic numeric
+      // position from regionals-history.json when rich data is absent
+      // (older rows / 5 unmatched edge cases).
       timelineResults.push({
         year: y,
-        position: r.position,
+        position: rich?.result ?? r.position,
         advanced,
         win,
         seed: rich?.seed ?? null,
+        expectedAdv: rich?.expectedAdv ?? null,
         regional: rich?.regional ?? null,
         sgTotal: rich?.sgTotal ?? null,
         margin: rich?.margin ?? null,
@@ -365,11 +392,19 @@ export default function TeamPage({ params }: { params: Params }) {
   const beatSeedCount = richRows.filter(
     (r) => r.seed != null && r.finalPos != null && (r.finalPos as number) < (r.seed as number)
   ).length;
-  // "Advanced as underdog" = seed >= 5 AND the team actually appeared at NCAAs
-  // that year (NCAA appearance is the reliable advance proxy per the existing
-  // timeline logic).
+  // "Advanced as underdog" = within the years for which we have committee
+  // expected-to-advance data (per gender — see getSeedingWindow), count
+  // appearances where the team was NOT flagged as expected to advance and
+  // still made it to NCAAs. Years outside the seeding-data window are
+  // excluded entirely — we have no truth there to call anyone an underdog.
+  // Note: in past eras different numbers of seeds advanced from each
+  // Regional, so a blunt "seed >= 5" rule was misleading.
+  const seedingWindow = getSeedingWindow(gender);
   const underdogAdvanceCount = richRows.filter(
-    (r) => r.seed != null && (r.seed as number) >= 5 && ncaaByYear.has(r.year)
+    (r) =>
+      seedingWindow.years.has(r.year) &&
+      r.expectedAdv !== true &&
+      ncaaByYear.has(r.year)
   ).length;
   // Seed buckets for a small "seed breakdown" chip grid.
   const bucketDefs: Array<{ range: string; test: (s: number) => boolean }> = [
@@ -660,14 +695,14 @@ export default function TeamPage({ params }: { params: Params }) {
               <StatCard
                 label="Regional apps"
                 value={stats.totalAppearances}
-                detail={`streak: ${formatStreak(stats.regionalStreak)}`}
+                detail={streakDetailLines(stats.regionalStreak)}
                 percentile={percentiles?.apps}
                 className="border-r border-border/40"
               />
               <StatCard
                 label="Advanced"
                 value={stats.totalAdvancements}
-                detail={`streak: ${formatStreak(stats.nationalStreak)}`}
+                detail={streakDetailLines(stats.nationalStreak)}
                 percentile={percentiles?.nationals}
                 className="border-r border-border/40"
               />
@@ -691,7 +726,7 @@ export default function TeamPage({ params }: { params: Params }) {
                 value={championshipStats.appearances}
                 detail={
                   championshipStats.appearances > 0
-                    ? `streak: ${formatStreak(championshipStats.appearanceStreak)}`
+                    ? streakDetailLines(championshipStats.appearanceStreak)
                     : undefined
                 }
                 percentile={
@@ -756,6 +791,14 @@ export default function TeamPage({ params }: { params: Params }) {
                 className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
               />
               = did not make Regionals.
+              <span className="ml-3 font-mono tabular-nums text-emerald-400/90">
+                #
+              </span>{" "}
+              = Regional seed, expected to advance.
+              <span className="ml-3 font-mono tabular-nums text-rose-400/90">
+                #
+              </span>{" "}
+              = underdog.
             </p>
           </section>
         )}
@@ -777,6 +820,7 @@ export default function TeamPage({ params }: { params: Params }) {
               underdogAdvanceCount={underdogAdvanceCount}
               totalAppearances={totalRichAppearances}
               seedBuckets={seedBuckets}
+              seedingMinYear={seedingWindow.minYear}
             />
           </section>
         )}
