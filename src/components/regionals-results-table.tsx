@@ -924,6 +924,24 @@ export default function RegionalsResultsTable({ entries }: Props) {
           />
           no appearance / cancelled
         </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="font-mono tabular-nums text-emerald-400/90"
+          >
+            #
+          </span>
+          Regional seed, expected to advance
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span
+            aria-hidden="true"
+            className="font-mono tabular-nums text-rose-400/90"
+          >
+            #
+          </span>
+          underdog
+        </span>
         <span className="text-text-tertiary/80">
           Tap a team to see year-by-year finishes.
         </span>

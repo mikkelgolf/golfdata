@@ -791,6 +791,14 @@ export default function TeamPage({ params }: { params: Params }) {
                 className="ml-3 mr-1 inline-block h-[6px] w-[6px] rounded-sm bg-rose-500/70 align-middle"
               />
               = did not make Regionals.
+              <span className="ml-3 font-mono tabular-nums text-emerald-400/90">
+                #
+              </span>{" "}
+              = Regional seed, expected to advance.
+              <span className="ml-3 font-mono tabular-nums text-rose-400/90">
+                #
+              </span>{" "}
+              = underdog.
             </p>
           </section>
         )}
