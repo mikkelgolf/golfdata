@@ -145,7 +145,7 @@ function SortableHeader({
     cursor: sortable.isDragging ? "grabbing" : "grab",
     borderBottom: `2px solid ${regional.color}`,
     color: regional.color,
-    // Default touch-action so scroll works during the 3s pre-drag delay.
+    // Default touch-action so scroll works during the pre-drag delay.
   };
   const label = regional.name.replace(/ Regional$/, "");
   return (
@@ -173,10 +173,18 @@ function SortableHeader({
  * Long-press window: a press-and-release within this range fires onPlaceTeam.
  * Below LONG_PRESS_MIN_MS it counts as a tap (no-op). At/above DRAG_DELAY_MS
  * the TouchSensor takes over and a drag begins instead of a placement.
+ *
+ * DRAG_DELAY_MS is aligned with iOS's built-in long-press haptic (~500ms),
+ * so on mobile the haptic feedback coincides with drag activation.
+ *
+ * MOVEMENT_THRESHOLD_PX: if the pointer moves more than this during the
+ * press, we treat it as a scroll attempt rather than a placement. The
+ * TouchSensor's `tolerance` does the same job for drag activation.
  */
-const LONG_PRESS_MIN_MS = 1000;
-const LONG_PRESS_MAX_MS = 2500;
-const DRAG_DELAY_MS = 3000;
+const LONG_PRESS_MIN_MS = 200;
+const LONG_PRESS_MAX_MS = 480;
+const DRAG_DELAY_MS = 500;
+const MOVEMENT_THRESHOLD_PX = 6;
 
 function SortableCell({
   slot,
@@ -201,6 +209,8 @@ function SortableCell({
 }) {
   const sortable = useSortable({ id: slot.id });
   const pressStartRef = useRef<number | null>(null);
+  const pressStartPosRef = useRef<{ x: number; y: number } | null>(null);
+  const pressMovedRef = useRef(false);
   const armTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearArmTimer = () => {
@@ -211,23 +221,46 @@ function SortableCell({
   };
 
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (!slot.team || !onPlaceTeam) return;
+    if (!slot.team || !onPlaceTeam) {
+      sortable.listeners?.onPointerDown?.(e);
+      return;
+    }
     pressStartRef.current = Date.now();
+    pressStartPosRef.current = { x: e.clientX, y: e.clientY };
+    pressMovedRef.current = false;
     clearArmTimer();
     armTimerRef.current = setTimeout(() => {
-      setLongPressArmedSlotId(slot.id);
+      // Don't visually arm if the user has started scrolling.
+      if (!pressMovedRef.current) setLongPressArmedSlotId(slot.id);
     }, LONG_PRESS_MIN_MS);
     // Compose with dnd-kit's listener (it also wants pointerdown)
     sortable.listeners?.onPointerDown?.(e);
   };
 
+  const handlePointerMove = (e: React.PointerEvent) => {
+    const startPos = pressStartPosRef.current;
+    if (!startPos) return;
+    const dx = e.clientX - startPos.x;
+    const dy = e.clientY - startPos.y;
+    if (Math.hypot(dx, dy) > MOVEMENT_THRESHOLD_PX) {
+      pressMovedRef.current = true;
+      // Cancel the visual arming if we've started moving.
+      clearArmTimer();
+      setLongPressArmedSlotId(null);
+    }
+  };
+
   const handlePointerUpOrCancel = () => {
     const start = pressStartRef.current;
+    const moved = pressMovedRef.current;
     pressStartRef.current = null;
+    pressStartPosRef.current = null;
+    pressMovedRef.current = false;
     clearArmTimer();
     setLongPressArmedSlotId(null);
     if (start === null) return;
     if (sortable.isDragging) return; // dnd-kit took over — skip placement
+    if (moved) return; // user was scrolling, not pressing
     const elapsed = Date.now() - start;
     if (
       slot.team &&
@@ -244,7 +277,7 @@ function SortableCell({
     transition: sortable.transition,
     opacity: sortable.isDragging ? 0.4 : 1,
     cursor: slot.team ? (sortable.isDragging ? "grabbing" : "grab") : "default",
-    // Default touch-action so scroll works during the 3s pre-drag delay.
+    // Default touch-action so scroll works during the pre-drag delay.
   };
   if (!slot.team) {
     // Empty slot: still a drop target (so cross-row insert works) but not
@@ -271,6 +304,7 @@ function SortableCell({
       ref={sortable.setNodeRef}
       className="p-0 align-middle"
       style={style}
+      onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUpOrCancel}
       onPointerCancel={handlePointerUpOrCancel}
       onPointerLeave={handlePointerUpOrCancel}
@@ -416,7 +450,7 @@ export function ManualGridTable({
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 4 } }),
     useSensor(TouchSensor, {
-      activationConstraint: { delay: DRAG_DELAY_MS, tolerance: 8 },
+      activationConstraint: { delay: DRAG_DELAY_MS, tolerance: 5 },
     }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
