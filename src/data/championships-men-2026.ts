@@ -284,6 +284,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#92c785",
     notes: "5th time in past 6 years at Dataw Island.",
     sourceUrl: "https://caasports.com/tournaments/?id=255",
+    winner: "UNCW",
   },
   {
     id: 14,
