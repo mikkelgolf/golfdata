@@ -10348,7 +10348,7 @@
 {
 "year":2000,
 "gender":"men",
-"team":"CSU - Northridge",
+"team":"CSU Northridge",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -26322,7 +26322,7 @@
 {
 "year":2014,
 "gender":"men",
-"team":"CSU - Fullerton",
+"team":"CSU Fullerton",
 "regional":"Sugar Grove",
 "seed":10,
 "expectedAdv":null,
@@ -31628,7 +31628,7 @@
 {
 "year":2019,
 "gender":"men",
-"team":"CSU - Fullerton",
+"team":"CSU Fullerton",
 "regional":"Myrtle Beach",
 "seed":11,
 "expectedAdv":null,
@@ -38894,7 +38894,7 @@
 {
 "year":1995,
 "gender":"women",
-"team":"Central Florida",
+"team":"South Florida",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -38908,7 +38908,7 @@
 {
 "year":1995,
 "gender":"women",
-"team":"South Florida",
+"team":"UCF",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -39384,7 +39384,7 @@
 {
 "year":1996,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -41666,7 +41666,7 @@
 {
 "year":2000,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"East",
 "seed":20,
 "expectedAdv":null,
@@ -42310,7 +42310,7 @@
 {
 "year":2001,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Central",
 "seed":11,
 "expectedAdv":null,
@@ -43514,7 +43514,7 @@
 {
 "year":2002,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"East",
 "seed":16,
 "expectedAdv":null,
@@ -44746,7 +44746,7 @@
 {
 "year":2003,
 "gender":"women",
-"team":"CSU - Northridge",
+"team":"CSU Northridge",
 "regional":"West",
 "seed":19,
 "expectedAdv":null,
@@ -45614,7 +45614,7 @@
 {
 "year":2004,
 "gender":"women",
-"team":"CSU - Northridge",
+"team":"CSU Northridge",
 "regional":"West",
 "seed":20,
 "expectedAdv":null,
@@ -48834,7 +48834,7 @@
 {
 "year":2008,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"East",
 "seed":15,
 "expectedAdv":null,
@@ -49716,9 +49716,9 @@
 {
 "year":2009,
 "gender":"women",
-"team":"Central Florida",
+"team":"Ole Miss",
 "regional":"East",
-"seed":18,
+"seed":13,
 "expectedAdv":null,
 "teamAdvanced":null,
 "result":"T17",
@@ -49730,9 +49730,9 @@
 {
 "year":2009,
 "gender":"women",
-"team":"Ole Miss",
+"team":"UCF",
 "regional":"East",
-"seed":13,
+"seed":18,
 "expectedAdv":null,
 "teamAdvanced":null,
 "result":"T17",
@@ -52614,7 +52614,7 @@
 {
 "year":2012,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"East",
 "seed":13,
 "expectedAdv":null,
@@ -53636,9 +53636,9 @@
 {
 "year":2013,
 "gender":"women",
-"team":"Central Florida",
+"team":"Notre Dame",
 "regional":"East",
-"seed":15,
+"seed":9,
 "expectedAdv":null,
 "teamAdvanced":null,
 "result":"T15",
@@ -53650,9 +53650,9 @@
 {
 "year":2013,
 "gender":"women",
-"team":"Notre Dame",
+"team":"UCF",
 "regional":"East",
-"seed":9,
+"seed":15,
 "expectedAdv":null,
 "teamAdvanced":null,
 "result":"T15",
@@ -54672,7 +54672,7 @@
 {
 "year":2014,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"East",
 "seed":6,
 "expectedAdv":true,
@@ -55288,7 +55288,7 @@
 {
 "year":2015,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Raleigh",
 "seed":6,
 "expectedAdv":true,
@@ -57570,7 +57570,7 @@
 {
 "year":2017,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Athens",
 "seed":7,
 "expectedAdv":null,
@@ -59474,7 +59474,7 @@
 {
 "year":2019,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Cle Elum",
 "seed":13,
 "expectedAdv":null,
@@ -60762,10 +60762,10 @@
 {
 "year":2021,
 "gender":"women",
-"team":"Central Florida",
+"team":"Texas Tech",
 "regional":"Louisville",
-"seed":9,
-"expectedAdv":null,
+"seed":6,
+"expectedAdv":true,
 "teamAdvanced":null,
 "result":"T8",
 "finalPos":8,
@@ -60776,10 +60776,10 @@
 {
 "year":2021,
 "gender":"women",
-"team":"Texas Tech",
+"team":"UCF",
 "regional":"Louisville",
-"seed":6,
-"expectedAdv":true,
+"seed":9,
+"expectedAdv":null,
 "teamAdvanced":null,
 "result":"T8",
 "finalPos":8,
@@ -61476,7 +61476,7 @@
 {
 "year":2022,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Ann Arbor",
 "seed":5,
 "expectedAdv":null,
@@ -62428,7 +62428,7 @@
 {
 "year":2023,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Palm Beach",
 "seed":4,
 "expectedAdv":true,
@@ -63464,7 +63464,7 @@
 {
 "year":2024,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Bermuda Run",
 "seed":5,
 "expectedAdv":true,
@@ -64276,7 +64276,7 @@
 {
 "year":2025,
 "gender":"women",
-"team":"Central Florida",
+"team":"UCF",
 "regional":"Charlottesville",
 "seed":6,
 "expectedAdv":null,
@@ -64584,7 +64584,7 @@
 {
 "year":2025,
 "gender":"women",
-"team":"CSU - Fullerton",
+"team":"CSU Fullerton",
 "regional":"Gold Canyon",
 "seed":10,
 "expectedAdv":null,
