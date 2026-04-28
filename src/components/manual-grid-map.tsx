@@ -184,8 +184,9 @@ export default function ManualGridMap({
                   x={line.midX}
                   y={line.midY - 2}
                   textAnchor="middle"
-                  className="text-[9px] font-mono fill-foreground"
+                  className="text-[9px] font-mono font-semibold"
                   style={{
+                    fill: line.regional.color,
                     paintOrder: "stroke",
                     stroke: "hsl(var(--background))",
                     strokeWidth: 3,
@@ -216,8 +217,9 @@ export default function ManualGridMap({
                   x={line.midX}
                   y={line.midY + 11}
                   textAnchor="middle"
-                  className="text-[9px] font-mono fill-foreground"
+                  className="text-[9px] font-mono font-semibold"
                   style={{
+                    fill: line.regional.color,
                     paintOrder: "stroke",
                     stroke: "hsl(var(--background))",
                     strokeWidth: 3,
@@ -301,6 +303,74 @@ export default function ManualGridMap({
           ))}
         </svg>
       </div>
+
+      {/* Distance summary table — one row per selected team, one col per
+          regional site. Values colored by regional color (matches line). */}
+      {(teamA || teamB) && (
+        <div className="rounded border border-border bg-card overflow-x-auto">
+          <table className="w-full text-[11px] border-collapse">
+            <thead>
+              <tr>
+                <th className="text-left px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground/80 font-medium border-b border-border whitespace-nowrap">
+                  Team
+                </th>
+                {regionalPositions.map((r) => (
+                  <th
+                    key={r.id}
+                    className="px-2 py-1 text-center text-[10px] uppercase tracking-wider whitespace-nowrap font-semibold"
+                    style={{
+                      color: r.color,
+                      borderBottom: `2px solid ${r.color}`,
+                    }}
+                  >
+                    {r.name.replace(/ Regional$/, "")}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {teamA && (
+                <tr>
+                  <td
+                    className="px-2 py-1.5 font-medium whitespace-nowrap"
+                    style={{ color: TEAM_A_COLOR }}
+                  >
+                    {teamA}
+                  </td>
+                  {linesA.map((line) => (
+                    <td
+                      key={line.regional.id}
+                      className="px-2 py-1.5 text-center font-mono tabular-nums"
+                      style={{ color: line.regional.color }}
+                    >
+                      {line.dist.toLocaleString()} mi
+                    </td>
+                  ))}
+                </tr>
+              )}
+              {teamB && (
+                <tr className={teamA ? "border-t border-border/40" : ""}>
+                  <td
+                    className="px-2 py-1.5 font-medium whitespace-nowrap"
+                    style={{ color: TEAM_B_COLOR }}
+                  >
+                    {teamB}
+                  </td>
+                  {linesB.map((line) => (
+                    <td
+                      key={line.regional.id}
+                      className="px-2 py-1.5 text-center font-mono tabular-nums"
+                      style={{ color: line.regional.color }}
+                    >
+                      {line.dist.toLocaleString()} mi
+                    </td>
+                  ))}
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Legend */}
       <div className="flex items-center gap-4 text-[11px] text-muted-foreground flex-wrap">

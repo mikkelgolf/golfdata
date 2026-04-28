@@ -625,9 +625,15 @@ export function ManualGridTable({
   return (
     <div className="mt-3">
       <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
-        <p className="text-[11px] text-text-tertiary leading-snug">
-          Hold ~1s + release to send a team to Head-to-Head. Hold 3s to drag.
-          On desktop, click and drag works immediately. Saved to this browser.
+        <p className="text-[11px] text-text-tertiary leading-snug max-w-[640px]">
+          Long-press a team to highlight it as Team A or B for the
+          Head-to-Head + Travel Map below; long-press the same team again to
+          clear it. Keep holding past the haptic to drag a team to a
+          different cell. On desktop, click and drag works immediately. The
+          number to the <span className="text-foreground/80">left</span> of
+          each team is its overall seed; the number to the{" "}
+          <span className="text-foreground/80">right</span> is its true
+          ranking. Saved to this browser.
         </p>
         <div className="flex items-center gap-1.5">
           <button
