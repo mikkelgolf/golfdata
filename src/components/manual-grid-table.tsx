@@ -132,6 +132,12 @@ export interface ManualGridTableProps {
   /** Notifies parent when state changes — used to drive Breakdown / H2H view. */
   onChange?: (assignments: ScurveAssignment[]) => void;
   /**
+   * Notifies parent when the regional column ordering changes (e.g. user
+   * dragged a header). The parent uses this to keep the Map tab's
+   * distance grid columns in sync with the manual grid above.
+   */
+  onRegionalsOrderChange?: (regionalIds: number[]) => void;
+  /**
    * Long-press (~1s hold + release) on a team fires this with the team name.
    * The parent decides where the team lands (typically: A first, B as fallback).
    */
@@ -384,6 +390,7 @@ export function ManualGridTable({
   championships,
   gender,
   onChange,
+  onRegionalsOrderChange,
   onPlaceTeam,
   teamA = null,
   teamB = null,
@@ -463,7 +470,7 @@ export function ManualGridTable({
     return out;
   }, [internal, teamLookup]);
 
-  // Notify parent
+  // Notify parent — assignments + column ordering
   const onChangeRef = useRef(onChange);
   useEffect(() => {
     onChangeRef.current = onChange;
@@ -471,6 +478,14 @@ export function ManualGridTable({
   useEffect(() => {
     onChangeRef.current?.(derivedAssignments);
   }, [derivedAssignments]);
+
+  const onRegionalsOrderChangeRef = useRef(onRegionalsOrderChange);
+  useEffect(() => {
+    onRegionalsOrderChangeRef.current = onRegionalsOrderChange;
+  }, [onRegionalsOrderChange]);
+  useEffect(() => {
+    onRegionalsOrderChangeRef.current?.(internal.regionalIds);
+  }, [internal.regionalIds]);
 
   // Seed-by-team for cell rendering
   const seedByTeam = useMemo(() => {
@@ -616,22 +631,11 @@ export function ManualGridTable({
     return defaultGridFromAssignments(assignments, regionals);
   }, [teams, regionals, gender, championships]);
 
-  // Magic Number = worst-ranked at-large currently in the field. This is
-  // the same value rendered above the "Magic Number · Field Cutoff" line in
-  // the Bubble Breakdown (men: 68; women: 51 in the 2025-26 cycle). Used
-  // as the default value of the Overall Seed input.
-  const magicNumberRank = useMemo(() => {
-    let worst = -Infinity;
-    for (const row of internal.slots) {
-      for (const slot of row) {
-        if (!slot.team) continue;
-        const t = teamLookup.get(slot.team);
-        if (!t || t.isAutoQualifier) continue;
-        if (t.rank > worst) worst = t.rank;
-      }
-    }
-    return worst > 0 ? worst : 1;
-  }, [internal, teamLookup]);
+  // Static default for the Overall Seed input — set by Mikkel/David
+  // (2026-04-28): men 60, women 49. Was previously a computed magic-number
+  // value but the dynamic version didn't line up with the official Bubble
+  // Breakdown number, so we just hardcode the documented one per gender.
+  const defaultOverallSeed = gender === "men" ? 60 : 49;
 
   const totalSeats = useMemo(() => {
     return internal.slots.length * (internal.regionalIds.length || 1);
@@ -642,18 +646,17 @@ export function ManualGridTable({
   const [balanceOpen, setBalanceOpen] = useState(false);
   const [balanceMode, setBalanceMode] = useState<CutoffMode>("regional");
   const [regionalSeedInput, setRegionalSeedInput] = useState<number>(8);
-  const [overallSeedInput, setOverallSeedInput] = useState<number>(magicNumberRank);
+  const [overallSeedInput, setOverallSeedInput] = useState<number>(defaultOverallSeed);
   const [overrideSwaps, setOverrideSwaps] = useState<boolean>(false);
 
-  // Keep the Overall Seed input in sync with the magic number when the user
-  // hasn't customised it yet (i.e., default state). We track whether the
-  // user has touched the field.
+  // When the user toggles men/women, refresh the Overall Seed default if
+  // they haven't manually overridden it yet.
   const userTouchedOverallRef = useRef(false);
   useEffect(() => {
     if (!userTouchedOverallRef.current) {
-      setOverallSeedInput(magicNumberRank);
+      setOverallSeedInput(defaultOverallSeed);
     }
-  }, [magicNumberRank]);
+  }, [defaultOverallSeed]);
 
   // Live "affects N teams · Y rows" preview.
   const balancePreview = useMemo(() => {
@@ -825,7 +828,6 @@ export function ManualGridTable({
                   userTouchedOverallRef.current = true;
                   setOverallSeedInput(v);
                 }}
-                magicNumberRank={magicNumberRank}
                 overrideSwaps={overrideSwaps}
                 onOverrideSwapsChange={setOverrideSwaps}
                 numTiers={numTiers}
@@ -977,7 +979,6 @@ interface BalancePopoverProps {
   onRegionalSeedChange: (v: number) => void;
   overallSeed: number;
   onOverallSeedChange: (v: number) => void;
-  magicNumberRank: number;
   overrideSwaps: boolean;
   onOverrideSwapsChange: (v: boolean) => void;
   numTiers: number;
@@ -999,7 +1000,6 @@ function BalancePopover({
   onRegionalSeedChange,
   overallSeed,
   onOverallSeedChange,
-  magicNumberRank,
   overrideSwaps,
   onOverrideSwapsChange,
   numTiers,
@@ -1097,7 +1097,7 @@ function BalancePopover({
               disabled={mode !== "overall"}
             />
             <span className="text-[10px] text-text-tertiary">
-              of {totalSeats} · magic # {magicNumberRank}
+              of {totalSeats}
             </span>
           </label>
         </div>

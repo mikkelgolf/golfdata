@@ -2490,6 +2490,15 @@ function ManualGridSection({
   const [teamA, setTeamA] = useState<string | null>(null);
   const [teamB, setTeamB] = useState<string | null>(null);
   const [tab, setTab] = useState<"h2h" | "map">("h2h");
+  // Regional selection on the Map tab — clicking a regional dot fans
+  // lines to all teams placed in that regional and clears A/B. Tapping
+  // the same regional again clears the selection.
+  const [selectedRegionalId, setSelectedRegionalId] = useState<number | null>(null);
+
+  // Mirror state from the manual grid so the map's distance table follows
+  // the user's column order, and so we know which teams sit in each regional.
+  const [gridAssignments, setGridAssignments] = useState<ScurveAssignment[]>([]);
+  const [gridRegionalIds, setGridRegionalIds] = useState<number[]>([]);
 
   // Reset slots on gender switch — H2H data is gender-specific.
   const lastGenderRef = useRef<Gender>(gender);
@@ -2498,6 +2507,7 @@ function ManualGridSection({
       lastGenderRef.current = gender;
       setTeamA(null);
       setTeamB(null);
+      setSelectedRegionalId(null);
     }
   }, [gender]);
 
@@ -2509,8 +2519,10 @@ function ManualGridSection({
   //      (Maintains the "A always filled before B" invariant.)
   //   4. If A is empty and B is empty → place team in A.
   //   5. Else (A is filled with a different team) → place team in B.
+  // Any of these actions cancels the regional-selection mode on the map.
   const handlePlaceTeam = useCallback(
     (teamName: string) => {
+      setSelectedRegionalId(null);
       if (teamA === teamName) {
         setTeamA(teamB);
         setTeamB(null);
@@ -2534,6 +2546,19 @@ function ManualGridSection({
     [teamA, teamB]
   );
 
+  // Map-tab regional click. Tapping the same regional again clears the
+  // selection. Selecting a new one clears A/B (the fan now belongs to
+  // every team in that regional, so a single highlighted team would be
+  // visually ambiguous).
+  const handleSelectRegional = useCallback((id: number) => {
+    setSelectedRegionalId((prev) => {
+      if (prev === id) return null;
+      setTeamA(null);
+      setTeamB(null);
+      return id;
+    });
+  }, []);
+
   return (
     <>
       <ManualGridTable
@@ -2541,6 +2566,8 @@ function ManualGridSection({
         regionals={regionals}
         championships={championships}
         gender={gender}
+        onChange={setGridAssignments}
+        onRegionalsOrderChange={setGridRegionalIds}
         onPlaceTeam={handlePlaceTeam}
         teamA={teamA}
         teamB={teamB}
@@ -2614,10 +2641,11 @@ function ManualGridSection({
                 onClick={() => {
                   setTeamA(null);
                   setTeamB(null);
+                  setSelectedRegionalId(null);
                 }}
-                disabled={!teamA && !teamB}
-                title="Clear both Team A and Team B"
-                aria-label="Clear both Team A and Team B"
+                disabled={!teamA && !teamB && selectedRegionalId === null}
+                title="Clear Team A, Team B, and any selected regional"
+                aria-label="Clear Team A, Team B, and any selected regional"
                 className={cn(
                   "h-[26px] px-2.5 rounded border border-border bg-card text-[12px]",
                   "text-muted-foreground hover:bg-card/80 hover:text-foreground transition-colors",
@@ -2630,8 +2658,12 @@ function ManualGridSection({
             <ManualGridMap
               teams={teams}
               regionals={regionals}
+              regionalIds={gridRegionalIds}
+              assignments={gridAssignments}
               teamA={teamA}
               teamB={teamB}
+              selectedRegionalId={selectedRegionalId}
+              onSelectRegional={handleSelectRegional}
             />
           </div>
         )}
