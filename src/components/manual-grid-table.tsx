@@ -506,14 +506,45 @@ export function ManualGridTable({
     setInternal((prev) => {
       let next: InternalState | null = null;
       if (activeIsHeader) {
-        // Reorder regionalIds only — cells stay put. Each cell's regional
-        // becomes whatever regional now sits at its column.
+        // Reorder regionalIds. Other cells stay put — but the moved
+        // regional's host team follows the header so it stays under "its"
+        // column (the host doesn't travel).
         const headerIds = prev.regionalIds.map((id) => `header:${id}`);
         const fromIdx = headerIds.indexOf(activeId);
         const toIdx = headerIds.indexOf(overId);
         if (fromIdx === -1 || toIdx === -1) return prev;
         const newRegionalIds = arrayMove(prev.regionalIds, fromIdx, toIdx);
-        next = { regionalIds: newRegionalIds, slots: prev.slots };
+
+        const movedRegionalId = prev.regionalIds[fromIdx];
+        const movedRegional = regionals.find((r) => r.id === movedRegionalId);
+        const hostTeam = movedRegional?.host;
+
+        let newSlots = prev.slots;
+        if (hostTeam) {
+          // Locate the host team in the current grid (if it's there).
+          let hostRow = -1;
+          let hostCol = -1;
+          outer: for (let r = 0; r < prev.slots.length; r++) {
+            for (let c = 0; c < prev.slots[r].length; c++) {
+              if (prev.slots[r][c].team === hostTeam) {
+                hostRow = r;
+                hostCol = c;
+                break outer;
+              }
+            }
+          }
+          // Swap (hostRow, hostCol) with (hostRow, toIdx) so the host
+          // ends up under the regional's new column. Skip if the host is
+          // already there or not on the grid.
+          if (hostRow !== -1 && hostCol !== toIdx) {
+            newSlots = prev.slots.map((row) => row.slice());
+            const tmp = newSlots[hostRow][hostCol];
+            newSlots[hostRow][hostCol] = newSlots[hostRow][toIdx];
+            newSlots[hostRow][toIdx] = tmp;
+          }
+        }
+
+        next = { regionalIds: newRegionalIds, slots: newSlots };
       } else {
         // Cell move — operate on the linearised array
         const numCols = prev.regionalIds.length;
@@ -545,7 +576,7 @@ export function ManualGridTable({
       }
       return next ?? prev;
     });
-  }, []);
+  }, [regionals]);
 
   // Undo the most recent change (one step back).
   const handleResetLast = useCallback(() => {

@@ -2502,16 +2502,31 @@ function ManualGridSection({
   }, [gender]);
 
   // Long-press placement. Rules (in priority order):
-  //   1. If the team is already in A → no-op (it's already there).
-  //   2. If A is empty → place into A. If B already held this team, clear B
-  //      so we never end up with A === B.
-  //   3. Else (A is filled with a different team) → place into B.
+  //   1. If the team is currently highlighted as A → unhighlight A. If B
+  //      was filled, promote B → A so the slots stay packed left-to-right.
+  //   2. If the team is currently highlighted as B → unhighlight B (A stays).
+  //   3. If A is empty and B is filled → promote B → A, place new team in B.
+  //      (Maintains the "A always filled before B" invariant.)
+  //   4. If A is empty and B is empty → place team in A.
+  //   5. Else (A is filled with a different team) → place team in B.
   const handlePlaceTeam = useCallback(
     (teamName: string) => {
-      if (teamA === teamName) return;
+      if (teamA === teamName) {
+        setTeamA(teamB);
+        setTeamB(null);
+        return;
+      }
+      if (teamB === teamName) {
+        setTeamB(null);
+        return;
+      }
       if (teamA === null) {
-        setTeamA(teamName);
-        if (teamB === teamName) setTeamB(null);
+        if (teamB !== null) {
+          setTeamA(teamB);
+          setTeamB(teamName);
+        } else {
+          setTeamA(teamName);
+        }
         return;
       }
       setTeamB(teamName);
@@ -2587,12 +2602,31 @@ function ManualGridSection({
           </div>
         ) : (
           <div role="tabpanel">
-            <h3 className="text-[13px] font-semibold text-foreground mb-3">
-              Travel Map
-              <span className="ml-2 text-[11px] font-normal text-text-tertiary">
-                Distances from each selected team to every regional site
-              </span>
-            </h3>
+            <div className="flex items-baseline justify-between gap-3 mb-3 flex-wrap">
+              <h3 className="text-[13px] font-semibold text-foreground">
+                Travel Map
+                <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                  Distances from each selected team to every regional site
+                </span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setTeamA(null);
+                  setTeamB(null);
+                }}
+                disabled={!teamA && !teamB}
+                title="Clear both Team A and Team B"
+                aria-label="Clear both Team A and Team B"
+                className={cn(
+                  "h-[26px] px-2.5 rounded border border-border bg-card text-[12px]",
+                  "text-muted-foreground hover:bg-card/80 hover:text-foreground transition-colors",
+                  "disabled:opacity-40 disabled:cursor-not-allowed"
+                )}
+              >
+                Clear Teams
+              </button>
+            </div>
             <ManualGridMap
               teams={teams}
               regionals={regionals}

@@ -19,7 +19,7 @@ import {
   type Season,
 } from "@/lib/head-to-head";
 import CommonOpponents from "@/components/head-to-head/common-opponents";
-import RegionalHistoryH2H from "@/components/head-to-head/regional-history";
+import CommonOpponentsDetail from "@/components/head-to-head/common-opponents-detail";
 
 // ---------------------------------------------------------------------------
 // Full-page team-vs-team head-to-head browser. URL params drive state so links
@@ -379,6 +379,12 @@ function PairSummary({
   season: Season;
 }) {
   const [allMeetings, setAllMeetings] = useState<Meeting[] | null>(null);
+  const [selectedOpponent, setSelectedOpponent] = useState<string | null>(null);
+
+  // Reset the selected common opponent whenever the team pair changes.
+  useEffect(() => {
+    setSelectedOpponent(null);
+  }, [teamA, teamB, gender]);
 
   useEffect(() => {
     let cancelled = false;
@@ -508,9 +514,20 @@ function PairSummary({
         )}
       </div>
 
-      <CommonOpponents teamA={teamA} teamB={teamB} gender={gender} />
+      <CommonOpponents
+        teamA={teamA}
+        teamB={teamB}
+        gender={gender}
+        selectedOpponent={selectedOpponent}
+        onSelectOpponent={setSelectedOpponent}
+      />
 
-      <RegionalHistoryH2H teamA={teamA} teamB={teamB} gender={gender} />
+      <CommonOpponentsDetail
+        teamA={teamA}
+        teamB={teamB}
+        gender={gender}
+        opponent={selectedOpponent}
+      />
     </div>
   );
 }
