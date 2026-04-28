@@ -49,3 +49,64 @@ Resizes done with macOS `sips -Z <size>`.
 
 - 2026-04-28: branch + session doc created; logo fetched from Drive,
   resized, old favicon.ico removed.
+- 2026-04-28: favicon preview deployed; David confirmed it looked good.
+- 2026-04-28: extended scope — added the same logo to the site header
+  banner to the left of "College Golf Data", visible on every page
+  (desktop + mobile via the shared `SiteHeader` component).
+- 2026-04-28: header preview deployed; David approved.
+
+## Header logo (extended scope)
+
+Added the CGD mark to the left of "College Golf Data" text in
+`SiteHeader`. The site has a single header component so this lands on
+every page automatically.
+
+### Changes
+
+- `public/logo.png` — copy of the 256×256 master, served from the
+  public root for use by `next/image`.
+- `src/components/site-header.tsx`:
+  - Imported `next/image`.
+  - Made the brand `Link` a flex container with `gap-2`.
+  - Inserted `<Image>` at 24×24 (`h-6 w-6`) with the source asset
+    256×256 so it stays crisp on retina. `priority` prop set since
+    it's above the fold on every page.
+  - Empty `alt=""` because the adjacent "College Golf Data" text is
+    the accessible label — the image is decorative.
+
+## Wrap (2026-04-28)
+
+### Summary
+
+Two related changes shipped on this branch:
+
+1. **Favicon + iOS icon:** new CGD circuit-pattern mark, served via
+   Next.js 15 App Router file-based icon convention
+   (`src/app/icon.png` 256×256, `src/app/apple-icon.png` 180×180).
+   Legacy `src/app/favicon.ico` (old logo) removed.
+2. **Header brand mark:** same logo to the left of "College Golf Data"
+   in the site banner, on every page.
+
+### Diff stats vs `dev`
+
+```
+6 files changed, 61 insertions(+), 1 deletion(-)
+```
+
+### Verification
+
+- Typecheck clean.
+- Two preview deploys, both confirmed by David visually.
+- Original 768×768 master preserved at
+  `data/source/logo/cgd-logo-768.png` for future regeneration
+  (gitignored).
+
+### Learnings
+
+- Next.js 15 App Router's file-based icon convention is by far the
+  cleanest path for favicons — no `<head>` editing, no `<link>` tags,
+  no manual MIME types. Just drop the file at `src/app/icon.{ext}` /
+  `src/app/apple-icon.{ext}`.
+- When both `favicon.ico` and `icon.png` exist, Next emits link tags
+  for both. To avoid risk of the old icon leaking through, remove the
+  legacy `.ico` rather than overwriting it.
