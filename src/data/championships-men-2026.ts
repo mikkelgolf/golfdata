@@ -214,6 +214,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "Long-running Mission Inn venue; combined with women's championship.",
     sourceUrl:
       "https://iuindyjags.com/news/2025/6/3/mens-golf-mens-golf-releases-2025-2026-tournament-schedule.aspx",
+    winner: "Wright State",
   },
   {
     id: 10,
