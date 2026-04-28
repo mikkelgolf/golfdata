@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
+import { ManualGridTable } from "@/components/manual-grid-table";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -42,7 +43,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map";
+type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -570,6 +571,41 @@ export default function ScurveTable({
     );
   }
 
+  // Manual Grid — drag-and-drop S-curve seeded from Committee, persists per browser
+  if (viewMode === "manual") {
+    const activeTeams = gender === "men" ? menTeams : womenTeams;
+    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
+    const activeChampionships = gender === "men" ? menChampionships : womenChampionships;
+    return (
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
+        <FilterBar
+          viewMode={viewMode}
+          gender={gender}
+          scurveMode={scurveMode}
+          search={search}
+          resultCount={filtered.length}
+          lastUpdated={lastUpdated}
+          onViewChange={handleViewChange}
+          onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
+          onSearchChange={setSearch}
+        />
+        <ManualGridSection
+          teams={activeTeams}
+          regionals={activeRegionals}
+          championships={activeChampionships}
+          regionalMap={regionalMap}
+          hostColorByTeam={hostColorByTeam}
+          gender={gender}
+        />
+      </div>
+    );
+  }
+
   // S-Curve snake table view
   if (viewMode === "scurve") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
@@ -908,6 +944,7 @@ function FilterBar({
             { value: "scurve", label: "S-Curve" },
             { value: "visual", label: "Visual" },
             { value: "breakdown", label: "Breakdown" },
+            { value: "manual", label: "Manual Grid" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -960,6 +997,7 @@ function FilterBar({
               { value: "scurve", label: "S-C" },
               { value: "visual", label: "Vis" },
               { value: "breakdown", label: "Brk" },
+              { value: "manual", label: "Manual" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
@@ -2428,6 +2466,59 @@ function MobileVisualScurve({
         );
       })}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Manual Grid Section — wraps ManualGridTable with a live BreakdownView
+// driven by the user's edits.
+// ---------------------------------------------------------------------------
+
+function ManualGridSection({
+  teams,
+  regionals,
+  championships,
+  regionalMap,
+  hostColorByTeam,
+  gender,
+}: {
+  teams: TeamData[];
+  regionals: Regional[];
+  championships?: Championship[];
+  regionalMap: Map<number, Regional>;
+  hostColorByTeam: Map<string, string>;
+  gender: Gender;
+}) {
+  const [manualAssignments, setManualAssignments] = useState<ScurveAssignment[]>([]);
+
+  const regionalSeeds = useMemo(
+    () => computeRegionalSeeds(manualAssignments),
+    [manualAssignments]
+  );
+  const regionalPositions = useMemo(
+    () => computeRegionalPositions(manualAssignments),
+    [manualAssignments]
+  );
+
+  return (
+    <>
+      <ManualGridTable
+        teams={teams}
+        regionals={regionals}
+        championships={championships}
+        gender={gender}
+        onChange={setManualAssignments}
+      />
+      <BreakdownView
+        teams={teams}
+        assignments={manualAssignments}
+        regionalMap={regionalMap}
+        regionalSeeds={regionalSeeds}
+        regionalPositions={regionalPositions}
+        hostColorByTeam={hostColorByTeam}
+        gender={gender}
+      />
+    </>
   );
 }
 
