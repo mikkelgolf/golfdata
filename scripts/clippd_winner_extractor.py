@@ -7,12 +7,36 @@ table whose first data row is the overall winner for both stroke-play and
 match-play events. Playwright renders the page; we parse the first <table>.
 
 Used by ``detect_new_champions.py --apply-winners`` via ``resolve_winner()``.
+
+Tournament overrides
+--------------------
+``TOURNAMENT_WINNER_OVERRIDES`` short-circuits the scrape for known cases
+where Clippd's row-1 isn't actually the winner. Most common cause: a
+playoff between teams tied at T1, where Clippd lists the alphabetically/
+positionally first team in row 1 but a banner above the table notes the
+playoff result. Add an entry here when you spot one — keyed by the
+Clippd tournament ID (string).
 """
 
 from __future__ import annotations
 
 import sys
 from typing import Optional
+
+
+# Manual overrides for tournaments whose Clippd row-1 isn't the real winner.
+# Keyed by Clippd tournament ID (the string in the URL). When present, the
+# extractor returns this value instead of scraping the page.
+#
+# Known entries:
+#   - "244037": 2026 Horizon League Men's Golf Championship — Oakland and
+#               Wright State both finished T1; Wright State won the playoff
+#               (per the note above the leaderboard on Clippd). Clippd's
+#               row-1 is Oakland (alphabetical), so we override to
+#               Wright State. (David, 2026-04-28)
+TOURNAMENT_WINNER_OVERRIDES: dict[str, str] = {
+    "244037": "Wright State",
+}
 
 
 def extract_winner_from_clippd(
@@ -31,7 +55,13 @@ def extract_winner_from_clippd(
     many tournaments (the conference-history populator does this for
     throughput). Returns None on any failure so callers can fall back
     to needs-manual.
+
+    Honours ``TOURNAMENT_WINNER_OVERRIDES`` first — if the tournament ID
+    has an override, return it without launching Playwright at all.
     """
+    if tournament_id in TOURNAMENT_WINNER_OVERRIDES:
+        return TOURNAMENT_WINNER_OVERRIDES[tournament_id]
+
     if page is None:
         # One-shot mode for ad-hoc CLI testing.
         try:
