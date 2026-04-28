@@ -141,3 +141,43 @@ once, as it should).
 - 2026-04-28: branch + session doc created; surfaced open questions.
 - 2026-04-28: schema check; backfill + rename + dedupe applied; audit
   + typecheck clean.
+- 2026-04-28: preview deployed
+  (https://collegegolfdata-di1efmpek-mikkelgolfs-projects.vercel.app);
+  David spot-checked + approved.
+
+## Wrap (2026-04-28)
+
+Closing the audit loop opened by PR #23. All three findings shipped in
+a single commit since they all touch `regionals-history.json` and were
+surfaced by the same two-direction audit pass:
+
+- 13 DNF rows backfilled (men 1996 East, 2000 East, 2002 Central)
+- 2013 women rename: North Dakota → North Dakota State
+- 18 UCF women byte-identical duplicates removed
+
+### Diff stats vs `dev`
+
+```
+2 files changed, 144 insertions(+), 1 deletion(-)
+```
+
+(`regionals-history.json` is single-line minified JSON, so the +1/-1
+on that file masks the actual row delta of -5: +13 rows added, 18
+rows removed.)
+
+### Verification
+
+- Audit re-run: zero discrepancies in both directions, per-year/gender
+  team counts agree exactly.
+- Typecheck clean.
+- Spot checks on preview: Yale men, James Madison men, Jackson State
+  men, North Dakota State women, UCF women all show the corrected
+  data.
+
+### Learnings
+
+- `regionals-history.json` accepts non-numeric `position` strings (e.g.
+  `"DNF"`) safely — consumer code does `parseInt` then NaN-filters.
+- Looking at duplicates is a cheap audit step worth running anytime
+  we touch this file. The UCF dupes had been silently inflating UCF's
+  Regional Apps for years.
