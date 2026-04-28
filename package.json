@@ -12,6 +12,9 @@
     "verify-team-coords": "npx tsx scripts/verify-team-coords.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@types/d3-force": "^3.0.10",
     "@vercel/analytics": "^2.0.1",
     "@visx/scale": "^3.12.0",

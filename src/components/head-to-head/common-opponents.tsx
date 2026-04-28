@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/lib/animations";
@@ -25,6 +25,17 @@ interface CommonOpponentsProps {
   teamA: string | null;
   teamB: string | null;
   gender: Gender;
+  /**
+   * The currently-selected common opponent (drives the detail section
+   * below). Pass null to leave the strip non-interactive.
+   */
+  selectedOpponent?: string | null;
+  /**
+   * Called when the user taps a column. Also called automatically when the
+   * selection becomes stale (current selection isn't in the list of cells)
+   * — in that case the first cell is selected.
+   */
+  onSelectOpponent?: (opponent: string) => void;
 }
 
 type DotState = "win" | "loss" | "tie" | "none";
@@ -57,6 +68,8 @@ export default function CommonOpponents({
   teamA,
   teamB,
   gender,
+  selectedOpponent,
+  onSelectOpponent,
 }: CommonOpponentsProps) {
   const reduced = useReducedMotion();
 
@@ -127,6 +140,15 @@ export default function CommonOpponents({
     };
   }, [teamA, teamB, gender]);
 
+  // Auto-select the first cell when the list changes and the current
+  // selection is no longer valid.
+  useEffect(() => {
+    if (!onSelectOpponent) return;
+    if (!data || data.cells.length === 0) return;
+    const valid = data.cells.some((c) => c.opponent === selectedOpponent);
+    if (!valid) onSelectOpponent(data.cells[0].opponent);
+  }, [data, selectedOpponent, onSelectOpponent]);
+
   if (!teamA || !teamB || !data || data.cells.length === 0) {
     return null;
   }
@@ -187,6 +209,8 @@ export default function CommonOpponents({
               teamB={teamB}
               idx={idx}
               reduced={reduced}
+              isSelected={c.opponent === selectedOpponent}
+              onSelect={onSelectOpponent}
             />
           ))}
         </div>
@@ -205,25 +229,40 @@ function OpponentColumn({
   teamB,
   idx,
   reduced,
+  isSelected,
+  onSelect,
 }: {
   cell: CommonOpponentCell;
   teamA: string;
   teamB: string;
   idx: number;
   reduced: boolean;
+  isSelected: boolean;
+  onSelect: ((opponent: string) => void) | undefined;
 }) {
   const title =
     `${cell.opponent}\n` +
     `${teamA}: ${cell.aRec}\n` +
-    `${teamB}: ${cell.bRec}`;
+    `${teamB}: ${cell.bRec}` +
+    (onSelect ? `\n\n(tap to view details)` : "");
 
   const abbr = abbreviate(cell.opponent);
 
   const initial = reduced ? false : { opacity: 0, scale: 0.94 };
   const animate = { opacity: 1, scale: 1 };
 
+  const Wrapper = onSelect ? motion.button : motion.div;
+  const interactiveProps = onSelect
+    ? {
+        type: "button" as const,
+        onClick: () => onSelect(cell.opponent),
+        "aria-pressed": isSelected,
+      }
+    : {};
+
   return (
-    <motion.div
+    <Wrapper
+      {...interactiveProps}
       initial={initial}
       animate={animate}
       transition={{
@@ -233,17 +272,25 @@ function OpponentColumn({
       }}
       title={title}
       className={cn(
-        "ring-card shadow-flat hover:shadow-raised transition-shadow duration-150 ease-out",
+        "ring-card shadow-flat transition-all duration-150 ease-out",
         "flex flex-col items-center justify-between",
-        "w-[44px] shrink-0 px-1 py-1.5"
+        "w-[44px] shrink-0 px-1 py-1.5",
+        onSelect && "cursor-pointer hover:shadow-raised",
+        !onSelect && "hover:shadow-raised",
+        isSelected && "ring-2 ring-primary shadow-raised"
       )}
     >
       <Dot state={cell.a} />
       <Dot state={cell.b} />
-      <span className="mt-1 block w-full text-center font-mono tabular-nums text-[10px] leading-tight text-muted-foreground truncate">
+      <span
+        className={cn(
+          "mt-1 block w-full text-center font-mono tabular-nums text-[10px] leading-tight truncate",
+          isSelected ? "text-foreground" : "text-muted-foreground"
+        )}
+      >
         {abbr}
       </span>
-    </motion.div>
+    </Wrapper>
   );
 }
 

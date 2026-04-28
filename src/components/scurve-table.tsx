@@ -1,12 +1,15 @@
 "use client";
 
-import { Fragment, useState, useMemo, useCallback, useEffect, useTransition, useDeferredValue } from "react";
+import { Fragment, useState, useMemo, useCallback, useEffect, useRef, useTransition, useDeferredValue } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
+import { ManualGridTable } from "@/components/manual-grid-table";
+import ManualGridMap from "@/components/manual-grid-map";
+import HeadToHeadBrowser from "@/components/head-to-head-browser";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -42,7 +45,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map";
+type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -570,6 +573,39 @@ export default function ScurveTable({
     );
   }
 
+  // Manual Grid — drag-and-drop S-curve seeded from Committee, persists per browser
+  if (viewMode === "manual") {
+    const activeTeams = gender === "men" ? menTeams : womenTeams;
+    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
+    const activeChampionships = gender === "men" ? menChampionships : womenChampionships;
+    return (
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
+        <FilterBar
+          viewMode={viewMode}
+          gender={gender}
+          scurveMode={scurveMode}
+          search={search}
+          resultCount={filtered.length}
+          lastUpdated={lastUpdated}
+          onViewChange={handleViewChange}
+          onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
+          onSearchChange={setSearch}
+        />
+        <ManualGridSection
+          teams={activeTeams}
+          regionals={activeRegionals}
+          championships={activeChampionships}
+          gender={gender}
+        />
+      </div>
+    );
+  }
+
   // S-Curve snake table view
   if (viewMode === "scurve") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
@@ -908,6 +944,7 @@ function FilterBar({
             { value: "scurve", label: "S-Curve" },
             { value: "visual", label: "Visual" },
             { value: "breakdown", label: "Breakdown" },
+            { value: "manual", label: "Manual Grid" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -960,6 +997,7 @@ function FilterBar({
               { value: "scurve", label: "S-C" },
               { value: "visual", label: "Vis" },
               { value: "breakdown", label: "Brk" },
+              { value: "manual", label: "Manual" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
@@ -2428,6 +2466,209 @@ function MobileVisualScurve({
         );
       })}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Manual Grid Section — wraps ManualGridTable with a live BreakdownView
+// driven by the user's edits.
+// ---------------------------------------------------------------------------
+
+function ManualGridSection({
+  teams,
+  regionals,
+  championships,
+  gender,
+}: {
+  teams: TeamData[];
+  regionals: Regional[];
+  championships?: Championship[];
+  gender: Gender;
+}) {
+  // Live H2H slots fed by long-press placements from the grid above. A first,
+  // then B if A is filled (and the placement isn't a duplicate of A).
+  const [teamA, setTeamA] = useState<string | null>(null);
+  const [teamB, setTeamB] = useState<string | null>(null);
+  const [tab, setTab] = useState<"h2h" | "map">("h2h");
+  // Regional selection on the Map tab — clicking a regional dot fans
+  // lines to all teams placed in that regional and clears A/B. Tapping
+  // the same regional again clears the selection.
+  const [selectedRegionalId, setSelectedRegionalId] = useState<number | null>(null);
+
+  // Mirror state from the manual grid so the map's distance table follows
+  // the user's column order, and so we know which teams sit in each regional.
+  const [gridAssignments, setGridAssignments] = useState<ScurveAssignment[]>([]);
+  const [gridRegionalIds, setGridRegionalIds] = useState<number[]>([]);
+
+  // Reset slots on gender switch — H2H data is gender-specific.
+  const lastGenderRef = useRef<Gender>(gender);
+  useEffect(() => {
+    if (lastGenderRef.current !== gender) {
+      lastGenderRef.current = gender;
+      setTeamA(null);
+      setTeamB(null);
+      setSelectedRegionalId(null);
+    }
+  }, [gender]);
+
+  // Long-press placement. Rules (in priority order):
+  //   1. If the team is currently highlighted as A → unhighlight A. If B
+  //      was filled, promote B → A so the slots stay packed left-to-right.
+  //   2. If the team is currently highlighted as B → unhighlight B (A stays).
+  //   3. If A is empty and B is filled → promote B → A, place new team in B.
+  //      (Maintains the "A always filled before B" invariant.)
+  //   4. If A is empty and B is empty → place team in A.
+  //   5. Else (A is filled with a different team) → place team in B.
+  // Any of these actions cancels the regional-selection mode on the map.
+  const handlePlaceTeam = useCallback(
+    (teamName: string) => {
+      setSelectedRegionalId(null);
+      if (teamA === teamName) {
+        setTeamA(teamB);
+        setTeamB(null);
+        return;
+      }
+      if (teamB === teamName) {
+        setTeamB(null);
+        return;
+      }
+      if (teamA === null) {
+        if (teamB !== null) {
+          setTeamA(teamB);
+          setTeamB(teamName);
+        } else {
+          setTeamA(teamName);
+        }
+        return;
+      }
+      setTeamB(teamName);
+    },
+    [teamA, teamB]
+  );
+
+  // Map-tab regional click. Tapping the same regional again clears the
+  // selection. Selecting a new one clears A/B (the fan now belongs to
+  // every team in that regional, so a single highlighted team would be
+  // visually ambiguous).
+  const handleSelectRegional = useCallback((id: number) => {
+    setSelectedRegionalId((prev) => {
+      if (prev === id) return null;
+      setTeamA(null);
+      setTeamB(null);
+      return id;
+    });
+  }, []);
+
+  return (
+    <>
+      <ManualGridTable
+        teams={teams}
+        regionals={regionals}
+        championships={championships}
+        gender={gender}
+        onChange={setGridAssignments}
+        onRegionalsOrderChange={setGridRegionalIds}
+        onPlaceTeam={handlePlaceTeam}
+        teamA={teamA}
+        teamB={teamB}
+      />
+      <div className="mt-6">
+        {/* Tab switcher */}
+        <div
+          role="tablist"
+          aria-label="Manual Grid detail tabs"
+          className="inline-flex rounded border border-border overflow-hidden text-[12px] mb-3"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "h2h"}
+            onClick={() => setTab("h2h")}
+            className={cn(
+              "px-3 py-1 transition-colors",
+              tab === "h2h"
+                ? "bg-primary/20 text-primary"
+                : "bg-card text-muted-foreground hover:bg-card/80"
+            )}
+          >
+            Head-to-Head
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "map"}
+            onClick={() => setTab("map")}
+            className={cn(
+              "px-3 py-1 transition-colors border-l border-border",
+              tab === "map"
+                ? "bg-primary/20 text-primary"
+                : "bg-card text-muted-foreground hover:bg-card/80"
+            )}
+          >
+            Map
+          </button>
+        </div>
+
+        {tab === "h2h" ? (
+          <div role="tabpanel">
+            <h3 className="text-[13px] font-semibold text-foreground mb-3">
+              Head-to-Head
+              <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                Hold ~½s on a team above to send it here
+              </span>
+            </h3>
+            <HeadToHeadBrowser
+              embedded={{
+                gender,
+                teamA,
+                teamB,
+                onTeamAChange: setTeamA,
+                onTeamBChange: setTeamB,
+              }}
+            />
+          </div>
+        ) : (
+          <div role="tabpanel">
+            <div className="flex items-baseline justify-between gap-3 mb-3 flex-wrap">
+              <h3 className="text-[13px] font-semibold text-foreground">
+                Travel Map
+                <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                  Distances from each selected team to every regional site
+                </span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setTeamA(null);
+                  setTeamB(null);
+                  setSelectedRegionalId(null);
+                }}
+                disabled={!teamA && !teamB && selectedRegionalId === null}
+                title="Clear Team A, Team B, and any selected regional"
+                aria-label="Clear Team A, Team B, and any selected regional"
+                className={cn(
+                  "h-[26px] px-2.5 rounded border border-border bg-card text-[12px]",
+                  "text-muted-foreground hover:bg-card/80 hover:text-foreground transition-colors",
+                  "disabled:opacity-40 disabled:cursor-not-allowed"
+                )}
+              >
+                Clear Teams
+              </button>
+            </div>
+            <ManualGridMap
+              teams={teams}
+              regionals={regionals}
+              regionalIds={gridRegionalIds}
+              assignments={gridAssignments}
+              teamA={teamA}
+              teamB={teamB}
+              selectedRegionalId={selectedRegionalId}
+              onSelectRegional={handleSelectRegional}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

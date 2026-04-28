@@ -19,18 +19,35 @@ import {
   type Season,
 } from "@/lib/head-to-head";
 import CommonOpponents from "@/components/head-to-head/common-opponents";
-import RegionalHistoryH2H from "@/components/head-to-head/regional-history";
+import CommonOpponentsDetail from "@/components/head-to-head/common-opponents-detail";
 
 // ---------------------------------------------------------------------------
 // Full-page team-vs-team head-to-head browser. URL params drive state so links
 // are shareable: /head-to-head?gender=men&a=Auburn&b=Florida&season=2025-26
+//
+// Also supports an `embedded` mode used by the Manual Grid tab, where the
+// parent owns gender + teamA/teamB state, drives them via long-press, and
+// the gender toggle / season selector / URL sync are suppressed.
 // ---------------------------------------------------------------------------
 
 function isSeason(value: string | null): value is Season {
   return !!value && (AVAILABLE_SEASONS as readonly string[]).includes(value);
 }
 
-export default function HeadToHeadBrowser() {
+export interface HeadToHeadEmbedded {
+  gender: Gender;
+  teamA: string | null;
+  teamB: string | null;
+  onTeamAChange: (t: string | null) => void;
+  onTeamBChange: (t: string | null) => void;
+}
+
+interface HeadToHeadBrowserProps {
+  embedded?: HeadToHeadEmbedded;
+}
+
+export default function HeadToHeadBrowser(props: HeadToHeadBrowserProps = {}) {
+  const { embedded } = props;
   const router = useRouter();
   const params = useSearchParams();
 
@@ -39,17 +56,25 @@ export default function HeadToHeadBrowser() {
   const bParam = params.get("b");
   const seasonParam = params.get("season");
 
-  const [gender, setGender] = useState<Gender>(
+  const [internalGender, setInternalGender] = useState<Gender>(
     genderParam === "women" ? "women" : "men"
   );
-  const [teamA, setTeamA] = useState<string | null>(aParam);
-  const [teamB, setTeamB] = useState<string | null>(bParam);
+  const [internalTeamA, setInternalTeamA] = useState<string | null>(aParam);
+  const [internalTeamB, setInternalTeamB] = useState<string | null>(bParam);
   const [season, setSeason] = useState<Season>(
     isSeason(seasonParam) ? seasonParam : CURRENT_SEASON
   );
 
-  // Keep URL in sync when user picks teams.
+  const gender = embedded ? embedded.gender : internalGender;
+  const setGender = embedded ? () => {} : setInternalGender;
+  const teamA = embedded ? embedded.teamA : internalTeamA;
+  const teamB = embedded ? embedded.teamB : internalTeamB;
+  const setTeamA = embedded ? embedded.onTeamAChange : setInternalTeamA;
+  const setTeamB = embedded ? embedded.onTeamBChange : setInternalTeamB;
+
+  // Keep URL in sync when user picks teams (page mode only).
   useEffect(() => {
+    if (embedded) return;
     const next = new URLSearchParams();
     next.set("gender", gender);
     if (teamA) next.set("a", teamA);
@@ -57,7 +82,7 @@ export default function HeadToHeadBrowser() {
     if (season !== CURRENT_SEASON) next.set("season", season);
     const qs = next.toString();
     router.replace(`/head-to-head${qs ? `?${qs}` : ""}`, { scroll: false });
-  }, [gender, teamA, teamB, season, router]);
+  }, [embedded, gender, teamA, teamB, season, router]);
 
   const allTeams = useMemo(() => getAllTeamNames(gender), [gender]);
 
@@ -69,48 +94,55 @@ export default function HeadToHeadBrowser() {
     setTeamB(teamA);
   };
 
+  const clearTeams = () => {
+    setTeamA(null);
+    setTeamB(null);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3 sm:items-end flex-wrap">
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">
-            Division
+        {!embedded && (
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80 mb-1">
+              Division
+            </div>
+            <div className="inline-flex rounded border border-border overflow-hidden text-[12px]">
+              <button
+                onClick={() => {
+                  setGender("men");
+                  setTeamA(null);
+                  setTeamB(null);
+                }}
+                className={cn(
+                  "px-3 py-1 transition-colors",
+                  gender === "men"
+                    ? "bg-primary/20 text-primary"
+                    : "bg-card text-muted-foreground hover:bg-card/80"
+                )}
+              >
+                Men
+              </button>
+              <button
+                onClick={() => {
+                  setGender("women");
+                  setTeamA(null);
+                  setTeamB(null);
+                }}
+                className={cn(
+                  "px-3 py-1 transition-colors border-l border-border",
+                  gender === "women"
+                    ? "bg-primary/20 text-primary"
+                    : "bg-card text-muted-foreground hover:bg-card/80"
+                )}
+              >
+                Women
+              </button>
+            </div>
           </div>
-          <div className="inline-flex rounded border border-border overflow-hidden text-[12px]">
-            <button
-              onClick={() => {
-                setGender("men");
-                setTeamA(null);
-                setTeamB(null);
-              }}
-              className={cn(
-                "px-3 py-1 transition-colors",
-                gender === "men"
-                  ? "bg-primary/20 text-primary"
-                  : "bg-card text-muted-foreground hover:bg-card/80"
-              )}
-            >
-              Men
-            </button>
-            <button
-              onClick={() => {
-                setGender("women");
-                setTeamA(null);
-                setTeamB(null);
-              }}
-              className={cn(
-                "px-3 py-1 transition-colors border-l border-border",
-                gender === "women"
-                  ? "bg-primary/20 text-primary"
-                  : "bg-card text-muted-foreground hover:bg-card/80"
-              )}
-            >
-              Women
-            </button>
-          </div>
-        </div>
+        )}
 
-        <SeasonSelector value={season} onChange={setSeason} />
+        {!embedded && <SeasonSelector value={season} onChange={setSeason} />}
 
         <div className="flex items-end gap-2 flex-wrap">
           <TeamSelector
@@ -142,6 +174,21 @@ export default function HeadToHeadBrowser() {
             options={allTeams}
             excluded={teamA}
           />
+          <button
+            type="button"
+            onClick={clearTeams}
+            disabled={!teamA && !teamB}
+            title="Clear both Team A and Team B"
+            aria-label="Clear both Team A and Team B"
+            className={cn(
+              "h-[26px] px-2.5 rounded border border-border bg-card text-[12px]",
+              "text-muted-foreground hover:bg-card/80 hover:text-foreground transition-colors",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+              "self-end"
+            )}
+          >
+            Clear Teams
+          </button>
         </div>
       </div>
 
@@ -332,6 +379,12 @@ function PairSummary({
   season: Season;
 }) {
   const [allMeetings, setAllMeetings] = useState<Meeting[] | null>(null);
+  const [selectedOpponent, setSelectedOpponent] = useState<string | null>(null);
+
+  // Reset the selected common opponent whenever the team pair changes.
+  useEffect(() => {
+    setSelectedOpponent(null);
+  }, [teamA, teamB, gender]);
 
   useEffect(() => {
     let cancelled = false;
@@ -461,9 +514,20 @@ function PairSummary({
         )}
       </div>
 
-      <CommonOpponents teamA={teamA} teamB={teamB} gender={gender} />
+      <CommonOpponents
+        teamA={teamA}
+        teamB={teamB}
+        gender={gender}
+        selectedOpponent={selectedOpponent}
+        onSelectOpponent={setSelectedOpponent}
+      />
 
-      <RegionalHistoryH2H teamA={teamA} teamB={teamB} gender={gender} />
+      <CommonOpponentsDetail
+        teamA={teamA}
+        teamB={teamB}
+        gender={gender}
+        opponent={selectedOpponent}
+      />
     </div>
   );
 }
