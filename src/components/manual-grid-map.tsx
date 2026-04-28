@@ -35,10 +35,17 @@ import {
   statesGeo,
   stateBorderPath,
   nationBorderPath,
+  timezoneBorderPath,
   projectPoint,
 } from "@/lib/us-projection";
 import { haversineDistance } from "@/lib/geo";
 import { TEAM_A_COLOR, TEAM_B_COLOR } from "@/lib/manual-grid-colors";
+import {
+  TIMEZONE_BAND_NAME,
+  formatTzDelta,
+  tzBandFromCoord,
+  tzDeltaHours,
+} from "@/lib/timezone";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { ScurveAssignment } from "@/lib/scurve";
@@ -94,6 +101,12 @@ interface RegionalFanLine {
   midX: number;
   midY: number;
   dist: number;
+  /** Signed hour delta from team → regional (e.g. -2 means 2 zones west). */
+  tzHours: number;
+  /** Verbose label, e.g. "+2 time zones" — used as tooltip. */
+  tzLabel: string;
+  /** "ET → CT (May/June DST)" — fuller tooltip. */
+  tzTooltip: string;
 }
 
 export default function ManualGridMap({
@@ -208,12 +221,19 @@ export default function ManualGridMap({
 
   const regionalLines = useMemo<RegionalFanLine[]>(() => {
     if (!selectedRegional) return [];
+    const regionalBand = tzBandFromCoord(
+      selectedRegional.lat,
+      selectedRegional.lng,
+      statesGeo
+    );
     return regionalTeams.map((team) => {
       const dist = Math.round(
         haversineDistance(team.lat, team.lng, selectedRegional.lat, selectedRegional.lng)
       );
       const midX = (team.x + selectedRegional.x) / 2;
       const midY = (team.y + selectedRegional.y) / 2 - 25;
+      const teamBand = tzBandFromCoord(team.lat, team.lng, statesGeo);
+      const tzHours = tzDeltaHours(teamBand, regionalBand);
       return {
         team,
         fromX: selectedRegional.x,
@@ -221,6 +241,9 @@ export default function ManualGridMap({
         midX,
         midY,
         dist,
+        tzHours,
+        tzLabel: formatTzDelta(tzHours),
+        tzTooltip: `${TIMEZONE_BAND_NAME[teamBand]} → ${TIMEZONE_BAND_NAME[regionalBand]} (May/June DST)`,
       };
     });
   }, [selectedRegional, regionalTeams]);
@@ -279,6 +302,21 @@ export default function ManualGridMap({
               strokeWidth="1"
               strokeLinejoin="round"
               opacity="0.4"
+            />
+          )}
+
+          {/* Timezone meridian lines — dashed, drawn between states whose
+              timezone bands differ. Same styling as the Team-page map. */}
+          {timezoneBorderPath && (
+            <path
+              d={timezoneBorderPath}
+              fill="none"
+              stroke="hsl(var(--foreground))"
+              strokeWidth="1"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              strokeDasharray="3 2"
+              opacity="0.42"
             />
           )}
 
@@ -497,7 +535,7 @@ export default function ManualGridMap({
                     color: selectedRegional.color,
                     borderBottom: `2px solid ${selectedRegional.color}`,
                   }}
-                  colSpan={2}
+                  colSpan={3}
                 >
                   {selectedRegional.name.replace(/ Regional$/, "")} Regional
                 </th>
@@ -509,13 +547,16 @@ export default function ManualGridMap({
                 <th className="text-right px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground/80 font-medium border-b border-border whitespace-nowrap">
                   Distance
                 </th>
+                <th className="text-right px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground/80 font-medium border-b border-border whitespace-nowrap">
+                  Time Zones
+                </th>
               </tr>
             </thead>
             <tbody>
               {regionalLines.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={2}
+                    colSpan={3}
                     className="px-2 py-2 text-center text-text-tertiary italic"
                   >
                     No teams placed in this regional yet.
@@ -538,6 +579,15 @@ export default function ManualGridMap({
                       style={{ color: selectedRegional.color }}
                     >
                       {line.dist.toLocaleString()} mi
+                    </td>
+                    <td
+                      className="px-2 py-1.5 text-right font-mono tabular-nums whitespace-nowrap"
+                      style={{ color: selectedRegional.color }}
+                      title={`${line.tzLabel} — ${line.tzTooltip}`}
+                    >
+                      {line.tzHours === 0
+                        ? "—"
+                        : `${line.tzHours > 0 ? "+" : "−"}${Math.abs(line.tzHours)}`}
                     </td>
                   </tr>
                 ))

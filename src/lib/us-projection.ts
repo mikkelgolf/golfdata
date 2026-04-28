@@ -6,9 +6,14 @@
 
 import { geoAlbersUsa, geoPath } from "d3-geo";
 import { feature, mesh } from "topojson-client";
-import type { Topology, GeometryCollection } from "topojson-specification";
+import type {
+  Topology,
+  GeometryCollection,
+  GeometryObject,
+} from "topojson-specification";
 import type { FeatureCollection } from "geojson";
 import usTopology from "@/data/us-states-10m.json";
+import { STATE_FIPS_TO_TZ } from "@/lib/timezone";
 
 export const SVG_WIDTH = 975;
 export const SVG_HEIGHT = 610;
@@ -32,6 +37,27 @@ export const stateBorderPath = pathGen(
 
 export const nationBorderPath = pathGen(
   mesh(topo, topo.objects.nation as GeometryCollection)
+);
+
+/**
+ * Dashed mesh of the segments where adjacent states fall in different
+ * timezone bands. Same construction the team-page map uses, just hoisted
+ * here so other map components can render the same line style.
+ */
+export const timezoneBorderPath = pathGen(
+  mesh(
+    topo,
+    topo.objects.states as GeometryCollection,
+    (a: GeometryObject, b: GeometryObject) => {
+      const aFips = typeof a.id === "string" ? a.id : String(a.id ?? "");
+      const bFips = typeof b.id === "string" ? b.id : String(b.id ?? "");
+      if (!aFips || !bFips) return false;
+      const aTz = STATE_FIPS_TO_TZ[aFips];
+      const bTz = STATE_FIPS_TO_TZ[bFips];
+      if (!aTz || !bTz) return false;
+      return aTz !== bTz;
+    }
+  )
 );
 
 /** Project lat/lng to SVG coordinates; returns null if outside Albers USA. */
