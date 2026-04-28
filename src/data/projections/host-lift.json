@@ -1,0 +1,88 @@
+[
+  {
+    "gender": "men",
+    "level": "aggregate",
+    "n": 61,
+    "observed": 0.7377049180327869,
+    "expected": 0.5661705678553319,
+    "observedSmoothed": 0.7338709677419355,
+    "expectedSmoothed": 0.5661705678553319,
+    "oddsRatio": 2.112998437090565
+  },
+  {
+    "gender": "men",
+    "level": "tier",
+    "tier": "TOP",
+    "n": 29,
+    "observed": 0.9655172413793104,
+    "expected": 0.871845005332385,
+    "observedSmoothed": 0.95,
+    "expectedSmoothed": 0.871845005332385,
+    "oddsRatio": 2.792864424057092
+  },
+  {
+    "gender": "men",
+    "level": "tier",
+    "tier": "MID",
+    "n": 17,
+    "observed": 0.8235294117647058,
+    "expected": 0.45451788963007883,
+    "observedSmoothed": 0.8055555555555556,
+    "expectedSmoothed": 0.45451788963007883,
+    "oddsRatio": 4.971981320880588
+  },
+  {
+    "gender": "men",
+    "level": "tier",
+    "tier": "BOT",
+    "n": 15,
+    "observed": 0.2,
+    "expected": 0.1017396907216495,
+    "observedSmoothed": 0.21875,
+    "expectedSmoothed": 0.1017396907216495,
+    "oddsRatio": 2.4721215959468017
+  },
+  {
+    "gender": "women",
+    "level": "aggregate",
+    "n": 16,
+    "observed": 0.9375,
+    "expected": 0.69,
+    "observedSmoothed": 0.9117647058823529,
+    "expectedSmoothed": 0.69,
+    "oddsRatio": 4.642512077294686
+  },
+  {
+    "gender": "women",
+    "level": "tier",
+    "tier": "TOP",
+    "n": 10,
+    "observed": 1,
+    "expected": 0.8600000000000001,
+    "observedSmoothed": 0.9545454545454546,
+    "expectedSmoothed": 0.8600000000000001,
+    "oddsRatio": 3.4186046511627914
+  },
+  {
+    "gender": "women",
+    "level": "tier",
+    "tier": "MID",
+    "n": 4,
+    "observed": 1,
+    "expected": 0.54,
+    "observedSmoothed": 0.9,
+    "expectedSmoothed": 0.54,
+    "oddsRatio": 7.666666666666668
+  },
+  {
+    "gender": "women",
+    "level": "tier",
+    "tier": "BOT",
+    "n": 2,
+    "observed": 0.5,
+    "expected": 0.14,
+    "observedSmoothed": 0.5,
+    "expectedSmoothed": 0.14,
+    "oddsRatio": 6.142857142857142
+  }
+]

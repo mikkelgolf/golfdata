@@ -10,6 +10,7 @@ import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type Scu
 import { ManualGridTable } from "@/components/manual-grid-table";
 import ManualGridMap from "@/components/manual-grid-map";
 import HeadToHeadBrowser from "@/components/head-to-head-browser";
+import { ProjectionsView } from "@/components/projections-view";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -45,7 +46,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual";
+type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "projections";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -606,6 +607,40 @@ export default function ScurveTable({
     );
   }
 
+  // Projections — historical-pattern advancement probabilities per regional
+  if (viewMode === "projections") {
+    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
+    // Strength-order the regionals to match the rest of the page.
+    const orderedRegionals = [...activeRegionals].sort(
+      (a, b) => (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99),
+    );
+    return (
+      <div
+        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
+        data-pending={isPending}
+        data-stale={isStale}
+      >
+        <FilterBar
+          viewMode={viewMode}
+          gender={gender}
+          scurveMode={scurveMode}
+          search={search}
+          resultCount={filtered.length}
+          lastUpdated={lastUpdated}
+          onViewChange={handleViewChange}
+          onGenderChange={handleGenderChange}
+          onModeChange={handleModeChange}
+          onSearchChange={setSearch}
+        />
+        <ProjectionsView
+          regionals={orderedRegionals}
+          gender={gender}
+          hostColorByTeam={hostColorByTeam}
+        />
+      </div>
+    );
+  }
+
   // S-Curve snake table view
   if (viewMode === "scurve") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
@@ -945,6 +980,7 @@ function FilterBar({
             { value: "visual", label: "Visual" },
             { value: "breakdown", label: "Breakdown" },
             { value: "manual", label: "Manual Grid" },
+            { value: "projections", label: "Projections" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -998,6 +1034,7 @@ function FilterBar({
               { value: "visual", label: "Vis" },
               { value: "breakdown", label: "Brk" },
               { value: "manual", label: "Manual" },
+              { value: "projections", label: "Proj" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
