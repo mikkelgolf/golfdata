@@ -14,6 +14,14 @@ interface YearResult {
   win?: boolean;
   /** Committee seed into the Regional (1..N). Null before seeding era. */
   seed?: number | null;
+  /**
+   * Whether the team was flagged "Expected to Adv" by the committee/seed
+   * for this year. `true` = expected, `false` = explicitly not expected,
+   * `null` = unknown (outside the seeding-data window). Drives the seed
+   * cell's color (green when true) and the position cell's color (red
+   * when expectedAdv === true but the team didn't advance).
+   */
+  expectedAdv?: boolean | null;
   /** Regional site/host name (for tooltip). */
   regional?: string | null;
   /** Team strokes-gained total vs field (for tooltip). */
@@ -77,6 +85,11 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
           : r.cancelled
             ? "rounded-sm border border-dashed border-border/40 bg-card/20 px-1.5 py-0.5 text-center transition-colors duration-100"
             : "rounded-sm border border-border/40 bg-card/40 px-1.5 py-0.5 text-center transition-colors duration-100 hover:border-border-medium";
+        // Position color precedence:
+        //   win → amber, cancelled → muted, advanced → emerald,
+        //   missed (no appearance) → muted rose,
+        //   appeared but expected to advance and didn't → red,
+        //   appeared but wasn't expected to advance and didn't → neutral.
         const posClass = r.win
           ? "text-amber-300"
           : r.cancelled
@@ -85,7 +98,15 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
               ? "text-emerald-400"
               : r.missed
                 ? "text-rose-400/80"
-                : "text-foreground/80";
+                : r.expectedAdv === true
+                  ? "text-rose-400"
+                  : "text-foreground/80";
+        // Seed color: green when the team was committee-flagged "Expected
+        // to Adv" for this year; otherwise the usual muted treatment.
+        const seedClass =
+          r.expectedAdv === true
+            ? "text-emerald-400/90"
+            : "text-text-tertiary/80";
         const cellTitle = buildTooltip(r);
         const showSeed = r.seed != null && !r.cancelled && !r.missed;
 
@@ -104,7 +125,7 @@ export default function RegionalTimeline({ results }: { results: YearResult[] })
               <span className={posClass}>{r.cancelled ? "—" : r.position}</span>
             </div>
             {showSeed ? (
-              <div className="text-[9px] font-mono tabular-nums leading-none text-text-tertiary/80">
+              <div className={`text-[9px] font-mono tabular-nums leading-none ${seedClass}`}>
                 #{r.seed}
               </div>
             ) : null}

@@ -231,6 +231,19 @@ function formatStreak(s: StreakResult): string {
   return s.longest > 0 ? `${s.longest} all-time longest` : "—";
 }
 
+/**
+ * Two-line streak detail used by the PROGRAM HISTORY metrics
+ * (Regional apps / Advanced / NCAA apps). Renders as:
+ *   Active streak: N
+ *   Longest streak: N
+ * Returns an empty array when neither value is meaningful so the
+ * StatCard hides the subtitle entirely.
+ */
+function streakDetailLines(s: StreakResult): string[] {
+  if (s.active === 0 && s.longest === 0) return [];
+  return [`Active streak: ${s.active}`, `Longest streak: ${s.longest}`];
+}
+
 export default function TeamPage({ params }: { params: Params }) {
   const gender = parseGender(params.gender);
   if (!gender) notFound();
@@ -309,6 +322,7 @@ export default function TeamPage({ params }: { params: Params }) {
     cancelled?: boolean;
     win?: boolean;
     seed?: number | null;
+    expectedAdv?: boolean | null;
     regional?: string | null;
     sgTotal?: number | null;
     margin?: number | null;
@@ -331,12 +345,17 @@ export default function TeamPage({ params }: { params: Params }) {
         basicAdvanced: r.advanced,
         yearInSeedingWindow: seedingYears.has(y),
       });
+      // Prefer the rich sheet's "Team Result" string (e.g. "T5") for
+      // display so ties are visible; fall back to the basic numeric
+      // position from regionals-history.json when rich data is absent
+      // (older rows / 5 unmatched edge cases).
       timelineResults.push({
         year: y,
-        position: r.position,
+        position: rich?.result ?? r.position,
         advanced,
         win,
         seed: rich?.seed ?? null,
+        expectedAdv: rich?.expectedAdv ?? null,
         regional: rich?.regional ?? null,
         sgTotal: rich?.sgTotal ?? null,
         margin: rich?.margin ?? null,
@@ -676,14 +695,14 @@ export default function TeamPage({ params }: { params: Params }) {
               <StatCard
                 label="Regional apps"
                 value={stats.totalAppearances}
-                detail={`streak: ${formatStreak(stats.regionalStreak)}`}
+                detail={streakDetailLines(stats.regionalStreak)}
                 percentile={percentiles?.apps}
                 className="border-r border-border/40"
               />
               <StatCard
                 label="Advanced"
                 value={stats.totalAdvancements}
-                detail={`streak: ${formatStreak(stats.nationalStreak)}`}
+                detail={streakDetailLines(stats.nationalStreak)}
                 percentile={percentiles?.nationals}
                 className="border-r border-border/40"
               />
@@ -707,7 +726,7 @@ export default function TeamPage({ params }: { params: Params }) {
                 value={championshipStats.appearances}
                 detail={
                   championshipStats.appearances > 0
-                    ? `streak: ${formatStreak(championshipStats.appearanceStreak)}`
+                    ? streakDetailLines(championshipStats.appearanceStreak)
                     : undefined
                 }
                 percentile={

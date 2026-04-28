@@ -89,11 +89,13 @@ export default function RegionalPerformance(props: RegionalPerformanceProps) {
           label="Best Regional SG"
           value={fmtSg(bestSgTotal)}
           detail={bestSgDetail}
+          wrapDetail
         />
         <StatCard
           label="Beat the seed"
           value={`${beatSeedCount}×`}
-          detail="finished better than seeded"
+          detail="Finished better than seeded"
+          wrapDetail
         />
         <StatCard
           label="Advanced as underdog"
