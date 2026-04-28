@@ -56,6 +56,12 @@ import {
   unserpentineIndex,
   type ManualGridState,
 } from "@/lib/manual-grid";
+import {
+  TEAM_A_BG,
+  TEAM_A_COLOR,
+  TEAM_B_BG,
+  TEAM_B_COLOR,
+} from "@/lib/manual-grid-colors";
 import { computeScurve, type ScurveAssignment } from "@/lib/scurve";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
@@ -124,6 +130,10 @@ export interface ManualGridTableProps {
    * The parent decides where the team lands (typically: A first, B as fallback).
    */
   onPlaceTeam?: (teamName: string) => void;
+  /** Currently-selected Team A (highlighted in cyan in the grid). */
+  teamA?: string | null;
+  /** Currently-selected Team B (highlighted in magenta in the grid). */
+  teamB?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -196,6 +206,7 @@ function SortableCell({
   onPlaceTeam,
   isLongPressArmed,
   setLongPressArmedSlotId,
+  selectedAs,
 }: {
   slot: Slot;
   team: TeamData | undefined;
@@ -206,6 +217,8 @@ function SortableCell({
   onPlaceTeam?: (teamName: string) => void;
   isLongPressArmed: boolean;
   setLongPressArmedSlotId: (id: string | null) => void;
+  /** "A" or "B" if this team is currently the H2H selection; null otherwise. */
+  selectedAs: "A" | "B" | null;
 }) {
   const sortable = useSortable({ id: slot.id });
   const pressStartRef = useRef<number | null>(null);
@@ -314,10 +327,24 @@ function SortableCell({
       <div
         className={cn(
           "h-6 px-1 flex items-center text-[10px] rounded-sm whitespace-nowrap select-none transition-shadow",
-          isAboveLine ? "bg-secondary/70" : "bg-secondary/25",
+          !selectedAs && (isAboveLine ? "bg-secondary/70" : "bg-secondary/25"),
+          selectedAs && "ring-2",
           isLongPressArmed && "ring-1 ring-primary/70 shadow-[0_0_0_2px_rgba(99,102,241,0.25)]"
         )}
-        style={{ borderLeft: `2px solid ${regionalColor}` }}
+        style={{
+          borderLeft: `2px solid ${regionalColor}`,
+          ...(selectedAs === "A"
+            ? {
+                backgroundColor: TEAM_A_BG,
+                ["--tw-ring-color" as string]: TEAM_A_COLOR,
+              }
+            : selectedAs === "B"
+              ? {
+                  backgroundColor: TEAM_B_BG,
+                  ["--tw-ring-color" as string]: TEAM_B_COLOR,
+                }
+              : undefined),
+        }}
         title={team ? `#${seed} ${team.team} - Rank ${team.rank}` : slot.team}
       >
         <span className="font-mono tabular-nums text-[8px] text-muted-foreground shrink-0 w-3.5 text-right mr-1">
@@ -352,6 +379,8 @@ export function ManualGridTable({
   gender,
   onChange,
   onPlaceTeam,
+  teamA = null,
+  teamB = null,
 }: ManualGridTableProps) {
   // Build initial state (committee defaults merged with localStorage if any)
   const [internal, setInternal] = useState<InternalState>(() => {
@@ -657,6 +686,12 @@ export function ManualGridTable({
                           const team = slot.team ? teamLookup.get(slot.team) : undefined;
                           const seed = slot.team ? seedByTeam.get(slot.team) ?? null : null;
                           const isAboveLine = tierIdx < TEAMS_ADVANCING;
+                          const selectedAs: "A" | "B" | null =
+                            slot.team && slot.team === teamA
+                              ? "A"
+                              : slot.team && slot.team === teamB
+                                ? "B"
+                                : null;
                           return (
                             <SortableCell
                               key={slot.id}
@@ -669,6 +704,7 @@ export function ManualGridTable({
                               onPlaceTeam={onPlaceTeam}
                               isLongPressArmed={longPressArmedSlotId === slot.id}
                               setLongPressArmedSlotId={setLongPressArmedSlotId}
+                              selectedAs={selectedAs}
                             />
                           );
                         })}

@@ -94,6 +94,11 @@ export default function HeadToHeadBrowser(props: HeadToHeadBrowserProps = {}) {
     setTeamB(teamA);
   };
 
+  const clearTeams = () => {
+    setTeamA(null);
+    setTeamB(null);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3 sm:items-end flex-wrap">
@@ -169,6 +174,21 @@ export default function HeadToHeadBrowser(props: HeadToHeadBrowserProps = {}) {
             options={allTeams}
             excluded={teamA}
           />
+          <button
+            type="button"
+            onClick={clearTeams}
+            disabled={!teamA && !teamB}
+            title="Clear both Team A and Team B"
+            aria-label="Clear both Team A and Team B"
+            className={cn(
+              "h-[26px] px-2.5 rounded border border-border bg-card text-[12px]",
+              "text-muted-foreground hover:bg-card/80 hover:text-foreground transition-colors",
+              "disabled:opacity-40 disabled:cursor-not-allowed",
+              "self-end"
+            )}
+          >
+            Clear Teams
+          </button>
         </div>
       </div>
 

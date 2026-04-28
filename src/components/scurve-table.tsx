@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import { ManualGridTable } from "@/components/manual-grid-table";
+import ManualGridMap from "@/components/manual-grid-map";
 import HeadToHeadBrowser from "@/components/head-to-head-browser";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
@@ -2485,9 +2486,10 @@ function ManualGridSection({
   gender: Gender;
 }) {
   // Live H2H slots fed by long-press placements from the grid above. A first,
-  // then B (regardless of B's current value), per the spec.
+  // then B if A is filled (and the placement isn't a duplicate of A).
   const [teamA, setTeamA] = useState<string | null>(null);
   const [teamB, setTeamB] = useState<string | null>(null);
+  const [tab, setTab] = useState<"h2h" | "map">("h2h");
 
   // Reset slots on gender switch — H2H data is gender-specific.
   const lastGenderRef = useRef<Gender>(gender);
@@ -2499,14 +2501,23 @@ function ManualGridSection({
     }
   }, [gender]);
 
-  const handlePlaceTeam = useCallback((teamName: string) => {
-    setTeamA((prevA) => {
-      if (prevA === null) return teamName;
-      // A is occupied → push into B regardless of B's current state.
+  // Long-press placement. Rules (in priority order):
+  //   1. If the team is already in A → no-op (it's already there).
+  //   2. If A is empty → place into A. If B already held this team, clear B
+  //      so we never end up with A === B.
+  //   3. Else (A is filled with a different team) → place into B.
+  const handlePlaceTeam = useCallback(
+    (teamName: string) => {
+      if (teamA === teamName) return;
+      if (teamA === null) {
+        setTeamA(teamName);
+        if (teamB === teamName) setTeamB(null);
+        return;
+      }
       setTeamB(teamName);
-      return prevA;
-    });
-  }, []);
+    },
+    [teamA, teamB]
+  );
 
   return (
     <>
@@ -2516,23 +2527,80 @@ function ManualGridSection({
         championships={championships}
         gender={gender}
         onPlaceTeam={handlePlaceTeam}
+        teamA={teamA}
+        teamB={teamB}
       />
       <div className="mt-6">
-        <h3 className="text-[13px] font-semibold text-foreground mb-3">
-          Head-to-Head
-          <span className="ml-2 text-[11px] font-normal text-text-tertiary">
-            Hold ~1s on a team above to send it here
-          </span>
-        </h3>
-        <HeadToHeadBrowser
-          embedded={{
-            gender,
-            teamA,
-            teamB,
-            onTeamAChange: setTeamA,
-            onTeamBChange: setTeamB,
-          }}
-        />
+        {/* Tab switcher */}
+        <div
+          role="tablist"
+          aria-label="Manual Grid detail tabs"
+          className="inline-flex rounded border border-border overflow-hidden text-[12px] mb-3"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "h2h"}
+            onClick={() => setTab("h2h")}
+            className={cn(
+              "px-3 py-1 transition-colors",
+              tab === "h2h"
+                ? "bg-primary/20 text-primary"
+                : "bg-card text-muted-foreground hover:bg-card/80"
+            )}
+          >
+            Head-to-Head
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "map"}
+            onClick={() => setTab("map")}
+            className={cn(
+              "px-3 py-1 transition-colors border-l border-border",
+              tab === "map"
+                ? "bg-primary/20 text-primary"
+                : "bg-card text-muted-foreground hover:bg-card/80"
+            )}
+          >
+            Map
+          </button>
+        </div>
+
+        {tab === "h2h" ? (
+          <div role="tabpanel">
+            <h3 className="text-[13px] font-semibold text-foreground mb-3">
+              Head-to-Head
+              <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                Hold ~½s on a team above to send it here
+              </span>
+            </h3>
+            <HeadToHeadBrowser
+              embedded={{
+                gender,
+                teamA,
+                teamB,
+                onTeamAChange: setTeamA,
+                onTeamBChange: setTeamB,
+              }}
+            />
+          </div>
+        ) : (
+          <div role="tabpanel">
+            <h3 className="text-[13px] font-semibold text-foreground mb-3">
+              Travel Map
+              <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                Distances from each selected team to every regional site
+              </span>
+            </h3>
+            <ManualGridMap
+              teams={teams}
+              regionals={regionals}
+              teamA={teamA}
+              teamB={teamB}
+            />
+          </div>
+        )}
       </div>
     </>
   );
