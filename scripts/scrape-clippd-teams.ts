@@ -118,6 +118,12 @@ const CONF_MAP: Record<string, string> = {
   "Mid-Eastern Athletic Conference": "MEAC",
   "Southwestern Athletic Conference": "SWAC",
   "Northeast Conference": "NEC",
+  // Clippd ships two extra variants of the NEC name on a handful of teams
+  // (e.g. New Haven, UMES). Without these aliases the raw long-form leaks
+  // into rankings-{gender}.ts and the Teams page renders 2-3 separate
+  // chips for what is really one conference.
+  "NEC - Northeast Conference": "NEC",
+  "Northeast Women's Golf Conference": "NEC",
   "Horizon League": "HORIZON",
   "Southland Conference": "SOUTHLAND",
   "Western Athletic Conference": "WAC",

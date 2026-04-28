@@ -69,3 +69,33 @@ export function normalizeConference(
   if (trimmed in map) return map[trimmed];
   return null;
 }
+
+/**
+ * Display-safe canonicalization. Returns the canonical short code if the
+ * raw Clippd name is known, otherwise the trimmed raw name (so unknown
+ * conferences still render rather than disappearing).
+ *
+ * Pass `gender` whenever it's known — a few conferences have gender-
+ * specific short codes (Big East: BE/BEAST, Big Sky: BIGSKY/BSKY, Big
+ * South: BIGSOUTH/BSOUTH). When gender isn't available (e.g. inside a
+ * presentation component that just receives a string), we fall back to
+ * trying men first then women, which gives the right answer for every
+ * gender-shared conference (NEC, ACC, SEC, etc.).
+ */
+export function canonicalConferenceLabel(
+  rawName: string,
+  gender?: "men" | "women"
+): string {
+  const trimmed = rawName.trim();
+  if (!trimmed) return trimmed;
+  if (gender) {
+    const code = normalizeConference(trimmed, gender);
+    if (code) return code;
+  } else {
+    const m = normalizeConference(trimmed, "men");
+    if (m) return m;
+    const w = normalizeConference(trimmed, "women");
+    if (w) return w;
+  }
+  return trimmed;
+}

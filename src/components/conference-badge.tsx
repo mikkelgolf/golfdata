@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { canonicalConferenceLabel } from "@/data/conference-codes";
 
 const CONFERENCE_ACCENTS: Record<string, string> = {
   SEC: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
@@ -37,7 +38,13 @@ export function ConferenceBadge({
   className?: string;
   size?: "sm" | "md";
 }) {
-  const key = conference.toUpperCase().replace(/\s+/g, " ").trim();
+  // Fold known Clippd variants (e.g. "NEC - Northeast Conference",
+  // "Northeast Women's Golf Conference", "The Ivy League") to their
+  // canonical short code so both the displayed label and the accent
+  // colour are consistent regardless of which variant the upstream
+  // caller passed in.
+  const label = canonicalConferenceLabel(conference);
+  const key = label.toUpperCase().replace(/\s+/g, " ").trim();
   const compactKey = key.replace(/\s+/g, "");
   const accent = CONFERENCE_ACCENTS[key] ?? CONFERENCE_ACCENTS[compactKey] ?? DEFAULT_ACCENT;
   const sizing = size === "md" ? "px-2.5 py-0.5 text-[11px]" : "px-2 py-0.5 text-[10px]";
@@ -51,7 +58,7 @@ export function ConferenceBadge({
         className
       )}
     >
-      {conference}
+      {label}
     </span>
   );
 }
