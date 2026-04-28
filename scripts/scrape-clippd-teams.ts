@@ -30,6 +30,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { normalizeConference } from "../src/data/conference-codes";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -94,46 +95,15 @@ interface PullResult {
   women: ClippdTeamRanking[];
 }
 
-// Conference name mapping (Clippd full name -> our abbreviation)
-const CONF_MAP: Record<string, string> = {
-  "Southeastern Conference": "SEC",
-  "Atlantic Coast Conference": "ACC",
-  "Big 12 Conference": "B12",
-  "Big Ten Conference": "B10",
-  "West Coast Conference": "WCC",
-  "Mountain West Conference": "MWC",
-  "American Athletic Conference": "AAC",
-  "Colonial Athletic Association": "CAA",
-  "Big West Conference": "BWEST",
-  "Big East Conference": "BEAST",
-  "Sun Belt Conference": "SUNBELT",
-  "Atlantic Sun Conference": "ASUN",
-  "Southern Conference": "SOCON",
-  "Conference USA": "CUSA",
-  "Ohio Valley Conference": "OVC",
-  "Pac-12 Conference": "PAC12",
-  "Patriot League": "PATRIOT",
-  "Ivy League": "IVY",
-  "Metro Atlantic Athletic Conference": "MAAC",
-  "Mid-Eastern Athletic Conference": "MEAC",
-  "Southwestern Athletic Conference": "SWAC",
-  "Northeast Conference": "NEC",
-  // Clippd ships two extra variants of the NEC name on a handful of teams
-  // (e.g. New Haven, UMES). Without these aliases the raw long-form leaks
-  // into rankings-{gender}.ts and the Teams page renders 2-3 separate
-  // chips for what is really one conference.
-  "NEC - Northeast Conference": "NEC",
-  "Northeast Women's Golf Conference": "NEC",
-  "Horizon League": "HORIZON",
-  "Southland Conference": "SOUTHLAND",
-  "Western Athletic Conference": "WAC",
-  "Summit League": "SUMMIT",
-  "Big Sky Conference": "BIG SKY",
-  "Missouri Valley Conference": "MVC",
-  "Mid-American Conference": "MAC",
-  "America East Conference": "AMER",
-  "Atlantic 10 Conference": "A10",
-};
+// Conference name canonicalization is centralized in
+// `src/data/conference-codes.ts`. The previous local CONF_MAP duplicated
+// (and slowly drifted from) that table — it missed several variants Clippd
+// actually sends today ("Coastal Athletic Association", "ASUN Conference",
+// "The Ivy League", "The Summit League", "Big South Conference") and was
+// gender-agnostic, so men's Big East teams were silently coded as "BEAST"
+// (the women's code) instead of "BE". Sourcing from conference-codes.ts
+// gives us one source of truth and gender-correct codes for the three
+// gender-specific conferences (Big East, Big Sky, Big South).
 
 // School coordinate lookup (campus lat/lng)
 const SCHOOL_COORDS: Record<string, { lat: number; lng: number }> = {
@@ -307,8 +277,8 @@ function parseWLT(wlt: string): { wins: number; losses: number; ties: number } {
   return { wins: parts[0] ?? 0, losses: parts[1] ?? 0, ties: parts[2] ?? 0 };
 }
 
-function abbreviateConf(fullName: string): string {
-  return CONF_MAP[fullName] ?? fullName;
+function abbreviateConf(fullName: string, gender: "men" | "women"): string {
+  return normalizeConference(fullName, gender) ?? fullName;
 }
 
 function lookupCoords(boardName: string): { lat: number; lng: number } | null {
@@ -428,14 +398,14 @@ async function pullAll(): Promise<PullResult> {
   console.log(`\n  Saved to ${outPath}`);
 
   // Print summary
-  for (const [label, teams] of [
-    ["Men", men],
-    ["Women", women],
+  for (const [label, teams, gender] of [
+    ["Men", men, "men"],
+    ["Women", women, "women"],
   ] as const) {
     console.log(`\n  ${label} Top 10:`);
     for (const t of teams.slice(0, 10)) {
       console.log(
-        `    #${t.rank} ${t.boardName} (${abbreviateConf(t.conference)}) — ` +
+        `    #${t.rank} ${t.boardName} (${abbreviateConf(t.conference, gender)}) — ` +
           `${t.averagePoints.toFixed(1)} pts, SoS: ${t.strengthOfSchedule.toFixed(3)} (#${t.strengthOfScheduleRank}), ` +
           `${t.winLossTie}`
       );
@@ -473,7 +443,7 @@ function generateTsFile(
   for (const t of teams) {
     const { wins, losses, ties } = parseWLT(t.winLossTie);
     const overrideKey = `${gender}:${t.boardName}`;
-    const conf = CONFERENCE_OVERRIDES[overrideKey] ?? abbreviateConf(t.conference);
+    const conf = CONFERENCE_OVERRIDES[overrideKey] ?? abbreviateConf(t.conference, gender);
     // Coordinate lookup priority:
     //   1. SCHOOL_COORDS (canonical hardcoded map in this file)
     //   2. Existing non-zero coords already in src/data/rankings-{gender}.ts
