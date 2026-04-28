@@ -490,6 +490,7 @@ export const championshipsWomen2026: Championship[] = [
     endDate: "2026-04-28",
     color: "#4a7a8c",
     sourceUrl: "https://getsomemaction.com/feature/WGOLF-2026?path=wgolf",
+    winner: "Kent State",
   },
   {
     id: 26,
