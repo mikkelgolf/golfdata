@@ -769,10 +769,19 @@ export function ManualGridTable({
   const handleExportImage = useCallback(async () => {
     const node = captureRef.current;
     if (!node) return;
+    // Preload the watermark logo so it's in cache before html-to-image
+    // clones the DOM. Without this the cloned <img> can race the network
+    // and render blank.
+    await new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+      img.src = "/logo.png";
+    });
     setIsExporting(true);
     try {
-      // Wait two animation frames so the watermark has actually been
-      // painted before html-to-image walks the DOM.
+      // Wait two animation frames so the watermark + w-max layout have
+      // actually been painted before html-to-image walks the DOM.
       await new Promise<void>((resolve) =>
         requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
       );
@@ -781,10 +790,16 @@ export function ManualGridTable({
         .getPropertyValue("--background")
         .trim();
       const backgroundColor = bgVar ? `hsl(${bgVar})` : "#0d0d10";
+      // Capture at the wrapper's full scroll dimensions so the whole
+      // grid is included even when the viewport is narrower than the
+      // table (mobile).
+      const width = node.scrollWidth;
+      const height = node.scrollHeight;
       const dataUrl = await toPng(node, {
         backgroundColor,
         pixelRatio: 2,
-        cacheBust: true,
+        width,
+        height,
       });
       const today = new Date().toISOString().slice(0, 10);
       const a = document.createElement("a");
@@ -907,7 +922,7 @@ export function ManualGridTable({
           )}
           data-dragging={isDragging || undefined}
         >
-          <div ref={captureRef} className={cn(isExporting && "p-3 bg-background")}>
+          <div ref={captureRef} className={cn(isExporting && "p-3 bg-background w-max")}>
           <table
             className="border-separate"
             style={{
