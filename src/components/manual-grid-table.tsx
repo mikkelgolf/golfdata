@@ -372,6 +372,11 @@ function SortableCell({
         >
           {slot.team}
         </span>
+        {team?.isAutoQualifier && (
+          <span className="ml-1 inline-flex items-center rounded-sm border border-emerald-500/40 bg-emerald-500/15 px-1 text-[8px] font-semibold leading-none text-emerald-300 shrink-0">
+            AQ
+          </span>
+        )}
         <span className="ml-auto pl-1 font-mono tabular-nums text-[8px] text-muted-foreground shrink-0">
           {team?.rank ?? ""}
         </span>
