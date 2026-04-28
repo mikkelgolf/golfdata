@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { ChampionshipAssignment } from "@/lib/championships";
@@ -95,6 +95,28 @@ export default function ChampionshipsMap({
     const t = setTimeout(() => setLoaded(true), 60);
     return () => clearTimeout(t);
   }, []);
+
+  // ---------------------------------------------------------------------------
+  // Desktop info-card placement
+  //
+  // Default: anchor the card on whichever side of the SVG is *opposite* the
+  // highlighted dots. The centroid of (venue x + active teams x) decides side
+  // — east-of-center clusters get a left-anchored card so they aren't covered.
+  //
+  // Override: the user can drag the card by its title bar to any pixel offset
+  // within the map container. A pixel position in `userDialogPos` wins over
+  // the auto side. Selecting a different championship resets the override.
+  // ---------------------------------------------------------------------------
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const [userDialogPos, setUserDialogPos] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [dragOffset, setDragOffset] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   // Filter out championships with TBD coordinates (lat=0,lng=0) — they
   // appear in chronological/byChampionship views but not on the map.
@@ -197,9 +219,97 @@ export default function ChampionshipsMap({
     [activeChampionshipData, gender]
   );
 
+  // Auto-side for the desktop info card. We average the x positions of the
+  // venue and every team travelling to it; if the centroid is east of the
+  // SVG midline, the card moves to the left so it doesn't cover the cluster.
+  const autoDialogSide: "left" | "right" = useMemo(() => {
+    if (!activeChampionshipData || activeChampionshipTbd) return "right";
+    const xs: number[] = [];
+    const venuePos = projectPoint(
+      activeChampionshipData.lat,
+      activeChampionshipData.lng
+    );
+    if (venuePos) xs.push(venuePos.x);
+    for (const t of activeTeams) {
+      if (t.lat === 0 && t.lng === 0) continue;
+      const p = projectPoint(t.lat, t.lng);
+      if (p) xs.push(p.x);
+    }
+    if (xs.length === 0) return "right";
+    const avgX = xs.reduce((s, x) => s + x, 0) / xs.length;
+    return avgX > SVG_WIDTH / 2 ? "left" : "right";
+  }, [activeChampionshipData, activeChampionshipTbd, activeTeams]);
+
+  // Drop the user's manual placement whenever the active championship changes
+  // — auto-side should take over for the new selection.
+  useEffect(() => {
+    setUserDialogPos(null);
+  }, [activeChampionship]);
+
+  // Pointer-drag the desktop info card. The handle is the title block; the
+  // table and "Clear selection" button stay non-draggable so scrolling and
+  // clicks still work.
+  const handleDialogPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.button !== 0) return;
+      const container = mapContainerRef.current;
+      const dialog = dialogRef.current;
+      if (!container || !dialog) return;
+      const containerRect = container.getBoundingClientRect();
+      const dialogRect = dialog.getBoundingClientRect();
+      // Pin the dialog to its current pixel position so flipping into "user"
+      // mode doesn't make it jump.
+      setUserDialogPos({
+        x: dialogRect.left - containerRect.left,
+        y: dialogRect.top - containerRect.top,
+      });
+      setDragOffset({
+        x: e.clientX - dialogRect.left,
+        y: e.clientY - dialogRect.top,
+      });
+      e.currentTarget.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    },
+    []
+  );
+
+  const handleDialogPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!dragOffset) return;
+      const container = mapContainerRef.current;
+      const dialog = dialogRef.current;
+      if (!container || !dialog) return;
+      const containerRect = container.getBoundingClientRect();
+      const dialogRect = dialog.getBoundingClientRect();
+      const rawX = e.clientX - containerRect.left - dragOffset.x;
+      const rawY = e.clientY - containerRect.top - dragOffset.y;
+      // Clamp to the visible map area so the card can't escape the container.
+      const maxX = Math.max(0, containerRect.width - dialogRect.width);
+      const maxY = Math.max(0, containerRect.height - dialogRect.height);
+      setUserDialogPos({
+        x: Math.min(maxX, Math.max(0, rawX)),
+        y: Math.min(maxY, Math.max(0, rawY)),
+      });
+    },
+    [dragOffset]
+  );
+
+  const handleDialogPointerUp = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      setDragOffset(null);
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    },
+    []
+  );
+
   return (
     <div className="space-y-4">
-      <div className="relative rounded-lg border border-border bg-card overflow-hidden">
+      <div
+        ref={mapContainerRef}
+        className="relative rounded-lg border border-border bg-card overflow-hidden"
+      >
         <svg
           viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
           className="w-full h-auto"
@@ -440,32 +550,66 @@ export default function ChampionshipsMap({
           })}
         </svg>
 
-        {/* Desktop info overlay */}
+        {/* Desktop info overlay — auto-anchors to the side opposite the
+            highlighted dots, and is draggable by its title bar. */}
         {activeChampionshipData && (
           <div
-            className="hidden sm:block absolute top-3 right-3 rounded-md bg-background/85 backdrop-blur-xl backdrop-saturate-150 p-3 max-w-[320px] shadow-overlay"
+            ref={dialogRef}
+            className={cn(
+              "hidden sm:block absolute rounded-md bg-background/85 backdrop-blur-xl backdrop-saturate-150 p-3 max-w-[320px] shadow-overlay",
+              !userDialogPos && "top-3",
+              !userDialogPos &&
+                (autoDialogSide === "left" ? "left-3" : "right-3")
+            )}
             role="status"
             aria-live="polite"
             aria-label={`${activeChampionshipData.name} details`}
-            style={{ borderLeft: `3px solid ${activeChampionshipData.color}` }}
+            style={{
+              borderLeft: `3px solid ${activeChampionshipData.color}`,
+              ...(userDialogPos
+                ? {
+                    left: userDialogPos.x,
+                    top: userDialogPos.y,
+                    right: "auto",
+                  }
+                : {}),
+              ...(dragOffset ? { userSelect: "none" } : {}),
+            }}
           >
-            <p className="font-semibold text-[13px] text-foreground">
-              {activeChampionshipData.name}
-            </p>
-            <p className="text-[11px] text-muted-foreground">
-              {activeChampionshipData.courseName}
-            </p>
-            {!activeChampionshipTbd && (
-              <p className="text-[11px] text-muted-foreground">
-                {activeChampionshipData.city}
-              </p>
-            )}
-            <p className="text-[11px] text-muted-foreground mt-1 font-mono">
-              {formatDateRange(
-                activeChampionshipData.startDate,
-                activeChampionshipData.endDate
+            <div
+              onPointerDown={handleDialogPointerDown}
+              onPointerMove={handleDialogPointerMove}
+              onPointerUp={handleDialogPointerUp}
+              onPointerCancel={handleDialogPointerUp}
+              className={cn(
+                "select-none touch-none -m-1 px-1 pt-1 pb-1 rounded",
+                dragOffset ? "cursor-grabbing" : "cursor-grab"
               )}
-            </p>
+              role="presentation"
+              title="Drag to reposition"
+            >
+              <div
+                className="mx-auto mb-1.5 h-1 w-10 rounded-full bg-border-medium"
+                aria-hidden="true"
+              />
+              <p className="font-semibold text-[13px] text-foreground">
+                {activeChampionshipData.name}
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                {activeChampionshipData.courseName}
+              </p>
+              {!activeChampionshipTbd && (
+                <p className="text-[11px] text-muted-foreground">
+                  {activeChampionshipData.city}
+                </p>
+              )}
+              <p className="text-[11px] text-muted-foreground mt-1 font-mono">
+                {formatDateRange(
+                  activeChampionshipData.startDate,
+                  activeChampionshipData.endDate
+                )}
+              </p>
+            </div>
             {(activeConferenceResult?.strokeplayUrl ||
               activeConferenceResult?.matchplayUrl) && (
               <div className="mt-2">
