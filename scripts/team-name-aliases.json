@@ -1,0 +1,25 @@
+{
+  "_comment": "Source-of-truth for normalising team names that appear in David's private Google Sheets (and any other external feed) to the canonical names used in src/data/regionals-history.json + rankings + all-teams. Keys are sheet-side variants, values are canonical site names. Read by scripts/build-regional-history.py at ingest time. Add new aliases here as variants surface; the Python script will print a WARN line for any sheet team name that doesn't resolve to a name already present in regionals-history.json.",
+  "men": {
+    "East Tennessee State": "ETSU",
+    "Central Florida": "UCF",
+    "Memphis State": "Memphis",
+    "North Texas State": "North Texas",
+    "Lamar Tech": "Lamar",
+    "Augusta State": "Augusta",
+    "Detroit": "Detroit Mercy",
+    "Kent": "Kent State",
+    "West Point": "Army",
+    "Louisiana-LaFayette": "Louisiana-Lafayette",
+    "Brigham Young": "BYU"
+  },
+  "women": {
+    "CSU Northridge": "CSU - Northridge",
+    "CSU Fullerton": "CSU - Fullerton",
+    "Cal State Northridge": "CSU - Northridge",
+    "Cal State Fullerton": "CSU - Fullerton",
+    "UCF": "Central Florida",
+    "East Tennessee State": "ETSU",
+    "Brigham Young": "BYU"
+  }
+}

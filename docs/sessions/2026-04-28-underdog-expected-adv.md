@@ -150,15 +150,54 @@ NCAA championships history.
 - Sample matches confirmed earlier in conversation: Auburn men
   17 → 26 ✅, Texas men 25 → 32 ✅, etc.
 
-## Still pending (Commit C — separate)
+## Commit C — Team-name aliases (2026-04-28)
 
-Task #1 from David's follow-up: team-name flexibility on sheet ingest.
-- Add `scripts/team-name-aliases.json` (shared file).
-- Extend Python script to load + apply it.
-- Audit + populate known aliases (BYU↔Brigham Young, Central Florida↔UCF
-  on the women's side, CSU - Fullerton variants, etc).
-- Deliver list of remaining unmatched teams (~17 men + ~18 women last
-  count) so David can decide canonical names.
+Refactored canonical maps out of the Python script into a shared JSON
+file so they can be edited without touching code, and so a future
+ingest from a different feed can reuse the same aliases.
+
+### Changes
+
+- **New** `scripts/team-name-aliases.json` — keyed by gender, maps
+  raw sheet variants to canonical site names. Includes:
+  - Existing men's aliases (East Tennessee State→ETSU, Central
+    Florida→UCF, Memphis State→Memphis, North Texas State→North Texas,
+    Lamar Tech→Lamar, Augusta State→Augusta, Detroit→Detroit Mercy,
+    Kent→Kent State, West Point→Army, Louisiana-LaFayette→Louisiana-
+    Lafayette).
+  - Existing women's aliases (CSU Northridge→CSU - Northridge, CSU
+    Fullerton→CSU - Fullerton, UCF→Central Florida, East Tennessee
+    State→ETSU).
+  - **New** defensive aliases: Brigham Young→BYU (both genders),
+    "Cal State Northridge/Fullerton" variants → CSU - Northridge/
+    Fullerton (women).
+- **Updated** `scripts/build-regional-history.py` — loads the JSON at
+  startup instead of holding the maps inline. Behaviour is otherwise
+  identical (same WARN line for unmatched sheet names).
+
+### Audit (2026-04-28, against current `src/data/regionals-rich.json`)
+
+After applying the existing aliases, the rich JSON contains:
+- **Women: 0 unmatched teams** — every team name resolves to a name
+  present in `regionals-history.json`.
+- **Men: 2 unmatched teams**, both real teams just missing from
+  `regionals-history.json` for the year in question (NOT alias
+  problems):
+  - **George Mason**, 1996 East Regional, position "DNF". Team is
+    in current rankings (A-10) and `all-teams-men-2026`. The 1996
+    appearance simply isn't in `regionals-history.json` — likely a
+    historical-data gap on that side, not a sheet name issue.
+  - **Dartmouth**, 2000 East Regional, position "DNF". In current
+    rankings (Ivy) and `all-teams-men-2026`. Same story — gap in
+    `regionals-history.json` for that year.
+
+Both rows are kept in `regionals-rich.json` and gracefully no-op in
+the Regionals History table (the table iterates `regionals-history.json`,
+which has no rows for them, so they don't show up — but the rich data
+is available if/when those years get backfilled into the canonical
+history).
+
+No further alias additions needed at this time.
 
 ## Progress log
 
@@ -167,3 +206,6 @@ Task #1 from David's follow-up: team-name flexibility on sheet ingest.
   shipped; typecheck clean; ready for review
 - 2026-04-28: Commit B — Regionals History NAT accuracy + table cleanup
   (column rename + center alignment + widened header). Typecheck clean.
+- 2026-04-28: Commit C — extracted team-name aliases to
+  `scripts/team-name-aliases.json`; ran audit (0 women + 2 men
+  unmatched, both real-team gaps not alias issues); reported to David.

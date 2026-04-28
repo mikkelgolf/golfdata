@@ -31,31 +31,27 @@ from google_sheets import read_tab  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_PATH = REPO_ROOT / "src" / "data" / "regionals-rich.json"
 
-# Known sheet-variant -> canonical-site-name used in regionals-history.json
-# and rankings. Mirrors the map in scripts/build-championships-history.ts but
-# kept local so this script has no TS build dependency.
-MEN_CANONICAL: dict[str, str] = {
-    "East Tennessee State": "ETSU",
-    "Central Florida": "UCF",
-    "Memphis State": "Memphis",
-    "North Texas State": "North Texas",
-    "Lamar Tech": "Lamar",
-    "Augusta State": "Augusta",
-    "Detroit": "Detroit Mercy",
-    "Kent": "Kent State",
-    "West Point": "Army",
-    "Louisiana-LaFayette": "Louisiana-Lafayette",
-}
+# Sheet-variant -> canonical-site-name aliases live in a shared JSON file so
+# they can be edited without touching code (and so a future ingest from a
+# different feed can reuse the same map). The file is keyed by gender; each
+# value maps a raw sheet name to the canonical name used in
+# regionals-history.json + rankings + all-teams. Add new aliases there as
+# they surface; this script prints a WARN line for every sheet team that
+# doesn't resolve to a known canonical name.
+ALIASES_PATH = REPO_ROOT / "scripts" / "team-name-aliases.json"
 
-# Women's canonical map. regionals-history.json uses "CSU - Northridge",
-# "CSU - Fullerton", and "Central Florida" for women (unlike the men's set,
-# which standardised on "UCF"). Normalise every sheet variant to that form.
-WOMEN_CANONICAL: dict[str, str] = {
-    "CSU Northridge": "CSU - Northridge",
-    "CSU Fullerton": "CSU - Fullerton",
-    "UCF": "Central Florida",
-    "East Tennessee State": "ETSU",
-}
+
+def _load_aliases() -> tuple[dict[str, str], dict[str, str]]:
+    raw = json.loads(ALIASES_PATH.read_text())
+    # Strip leading-underscore keys (used for inline schema/comment docs in
+    # the JSON file — not real gender entries).
+    return (
+        {k: v for k, v in raw.get("men", {}).items()},
+        {k: v for k, v in raw.get("women", {}).items()},
+    )
+
+
+MEN_CANONICAL, WOMEN_CANONICAL = _load_aliases()
 
 # Sheet column indices are resolved by header name at read time, so additions
 # to the sheet don't break us. Kept here as documentation.
