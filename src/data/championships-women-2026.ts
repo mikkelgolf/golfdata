@@ -508,6 +508,7 @@ export const championshipsWomen2026: Championship[] = [
     color: "#5a7a98",
     notes: "Second consecutive year at Longbow.",
     sourceUrl: "https://thesummitleague.org/tournaments/?id=280",
+    winner: "South Dakota State",
   },
   {
     id: 27,
