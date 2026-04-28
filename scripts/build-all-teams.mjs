@@ -341,6 +341,11 @@ const MANUAL_OVERRIDES = {
   "Dayton": { lat: 39.7404, lng: -84.1827 },                    // Dayton, OH
   "Duquesne": { lat: 40.4359, lng: -79.9930 },                  // Pittsburgh, PA
   "Saint Josephs": { lat: 40.0072, lng: -75.2451 },             // Philadelphia, PA
+  // ---- Supabase cache lists wrong city for these two MVC schools, so the
+  // ---- city-centroid fallback was geocoding to the wrong town. Pin to
+  // ---- campus coords so the daily refresh stops drifting them.
+  "Belmont": { lat: 36.1326, lng: -86.7954 },                   // Nashville, TN  (Supabase had "Sioux Falls, SD")
+  "Murray State": { lat: 36.6196, lng: -88.3174 },              // Murray, KY     (Supabase had "Louisville, KY")
 };
 
 // ---------------------------------------------------------------------------
