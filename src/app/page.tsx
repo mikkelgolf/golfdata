@@ -85,8 +85,11 @@ export default function Home() {
           <h1 className="text-[15px] sm:text-lg font-semibold text-foreground leading-tight tracking-tight">
             NCAA D1 Regional Predictions
           </h1>
-          <p className="hidden sm:block text-[12px] text-text-tertiary">
-            Based on the official NCAA rankings &middot; Rankings from:{" "}
+          {/* Visible on both desktop and mobile — single source-of-truth
+              date display for the page. Will likely evolve into a snapshot
+              picker (dropdown / date GUI) once historical rankings land. */}
+          <p className="text-[12px] text-text-tertiary">
+            Official NCAA rankings from:{" "}
             {/* Suspense lets Next prerender the page statically — fallback
                 shows men's date (the default gender) until the client reads
                 ?gender= and hydrates with the right one. */}
@@ -111,8 +114,6 @@ export default function Home() {
           womenChampionships={championshipsWomen2026}
           menActual={actualMen2026}
           womenActual={actualWomen2026}
-          lastUpdatedMen={LAST_UPDATED_MEN}
-          lastUpdatedWomen={LAST_UPDATED_WOMEN}
         />
       </Suspense>
     </div>

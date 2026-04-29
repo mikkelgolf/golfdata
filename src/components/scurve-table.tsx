@@ -61,10 +61,6 @@ interface ScurveTableProps {
   menActual?: ActualSelection[];
   /** Empty until the women's selection committee announces its field. */
   womenActual?: ActualSelection[];
-  /** Pre-formatted (e.g. "Apr 29, 26") date of the men's active rankings snapshot. */
-  lastUpdatedMen: string;
-  /** Pre-formatted (e.g. "Apr 28, 26") date of the women's active rankings snapshot. */
-  lastUpdatedWomen: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -274,8 +270,6 @@ export default function ScurveTable({
   womenChampionships,
   menActual,
   womenActual,
-  lastUpdatedMen,
-  lastUpdatedWomen,
 }: ScurveTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -314,13 +308,6 @@ export default function ScurveTable({
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("seed");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
-
-  // Date label that follows the gender toggle: men sees the men's active
-  // snapshot date, women sees the women's. Today they often differ — women
-  // is pinned to a frozen-for-regionals date while men keeps tracking the
-  // latest pull. Future historical-snapshot picker will replace these props
-  // with whichever snapshot the user selects per gender.
-  const activeLastUpdated = gender === "men" ? lastUpdatedMen : lastUpdatedWomen;
 
   // useTransition lets the old view stay on screen at reduced opacity
   // while React computes the new one — no flash, no skeleton on swap.
@@ -511,7 +498,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={0}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -562,7 +548,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -616,7 +601,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -653,7 +637,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -689,7 +672,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -720,7 +702,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -761,7 +742,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -801,7 +781,6 @@ export default function ScurveTable({
         scurveMode={scurveMode}
         search={search}
         resultCount={filtered.length}
-        lastUpdated={activeLastUpdated}
         onViewChange={handleViewChange}
         onGenderChange={handleGenderChange}
         onModeChange={handleModeChange}
@@ -1004,7 +983,6 @@ function FilterBar({
   scurveMode,
   search,
   resultCount,
-  lastUpdated,
   onViewChange,
   onGenderChange,
   onModeChange,
@@ -1016,7 +994,6 @@ function FilterBar({
   scurveMode: ScurveMode;
   search: string;
   resultCount: number;
-  lastUpdated: string;
   onViewChange: (v: ViewMode) => void;
   onGenderChange: (g: Gender) => void;
   onModeChange: (m: ScurveMode) => void;
@@ -1082,12 +1059,11 @@ function FilterBar({
           onChange={(g) => onGenderChange(g as Gender)}
         />
 
-        {/* Result count + last updated */}
+        {/* Result count — date label lives in the page header now */}
         <div className="ml-auto flex items-center gap-3 text-[12px] text-muted-foreground">
           <span className="tabular-nums">
             <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
-          <span className="text-text-tertiary">Rankings from: {lastUpdated}</span>
         </div>
       </div>
 
@@ -1123,11 +1099,10 @@ function FilterBar({
             onChange={(m) => onModeChange(m as ScurveMode)}
           />
         </div>
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+        <div className="flex items-center text-[11px] text-muted-foreground">
           <span className="tabular-nums">
             <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
-          <span className="text-text-tertiary">Rankings from: {lastUpdated}</span>
         </div>
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
