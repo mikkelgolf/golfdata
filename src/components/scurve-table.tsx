@@ -46,7 +46,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "projections";
+type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "advancement";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -270,7 +270,9 @@ export default function ScurveTable({
   const searchParams = useSearchParams();
 
   // URL-persisted state
-  const initialView = (searchParams.get("view") as ViewMode) || "map";
+  const rawView = searchParams.get("view");
+  const initialView: ViewMode =
+    rawView === "projections" ? "advancement" : ((rawView as ViewMode) || "map");
   const initialGender = (searchParams.get("gender") as Gender) || "men";
   const initialMode = (searchParams.get("mode") as ScurveMode) || "committee";
 
@@ -607,8 +609,8 @@ export default function ScurveTable({
     );
   }
 
-  // Projections — historical-pattern advancement probabilities per regional
-  if (viewMode === "projections") {
+  // Advancement Model — historical-pattern advancement probabilities per regional
+  if (viewMode === "advancement") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
     // Strength-order the regionals to match the rest of the page.
     const orderedRegionals = [...activeRegionals].sort(
@@ -980,7 +982,7 @@ function FilterBar({
             { value: "visual", label: "Visual" },
             { value: "breakdown", label: "Breakdown" },
             { value: "manual", label: "Manual Grid" },
-            { value: "projections", label: "Projections" },
+            { value: "advancement", label: "Advancement Model" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -1034,7 +1036,7 @@ function FilterBar({
               { value: "visual", label: "Vis" },
               { value: "breakdown", label: "Brk" },
               { value: "manual", label: "Manual" },
-              { value: "projections", label: "Proj" },
+              { value: "advancement", label: "Adv. Model" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
