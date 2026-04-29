@@ -528,44 +528,42 @@ export function ManualGridTable({
     setInternal((prev) => {
       let next: InternalState | null = null;
       if (activeIsHeader) {
-        // Reorder regionalIds. Other cells stay put — but the moved
-        // regional's host team follows the header so it stays under "its"
-        // column (the host doesn't travel).
+        // Reorder the headers; hosts must stay anchored to their site,
+        // but non-host teams stay in place. After the reorder, walk
+        // every regional and ensure its host sits under it. If a host
+        // has been displaced because a different regional now occupies
+        // its old column, swap it back into its regional's column
+        // (within the host's current row). This applies to BOTH the
+        // dragged regional's host AND every regional that got pushed
+        // sideways by the arrayMove.
         const headerIds = prev.regionalIds.map((id) => `header:${id}`);
         const fromIdx = headerIds.indexOf(activeId);
         const toIdx = headerIds.indexOf(overId);
         if (fromIdx === -1 || toIdx === -1) return prev;
         const newRegionalIds = arrayMove(prev.regionalIds, fromIdx, toIdx);
-
-        const movedRegionalId = prev.regionalIds[fromIdx];
-        const movedRegional = regionals.find((r) => r.id === movedRegionalId);
-        const hostTeam = movedRegional?.host;
-
-        let newSlots = prev.slots;
-        if (hostTeam) {
-          // Locate the host team in the current grid (if it's there).
+        const newSlots = prev.slots.map((row) => row.slice());
+        for (let targetCol = 0; targetCol < newRegionalIds.length; targetCol++) {
+          const regional = regionalMap.get(newRegionalIds[targetCol]);
+          if (!regional) continue;
+          const host = regional.host;
+          // Locate the host on the (possibly already partially updated)
+          // grid. If it isn't on the grid, leave the column alone.
           let hostRow = -1;
           let hostCol = -1;
-          outer: for (let r = 0; r < prev.slots.length; r++) {
-            for (let c = 0; c < prev.slots[r].length; c++) {
-              if (prev.slots[r][c].team === hostTeam) {
+          outer: for (let r = 0; r < newSlots.length; r++) {
+            for (let c = 0; c < newSlots[r].length; c++) {
+              if (newSlots[r][c].team === host) {
                 hostRow = r;
                 hostCol = c;
                 break outer;
               }
             }
           }
-          // Swap (hostRow, hostCol) with (hostRow, toIdx) so the host
-          // ends up under the regional's new column. Skip if the host is
-          // already there or not on the grid.
-          if (hostRow !== -1 && hostCol !== toIdx) {
-            newSlots = prev.slots.map((row) => row.slice());
-            const tmp = newSlots[hostRow][hostCol];
-            newSlots[hostRow][hostCol] = newSlots[hostRow][toIdx];
-            newSlots[hostRow][toIdx] = tmp;
-          }
+          if (hostRow === -1 || hostCol === targetCol) continue;
+          const tmp = newSlots[hostRow][hostCol];
+          newSlots[hostRow][hostCol] = newSlots[hostRow][targetCol];
+          newSlots[hostRow][targetCol] = tmp;
         }
-
         next = { regionalIds: newRegionalIds, slots: newSlots };
       } else {
         // Cell move — operate on the linearised array
@@ -598,7 +596,7 @@ export function ManualGridTable({
       }
       return next ?? prev;
     });
-  }, [regionals]);
+  }, [regionalMap]);
 
   // Undo the most recent change (one step back).
   const handleResetLast = useCallback(() => {
