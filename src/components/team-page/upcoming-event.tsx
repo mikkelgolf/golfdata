@@ -129,7 +129,14 @@ export default function UpcomingEvent({
             )}
           </div>
           <div className="mt-0.5 text-[11px] text-text-tertiary">
-            {championship.courseName} · {championship.city}
+            {championship.courseName} ·{" "}
+            {/*
+              Some `championship.city` values already carry a trailing
+              ", XX" state code (e.g. "Panama City Beach, FL"). Strip
+              any such suffix before re-appending `state` so the output
+              is always "City, XX" instead of "City, XX, XX".
+            */}
+            {championship.city.replace(/,\s*[A-Z]{2}$/, "")}
             {championship.state ? `, ${championship.state}` : ""}
             <span className="mx-1">·</span>
             <span className="font-mono tabular-nums">

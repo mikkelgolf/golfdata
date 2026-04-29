@@ -380,7 +380,7 @@
 {
 "year":1989,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -646,7 +646,7 @@
 {
 "year":1989,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -1220,7 +1220,7 @@
 {
 "year":1990,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -1514,7 +1514,7 @@
 {
 "year":1990,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -2326,7 +2326,7 @@
 {
 "year":1991,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -2830,7 +2830,7 @@
 {
 "year":1992,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -3180,7 +3180,7 @@
 {
 "year":1992,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -3964,7 +3964,7 @@
 {
 "year":1993,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -4538,7 +4538,7 @@
 {
 "year":1994,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -4944,7 +4944,7 @@
 {
 "year":1994,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -5434,7 +5434,7 @@
 {
 "year":1995,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -5840,7 +5840,7 @@
 {
 "year":1995,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -6274,7 +6274,7 @@
 {
 "year":1996,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -6722,7 +6722,7 @@
 {
 "year":1996,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -7184,7 +7184,7 @@
 {
 "year":1997,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -7506,7 +7506,7 @@
 {
 "year":1997,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -8052,7 +8052,7 @@
 {
 "year":1998,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -8402,7 +8402,7 @@
 {
 "year":1998,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -8850,7 +8850,7 @@
 {
 "year":1999,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -9144,7 +9144,7 @@
 {
 "year":1999,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -9788,7 +9788,7 @@
 {
 "year":2000,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -10138,7 +10138,7 @@
 {
 "year":2000,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -10880,7 +10880,7 @@
 {
 "year":2001,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -11510,7 +11510,7 @@
 {
 "year":2001,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -12672,7 +12672,7 @@
 {
 "year":2002,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":22,
 "expectedAdv":false,
@@ -13302,7 +13302,7 @@
 {
 "year":2003,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":12,
 "expectedAdv":false,
@@ -13792,7 +13792,7 @@
 {
 "year":2003,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":14,
 "expectedAdv":false,
@@ -14716,7 +14716,7 @@
 {
 "year":2004,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":5,
 "expectedAdv":true,
@@ -15584,7 +15584,7 @@
 {
 "year":2005,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":12,
 "expectedAdv":false,
@@ -15864,7 +15864,7 @@
 {
 "year":2005,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":7,
 "expectedAdv":true,
@@ -16998,7 +16998,7 @@
 {
 "year":2006,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":3,
 "expectedAdv":true,
@@ -17026,7 +17026,7 @@
 {
 "year":2006,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"West",
 "seed":4,
 "expectedAdv":true,
@@ -18174,7 +18174,7 @@
 {
 "year":2007,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"West",
 "seed":5,
 "expectedAdv":true,
@@ -18216,7 +18216,7 @@
 {
 "year":2007,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":6,
 "expectedAdv":true,
@@ -18916,7 +18916,7 @@
 {
 "year":2008,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":7,
 "expectedAdv":true,
@@ -19714,7 +19714,7 @@
 {
 "year":2009,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Central",
 "seed":6,
 "expectedAdv":false,
@@ -20988,7 +20988,7 @@
 {
 "year":2010,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":6,
 "expectedAdv":false,
@@ -21366,7 +21366,7 @@
 {
 "year":2010,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Southeast",
 "seed":9,
 "expectedAdv":false,
@@ -24768,7 +24768,7 @@
 {
 "year":2013,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Pullman",
 "seed":6,
 "expectedAdv":false,
@@ -24936,7 +24936,7 @@
 {
 "year":2013,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Tallahassee",
 "seed":11,
 "expectedAdv":false,
@@ -25328,7 +25328,7 @@
 {
 "year":2014,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Auburn",
 "seed":6,
 "expectedAdv":false,
@@ -25734,7 +25734,7 @@
 {
 "year":2014,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Eugene",
 "seed":10,
 "expectedAdv":false,
@@ -26126,7 +26126,7 @@
 {
 "year":2014,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"San Antonio",
 "seed":5,
 "expectedAdv":true,
@@ -26938,7 +26938,7 @@
 {
 "year":2015,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"New Haven",
 "seed":3,
 "expectedAdv":true,
@@ -27414,7 +27414,7 @@
 {
 "year":2015,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"San Diego",
 "seed":7,
 "expectedAdv":false,
@@ -27554,7 +27554,7 @@
 {
 "year":2016,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Albuquerque",
 "seed":3,
 "expectedAdv":true,
@@ -27974,7 +27974,7 @@
 {
 "year":2016,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Kohler",
 "seed":10,
 "expectedAdv":false,
@@ -28982,7 +28982,7 @@
 {
 "year":2017,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Baton Rouge",
 "seed":9,
 "expectedAdv":false,
@@ -29192,7 +29192,7 @@
 {
 "year":2017,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"College Grove",
 "seed":12,
 "expectedAdv":false,
@@ -29318,7 +29318,7 @@
 {
 "year":2017,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Stanford",
 "seed":8,
 "expectedAdv":false,
@@ -30242,7 +30242,7 @@
 {
 "year":2018,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Kissimmee",
 "seed":4,
 "expectedAdv":true,
@@ -30354,7 +30354,7 @@
 {
 "year":2018,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Norman",
 "seed":7,
 "expectedAdv":false,
@@ -31684,7 +31684,7 @@
 {
 "year":2019,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Pullman",
 "seed":6,
 "expectedAdv":false,
@@ -31978,7 +31978,7 @@
 {
 "year":2019,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Stanford",
 "seed":6,
 "expectedAdv":false,
@@ -32244,7 +32244,7 @@
 {
 "year":2021,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Cle Elum",
 "seed":8,
 "expectedAdv":false,
@@ -32720,7 +32720,7 @@
 {
 "year":2021,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Noblesville",
 "seed":6,
 "expectedAdv":false,
@@ -33406,7 +33406,7 @@
 {
 "year":2022,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Columbus",
 "seed":5,
 "expectedAdv":true,
@@ -33952,7 +33952,7 @@
 {
 "year":2022,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Palm Beach",
 "seed":7,
 "expectedAdv":false,
@@ -34134,7 +34134,7 @@
 {
 "year":2022,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Stockton",
 "seed":8,
 "expectedAdv":false,
@@ -34722,7 +34722,7 @@
 {
 "year":2023,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Las Vegas",
 "seed":6,
 "expectedAdv":false,
@@ -34876,7 +34876,7 @@
 {
 "year":2023,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Morgan Hill",
 "seed":8,
 "expectedAdv":false,
@@ -35226,7 +35226,7 @@
 {
 "year":2023,
 "gender":"men",
-"team":"Pine Bluff",
+"team":"Arkansas-Pine Bluff",
 "regional":"Norman",
 "seed":14,
 "expectedAdv":false,
@@ -35506,7 +35506,7 @@
 {
 "year":2024,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Austin",
 "seed":8,
 "expectedAdv":false,
@@ -35828,7 +35828,7 @@
 {
 "year":2024,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Chapel Hill",
 "seed":4,
 "expectedAdv":true,
@@ -36108,7 +36108,7 @@
 {
 "year":2024,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Rancho Santa Fe",
 "seed":8,
 "expectedAdv":false,
@@ -36976,7 +36976,7 @@
 {
 "year":2025,
 "gender":"men",
-"team":"South Florida",
+"team":"USF",
 "regional":"Bremerton",
 "seed":5,
 "expectedAdv":true,
@@ -37130,7 +37130,7 @@
 {
 "year":2025,
 "gender":"men",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Reno",
 "seed":6,
 "expectedAdv":false,
@@ -37242,7 +37242,7 @@
 {
 "year":2025,
 "gender":"men",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Reno",
 "seed":12,
 "expectedAdv":false,
@@ -37872,7 +37872,7 @@
 {
 "year":1993,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -38096,7 +38096,7 @@
 {
 "year":1993,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -38362,7 +38362,7 @@
 {
 "year":1994,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -38642,7 +38642,7 @@
 {
 "year":1994,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -38894,7 +38894,7 @@
 {
 "year":1995,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -39244,7 +39244,7 @@
 {
 "year":1995,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -39734,7 +39734,7 @@
 {
 "year":1996,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -40308,7 +40308,7 @@
 {
 "year":1997,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -40910,7 +40910,7 @@
 {
 "year":1998,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":null,
 "expectedAdv":null,
@@ -41092,7 +41092,7 @@
 {
 "year":1999,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":null,
 "expectedAdv":null,
@@ -41624,7 +41624,7 @@
 {
 "year":2000,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":21,
 "expectedAdv":false,
@@ -42072,7 +42072,7 @@
 {
 "year":2000,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":23,
 "expectedAdv":false,
@@ -42478,7 +42478,7 @@
 {
 "year":2001,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":9,
 "expectedAdv":false,
@@ -42968,7 +42968,7 @@
 {
 "year":2001,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":18,
 "expectedAdv":false,
@@ -43374,7 +43374,7 @@
 {
 "year":2002,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":18,
 "expectedAdv":false,
@@ -43822,7 +43822,7 @@
 {
 "year":2002,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":16,
 "expectedAdv":false,
@@ -44466,7 +44466,7 @@
 {
 "year":2003,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":11,
 "expectedAdv":false,
@@ -45544,7 +45544,7 @@
 {
 "year":2004,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":15,
 "expectedAdv":false,
@@ -45936,7 +45936,7 @@
 {
 "year":2005,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"Central",
 "seed":18,
 "expectedAdv":false,
@@ -46328,7 +46328,7 @@
 {
 "year":2005,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":14,
 "expectedAdv":false,
@@ -47266,7 +47266,7 @@
 {
 "year":2006,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":11,
 "expectedAdv":false,
@@ -47952,7 +47952,7 @@
 {
 "year":2007,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"East",
 "seed":14,
 "expectedAdv":false,
@@ -48078,7 +48078,7 @@
 {
 "year":2007,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":5,
 "expectedAdv":true,
@@ -48512,7 +48512,7 @@
 {
 "year":2008,
 "gender":"women",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Central",
 "seed":14,
 "expectedAdv":false,
@@ -49128,7 +49128,7 @@
 {
 "year":2008,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":9,
 "expectedAdv":false,
@@ -50612,7 +50612,7 @@
 {
 "year":2010,
 "gender":"women",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":17,
 "expectedAdv":false,
@@ -51914,7 +51914,7 @@
 {
 "year":2011,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"West",
 "seed":17,
 "expectedAdv":false,
@@ -52348,7 +52348,7 @@
 {
 "year":2012,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"Central",
 "seed":16,
 "expectedAdv":false,
@@ -53664,7 +53664,7 @@
 {
 "year":2013,
 "gender":"women",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":20,
 "expectedAdv":false,
@@ -54588,7 +54588,7 @@
 {
 "year":2014,
 "gender":"women",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"East",
 "seed":15,
 "expectedAdv":false,
@@ -56198,7 +56198,7 @@
 {
 "year":2016,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Baton Rouge",
 "seed":10,
 "expectedAdv":false,
@@ -58046,7 +58046,7 @@
 {
 "year":2017,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Lubbock",
 "seed":7,
 "expectedAdv":false,
@@ -58256,7 +58256,7 @@
 {
 "year":2018,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Austin",
 "seed":11,
 "expectedAdv":false,
@@ -60370,7 +60370,7 @@
 {
 "year":2021,
 "gender":"women",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Baton Rouge",
 "seed":16,
 "expectedAdv":false,
@@ -61588,7 +61588,7 @@
 {
 "year":2022,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Franklin",
 "seed":7,
 "expectedAdv":false,
@@ -62442,7 +62442,7 @@
 {
 "year":2023,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"Palm Beach",
 "seed":10,
 "expectedAdv":false,
@@ -63310,7 +63310,7 @@
 {
 "year":2024,
 "gender":"women",
-"team":"ETSU",
+"team":"East Tennessee State",
 "regional":"Auburn",
 "seed":11,
 "expectedAdv":false,
@@ -63450,7 +63450,7 @@
 {
 "year":2024,
 "gender":"women",
-"team":"South Florida",
+"team":"USF",
 "regional":"Bermuda Run",
 "seed":6,
 "expectedAdv":false,
@@ -64290,7 +64290,7 @@
 {
 "year":2025,
 "gender":"women",
-"team":"BYU",
+"team":"Brigham Young",
 "regional":"Charlottesville",
 "seed":9,
 "expectedAdv":false,

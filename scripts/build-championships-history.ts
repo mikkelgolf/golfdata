@@ -25,13 +25,20 @@ const DUMP_DIR = "/tmp/ncaa_sheet_dump";
 const MEN_CSV = `${DUMP_DIR}/MEN_-_NCAA_Final_Results.csv`;
 const WOMEN_CSV = `${DUMP_DIR}/WOMEN_-_NCAA_Final_Results.csv`;
 
-// Known variant -> canonical name used in src/data/regionals-history.json &
-// rankings. Only includes unambiguous cases where the sheet's name refers to
-// the same continuing program under its current nomenclature. Pre-1989
-// programs with no modern analog (e.g. Colby, Amherst, St Ambrose, Tufts)
-// are intentionally left alone — they never reach the team detail page.
+// Known variant -> canonical name used in rankings-{men,women}.ts and
+// all-teams-{men,women}-2026.ts. Keys are sheet-side variants, values are
+// canonical site names. Only includes unambiguous cases where the sheet's
+// name refers to the same continuing program under its current nomenclature.
+// Pre-1989 programs with no modern analog (e.g. Colby, Amherst, St Ambrose,
+// Tufts) are intentionally left alone — they never reach the team detail page.
+//
+// Overlaps with scripts/team-name-aliases.json (used by the regionals ingest).
+// Keep the two in sync when editing — the canonicalize() safety net below
+// will silently no-op a wrong-direction entry, which makes drift hard to spot.
 const MEN_CANONICAL: Record<string, string> = {
-  "East Tennessee State": "ETSU",
+  ETSU: "East Tennessee State",
+  BYU: "Brigham Young",
+  "South Florida": "USF",
   "Central Florida": "UCF",
   "Memphis State": "Memphis",
   "North Texas State": "North Texas",
@@ -43,12 +50,11 @@ const MEN_CANONICAL: Record<string, string> = {
 };
 
 const WOMEN_CANONICAL: Record<string, string> = {
+  ETSU: "East Tennessee State",
+  BYU: "Brigham Young",
+  "South Florida": "USF",
   "North Carolina State": "NC State",
   FIU: "Florida International",
-  "CSU-Fullerton": "CSU - Fullerton",
-  // Women's NCAA sheet uses "UCF"; women's regionals-history uses "Central
-  // Florida". The same program, reverse of the men's mapping.
-  UCF: "Central Florida",
 };
 
 /**
