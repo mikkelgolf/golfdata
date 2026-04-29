@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Plane, ArrowUp, Trophy } from "lucide-react";
+import { Plane, ArrowUp, Trophy, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { SimpleModal } from "@/components/simple-modal";
@@ -88,6 +88,7 @@ export function AdvancementBars({ regionals, gender, hostColorByTeam }: Props) {
         onPick={(team, regional) => setSelected({ team, regional })}
       />
       <Legend />
+      <Methodology />
 
       <SimpleModal
         open={!!selected}
@@ -116,7 +117,7 @@ function Header() {
   return (
     <div className="mb-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
       <h2 className="text-[15px] font-semibold tracking-tight text-foreground">
-        Advancement Model · Bars
+        Advancement Model
       </h2>
       <span className="text-[11px] text-muted-foreground">
         each bar = chance to advance · top {TEAMS_ADVANCING} highlighted · sorted by Final %
@@ -489,6 +490,114 @@ function BuildRow({
       >
         {value.toFixed(1)}%
       </span>
+    </div>
+  );
+}
+
+function Methodology() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-4 rounded-md border border-border bg-card">
+      <button
+        type="button"
+        onClick={() => setOpen((s) => !s)}
+        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[12px] font-medium text-foreground hover:bg-muted/30"
+      >
+        <span className="inline-flex items-center gap-2">
+          <Info className="h-3.5 w-3.5" />
+          How the Advancement Model works
+        </span>
+        <span className="text-[10px] text-text-tertiary">{open ? "hide" : "show"}</span>
+      </button>
+      {open && (
+        <div className="space-y-3 border-t border-border px-3 py-3 text-[12px] leading-relaxed text-text-secondary">
+          <p>
+            Five teams advance from each regional to the NCAA Championship at Omni
+            La Costa. Final % is each team&apos;s estimated chance, built from four
+            things history says actually matter.
+          </p>
+
+          <Section title="1. Seed">
+            <p>
+              The biggest signal by far. Top seeds advance over 90% of the time;
+              5-seeds about half the time; bottom seeds rarely. Every team starts
+              from the historical advancement rate for their seed.
+            </p>
+          </Section>
+
+          <Section title="2. Playing at home">
+            <p>
+              Hosts advance noticeably more than their seed alone would predict.
+              The biggest bump goes to mid-seed hosts (4-7 seeds) - they have the
+              most room to outperform. Top-seed hosts are already favored, so the
+              extra lift is smaller in absolute terms.
+            </p>
+          </Section>
+
+          <Section title="3. Travel distance">
+            <p>
+              Teams within roughly 250 miles of the venue do measurably better.
+              Past that, longer trips hurt slightly and consistently - a
+              coast-to-coast haul is harder than a regional drive.
+            </p>
+          </Section>
+
+          <Section title="4. Climate and grass type">
+            <p>
+              Teams play differently on turf they&apos;re used to. We split college
+              golf into four zones by dominant agronomy: <strong>PNW</strong>{" "}
+              (Pacific Northwest, bent), <strong>West</strong> (California /
+              desert), <strong>South</strong> (warm-season bermuda), and{" "}
+              <strong>North</strong> (cool-season interior, Northeast,
+              Mid-Atlantic). Crossing zones - especially North to South - costs a
+              few percentage points on average.
+            </p>
+          </Section>
+
+          <Section title="Why each regional sums to 500%">
+            <p>
+              Five teams advance, so each regional&apos;s column is calibrated to
+              total exactly 5.000. A clear favorite - say a top seed who&apos;s also
+              the host - gets pinned near 99% rather than dragging the math
+              around; the rest of the probability is spread across the more
+              contested middle of the field.
+            </p>
+          </Section>
+
+          <Section title="Highlighting">
+            <p>
+              The dashed red border wraps the projected top {TEAMS_ADVANCING} - the
+              teams the model expects to advance. The{" "}
+              <ArrowUp className="inline h-3 w-3" /> arrow flags teams seeded
+              outside the top {TEAMS_ADVANCING} but still projected to advance:
+              the model&apos;s upset picks.
+            </p>
+          </Section>
+
+          <Section title="What this can&apos;t tell you">
+            <p>
+              This is a structural model, not a form model. Two teams with the
+              same seed get the same starting point regardless of how they&apos;re
+              actually playing right now. A team in late-season form is probably
+              underrated here; a slumping favorite is probably overrated. For
+              roster strength and current form, look at the head-to-head and
+              rankings tabs.
+            </p>
+          </Section>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1">
+      <h4 className="text-[11px] font-semibold uppercase tracking-wide text-text-tertiary">
+        {title}
+      </h4>
+      <div className="space-y-1">{children}</div>
     </div>
   );
 }
