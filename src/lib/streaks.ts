@@ -7,6 +7,7 @@ import { regionalsHistory } from "@/data/regionals-history";
 import { championshipsHistory } from "@/data/championships-history";
 import { regionalsRich } from "@/data/regionals-rich";
 import { getSeedingWindow } from "@/data/regionals-seeding";
+import { teamMatches } from "@/lib/team-aliases";
 
 export const MOST_RECENT_SEASON = Math.max(
   ...regionalsHistory.map((r) => r.year)
@@ -101,7 +102,7 @@ function streakOver(years: number[]): StreakResult {
 
 function filterRows(team: string, gender: Gender): RegionalFinish[] {
   return regionalsHistory.filter(
-    (r) => r.team === team && r.gender === gender
+    (r) => r.gender === gender && teamMatches(r.team, team, gender)
   );
 }
 
@@ -135,13 +136,16 @@ export function isRegionalWin(position: string): boolean {
 function effectiveAdvancedYears(team: string, gender: Gender): number[] {
   const ncaaYears = new Set(
     championshipsHistory
-      .filter((r) => r.team === team && r.gender === gender)
+      .filter((r) => r.gender === gender && teamMatches(r.team, team, gender))
       .map((r) => r.year)
   );
   const richAdvancedYears = new Set(
     regionalsRich
       .filter(
-        (r) => r.team === team && r.gender === gender && r.teamAdvanced === true
+        (r) =>
+          r.gender === gender &&
+          r.teamAdvanced === true &&
+          teamMatches(r.team, team, gender)
       )
       .map((r) => r.year)
   );
@@ -248,7 +252,7 @@ function filterChampionships(
   gender: Gender
 ): ChampionshipFinish[] {
   return championshipsHistory.filter(
-    (r) => r.team === team && r.gender === gender
+    (r) => r.gender === gender && teamMatches(r.team, team, gender)
   );
 }
 
