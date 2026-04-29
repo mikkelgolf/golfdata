@@ -10,7 +10,7 @@ import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type Scu
 import { ManualGridTable } from "@/components/manual-grid-table";
 import ManualGridMap from "@/components/manual-grid-map";
 import HeadToHeadBrowser from "@/components/head-to-head-browser";
-import { ProjectionsView } from "@/components/projections-view";
+import { AdvancementBars } from "@/components/advancement-bars";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -46,7 +46,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "projections";
+type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "advancement";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -270,7 +270,17 @@ export default function ScurveTable({
   const searchParams = useSearchParams();
 
   // URL-persisted state
-  const initialView = (searchParams.get("view") as ViewMode) || "map";
+  const rawView = searchParams.get("view");
+  const legacyAdvancementViews = new Set([
+    "projections",
+    "advancement-visual",
+    "advancement-bars",
+    "advancement-sankey",
+  ]);
+  const initialView: ViewMode =
+    rawView && legacyAdvancementViews.has(rawView)
+      ? "advancement"
+      : ((rawView as ViewMode) || "map");
   const initialGender = (searchParams.get("gender") as Gender) || "men";
   const initialMode = (searchParams.get("mode") as ScurveMode) || "committee";
 
@@ -607,8 +617,8 @@ export default function ScurveTable({
     );
   }
 
-  // Projections — historical-pattern advancement probabilities per regional
-  if (viewMode === "projections") {
+  // Advancement Model — horizontal bar stack per regional + La Costa field
+  if (viewMode === "advancement") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
     // Strength-order the regionals to match the rest of the page.
     const orderedRegionals = [...activeRegionals].sort(
@@ -632,7 +642,7 @@ export default function ScurveTable({
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
         />
-        <ProjectionsView
+        <AdvancementBars
           regionals={orderedRegionals}
           gender={gender}
           hostColorByTeam={hostColorByTeam}
@@ -980,7 +990,7 @@ function FilterBar({
             { value: "visual", label: "Visual" },
             { value: "breakdown", label: "Breakdown" },
             { value: "manual", label: "Manual Grid" },
-            { value: "projections", label: "Projections" },
+            { value: "advancement", label: "Advancement Model" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -1034,7 +1044,7 @@ function FilterBar({
               { value: "visual", label: "Vis" },
               { value: "breakdown", label: "Brk" },
               { value: "manual", label: "Manual" },
-              { value: "projections", label: "Proj" },
+              { value: "advancement", label: "Adv. Model" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
