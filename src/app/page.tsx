@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import ScurveTable from "@/components/scurve-table";
+import { ActiveRankingsDate } from "@/components/active-rankings-date";
 import { MapSkeleton, FilterBarSkeleton } from "@/components/skeletons";
 import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
@@ -57,24 +58,23 @@ function enrichWithAwp(allTeams: TeamData[], rankings: TeamData[]): TeamData[] {
   });
 }
 
-// Display date now comes from the active rankings snapshot for each
-// gender. When men's and women's are pinned to the same date (or both
-// flow to latest and refreshed on the same day), we show one date. When
-// they differ — e.g. women frozen for regional predictions while men
-// keeps tracking the latest — we show both, labelled.
-function formatLastUpdated(isoDate: string, opts: { withYear?: boolean } = {}): string {
+// Display date is per-gender. The user toggles Men/Women on the page;
+// the date label updates to reflect that gender's active snapshot. We
+// pre-format both here at the server boundary and let the client-side
+// `<ActiveRankingsDate>` (header) and `ScurveTable` (filter bar) pick
+// the right one based on the active gender. Format is "Mmm dd, YY"
+// (e.g. "Apr 28, 26") in both spots — single date, no Men/Women prefix.
+function formatLastUpdated(isoDate: string): string {
   const d = new Date(`${isoDate}T00:00:00Z`);
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    ...(opts.withYear ? { year: "numeric" } : {}),
+    year: "2-digit",
     timeZone: "UTC",
   });
 }
-const LAST_UPDATED =
-  menSnapshot.date === womenSnapshot.date
-    ? formatLastUpdated(menSnapshot.date, { withYear: true })
-    : `Men ${formatLastUpdated(menSnapshot.date)} · Women ${formatLastUpdated(womenSnapshot.date)}`;
+const LAST_UPDATED_MEN = formatLastUpdated(menSnapshot.date);
+const LAST_UPDATED_WOMEN = formatLastUpdated(womenSnapshot.date);
 
 export default function Home() {
   return (
@@ -86,7 +86,11 @@ export default function Home() {
             NCAA D1 Regional Predictions
           </h1>
           <p className="hidden sm:block text-[12px] text-text-tertiary">
-            Based on the official NCAA rankings &middot; Updated {LAST_UPDATED}
+            Based on the official NCAA rankings &middot; Latest Rankings:{" "}
+            <ActiveRankingsDate
+              menDate={LAST_UPDATED_MEN}
+              womenDate={LAST_UPDATED_WOMEN}
+            />
           </p>
         </div>
       </div>
@@ -102,7 +106,8 @@ export default function Home() {
           womenChampionships={championshipsWomen2026}
           menActual={actualMen2026}
           womenActual={actualWomen2026}
-          lastUpdated={LAST_UPDATED}
+          lastUpdatedMen={LAST_UPDATED_MEN}
+          lastUpdatedWomen={LAST_UPDATED_WOMEN}
         />
       </Suspense>
     </div>

@@ -61,7 +61,10 @@ interface ScurveTableProps {
   menActual?: ActualSelection[];
   /** Empty until the women's selection committee announces its field. */
   womenActual?: ActualSelection[];
-  lastUpdated: string;
+  /** Pre-formatted (e.g. "Apr 29, 26") date of the men's active rankings snapshot. */
+  lastUpdatedMen: string;
+  /** Pre-formatted (e.g. "Apr 28, 26") date of the women's active rankings snapshot. */
+  lastUpdatedWomen: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -271,7 +274,8 @@ export default function ScurveTable({
   womenChampionships,
   menActual,
   womenActual,
-  lastUpdated,
+  lastUpdatedMen,
+  lastUpdatedWomen,
 }: ScurveTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -310,6 +314,13 @@ export default function ScurveTable({
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("seed");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  // Date label that follows the gender toggle: men sees the men's active
+  // snapshot date, women sees the women's. Today they often differ — women
+  // is pinned to a frozen-for-regionals date while men keeps tracking the
+  // latest pull. Future historical-snapshot picker will replace these props
+  // with whichever snapshot the user selects per gender.
+  const activeLastUpdated = gender === "men" ? lastUpdatedMen : lastUpdatedWomen;
 
   // useTransition lets the old view stay on screen at reduced opacity
   // while React computes the new one — no flash, no skeleton on swap.
@@ -500,7 +511,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={0}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -551,7 +562,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -605,7 +616,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -642,7 +653,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -678,7 +689,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -709,7 +720,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -750,7 +761,7 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
+          lastUpdated={activeLastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -790,7 +801,7 @@ export default function ScurveTable({
         scurveMode={scurveMode}
         search={search}
         resultCount={filtered.length}
-        lastUpdated={lastUpdated}
+        lastUpdated={activeLastUpdated}
         onViewChange={handleViewChange}
         onGenderChange={handleGenderChange}
         onModeChange={handleModeChange}
