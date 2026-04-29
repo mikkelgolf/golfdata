@@ -10,10 +10,7 @@ import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type Scu
 import { ManualGridTable } from "@/components/manual-grid-table";
 import ManualGridMap from "@/components/manual-grid-map";
 import HeadToHeadBrowser from "@/components/head-to-head-browser";
-import { ProjectionsView } from "@/components/projections-view";
-import { AdvancementSwarm } from "@/components/advancement-swarm";
 import { AdvancementBars } from "@/components/advancement-bars";
-import { AdvancementSankey } from "@/components/advancement-sankey";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -49,7 +46,7 @@ type SortKey =
   | "regional"
   | "distance";
 type SortDir = "asc" | "desc";
-type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "advancement" | "advancement-visual" | "advancement-bars" | "advancement-sankey";
+type ViewMode = "regional" | "scurve" | "visual" | "breakdown" | "map" | "manual" | "advancement";
 type Gender = "men" | "women";
 
 interface ScurveTableProps {
@@ -274,8 +271,16 @@ export default function ScurveTable({
 
   // URL-persisted state
   const rawView = searchParams.get("view");
+  const legacyAdvancementViews = new Set([
+    "projections",
+    "advancement-visual",
+    "advancement-bars",
+    "advancement-sankey",
+  ]);
   const initialView: ViewMode =
-    rawView === "projections" ? "advancement" : ((rawView as ViewMode) || "map");
+    rawView && legacyAdvancementViews.has(rawView)
+      ? "advancement"
+      : ((rawView as ViewMode) || "map");
   const initialGender = (searchParams.get("gender") as Gender) || "men";
   const initialMode = (searchParams.get("mode") as ScurveMode) || "committee";
 
@@ -612,7 +617,7 @@ export default function ScurveTable({
     );
   }
 
-  // Advancement Model — historical-pattern advancement probabilities per regional
+  // Advancement Model — horizontal bar stack per regional + La Costa field
   if (viewMode === "advancement") {
     const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
     // Strength-order the regionals to match the rest of the page.
@@ -637,106 +642,7 @@ export default function ScurveTable({
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
         />
-        <ProjectionsView
-          regionals={orderedRegionals}
-          gender={gender}
-          hostColorByTeam={hostColorByTeam}
-        />
-      </div>
-    );
-  }
-
-  // Advancement Model — Visual: pure beeswarm visualization
-  if (viewMode === "advancement-visual") {
-    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
-    const orderedRegionals = [...activeRegionals].sort(
-      (a, b) => (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99),
-    );
-    return (
-      <div
-        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
-        data-pending={isPending}
-        data-stale={isStale}
-      >
-        <FilterBar
-          viewMode={viewMode}
-          gender={gender}
-          scurveMode={scurveMode}
-          search={search}
-          resultCount={filtered.length}
-          lastUpdated={lastUpdated}
-          onViewChange={handleViewChange}
-          onGenderChange={handleGenderChange}
-          onModeChange={handleModeChange}
-          onSearchChange={setSearch}
-        />
-        <AdvancementSwarm
-          regionals={orderedRegionals}
-          gender={gender}
-          hostColorByTeam={hostColorByTeam}
-        />
-      </div>
-    );
-  }
-
-  // Advancement Model — Bars: horizontal bar stack per regional
-  if (viewMode === "advancement-bars") {
-    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
-    const orderedRegionals = [...activeRegionals].sort(
-      (a, b) => (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99),
-    );
-    return (
-      <div
-        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
-        data-pending={isPending}
-        data-stale={isStale}
-      >
-        <FilterBar
-          viewMode={viewMode}
-          gender={gender}
-          scurveMode={scurveMode}
-          search={search}
-          resultCount={filtered.length}
-          lastUpdated={lastUpdated}
-          onViewChange={handleViewChange}
-          onGenderChange={handleGenderChange}
-          onModeChange={handleModeChange}
-          onSearchChange={setSearch}
-        />
         <AdvancementBars
-          regionals={orderedRegionals}
-          gender={gender}
-          hostColorByTeam={hostColorByTeam}
-        />
-      </div>
-    );
-  }
-
-  // Advancement Model — Sankey: flow ribbons from regionals to La Costa
-  if (viewMode === "advancement-sankey") {
-    const activeRegionals = gender === "men" ? menRegionals : womenRegionals;
-    const orderedRegionals = [...activeRegionals].sort(
-      (a, b) => (regionalSeeds.get(a.id) ?? 99) - (regionalSeeds.get(b.id) ?? 99),
-    );
-    return (
-      <div
-        className="w-full transition-opacity duration-200 data-[pending=true]:opacity-60 data-[stale=true]:opacity-70"
-        data-pending={isPending}
-        data-stale={isStale}
-      >
-        <FilterBar
-          viewMode={viewMode}
-          gender={gender}
-          scurveMode={scurveMode}
-          search={search}
-          resultCount={filtered.length}
-          lastUpdated={lastUpdated}
-          onViewChange={handleViewChange}
-          onGenderChange={handleGenderChange}
-          onModeChange={handleModeChange}
-          onSearchChange={setSearch}
-        />
-        <AdvancementSankey
           regionals={orderedRegionals}
           gender={gender}
           hostColorByTeam={hostColorByTeam}
@@ -1085,9 +991,6 @@ function FilterBar({
             { value: "breakdown", label: "Breakdown" },
             { value: "manual", label: "Manual Grid" },
             { value: "advancement", label: "Advancement Model" },
-            { value: "advancement-visual", label: "Adv. Visual" },
-            { value: "advancement-bars", label: "Adv. Bars" },
-            { value: "advancement-sankey", label: "Adv. Flow" },
           ]}
           value={viewMode}
           onChange={(v) => onViewChange(v as ViewMode)}
@@ -1141,10 +1044,7 @@ function FilterBar({
               { value: "visual", label: "Vis" },
               { value: "breakdown", label: "Brk" },
               { value: "manual", label: "Manual" },
-              { value: "advancement", label: "Adv." },
-              { value: "advancement-visual", label: "Adv. Vis" },
-              { value: "advancement-bars", label: "Adv. Bars" },
-              { value: "advancement-sankey", label: "Adv. Flow" },
+              { value: "advancement", label: "Adv. Model" },
             ]}
             value={viewMode}
             onChange={(v) => onViewChange(v as ViewMode)}
