@@ -101,6 +101,34 @@ Instead of "Auburn beat Florida by 3 strokes total at event X," compute "Auburn 
 
 ---
 
+### 7. Season selector for Regional Predictions *(unlocks historical + 2026-27)*
+
+Today the Regional Predictions page (`/`) is hardwired to 2025-26 — `regionals-{men,women}-2026.ts`, `all-teams-{men,women}-2026.ts`, `championships-{men,women}-2026.ts`, `regionals-actual-{men,women}-2026.ts`. To support David's incoming historical seasons and the 2026-27 cycle starting in ~6-9 months, we need a season selector and a season-keyed data registry.
+
+**What changes:**
+- New `seasons` registry — a single map from season key (e.g. `"2025-26"`) to that season's data bundle (regionals, all-teams, championships, actual). Probably `src/data/seasons/index.ts` re-exporting per-season modules.
+- New `season` state in `ScurveTable` (URL param `?season=2025-26`), defaults to the most recent season with data.
+- Selector UI — likely a third `SegmentedToggle` next to gender/mode, or a small dropdown if the list grows past ~4 entries.
+- `ScurveTable`'s data props get sourced from `seasons[activeSeason]` instead of imported directly.
+
+**What plugs in for free (already shipped):**
+- The "Actual" tab visibility + default-to-actual rule from this branch is season-agnostic at the component level — it just reads `menActual.length > 0` / `womenActual.length > 0` from props. When season changes, those props change, and the rule re-evaluates correctly.
+- File naming is already year-suffixed (`regionals-actual-men-2026.ts`), so historical files (`-2025.ts`, `-2024.ts`) and future files (`-2027.ts`) drop in alongside without renames.
+- `computeScurve` accepts `actualSelections` as an opaque parameter — no changes there.
+
+**Heterogeneous-shape gotcha:** historical seasons probably have only `actual` + regionals (no rankings/championships, since you can't predict the past). Current/future seasons have the full set. The registry needs to tolerate sparse bundles — strict mode and committee mode should be hidden (or the predictive views collapsed) when a season has no rankings to feed them. Worth scoping that against a real historical season's shape rather than guessing.
+
+**Why we deliberately did NOT build the GUI in the Actual-tab PR:**
+- A dropdown with one option ("2025-26") is clutter that lies about user choice.
+- We hadn't seen historical data yet — designing the registry blind risks a second refactor.
+- The Actual logic was self-contained and shippable today without the registry; the registry is a clean follow-up that doesn't fight what's there.
+
+**Effort:** ~half-day once historical data lands. Bigger if the historical shape needs schema reconciliation. Best done as the same PR that introduces the first historical season — that way the GUI ships with a real second option, and the data refactor is grounded in a real second shape.
+
+**Owner-context:** Requested by David Tenneson during the Actual-tab session (2026-04-29). Trigger to act on this item: David's historical-data PR.
+
+---
+
 ## Not planned but worth noting
 
 - **BigQuery scheduled materialization** of head-to-head views as tables (instead of views). Current queries run in seconds — no need. Revisit if/when we widen to historical and latency becomes visible.
