@@ -138,8 +138,6 @@ function RegionalBars({
     () => [...reg.teams].sort((a, b) => b.finalPct - a.finalPct),
     [reg],
   );
-  const cutPct = sorted[Math.min(TEAMS_ADVANCING - 1, sorted.length - 1)]?.finalPct ?? 0;
-
   return (
     <div className="overflow-hidden rounded-md border border-border bg-card min-w-0">
       <div className="border-b border-border bg-muted/20 px-1.5 py-1 sm:px-2.5 sm:py-1.5">
@@ -168,16 +166,15 @@ function RegionalBars({
                   advances={advances}
                   cinderella={cinderella}
                   hostColor={hostColor}
-                  cutPct={cutPct}
                   onClick={() => onPick(t)}
                 />
                 {idx === TEAMS_ADVANCING - 1 && (
                   <div className="mt-[2px] mb-[1px] flex items-center gap-1">
-                    <div className="h-px flex-1 border-t border-dashed border-foreground/40" />
-                    <span className="text-[7px] font-medium uppercase tracking-wider text-foreground/55">
-                      cutline
+                    <div className="h-px flex-1 border-t border-dashed border-destructive/55" />
+                    <span className="text-[7px] font-semibold uppercase tracking-wider text-destructive/85">
+                      advancing
                     </span>
-                    <div className="h-px flex-1 border-t border-dashed border-foreground/40" />
+                    <div className="h-px flex-1 border-t border-dashed border-destructive/55" />
                   </div>
                 )}
               </div>
@@ -191,10 +188,10 @@ function RegionalBars({
 
 function ColumnHeader() {
   return (
-    <div className="flex items-center gap-1 border-b border-border/50 bg-muted/10 px-1 py-0.5 text-[7px] font-medium uppercase tracking-wider text-text-tertiary leading-none">
-      <span className="w-4 shrink-0 text-right">Sd</span>
-      <span className="w-3 shrink-0 text-right">P</span>
-      <span className="w-5 shrink-0 text-right">Δ</span>
+    <div className="flex items-center gap-1 border-b border-border/50 bg-muted/10 px-1 py-0.5 text-[7px] font-medium uppercase tracking-wider text-text-tertiary leading-tight">
+      <span className="w-5 shrink-0 text-right" title="Tournament seed">Seed</span>
+      <span className="w-6 shrink-0 text-right" title="Projected placing">Place</span>
+      <span className="w-5 shrink-0 text-right" title="Seed minus projected placing">Δ</span>
       <span className="min-w-0 flex-1">Team</span>
       <span className="w-[28px] shrink-0 text-right sm:w-[32px]">Final</span>
     </div>
@@ -208,7 +205,6 @@ function BarRow({
   advances,
   cinderella,
   hostColor,
-  cutPct,
   onClick,
 }: {
   team: AppliedTeam;
@@ -217,7 +213,6 @@ function BarRow({
   advances: boolean;
   cinderella: boolean;
   hostColor?: string;
-  cutPct: number;
   onClick: () => void;
 }) {
   const fill = advances ? hostColor || "hsl(var(--foreground))" : "hsl(var(--text-tertiary))";
@@ -230,13 +225,13 @@ function BarRow({
       onClick={onClick}
       className="group relative flex w-full items-center gap-1 text-left focus:outline-none"
     >
-      <span className="w-4 shrink-0 text-right text-[8.5px] tabular-nums text-text-secondary sm:text-[10px]">
+      <span className="w-5 shrink-0 text-right text-[8.5px] tabular-nums text-text-secondary sm:text-[10px]">
         <span className="inline-flex items-center justify-end gap-0.5">
           {cinderella && <ArrowUp className="h-2 w-2 text-foreground" aria-label="outperforming seed" />}
           {team.seed}
         </span>
       </span>
-      <span className="w-3 shrink-0 text-right text-[8.5px] tabular-nums text-text-secondary sm:text-[10px]">
+      <span className="w-6 shrink-0 text-right text-[8.5px] tabular-nums text-text-secondary sm:text-[10px]">
         {placing}
       </span>
       <span
@@ -247,14 +242,13 @@ function BarRow({
       >
         {diffStr}
       </span>
-      {/* Bar track with team name overlaid; bar fill kept low-opacity so the name remains legible */}
-      <div className="relative h-[14px] min-w-0 flex-1 overflow-hidden rounded-[2px] bg-muted/30">
-        {/* per-row cutline tick relative to track */}
-        <div
-          className="pointer-events-none absolute top-0 bottom-0 border-l border-dashed border-destructive/55"
-          style={{ left: `calc(${cutPct}% - 0.5px)` }}
-          aria-hidden
-        />
+      {/* Bar track with team name overlaid; advancing rows get a dashed red border to match cutline */}
+      <div
+        className={cn(
+          "relative h-[14px] min-w-0 flex-1 overflow-hidden rounded-[2px] bg-muted/30",
+          advances && "border border-dashed border-destructive/65",
+        )}
+      >
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${Math.max(team.finalPct, 0.5)}%` }}
@@ -326,21 +320,9 @@ function NationalBars({
         </span>
       </div>
       <div className="grid grid-cols-1 gap-x-3 gap-y-0 px-2 py-1 sm:grid-cols-2">
-        {/* one shared header per column on desktop, single header on mobile */}
-        <div className="col-span-full flex items-center gap-1 border-b border-border/50 bg-muted/10 px-1 py-0.5 text-[7px] font-medium uppercase tracking-wider text-text-tertiary leading-none">
-          <span className="w-5 shrink-0 text-right">Sd</span>
-          <span className="w-5 shrink-0 text-right">P</span>
-          <span className="w-5 shrink-0 text-right">Δ</span>
-          <span className="min-w-0 flex-1">Team</span>
-          <span className="w-[28px] shrink-0 text-right sm:w-[32px]">Final</span>
-        </div>
         {field.map((t, idx) => {
-          const placing = idx + 1;
-          const cinderella = t.seed > TEAMS_ADVANCING;
           const hostColor = hostColorByTeam.get(t.team);
           const fill = hostColor || "hsl(var(--foreground))";
-          const diff = t.seed - placing;
-          const diffStr = diff > 0 ? `+${diff}` : diff === 0 ? "0" : `${diff}`;
           return (
             <button
               type="button"
@@ -348,23 +330,6 @@ function NationalBars({
               onClick={() => onPick(t, t.regional)}
               className="group flex items-center gap-1 py-[1px] text-left focus:outline-none"
             >
-              <span className="w-5 shrink-0 text-right text-[8.5px] tabular-nums text-text-secondary sm:text-[10px]">
-                <span className="inline-flex items-center justify-end gap-0.5">
-                  {cinderella && <ArrowUp className="h-2 w-2 text-foreground" aria-label="outperforming seed" />}
-                  {t.seed}
-                </span>
-              </span>
-              <span className="w-5 shrink-0 text-right text-[8.5px] tabular-nums text-text-secondary sm:text-[10px]">
-                {placing}
-              </span>
-              <span
-                className={cn(
-                  "w-5 shrink-0 text-right text-[8.5px] tabular-nums sm:text-[10px]",
-                  diff > 0 ? "font-semibold text-foreground" : "text-text-tertiary",
-                )}
-              >
-                {diffStr}
-              </span>
               <div className="relative h-[14px] min-w-0 flex-1 overflow-hidden rounded-[2px] bg-muted/30">
                 <motion.div
                   initial={{ width: 0 }}
@@ -377,17 +342,14 @@ function NationalBars({
                   style={{ backgroundColor: fill, opacity: 0.32 }}
                   className="absolute inset-y-0 left-0"
                 />
-                <div className="relative flex h-full items-center justify-between gap-1.5 px-1.5">
+                <div className="relative flex h-full items-center px-1.5">
                   <span className="truncate text-[8.5px] font-semibold tracking-tight text-foreground sm:text-[10px]">
                     {t.team}
                   </span>
-                  <span className="shrink-0 text-[7.5px] uppercase tracking-wider text-text-tertiary sm:text-[9px]">
-                    {t.regional}
-                  </span>
                 </div>
               </div>
-              <span className="w-[28px] shrink-0 text-right text-[8.5px] font-semibold tabular-nums text-foreground sm:w-[32px] sm:text-[10px]">
-                {t.finalPct.toFixed(1)}
+              <span className="w-[36px] shrink-0 text-right text-[8.5px] font-semibold tabular-nums text-foreground sm:w-[42px] sm:text-[10px]">
+                {t.finalPct.toFixed(1)}%
               </span>
             </button>
           );
@@ -401,7 +363,7 @@ function Legend() {
   return (
     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-[10px] text-text-tertiary">
       <span className="inline-flex items-center gap-1.5">
-        <span className="inline-block h-2 w-3 rounded-[2px] bg-foreground" />
+        <span className="inline-block h-2 w-3 rounded-[2px] border border-dashed border-destructive/65 bg-foreground/20" />
         projected to advance
       </span>
       <span className="inline-flex items-center gap-1.5">
@@ -411,10 +373,6 @@ function Legend() {
       <span className="inline-flex items-center gap-1.5">
         <ArrowUp className="h-2.5 w-2.5" />
         cinderella (seed &gt; {TEAMS_ADVANCING})
-      </span>
-      <span className="inline-flex items-center gap-1.5">
-        <span className="inline-block h-px w-3 border-t border-dashed border-destructive" />
-        cutline (5th-place %)
       </span>
       <span className="ml-auto text-text-tertiary/80">tap any bar for the model breakdown</span>
     </div>
