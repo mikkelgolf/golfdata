@@ -86,7 +86,7 @@ export default function Home() {
             NCAA D1 Regional Predictions
           </h1>
           <p className="hidden sm:block text-[12px] text-text-tertiary">
-            Based on the official NCAA rankings &middot; Latest Rankings:{" "}
+            Based on the official NCAA rankings &middot; Rankings from:{" "}
             {/* Suspense lets Next prerender the page statically — fallback
                 shows men's date (the default gender) until the client reads
                 ?gender= and hydrates with the right one. */}

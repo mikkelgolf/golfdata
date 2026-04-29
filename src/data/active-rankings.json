@@ -1,5 +1,10 @@
 {
-  "men": null,
+  "men": {
+    "date": "2026-04-28",
+    "label": "frozen-for-regionals",
+    "setAt": "2026-04-29T18:22:24.906Z",
+    "setBy": "David Tenneson"
+  },
   "women": {
     "date": "2026-04-28",
     "label": "frozen-for-regionals",

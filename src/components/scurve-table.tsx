@@ -1087,7 +1087,7 @@ function FilterBar({
           <span className="tabular-nums">
             <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
-          <span className="text-text-tertiary">Latest Rankings: {lastUpdated}</span>
+          <span className="text-text-tertiary">Rankings from: {lastUpdated}</span>
         </div>
       </div>
 
@@ -1127,7 +1127,7 @@ function FilterBar({
           <span className="tabular-nums">
             <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
-          <span className="text-text-tertiary">Latest Rankings: {lastUpdated}</span>
+          <span className="text-text-tertiary">Rankings from: {lastUpdated}</span>
         </div>
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
