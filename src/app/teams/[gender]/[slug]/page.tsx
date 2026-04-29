@@ -14,6 +14,7 @@ import {
   type StreakResult,
 } from "@/lib/streaks";
 import { computeScurve, computeRegionalPositions } from "@/lib/scurve";
+import { teamMatches } from "@/lib/team-aliases";
 
 import type { Gender, RecordBook } from "@/data/records-types";
 import { rankingsMen, type TeamData } from "@/data/rankings-men";
@@ -281,14 +282,14 @@ export default function TeamPage({ params }: { params: Params }) {
     : null;
 
   const history = regionalsHistory
-    .filter((r) => r.team === team && r.gender === gender)
+    .filter((r) => r.gender === gender && teamMatches(r.team, team, gender))
     .sort((a, b) => b.year - a.year);
 
   // NCAA Championship history for this team, sorted newest-first to match the
   // regional timeline. Derived before the regional loop so we can cross-check
   // NCAA appearance when deciding whether a team actually advanced.
   const ncaaHistory = championshipsHistory
-    .filter((r) => r.team === team && r.gender === gender)
+    .filter((r) => r.gender === gender && teamMatches(r.team, team, gender))
     .sort((a, b) => b.year - a.year);
   const ncaaByYear = new Map(ncaaHistory.map((r) => [r.year, r]));
 
@@ -310,7 +311,7 @@ export default function TeamPage({ params }: { params: Params }) {
   // team. Women's sheet tab is currently empty, so this will be empty for women.
   const richByYear = new Map(
     regionalsRich
-      .filter((r) => r.team === team && r.gender === gender)
+      .filter((r) => r.gender === gender && teamMatches(r.team, team, gender))
       .map((r) => [r.year, r])
   );
 

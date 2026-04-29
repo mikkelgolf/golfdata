@@ -1,7 +1,7 @@
 {
   "_comment": "Source-of-truth for normalising team names that appear in David's private Google Sheets (and any other external feed) to the canonical names used in the modern site data — i.e. the names in src/data/rankings-{men,women}.ts and src/data/all-teams-{men,women}-2026.ts. The team-page slug routing is built off those, so historical files must use the same names or the page lookups return zero rows. Keys are sheet-side variants, values are canonical site names. Read by scripts/build-regional-history.py at ingest time. Add new aliases here as variants surface; the Python script will print a WARN line for any sheet team name that doesn't resolve to a name already present in regionals-history.json.",
   "men": {
-    "East Tennessee State": "ETSU",
+    "ETSU": "East Tennessee State",
     "Central Florida": "UCF",
     "Memphis State": "Memphis",
     "North Texas State": "North Texas",
@@ -11,16 +11,20 @@
     "Kent": "Kent State",
     "West Point": "Army",
     "Louisiana-LaFayette": "Louisiana-Lafayette",
-    "Brigham Young": "BYU",
+    "BYU": "Brigham Young",
+    "South Florida": "USF",
+    "Pine Bluff": "Arkansas-Pine Bluff",
     "CSU - Fullerton": "CSU Fullerton",
     "CSU - Northridge": "CSU Northridge",
     "Cal State Fullerton": "CSU Fullerton",
     "Cal State Northridge": "CSU Northridge"
   },
   "women": {
-    "East Tennessee State": "ETSU",
+    "ETSU": "East Tennessee State",
     "Central Florida": "UCF",
-    "Brigham Young": "BYU",
+    "BYU": "Brigham Young",
+    "South Florida": "USF",
+    "Pine Bluff": "Arkansas Pine Bluff",
     "CSU - Fullerton": "CSU Fullerton",
     "CSU - Northridge": "CSU Northridge",
     "Cal State Fullerton": "CSU Fullerton",
