@@ -41,11 +41,21 @@ log() {
 }
 
 dry_run_mode=0
+force_snapshots=0
 args_extra=()
 for arg in "$@"; do
     case "$arg" in
         --dry-run)
             dry_run_mode=1
+            ;;
+        --force-snapshots)
+            # Bypass content-aware dedup (option-a) inside snapshot-rankings.
+            # Wired by update-rankings-on-demand.sh so manual rankings
+            # updates always become official archive entries even if the
+            # fingerprint matches the previous snapshot. The nightly cron
+            # invokes this script directly without the flag, so its dedup
+            # behavior is unchanged.
+            force_snapshots=1
             ;;
         *)
             args_extra+=("$arg")
@@ -53,7 +63,7 @@ for arg in "$@"; do
     esac
 done
 
-log "starting (dry_run=$dry_run_mode)"
+log "starting (dry_run=$dry_run_mode, force_snapshots=$force_snapshots)"
 
 # Ensure homebrew/node/npx/vercel/python are on PATH under LaunchAgent.
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
@@ -140,6 +150,38 @@ cp "$LATEST_WOMEN" src/data/rankings-women.ts || abort_hard "cp women rankings f
 log "mirrored $(basename "$LATEST_MEN") + $(basename "$LATEST_WOMEN") → src/data/"
 # Remove staged files so Next.js doesn't index them and so they don't accumulate.
 rm -f data/clippd/rankings-men-*.ts data/clippd/rankings-women-*.ts
+
+# Step 2b': snapshot today's live rankings into the archive at
+# src/data/rankings-archive/{men,women}/YYYY-MM-DD.ts and regenerate the
+# per-gender index. The archive is what the Regional Predictions page reads
+# (via loadActive in src/lib/rankings-archive.ts), so this MUST run on every
+# successful refresh — otherwise pin/latest drift apart.
+#
+# Flags:
+#   --require-publication-day  Option-b prep: gate the write on
+#       isPublicationDay(date, gender) inside snapshot-rankings.ts. Today
+#       that function is stubbed to return true (so this flag is a no-op
+#       today). When the NCAA publication calendar is wired in, this
+#       cron will automatically stop writing snapshots on off-days —
+#       no daily-refresh.sh edits required.
+#   --force (only when force_snapshots=1) Bypass content-aware dedup.
+#       Set by update-rankings-on-demand.sh so manual !update-rankings
+#       runs always create an official archive entry. Cron runs do NOT
+#       pass this flag — they keep dedup on so duplicate Clippd pulls
+#       don't pollute the archive.
+#   (when not --force) Default content-aware dedup is on. If BOTH
+#       genders' live-data fingerprints match the previous snapshot, no
+#       write — catches the trivial "Clippd returned identical data"
+#       case. If EITHER gender's fingerprint changed, both write
+#       (coupled — see snapshot-rankings.ts for the rationale).
+SNAPSHOT_FLAGS=(--from-live --require-publication-day)
+if [ "$force_snapshots" = "1" ]; then
+    SNAPSHOT_FLAGS+=(--force)
+fi
+log "step 2b': npx tsx scripts/snapshot-rankings.ts ${SNAPSHOT_FLAGS[*]}"
+if ! npx --yes tsx scripts/snapshot-rankings.ts "${SNAPSHOT_FLAGS[@]}" 2>&1; then
+    abort_hard "snapshot-rankings --from-live failed"
+fi
 
 log "step 2c: node scripts/build-all-teams.mjs"
 if ! node scripts/build-all-teams.mjs 2>&1; then

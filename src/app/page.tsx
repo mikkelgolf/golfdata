@@ -1,17 +1,28 @@
 import { Suspense } from "react";
 import ScurveTable from "@/components/scurve-table";
+import { ActiveRankingsDate } from "@/components/active-rankings-date";
 import { MapSkeleton, FilterBarSkeleton } from "@/components/skeletons";
-import { allTeamsMen2026, ALL_TEAMS_GENERATED_AT } from "@/data/all-teams-men-2026";
+import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
-import { rankingsMen } from "@/data/rankings-men";
-import { rankingsWomen } from "@/data/rankings-women";
 import { championshipsMen2026 } from "@/data/championships-men-2026";
 import { championshipsWomen2026 } from "@/data/championships-women-2026";
 import { actualMen2026 } from "@/data/regionals-actual-men-2026";
 import { actualWomen2026 } from "@/data/regionals-actual-women-2026";
 import type { TeamData } from "@/data/rankings-men";
+import { loadActiveSnapshot } from "@/lib/rankings-archive";
+
+// Regional Predictions consumes the rankings snapshot pinned in
+// `src/data/active-rankings.json` (per gender). When a gender is
+// unpinned, loadActiveSnapshot falls back to the latest archived
+// snapshot — same behaviour as the pre-archive direct imports of
+// `@/data/rankings-{men,women}`. Flip the pin via
+// `scripts/set-active-rankings.ts`.
+const menSnapshot = loadActiveSnapshot("men");
+const womenSnapshot = loadActiveSnapshot("women");
+const rankingsMen = menSnapshot.teams;
+const rankingsWomen = womenSnapshot.teams;
 
 // Team names in rankings-*.ts (sourced from Clippd) occasionally disagree with
 // the canonical names in all-teams-*.ts. Normalize punctuation and fall back
@@ -47,19 +58,23 @@ function enrichWithAwp(allTeams: TeamData[], rankings: TeamData[]): TeamData[] {
   });
 }
 
-// Derive the display date from ALL_TEAMS_GENERATED_AT (populated from the
-// Clippd JSON's `pulledAt` field by scripts/build-all-teams.mjs) so it stays
-// in sync automatically after every rankings refresh.
-function formatLastUpdated(iso: string): string {
-  const d = new Date(`${iso}T00:00:00Z`);
+// Display date is per-gender. The user toggles Men/Women on the page;
+// the date label updates to reflect that gender's active snapshot. We
+// pre-format both here at the server boundary and let the client-side
+// `<ActiveRankingsDate>` (header) and `ScurveTable` (filter bar) pick
+// the right one based on the active gender. Format is "Mmm dd, YY"
+// (e.g. "Apr 28, 26") in both spots — single date, no Men/Women prefix.
+function formatLastUpdated(isoDate: string): string {
+  const d = new Date(`${isoDate}T00:00:00Z`);
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    year: "numeric",
+    year: "2-digit",
     timeZone: "UTC",
   });
 }
-const LAST_UPDATED = formatLastUpdated(ALL_TEAMS_GENERATED_AT);
+const LAST_UPDATED_MEN = formatLastUpdated(menSnapshot.date);
+const LAST_UPDATED_WOMEN = formatLastUpdated(womenSnapshot.date);
 
 export default function Home() {
   return (
@@ -70,8 +85,20 @@ export default function Home() {
           <h1 className="text-[15px] sm:text-lg font-semibold text-foreground leading-tight tracking-tight">
             NCAA D1 Regional Predictions
           </h1>
-          <p className="hidden sm:block text-[12px] text-text-tertiary">
-            Based on the official NCAA rankings &middot; Updated {LAST_UPDATED}
+          {/* Visible on both desktop and mobile — single source-of-truth
+              date display for the page. Will likely evolve into a snapshot
+              picker (dropdown / date GUI) once historical rankings land. */}
+          <p className="text-[12px] text-text-tertiary">
+            Official NCAA rankings from:{" "}
+            {/* Suspense lets Next prerender the page statically — fallback
+                shows men's date (the default gender) until the client reads
+                ?gender= and hydrates with the right one. */}
+            <Suspense fallback={LAST_UPDATED_MEN}>
+              <ActiveRankingsDate
+                menDate={LAST_UPDATED_MEN}
+                womenDate={LAST_UPDATED_WOMEN}
+              />
+            </Suspense>
           </p>
         </div>
       </div>
@@ -87,7 +114,6 @@ export default function Home() {
           womenChampionships={championshipsWomen2026}
           menActual={actualMen2026}
           womenActual={actualWomen2026}
-          lastUpdated={LAST_UPDATED}
         />
       </Suspense>
     </div>

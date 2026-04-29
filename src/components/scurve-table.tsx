@@ -61,7 +61,6 @@ interface ScurveTableProps {
   menActual?: ActualSelection[];
   /** Empty until the women's selection committee announces its field. */
   womenActual?: ActualSelection[];
-  lastUpdated: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -271,7 +270,6 @@ export default function ScurveTable({
   womenChampionships,
   menActual,
   womenActual,
-  lastUpdated,
 }: ScurveTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -500,7 +498,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={0}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -551,7 +548,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -605,7 +601,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -642,7 +637,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -678,7 +672,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -709,7 +702,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -750,7 +742,6 @@ export default function ScurveTable({
           scurveMode={scurveMode}
           search={search}
           resultCount={filtered.length}
-          lastUpdated={lastUpdated}
           onViewChange={handleViewChange}
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
@@ -790,7 +781,6 @@ export default function ScurveTable({
         scurveMode={scurveMode}
         search={search}
         resultCount={filtered.length}
-        lastUpdated={lastUpdated}
         onViewChange={handleViewChange}
         onGenderChange={handleGenderChange}
         onModeChange={handleModeChange}
@@ -993,7 +983,6 @@ function FilterBar({
   scurveMode,
   search,
   resultCount,
-  lastUpdated,
   onViewChange,
   onGenderChange,
   onModeChange,
@@ -1005,7 +994,6 @@ function FilterBar({
   scurveMode: ScurveMode;
   search: string;
   resultCount: number;
-  lastUpdated: string;
   onViewChange: (v: ViewMode) => void;
   onGenderChange: (g: Gender) => void;
   onModeChange: (m: ScurveMode) => void;
@@ -1071,12 +1059,11 @@ function FilterBar({
           onChange={(g) => onGenderChange(g as Gender)}
         />
 
-        {/* Result count + last updated */}
+        {/* Result count — date label lives in the page header now */}
         <div className="ml-auto flex items-center gap-3 text-[12px] text-muted-foreground">
           <span className="tabular-nums">
             <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
-          <span className="text-text-tertiary">Latest Rankings: {lastUpdated}</span>
         </div>
       </div>
 
@@ -1112,11 +1099,10 @@ function FilterBar({
             onChange={(m) => onModeChange(m as ScurveMode)}
           />
         </div>
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+        <div className="flex items-center text-[11px] text-muted-foreground">
           <span className="tabular-nums">
             <AnimatedNumber value={resultCount} className="text-foreground !font-normal !tracking-normal" /> teams
           </span>
-          <span className="text-text-tertiary">Latest Rankings: {lastUpdated}</span>
         </div>
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
