@@ -96,3 +96,69 @@ rendering. Source-data cleanup is a follow-up.
 - Source-side fix for `championship.city` containing the state suffix.
   Defensive rendering fix is enough for now.
 
+## Wrap
+
+Six commits on `ron/fix-team-alias-leakage`:
+
+1. `7abdec3` — Session doc.
+2. `fb53728` — `scripts/team-name-aliases.json`: flip BYU/ETSU entries
+   to the correct sheet→canonical direction; add USF and Pine Bluff
+   entries (men + women).
+3. `f118f25` — One-off `canonicalize-regionals-rich.py` rewrites
+   `src/data/regionals-rich.json` in place using the corrected aliases.
+   214 row diffs in the JSON. Pine Bluff row dedupes to one.
+4. `ba9138b` — `scripts/build-championships-history.ts` (which carries
+   its own alias map, not the shared JSON) gets the same BYU/ETSU/USF
+   fix; plus `canonicalize-championships-history.py` re-runs the
+   canonicaliser against the existing JSON. Net effect: `/championships-
+   history` BYU/ETSU/USF rows now route to the right team page.
+5. `373bafc` — `upcoming-event.tsx` strips a trailing `, XX` from
+   `championship.city` before rendering, fixing the "GA, GA" doubling.
+6. `16835bb` — **Defensive runtime predicate.** Even after the JSON
+   files are canonical, external feeds (David's sheet, future ingests)
+   freely interleave alias and canonical forms. New
+   `src/lib/team-aliases.ts` exposes `canonicalizeTeamName()` +
+   `teamMatches()`, which wrap `scripts/team-name-aliases.json` (the
+   shared source of truth). `streaks.ts` (regionals + championships +
+   regionalsRich filters) and the team page (history, ncaaHistory,
+   richByYear filters) now use `teamMatches` instead of raw `===`.
+   Comparisons against canonical lists (rankings, all-teams, scurve
+   assignments) are unchanged — both sides are already canonical there.
+
+### Diff vs `dev`
+```
+ docs/sessions/2026-04-29-fix-team-alias-leakage.md |  98 ++++++++++
+ scripts/build-championships-history.ts             |  26 ++-
+ scripts/canonicalize-championships-history.py      |  70 +++++++
+ scripts/canonicalize-regionals-rich.py             |  67 +++++++
+ scripts/team-name-aliases.json                     |  12 +-
+ src/app/teams/[gender]/[slug]/page.tsx             |   7 +-
+ src/components/team-page/upcoming-event.tsx        |   9 +-
+ src/data/championships-history.json                |   2 +-
+ src/data/regionals-rich.json                       | 214 ++++++++++-----------
+ src/lib/streaks.ts                                 |  12 +-
+ src/lib/team-aliases.ts                            |  70 +++++++
+ 11 files changed, 457 insertions(+), 130 deletions(-)
+```
+
+### Verification
+- `npx tsc --noEmit` clean after each edit.
+- Vercel preview: <https://collegegolfdata-la4zoomea-mikkelgolfs-projects.vercel.app>
+  (David spot-checked /championships-history, /regionals, the affected
+  team pages.)
+
+### Open questions / follow-ups
+- **`Arkansas Pine Bluff` (women) vs `Arkansas-Pine Bluff` (men)**
+  inconsistency in the canonical data is still there. Out of scope for
+  this session, but worth a one-line cleanup in a future pass.
+- **`SW Louisiana` / `Southwest Louisiana` / `Southern Louisiana`** —
+  same family of historical aliases not yet handled. No bug reported
+  yet, so leaving alone.
+- **`championship.city` source data** still contains a `, XX` suffix in
+  some records. Defensive rendering covers it; cleaning the source CSV
+  is a small follow-up, but not urgent.
+- **Future ingest scripts**: any new feed reader should resolve through
+  `scripts/team-name-aliases.json` (Python build-time path) AND any new
+  runtime filter should use `teamMatches()` from `src/lib/team-aliases.ts`.
+  The two paths share the same JSON, so they stay in sync.
+
