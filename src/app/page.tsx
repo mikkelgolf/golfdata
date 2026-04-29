@@ -87,10 +87,15 @@ export default function Home() {
           </h1>
           <p className="hidden sm:block text-[12px] text-text-tertiary">
             Based on the official NCAA rankings &middot; Latest Rankings:{" "}
-            <ActiveRankingsDate
-              menDate={LAST_UPDATED_MEN}
-              womenDate={LAST_UPDATED_WOMEN}
-            />
+            {/* Suspense lets Next prerender the page statically — fallback
+                shows men's date (the default gender) until the client reads
+                ?gender= and hydrates with the right one. */}
+            <Suspense fallback={LAST_UPDATED_MEN}>
+              <ActiveRankingsDate
+                menDate={LAST_UPDATED_MEN}
+                womenDate={LAST_UPDATED_WOMEN}
+              />
+            </Suspense>
           </p>
         </div>
       </div>
