@@ -682,6 +682,7 @@ export default function ScurveTable({
           regionals={orderedRegionals}
           gender={gender}
           hostColorByTeam={hostColorByTeam}
+          assignments={assignments}
         />
       </div>
     );

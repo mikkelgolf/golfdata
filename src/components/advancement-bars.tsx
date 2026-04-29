@@ -7,60 +7,53 @@ import { Plane, ArrowUp, Trophy, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { SimpleModal } from "@/components/simple-modal";
-import perTeamData from "@/data/projections/per-team-2026.json";
+import hostLiftData from "@/data/projections/host-lift.json";
+import distLiftData from "@/data/projections/distance-lift.json";
+import zoneLiftData from "@/data/projections/zone-lift.json";
+import seedBaselineData from "@/data/projections/seed-baseline.json";
+import {
+  applyProjection,
+  type AppliedRegional,
+  type AppliedTeam,
+  type Gender,
+  type SeedCell,
+} from "@/lib/projections-apply";
+import { TEAMS_ADVANCING as MODEL_TEAMS_ADVANCING } from "@/lib/projections";
+import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
 
-type Gender = "men" | "women";
-
-interface AppliedTeam {
-  team: string;
-  rank: number;
-  conference: string;
-  seed: number;
-  isHost: boolean;
-  travelMi: number;
-  zoneCrossing: string;
-  baseRatePct: number;
-  afterHostPct: number;
-  afterDistancePct: number;
-  afterZonePct: number;
-  finalPct: number;
-}
-
-interface AppliedRegional {
-  id: number;
-  gender: Gender;
-  name: string;
-  host: string;
-  city: string;
-  venueLat: number;
-  venueLng: number;
-  venueZone: string;
-  teams: AppliedTeam[];
-}
-
-interface PerTeamPayload {
-  builtAt: string;
-  teamsAdvancing: number;
-  regionals: AppliedRegional[];
-}
-
-const PAYLOAD = perTeamData as PerTeamPayload;
-const TEAMS_ADVANCING = PAYLOAD.teamsAdvancing;
+const TEAMS_ADVANCING = MODEL_TEAMS_ADVANCING;
 
 interface Props {
   regionals: Regional[];
   gender: Gender;
   hostColorByTeam: Map<string, string>;
+  /**
+   * Live S-curve assignments for the active mode. The Advancement Model
+   * recomputes its per-team probabilities from these so it tracks whichever
+   * bracket (committee / strict / actual) the user has selected — instead
+   * of always reading the build-time committee snapshot.
+   */
+  assignments: ScurveAssignment[];
 }
 
-export function AdvancementBars({ regionals, gender, hostColorByTeam }: Props) {
+export function AdvancementBars({ regionals, gender, hostColorByTeam, assignments }: Props) {
   const ordered = useMemo(() => {
-    const byId = new Map(
-      PAYLOAD.regionals.filter((r) => r.gender === gender).map((r) => [r.id, r]),
-    );
-    return regionals.map((r) => byId.get(r.id)).filter(Boolean) as AppliedRegional[];
-  }, [regionals, gender]);
+    if (assignments.length === 0) return [] as AppliedRegional[];
+    const applied = applyProjection({
+      assignments,
+      regionals,
+      gender,
+      hostLift: hostLiftData,
+      distLift: distLiftData,
+      zoneLift: zoneLiftData,
+      seedBaseline: seedBaselineData as SeedCell[],
+    });
+    const byId = new Map(applied.map((r) => [r.id, r]));
+    return regionals
+      .map((r) => byId.get(r.id))
+      .filter(Boolean) as AppliedRegional[];
+  }, [assignments, regionals, gender]);
 
   const [selected, setSelected] = useState<{
     team: AppliedTeam;

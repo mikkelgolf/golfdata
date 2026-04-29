@@ -123,7 +123,7 @@ export function computeScurve(
   // the page never renders empty.
   if (mode === "actual") {
     if (actualSelections && actualSelections.length > 0) {
-      return computeActualScurve(teams, regionals, actualSelections);
+      return computeActualScurve(teams, regionals, actualSelections, championships);
     }
     mode = "committee";
   }
@@ -156,6 +156,13 @@ export function computeScurve(
  * W-L) so the downstream views (Map, Regional, S-Curve, Visual, Breakdown,
  * Manual Grid, Advancement) get the same shape they expect.
  *
+ * AQ flags are recomputed via `deriveAutoQualifiers` (same as committee/strict)
+ * so the Magic Number, Last N In, and First N Out sections stay consistent
+ * across all three modes. The base `rankings-*.ts` files can have stale AQ
+ * flags between conference championship results — this guarantees the
+ * downstream views see the latest confirmed champions regardless of when
+ * rankings were last regenerated.
+ *
  * If a team in `actualSelections` doesn't match any team in `teams`, we
  * still surface it with placeholder fields rather than dropping it — the
  * announcement is the source of truth, and a missing match is a data bug
@@ -164,10 +171,12 @@ export function computeScurve(
 function computeActualScurve(
   teams: TeamData[],
   regionals: Regional[],
-  actualSelections: ActualSelection[]
+  actualSelections: ActualSelection[],
+  championships?: Championship[]
 ): ScurveAssignment[] {
+  const teamsWithAqs = deriveAutoQualifiers(teams, championships);
   const teamLookup = new Map<string, TeamData>();
-  for (const t of teams) teamLookup.set(t.team, t);
+  for (const t of teamsWithAqs) teamLookup.set(t.team, t);
 
   const assignments: ScurveAssignment[] = actualSelections.map((sel) => {
     const base = teamLookup.get(sel.team);
