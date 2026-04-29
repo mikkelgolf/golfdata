@@ -17,6 +17,12 @@
 # runs by the commit timestamp — cron fires at ~01:00 UTC, on-demand
 # runs any other time of day.
 #
+# We always inject --force-snapshots: a manual rankings update is an
+# explicit "make this an official archive entry" request from the user,
+# so we want a snapshot written even if today's content fingerprint
+# matches the previous archive entry (option-a dedup). The nightly cron
+# does NOT pass --force-snapshots, so its dedup behavior is unchanged.
+#
 # Usage:
 #   bash scripts/update-rankings-on-demand.sh
 #   bash scripts/update-rankings-on-demand.sh --dry-run
@@ -26,4 +32,4 @@ set -euo pipefail
 CGD_DIR="$HOME/projects/collegegolfdata"
 cd "$CGD_DIR"
 
-exec bash "$CGD_DIR/scripts/daily-refresh.sh" "$@"
+exec bash "$CGD_DIR/scripts/daily-refresh.sh" --force-snapshots "$@"

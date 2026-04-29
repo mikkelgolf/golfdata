@@ -306,15 +306,50 @@ interface FromLiveOpts {
 function snapshotFromLive(opts: FromLiveOpts): void {
   const date = todayUtcDate();
   const pulledAt = new Date().toISOString();
-  let wroteAny = false;
-  for (const gender of ["men", "women"] as const) {
-    const teams = gender === "men" ? liveMen : liveWomen;
-    const decision = decideWrite(gender, date, teams, {
+
+  // Two-phase decide-then-write so we can COUPLE the genders. If either
+  // gender's content has changed (fingerprint differs from the previous
+  // snapshot), we write BOTH — keeping the archive symmetric so a user
+  // selecting a date always finds matching men's + women's entries.
+  // Per David Tenneson (2026-04-29): "if there is a rankings change on
+  // the men's side but the women are the same, we still want to keep
+  // the update for both."
+  //
+  // The exception is hard gates like publication-day (option-b): if
+  // women's calendar firmly says "not a publication day today" we won't
+  // coupled-write women just because men changed. `decideWrite`
+  // distinguishes soft skips (overridable=true, dedup match) from hard
+  // skips (overridable=false, publication-day gate).
+  const decisions: Record<Gender, WriteDecision> = {
+    men: decideWrite("men", date, liveMen, {
       force: opts.force,
       requirePublicationDay: opts.requirePublicationDay,
-    });
-    if (!decision.write) {
-      console.log(`  ⊘ skip ${gender} ${date} — ${decision.reason}`);
+    }),
+    women: decideWrite("women", date, liveWomen, {
+      force: opts.force,
+      requirePublicationDay: opts.requirePublicationDay,
+    }),
+  };
+
+  const anyWrite = decisions.men.write || decisions.women.write;
+  let wroteAny = false;
+
+  for (const gender of ["men", "women"] as const) {
+    const teams = gender === "men" ? liveMen : liveWomen;
+    const decision = decisions[gender];
+    let shouldWrite = decision.write;
+    let reason = decision.reason;
+
+    // Coupling: if the OTHER gender wants to write and this gender's
+    // skip is overridable (soft — fingerprint match), upgrade to write.
+    if (!shouldWrite && decision.overridable && anyWrite) {
+      const other = gender === "men" ? "women" : "men";
+      shouldWrite = true;
+      reason = `coupled with ${other} change (own dedup: ${decision.reason})`;
+    }
+
+    if (!shouldWrite) {
+      console.log(`  ⊘ skip ${gender} ${date} — ${reason}`);
       continue;
     }
     writeSnapshotFile(
@@ -326,7 +361,7 @@ function snapshotFromLive(opts: FromLiveOpts): void {
       teams
     );
     console.log(
-      `  ✓ wrote ${snapshotFilePath(gender, date)} (${teams.length} teams) — ${decision.reason}`
+      `  ✓ wrote ${snapshotFilePath(gender, date)} (${teams.length} teams) — ${reason}`
     );
     wroteAny = true;
   }
@@ -338,7 +373,7 @@ function snapshotFromLive(opts: FromLiveOpts): void {
   }
   if (!wroteAny) {
     console.log(
-      `  (no new snapshots written — content matches existing archive entries)`
+      `  (no new snapshots written — both genders' content matches existing archive entries)`
     );
   }
 }
@@ -349,6 +384,20 @@ function snapshotFromLive(opts: FromLiveOpts): void {
 
 interface WriteDecision {
   write: boolean;
+  /**
+   * When `write: false`, can a coupled write (the OTHER gender wants to
+   * write) override this skip?
+   *   - true  → soft skip. Today's only soft skip is "fingerprint
+   *             matches previous snapshot". If the other gender's
+   *             content changed, we couple-write this gender too so the
+   *             archive stays in sync.
+   *   - false → hard skip. Cannot be overridden. Today's hard skips:
+   *             publication-day gate (option-b) — if NCAA didn't
+   *             publish for this gender, we won't pretend they did just
+   *             because the other gender did.
+   * Ignored when `write: true`.
+   */
+  overridable: boolean;
   reason: string;
 }
 
@@ -371,12 +420,15 @@ function decideWrite(
   opts: DecideOpts
 ): WriteDecision {
   if (opts.force) {
-    return { write: true, reason: "--force flag" };
+    return { write: true, overridable: false, reason: "--force flag" };
   }
 
+  // Hard gate: publication-day check (option-b). If NCAA didn't publish
+  // for this gender today, skip — and don't let coupling override us.
   if (opts.requirePublicationDay && !isPublicationDay(date, gender)) {
     return {
       write: false,
+      overridable: false,
       reason: `${date} is not an NCAA publication day for ${gender}`,
     };
   }
@@ -385,10 +437,15 @@ function decideWrite(
   // against the most recent prior snapshot's fingerprint. If they match,
   // NCAA hasn't actually published anything new — Clippd recomputed
   // derived metrics but the substantive fields (events / W-L-T / AQ /
-  // eventsWon / eventsTop3) are unchanged. Skip writing.
+  // eventsWon / eventsTop3) are unchanged. Mark as soft skip — if the
+  // other gender's content changed, we'll still couple-write this one.
   const existing = listSnapshotDates(gender).filter((d) => d !== date);
   if (existing.length === 0) {
-    return { write: true, reason: "no prior snapshot to dedup against" };
+    return {
+      write: true,
+      overridable: false,
+      reason: "no prior snapshot to dedup against",
+    };
   }
   const previousDate = existing[existing.length - 1];
   let previousTeams: TeamData[];
@@ -397,6 +454,7 @@ function decideWrite(
   } catch (err) {
     return {
       write: true,
+      overridable: false,
       reason: `couldn't read previous snapshot ${previousDate} (${(err as Error).message}) — writing anyway`,
     };
   }
@@ -405,10 +463,15 @@ function decideWrite(
   if (previousFp === liveFp) {
     return {
       write: false,
+      overridable: true,
       reason: `content fingerprint matches ${previousDate} (no NCAA publication detected — pass --force to override)`,
     };
   }
-  return { write: true, reason: `content differs from ${previousDate}` };
+  return {
+    write: true,
+    overridable: false,
+    reason: `content differs from ${previousDate}`,
+  };
 }
 
 /**
@@ -435,12 +498,39 @@ function isPublicationDay(_date: string, _gender: Gender): boolean {
 }
 
 /**
- * Stable hash over the substantive fields of a snapshot. Excludes
- * derived metrics (rank, avgPoints, strengthOfSchedule,
- * strengthOfScheduleRank, adjustedScore) because Clippd recomputes
- * those on every pull and they drift even when NCAA hasn't published
- * fresh data. Sorted by canonical team name so ordering changes don't
- * matter.
+ * Stable SHA-256 hash over the substantive fields of a snapshot.
+ *
+ * Covers EVERY team in the array (sorted by canonical team name then
+ * mapped — no sampling, no top-N truncation). This matters because on
+ * a typical NCAA publication only ~10% of teams pick up new tournament
+ * results — if we hashed only the top 25 we'd miss most real changes.
+ * The full sort+join means a single events-played bump on team #150
+ * still flips the hash.
+ *
+ * Included (substantive — change only when NCAA ingests new tournament
+ * data):
+ *   team           — name (catches Clippd renaming a school mid-season)
+ *   conference     — conference assignment (catches realignments)
+ *   events         — strokePlayEvents played
+ *   wins/losses/ties — head-to-head record
+ *   isAutoQualifier + aqConference — AQ status (changes as conference
+ *                    championships are decided)
+ *   eventsWon      — tournament wins
+ *   eventsTop3     — top-3 finishes
+ *
+ * Excluded (derived — Clippd recomputes daily, drifts even when NCAA
+ * has published nothing new):
+ *   rank, avgPoints, strengthOfSchedule, strengthOfScheduleRank,
+ *   adjustedScore — all functions of the substantive fields plus the
+ *     algorithm; we explicitly want to ignore drift in the algorithm's
+ *     output for dedup purposes
+ *   eligible — derived from W-L-T (already covered by W/L/T fields)
+ *   lat/lng — static team metadata; doesn't change with rankings
+ *
+ * If a future schema change adds a new substantive field, ADD IT HERE
+ * — otherwise dedup will silently miss real updates. (Kept the field
+ * list explicit rather than reflective so this stays loud at review
+ * time.)
  */
 function contentFingerprint(teams: TeamData[]): string {
   const sorted = [...teams].sort((a, b) => a.team.localeCompare(b.team));
@@ -458,7 +548,10 @@ function contentFingerprint(teams: TeamData[]): string {
       t.eventsTop3,
     ].join("|")
   );
-  return createHash("sha256").update(lines.join("\n")).digest("hex");
+  // Prefix with team count so adding/removing a team flips the hash
+  // even if the surviving teams' lines are otherwise identical.
+  const body = `n=${sorted.length}\n${lines.join("\n")}`;
+  return createHash("sha256").update(body).digest("hex");
 }
 
 /**

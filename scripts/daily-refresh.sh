@@ -41,11 +41,21 @@ log() {
 }
 
 dry_run_mode=0
+force_snapshots=0
 args_extra=()
 for arg in "$@"; do
     case "$arg" in
         --dry-run)
             dry_run_mode=1
+            ;;
+        --force-snapshots)
+            # Bypass content-aware dedup (option-a) inside snapshot-rankings.
+            # Wired by update-rankings-on-demand.sh so manual rankings
+            # updates always become official archive entries even if the
+            # fingerprint matches the previous snapshot. The nightly cron
+            # invokes this script directly without the flag, so its dedup
+            # behavior is unchanged.
+            force_snapshots=1
             ;;
         *)
             args_extra+=("$arg")
@@ -53,7 +63,7 @@ for arg in "$@"; do
     esac
 done
 
-log "starting (dry_run=$dry_run_mode)"
+log "starting (dry_run=$dry_run_mode, force_snapshots=$force_snapshots)"
 
 # Ensure homebrew/node/npx/vercel/python are on PATH under LaunchAgent.
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
@@ -154,13 +164,22 @@ rm -f data/clippd/rankings-men-*.ts data/clippd/rankings-women-*.ts
 #       today). When the NCAA publication calendar is wired in, this
 #       cron will automatically stop writing snapshots on off-days —
 #       no daily-refresh.sh edits required.
-#   (no --force) Default content-aware dedup is on. If today's live
-#       data fingerprint matches the previous snapshot's, the write is
-#       skipped — catches the trivial "Clippd returned identical data"
-#       case. Does NOT catch the "Clippd has new tournament data but
-#       NCAA didn't publish new rankings" case; that's option-b's job.
-log "step 2b': npx tsx scripts/snapshot-rankings.ts --from-live --require-publication-day"
-if ! npx --yes tsx scripts/snapshot-rankings.ts --from-live --require-publication-day 2>&1; then
+#   --force (only when force_snapshots=1) Bypass content-aware dedup.
+#       Set by update-rankings-on-demand.sh so manual !update-rankings
+#       runs always create an official archive entry. Cron runs do NOT
+#       pass this flag — they keep dedup on so duplicate Clippd pulls
+#       don't pollute the archive.
+#   (when not --force) Default content-aware dedup is on. If BOTH
+#       genders' live-data fingerprints match the previous snapshot, no
+#       write — catches the trivial "Clippd returned identical data"
+#       case. If EITHER gender's fingerprint changed, both write
+#       (coupled — see snapshot-rankings.ts for the rationale).
+SNAPSHOT_FLAGS=(--from-live --require-publication-day)
+if [ "$force_snapshots" = "1" ]; then
+    SNAPSHOT_FLAGS+=(--force)
+fi
+log "step 2b': npx tsx scripts/snapshot-rankings.ts ${SNAPSHOT_FLAGS[*]}"
+if ! npx --yes tsx scripts/snapshot-rankings.ts "${SNAPSHOT_FLAGS[@]}" 2>&1; then
     abort_hard "snapshot-rankings --from-live failed"
 fi
 
