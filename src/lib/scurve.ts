@@ -2,6 +2,7 @@ import { haversineDistance } from "@/lib/geo";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
+import type { ActualSelection } from "@/data/regionals-actual-men-2026";
 import { CHAMPIONSHIP_STRUCTURE } from "@/data/ncaa-selection-rules";
 
 export interface ScurveAssignment extends TeamData {
@@ -10,7 +11,7 @@ export interface ScurveAssignment extends TeamData {
   distanceMiles: number;
 }
 
-export type ScurveMode = "strict" | "committee";
+export type ScurveMode = "strict" | "committee" | "actual";
 
 /**
  * Compute regional strength seeds (1..N) from S-curve assignments.
@@ -113,8 +114,20 @@ export function computeScurve(
   regionals: Regional[],
   mode: ScurveMode = "committee",
   gender: "men" | "women" = "men",
-  championships?: Championship[]
+  championships?: Championship[],
+  actualSelections?: ActualSelection[] | null
 ): ScurveAssignment[] {
+  // "Actual" mode bypasses the predictive pipeline entirely — it renders the
+  // field exactly as the selection committee announced it. If we ever ask for
+  // "actual" but no data has been published yet, fall back to "committee" so
+  // the page never renders empty.
+  if (mode === "actual") {
+    if (actualSelections && actualSelections.length > 0) {
+      return computeActualScurve(teams, regionals, actualSelections);
+    }
+    mode = "committee";
+  }
+
   const teamsWithAqs = deriveAutoQualifiers(teams, championships);
   const fieldSize = CHAMPIONSHIP_STRUCTURE.totalFieldSize[gender];
   const allEligible = teamsWithAqs.filter((t) => t.eligible || t.isAutoQualifier);
@@ -132,6 +145,64 @@ export function computeScurve(
     return computeStrictScurve(eligible, regionals);
   }
   return computeCommitteeScurve(eligible, regionals);
+}
+
+/**
+ * ACTUAL: Replays the official committee announcement.
+ *
+ * No serpentine, no host swaps, no geographic adjustments — the committee
+ * has already done all of that and published the result. We just join each
+ * announced selection back to our `TeamData` (for conference, AWP, lat/lng,
+ * W-L) so the downstream views (Map, Regional, S-Curve, Visual, Breakdown,
+ * Manual Grid, Advancement) get the same shape they expect.
+ *
+ * If a team in `actualSelections` doesn't match any team in `teams`, we
+ * still surface it with placeholder fields rather than dropping it — the
+ * announcement is the source of truth, and a missing match is a data bug
+ * we want visible (zero distance, no map dot) rather than silently hidden.
+ */
+function computeActualScurve(
+  teams: TeamData[],
+  regionals: Regional[],
+  actualSelections: ActualSelection[]
+): ScurveAssignment[] {
+  const teamLookup = new Map<string, TeamData>();
+  for (const t of teams) teamLookup.set(t.team, t);
+
+  const assignments: ScurveAssignment[] = actualSelections.map((sel) => {
+    const base = teamLookup.get(sel.team);
+    if (base) {
+      return {
+        ...base,
+        seed: sel.seed,
+        regionalId: sel.regionalId,
+        distanceMiles: 0,
+      };
+    }
+    // Unknown team — keep it visible with empty stats so the bug shows up
+    // on the page instead of disappearing silently.
+    return {
+      rank: 9999,
+      team: sel.team,
+      conference: "",
+      events: 0,
+      wins: 0,
+      losses: 0,
+      ties: 0,
+      eligible: true,
+      isAutoQualifier: false,
+      aqConference: null,
+      lat: 0,
+      lng: 0,
+      seed: sel.seed,
+      regionalId: sel.regionalId,
+      distanceMiles: 0,
+    };
+  });
+
+  assignments.sort((a, b) => a.seed - b.seed);
+  calculateDistances(assignments, regionals);
+  return assignments;
 }
 
 /**

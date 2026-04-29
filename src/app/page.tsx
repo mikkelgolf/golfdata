@@ -9,6 +9,8 @@ import { rankingsMen } from "@/data/rankings-men";
 import { rankingsWomen } from "@/data/rankings-women";
 import { championshipsMen2026 } from "@/data/championships-men-2026";
 import { championshipsWomen2026 } from "@/data/championships-women-2026";
+import { actualMen2026 } from "@/data/regionals-actual-men-2026";
+import { actualWomen2026 } from "@/data/regionals-actual-women-2026";
 import type { TeamData } from "@/data/rankings-men";
 
 // Team names in rankings-*.ts (sourced from Clippd) occasionally disagree with
@@ -83,6 +85,8 @@ export default function Home() {
           womenRegionals={regionalsWomen2026}
           menChampionships={championshipsMen2026}
           womenChampionships={championshipsWomen2026}
+          menActual={actualMen2026}
+          womenActual={actualWomen2026}
           lastUpdated={LAST_UPDATED}
         />
       </Suspense>
