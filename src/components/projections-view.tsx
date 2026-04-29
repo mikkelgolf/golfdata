@@ -67,7 +67,7 @@ export function ProjectionsView({ regionals, gender, hostColorByTeam }: Props) {
   return (
     <div className="w-full">
       <Header />
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-1.5 sm:block sm:space-y-3 sm:gap-0">
         {ordered.map((reg) => (
           <RegionalCard
             key={`${reg.gender}-${reg.id}`}
@@ -106,13 +106,24 @@ function RegionalCard({
   hostColorByTeam: Map<string, string>;
 }) {
   return (
-    <div className="overflow-hidden rounded-md border border-border bg-card">
-      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 border-b border-border bg-muted/20 px-2.5 py-1.5">
+    <div className="overflow-hidden rounded-md border border-border bg-card min-w-0">
+      {/* Desktop header */}
+      <div className="hidden sm:flex flex-wrap items-baseline gap-x-2 gap-y-0.5 border-b border-border bg-muted/20 px-2.5 py-1.5">
         <h3 className="text-[12px] font-semibold tracking-tight text-foreground">
           {reg.name.replace(/ Regional$/, "")}
         </h3>
         <span className="text-[10px] text-muted-foreground">
           {reg.host} · {reg.city} · zone {reg.venueZone}
+        </span>
+      </div>
+
+      {/* Mobile header — single line, truncate, fits half-width column */}
+      <div className="sm:hidden flex items-center gap-1 border-b border-border bg-muted/20 px-1.5 py-1 overflow-hidden">
+        <h3 className="text-[10px] font-semibold uppercase tracking-wide text-foreground truncate">
+          {reg.name.replace(/ Regional$/, "")}
+        </h3>
+        <span className="ml-auto shrink-0 text-[8px] uppercase tracking-wider text-text-tertiary">
+          {reg.venueZone}
         </span>
       </div>
 
@@ -287,28 +298,28 @@ function MobileRow({
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.18, ease: "easeOut", delay: idx * 0.012 }}
         className={cn(
-          "border-t border-border/50 first:border-t-0",
-          advances ? "border-l-2 border-l-foreground" : "border-l-2 border-l-transparent",
+          advances ? "border-l-2 border-l-foreground bg-secondary/40" : "border-l-2 border-l-transparent",
         )}
       >
         <button
           type="button"
           onClick={() => setOpen((s) => !s)}
-          className="flex w-full items-center gap-1.5 px-2 py-1.5 text-left"
+          className="flex w-full items-center gap-1 px-1 py-0.5 text-left overflow-hidden"
           aria-expanded={open}
+          style={{ minHeight: "18px" }}
         >
-          <span className="w-6 shrink-0 text-right text-[11px] tabular-nums text-text-secondary">
-            <span className="inline-flex items-center justify-end gap-0.5">
-              {cinderella && <ArrowUp className="h-2.5 w-2.5 text-foreground" />}
+          <span className="w-4 shrink-0 text-right text-[8px] tabular-nums text-text-tertiary leading-none">
+            <span className="inline-flex items-center justify-end gap-0">
+              {cinderella && <ArrowUp className="h-2 w-2 text-foreground" />}
               {t.seed}
             </span>
           </span>
-          <span className="min-w-0 flex-1 truncate">
+          <span className="min-w-0 flex-1 truncate leading-none">
             <Link
               href={teamHref(t.team, gender)}
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                "text-[12px] hover:underline",
+                "text-[9px] hover:underline",
                 advances ? "font-semibold text-foreground" : "text-foreground",
               )}
               style={hostColor ? { color: hostColor } : undefined}
@@ -316,15 +327,12 @@ function MobileRow({
               {t.team}
             </Link>
             {t.isHost && (
-              <span className="ml-1 text-[9px] font-bold text-text-tertiary">H</span>
+              <span className="ml-0.5 text-[6px] font-bold text-text-tertiary">H</span>
             )}
-            <span className="ml-1 text-[10px] text-text-tertiary">
-              #{t.rank}
-            </span>
           </span>
           <span
             className={cn(
-              "shrink-0 text-right text-[12px] tabular-nums",
+              "shrink-0 text-right text-[9px] tabular-nums leading-none",
               advances ? "font-semibold text-foreground" : "text-foreground",
             )}
           >
@@ -332,59 +340,61 @@ function MobileRow({
           </span>
           <ChevronDown
             className={cn(
-              "h-3 w-3 shrink-0 text-text-tertiary transition-transform",
+              "h-2.5 w-2.5 shrink-0 text-text-tertiary/60 transition-transform",
               open && "rotate-180",
             )}
           />
         </button>
 
         {open && (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 border-t border-border/40 bg-muted/15 px-2 py-1.5 text-[10px] text-text-tertiary">
-            <div className="flex justify-between">
-              <span>Conference</span>
-              <span className="text-foreground">{t.conference}</span>
+          <div className="border-t border-border/40 bg-muted/15 px-1 py-1 text-[8px] text-text-tertiary leading-tight space-y-0.5">
+            <div className="flex justify-between gap-1">
+              <span>Conf</span>
+              <span className="text-foreground truncate">{t.conference}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-1">
+              <span>Rk</span>
+              <span className="text-foreground">#{t.rank}</span>
+            </div>
+            <div className="flex justify-between gap-1">
               <span>Travel</span>
               <span className="text-foreground">
-                {t.travelMi >= 750 && <Plane className="mr-0.5 inline h-2.5 w-2.5 opacity-50" />}
-                {t.travelMi.toLocaleString()} mi
+                {t.travelMi >= 750 && <Plane className="mr-0.5 inline h-2 w-2 opacity-50" />}
+                {t.travelMi.toLocaleString()}mi
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-1">
               <span>Zone</span>
               <span className={cn(isCrossing ? "text-foreground" : "text-text-tertiary")}>
                 {t.zoneCrossing}
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-1">
               <span>Base</span>
               <span className="text-foreground">{t.baseRatePct.toFixed(0)}%</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-1">
               <span>+Host</span>
               <span className="text-foreground">{t.afterHostPct.toFixed(0)}%</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-1">
               <span>+Dist</span>
               <span className="text-foreground">{t.afterDistancePct.toFixed(0)}%</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-1">
               <span>+Climate</span>
               <span className="text-foreground">{t.afterZonePct.toFixed(0)}%</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Final</span>
-              <span className="font-semibold text-foreground">{t.finalPct.toFixed(1)}%</span>
             </div>
           </div>
         )}
       </motion.div>
       {isLastAdvancing && (
-        <div className="flex items-center gap-1 border-t border-dashed border-border/60 px-2 py-0.5">
-          <span className="text-[8px] font-medium uppercase tracking-wider text-text-tertiary">
-            advancing
+        <div className="flex items-center gap-0.5 px-1 py-0.5">
+          <div className="flex-1 border-t border-dashed border-destructive/30" />
+          <span className="text-[6px] font-medium uppercase tracking-wider text-destructive/60">
+            Advancing
           </span>
+          <div className="flex-1 border-t border-dashed border-destructive/30" />
         </div>
       )}
     </>
