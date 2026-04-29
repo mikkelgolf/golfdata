@@ -44,7 +44,8 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { RotateCcw, Sparkles } from "lucide-react";
+import { toPng } from "html-to-image";
+import { Download, RotateCcw, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   buildInitialGridState,
@@ -757,6 +758,57 @@ export function ManualGridTable({
   // Slot ID currently armed for placement (visual ring while held).
   const [longPressArmedSlotId, setLongPressArmedSlotId] = useState<string | null>(null);
 
+  // PNG export — captures the table + watermark as a shareable image.
+  const captureRef = useRef<HTMLDivElement | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const handleExportImage = useCallback(async () => {
+    const node = captureRef.current;
+    if (!node) return;
+    // Preload the watermark logo so it's in cache before html-to-image
+    // clones the DOM. Without this the cloned <img> can race the network
+    // and render blank.
+    await new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+      img.src = "/logo.png";
+    });
+    setIsExporting(true);
+    try {
+      // Wait two animation frames so the watermark + w-max layout have
+      // actually been painted before html-to-image walks the DOM.
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+      );
+      // Resolve the page background so the PNG isn't transparent.
+      const bgVar = getComputedStyle(document.documentElement)
+        .getPropertyValue("--background")
+        .trim();
+      const backgroundColor = bgVar ? `hsl(${bgVar})` : "#0d0d10";
+      // Capture at the wrapper's full scroll dimensions so the whole
+      // grid is included even when the viewport is narrower than the
+      // table (mobile).
+      const width = node.scrollWidth;
+      const height = node.scrollHeight;
+      const dataUrl = await toPng(node, {
+        backgroundColor,
+        pixelRatio: 2,
+        width,
+        height,
+      });
+      const today = new Date().toISOString().slice(0, 10);
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `manual-grid-${gender}-${today}.png`;
+      a.click();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Manual Grid export failed:", err);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [gender]);
+
   return (
     <div className="mt-3">
       <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
@@ -798,6 +850,16 @@ export function ManualGridTable({
           >
             <RotateCcw className="h-3 w-3" />
             Reset All
+          </button>
+          <button
+            type="button"
+            onClick={handleExportImage}
+            disabled={isExporting}
+            className="inline-flex items-center gap-1 h-7 px-2 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Download the current grid as a shareable PNG"
+          >
+            <Download className="h-3 w-3" />
+            {isExporting ? "Exporting…" : "Export PNG"}
           </button>
           <div className="relative">
             <button
@@ -855,6 +917,7 @@ export function ManualGridTable({
           )}
           data-dragging={isDragging || undefined}
         >
+          <div ref={captureRef} className={cn(isExporting && "p-3 bg-background w-max")}>
           <table
             className="border-separate"
             style={{
@@ -944,6 +1007,22 @@ export function ManualGridTable({
               </tbody>
             </SortableContext>
           </table>
+          {isExporting && (
+            <div className="flex justify-end pr-2 pt-3">
+              <div className="flex flex-col items-center gap-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo.png"
+                  alt="collegegolfdata logo"
+                  className="h-9 w-auto opacity-80"
+                />
+                <span className="text-[10px] font-medium tracking-wide text-foreground/70">
+                  collegegolfdata.com
+                </span>
+              </div>
+            </div>
+          )}
+          </div>
         </div>
 
         <DragOverlay>
