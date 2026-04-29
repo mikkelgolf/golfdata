@@ -648,6 +648,7 @@ export default function ScurveTable({
           regionals={activeRegionals}
           championships={activeChampionships}
           gender={gender}
+          hostColorByTeam={hostColorByTeam}
         />
       </div>
     );
@@ -2565,17 +2566,19 @@ function ManualGridSection({
   regionals,
   championships,
   gender,
+  hostColorByTeam,
 }: {
   teams: TeamData[];
   regionals: Regional[];
   championships?: Championship[];
   gender: Gender;
+  hostColorByTeam: Map<string, string>;
 }) {
   // Live H2H slots fed by long-press placements from the grid above. A first,
   // then B if A is filled (and the placement isn't a duplicate of A).
   const [teamA, setTeamA] = useState<string | null>(null);
   const [teamB, setTeamB] = useState<string | null>(null);
-  const [tab, setTab] = useState<"h2h" | "map">("h2h");
+  const [tab, setTab] = useState<"h2h" | "map" | "advancement">("h2h");
   // Regional selection on the Map tab — clicking a regional dot fans
   // lines to all teams placed in that regional and clears A/B. Tapping
   // the same regional again clears the selection.
@@ -2585,6 +2588,17 @@ function ManualGridSection({
   // the user's column order, and so we know which teams sit in each regional.
   const [gridAssignments, setGridAssignments] = useState<ScurveAssignment[]>([]);
   const [gridRegionalIds, setGridRegionalIds] = useState<number[]>([]);
+
+  // Strength-order regionals for the Advancement Model tab using the seeds
+  // implied by the user's grid (matches how the main Advancement view orders
+  // regionals — strongest first, left-to-right). Falls back to the natural
+  // regionals order when the grid is empty.
+  const advancementRegionals = useMemo(() => {
+    const seeds = computeRegionalSeeds(gridAssignments);
+    return [...regionals].sort(
+      (a, b) => (seeds.get(a.id) ?? 99) - (seeds.get(b.id) ?? 99),
+    );
+  }, [gridAssignments, regionals]);
 
   // Reset slots on gender switch — H2H data is gender-specific.
   const lastGenderRef = useRef<Gender>(gender);
@@ -2693,9 +2707,23 @@ function ManualGridSection({
           >
             Map
           </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "advancement"}
+            onClick={() => setTab("advancement")}
+            className={cn(
+              "px-3 py-1 transition-colors border-l border-border",
+              tab === "advancement"
+                ? "bg-primary/20 text-primary"
+                : "bg-card text-muted-foreground hover:bg-card/80"
+            )}
+          >
+            Advancement Model
+          </button>
         </div>
 
-        {tab === "h2h" ? (
+        {tab === "h2h" && (
           <div role="tabpanel">
             <h3 className="text-[13px] font-semibold text-foreground mb-3">
               Head-to-Head
@@ -2713,7 +2741,8 @@ function ManualGridSection({
               }}
             />
           </div>
-        ) : (
+        )}
+        {tab === "map" && (
           <div role="tabpanel">
             <div className="flex items-baseline justify-between gap-3 mb-3 flex-wrap">
               <h3 className="text-[13px] font-semibold text-foreground">
@@ -2751,6 +2780,28 @@ function ManualGridSection({
               selectedRegionalId={selectedRegionalId}
               onSelectRegional={handleSelectRegional}
             />
+          </div>
+        )}
+        {tab === "advancement" && (
+          <div role="tabpanel">
+            <h3 className="text-[13px] font-semibold text-foreground mb-3">
+              Advancement Model
+              <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                Live projections for the bracket you&apos;re building above
+              </span>
+            </h3>
+            {gridAssignments.length === 0 ? (
+              <p className="text-[12px] text-text-tertiary italic">
+                Place teams in the grid above to see advancement projections.
+              </p>
+            ) : (
+              <AdvancementBars
+                regionals={advancementRegionals}
+                gender={gender}
+                hostColorByTeam={hostColorByTeam}
+                assignments={gridAssignments}
+              />
+            )}
           </div>
         )}
       </div>
