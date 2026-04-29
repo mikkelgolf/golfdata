@@ -1,15 +1,25 @@
 import { Suspense } from "react";
 import ScurveTable from "@/components/scurve-table";
 import { MapSkeleton, FilterBarSkeleton } from "@/components/skeletons";
-import { allTeamsMen2026, ALL_TEAMS_GENERATED_AT } from "@/data/all-teams-men-2026";
+import { allTeamsMen2026 } from "@/data/all-teams-men-2026";
 import { regionalsMen2026 } from "@/data/regionals-men-2026";
 import { allTeamsWomen2026 } from "@/data/all-teams-women-2026";
 import { regionalsWomen2026 } from "@/data/regionals-women-2026";
-import { rankingsMen } from "@/data/rankings-men";
-import { rankingsWomen } from "@/data/rankings-women";
 import { championshipsMen2026 } from "@/data/championships-men-2026";
 import { championshipsWomen2026 } from "@/data/championships-women-2026";
 import type { TeamData } from "@/data/rankings-men";
+import { loadActiveSnapshot } from "@/lib/rankings-archive";
+
+// Regional Predictions consumes the rankings snapshot pinned in
+// `src/data/active-rankings.json` (per gender). When a gender is
+// unpinned, loadActiveSnapshot falls back to the latest archived
+// snapshot — same behaviour as the pre-archive direct imports of
+// `@/data/rankings-{men,women}`. Flip the pin via
+// `scripts/set-active-rankings.ts`.
+const menSnapshot = loadActiveSnapshot("men");
+const womenSnapshot = loadActiveSnapshot("women");
+const rankingsMen = menSnapshot.teams;
+const rankingsWomen = womenSnapshot.teams;
 
 // Team names in rankings-*.ts (sourced from Clippd) occasionally disagree with
 // the canonical names in all-teams-*.ts. Normalize punctuation and fall back
@@ -45,19 +55,24 @@ function enrichWithAwp(allTeams: TeamData[], rankings: TeamData[]): TeamData[] {
   });
 }
 
-// Derive the display date from ALL_TEAMS_GENERATED_AT (populated from the
-// Clippd JSON's `pulledAt` field by scripts/build-all-teams.mjs) so it stays
-// in sync automatically after every rankings refresh.
-function formatLastUpdated(iso: string): string {
-  const d = new Date(`${iso}T00:00:00Z`);
+// Display date now comes from the active rankings snapshot for each
+// gender. When men's and women's are pinned to the same date (or both
+// flow to latest and refreshed on the same day), we show one date. When
+// they differ — e.g. women frozen for regional predictions while men
+// keeps tracking the latest — we show both, labelled.
+function formatLastUpdated(isoDate: string, opts: { withYear?: boolean } = {}): string {
+  const d = new Date(`${isoDate}T00:00:00Z`);
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    year: "numeric",
+    ...(opts.withYear ? { year: "numeric" } : {}),
     timeZone: "UTC",
   });
 }
-const LAST_UPDATED = formatLastUpdated(ALL_TEAMS_GENERATED_AT);
+const LAST_UPDATED =
+  menSnapshot.date === womenSnapshot.date
+    ? formatLastUpdated(menSnapshot.date, { withYear: true })
+    : `Men ${formatLastUpdated(menSnapshot.date)} · Women ${formatLastUpdated(womenSnapshot.date)}`;
 
 export default function Home() {
   return (

@@ -141,6 +141,16 @@ log "mirrored $(basename "$LATEST_MEN") + $(basename "$LATEST_WOMEN") → src/da
 # Remove staged files so Next.js doesn't index them and so they don't accumulate.
 rm -f data/clippd/rankings-men-*.ts data/clippd/rankings-women-*.ts
 
+# Step 2b': snapshot today's live rankings into the archive at
+# src/data/rankings-archive/{men,women}/YYYY-MM-DD.ts and regenerate the
+# per-gender index. The archive is what the Regional Predictions page reads
+# (via loadActive in src/lib/rankings-archive.ts), so this MUST run on every
+# successful refresh — otherwise pin/latest drift apart.
+log "step 2b': npx tsx scripts/snapshot-rankings.ts --from-live"
+if ! npx --yes tsx scripts/snapshot-rankings.ts --from-live 2>&1; then
+    abort_hard "snapshot-rankings --from-live failed"
+fi
+
 log "step 2c: node scripts/build-all-teams.mjs"
 if ! node scripts/build-all-teams.mjs 2>&1; then
     abort_hard "build-all-teams.mjs failed"
