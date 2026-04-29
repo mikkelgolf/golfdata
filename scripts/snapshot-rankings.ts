@@ -6,17 +6,36 @@
  *
  * Modes
  * -----
- *   --from-live
+ *   --from-live [--force] [--require-publication-day]
  *       Snapshot today's live rankings (`src/data/rankings-{men,women}.ts`)
  *       into the archive, dated YYYY-MM-DD (today, UTC). This is the mode
  *       wired into `daily-refresh.sh` after a successful Clippd pull.
+ *
+ *       Content-aware dedup is ON by default: if today's live data
+ *       fingerprint (events / W-L-T / AQ / eventsWon / eventsTop3) matches
+ *       the most recent prior snapshot, we skip writing. NCAA only
+ *       publishes new rankings on certain days; on off days Clippd's
+ *       leaderboard API still returns rows but the substantive fields
+ *       are unchanged — only derived metrics (rank, avgPoints,
+ *       strengthOfSchedule, adjustedScore) drift. We don't want to
+ *       archive that drift as if it were a real publication.
+ *
+ *       `--force` overrides dedup and always writes (useful for testing
+ *       or if you've manually edited the live file and want the new
+ *       state captured).
+ *
+ *       `--require-publication-day` is the option-b prep flag — it gates
+ *       writes on `isPublicationDay(date, gender)`, which today is a
+ *       stub returning true. When the NCAA publication calendar lands,
+ *       fill in that function and flip the flag on in daily-refresh.sh.
  *
  *   --from-clippd-json <path>
  *       Read a raw Clippd leaderboard JSON (the kind written to
  *       `data/clippd/rankings-YYYY-MM-DD.json`) and write archive
  *       entries for both genders, dated by the JSON's `pulledAt` (UTC
  *       date). Used for backfilling historical snapshots from JSONs we
- *       already have on disk.
+ *       already have on disk. Dedup does NOT run in this mode — historical
+ *       backfills are intentional and should always write.
  *
  *   --regen-index
  *       Just rebuild the per-gender `index.ts` files. Useful after
@@ -34,6 +53,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { createHash } from "crypto";
 import { rankingsMen as liveMen, type TeamData } from "../src/data/rankings-men";
 import { rankingsWomen as liveWomen } from "../src/data/rankings-women";
 import { normalizeConference } from "../src/data/conference-codes";
@@ -275,27 +295,203 @@ function regenIndex(gender: Gender): void {
 // Modes
 // ---------------------------------------------------------------------------
 
-function snapshotFromLive(label: string | null): void {
+interface FromLiveOpts {
+  label: string | null;
+  /** Bypass content-aware dedup and always write today's snapshot. */
+  force: boolean;
+  /** Option-b gate: skip writes on non-publication days. Stubbed today. */
+  requirePublicationDay: boolean;
+}
+
+function snapshotFromLive(opts: FromLiveOpts): void {
   const date = todayUtcDate();
   const pulledAt = new Date().toISOString();
+  let wroteAny = false;
   for (const gender of ["men", "women"] as const) {
     const teams = gender === "men" ? liveMen : liveWomen;
+    const decision = decideWrite(gender, date, teams, {
+      force: opts.force,
+      requirePublicationDay: opts.requirePublicationDay,
+    });
+    if (!decision.write) {
+      console.log(`  ⊘ skip ${gender} ${date} — ${decision.reason}`);
+      continue;
+    }
     writeSnapshotFile(
       gender,
       date,
       pulledAt,
-      label,
+      opts.label,
       "live-rankings-ts",
       teams
     );
     console.log(
-      `  ✓ wrote ${snapshotFilePath(gender, date)} (${teams.length} teams)`
+      `  ✓ wrote ${snapshotFilePath(gender, date)} (${teams.length} teams) — ${decision.reason}`
     );
+    wroteAny = true;
   }
+  // Always regen the index files: cheap, idempotent, and ensures the
+  // generated TypeScript stays consistent with whatever's on disk.
   for (const gender of ["men", "women"] as const) {
     regenIndex(gender);
     console.log(`  ✓ regen index ${gender}`);
   }
+  if (!wroteAny) {
+    console.log(
+      `  (no new snapshots written — content matches existing archive entries)`
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Should-we-write decision
+// ---------------------------------------------------------------------------
+
+interface WriteDecision {
+  write: boolean;
+  reason: string;
+}
+
+interface DecideOpts {
+  force: boolean;
+  requirePublicationDay: boolean;
+}
+
+/**
+ * Single hook for "should we write a snapshot for `gender` on `date`?"
+ * Today encapsulates content-aware dedup (option-a). When the NCAA
+ * publication calendar lands (option-b), `isPublicationDay` gets real
+ * logic and `--require-publication-day` starts gating writes — no
+ * structural changes needed here.
+ */
+function decideWrite(
+  gender: Gender,
+  date: string,
+  liveTeams: TeamData[],
+  opts: DecideOpts
+): WriteDecision {
+  if (opts.force) {
+    return { write: true, reason: "--force flag" };
+  }
+
+  if (opts.requirePublicationDay && !isPublicationDay(date, gender)) {
+    return {
+      write: false,
+      reason: `${date} is not an NCAA publication day for ${gender}`,
+    };
+  }
+
+  // Content-aware dedup. Compare the incoming live data's fingerprint
+  // against the most recent prior snapshot's fingerprint. If they match,
+  // NCAA hasn't actually published anything new — Clippd recomputed
+  // derived metrics but the substantive fields (events / W-L-T / AQ /
+  // eventsWon / eventsTop3) are unchanged. Skip writing.
+  const existing = listSnapshotDates(gender).filter((d) => d !== date);
+  if (existing.length === 0) {
+    return { write: true, reason: "no prior snapshot to dedup against" };
+  }
+  const previousDate = existing[existing.length - 1];
+  let previousTeams: TeamData[];
+  try {
+    previousTeams = readSnapshotFile(gender, previousDate).teams;
+  } catch (err) {
+    return {
+      write: true,
+      reason: `couldn't read previous snapshot ${previousDate} (${(err as Error).message}) — writing anyway`,
+    };
+  }
+  const previousFp = contentFingerprint(previousTeams);
+  const liveFp = contentFingerprint(liveTeams);
+  if (previousFp === liveFp) {
+    return {
+      write: false,
+      reason: `content fingerprint matches ${previousDate} (no NCAA publication detected — pass --force to override)`,
+    };
+  }
+  return { write: true, reason: `content differs from ${previousDate}` };
+}
+
+/**
+ * Stub for option-b. Today returns `true` for every date — i.e. the
+ * `--require-publication-day` flag is a no-op until this is filled in.
+ *
+ * When option-b is wired up:
+ *   1. Encode NCAA's regular-season publication calendar (typically
+ *      Wednesdays during the spring season; verify the actual cadence
+ *      and any postseason quirks).
+ *   2. Add manual override hooks for one-off weeks (regionals, finals,
+ *      bye weeks) where the calendar drifts.
+ *   3. Flip `--require-publication-day` on in scripts/daily-refresh.sh
+ *      so the LaunchAgent stops writing snapshots on off days.
+ *
+ * The function takes `gender` because in principle men's and women's
+ * publication days could differ (different season cadence, separate
+ * announcements). Today they don't — kept as a parameter so the API
+ * doesn't change when we differentiate later.
+ */
+function isPublicationDay(_date: string, _gender: Gender): boolean {
+  // TODO(option-b): replace with real NCAA publication-day calendar.
+  return true;
+}
+
+/**
+ * Stable hash over the substantive fields of a snapshot. Excludes
+ * derived metrics (rank, avgPoints, strengthOfSchedule,
+ * strengthOfScheduleRank, adjustedScore) because Clippd recomputes
+ * those on every pull and they drift even when NCAA hasn't published
+ * fresh data. Sorted by canonical team name so ordering changes don't
+ * matter.
+ */
+function contentFingerprint(teams: TeamData[]): string {
+  const sorted = [...teams].sort((a, b) => a.team.localeCompare(b.team));
+  const lines = sorted.map((t) =>
+    [
+      t.team,
+      t.conference,
+      t.events,
+      t.wins,
+      t.losses,
+      t.ties,
+      t.isAutoQualifier ? "1" : "0",
+      t.aqConference ?? "",
+      t.eventsWon,
+      t.eventsTop3,
+    ].join("|")
+  );
+  return createHash("sha256").update(lines.join("\n")).digest("hex");
+}
+
+/**
+ * Read an existing snapshot file from disk and return its `teams`
+ * array. We don't dynamically `import` the file because the snapshot
+ * source uses the `@/...` path alias and tsx's resolver doesn't pick
+ * that up without extra config. Each team row was written via
+ * `JSON.stringify(t)` on its own line, so we can scan and JSON.parse.
+ */
+function readSnapshotFile(
+  gender: Gender,
+  date: string
+): { teams: TeamData[] } {
+  const p = snapshotFilePath(gender, date);
+  if (!fs.existsSync(p)) {
+    throw new Error(`no snapshot file at ${p}`);
+  }
+  const src = fs.readFileSync(p, "utf-8");
+  const teams: TeamData[] = [];
+  for (const line of src.split("\n")) {
+    const trimmed = line.trim().replace(/,$/, "");
+    if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+      try {
+        teams.push(JSON.parse(trimmed) as TeamData);
+      } catch {
+        // Non-team lines (comments, prelude) — skip silently.
+      }
+    }
+  }
+  if (teams.length === 0) {
+    throw new Error(`no team rows parsed from ${p}`);
+  }
+  return { teams };
 }
 
 function snapshotFromClippdJson(jsonPath: string, label: string | null): void {
@@ -357,6 +553,10 @@ function parseLabel(args: string[]): string | null {
   return v && !v.startsWith("--") ? v : null;
 }
 
+function hasFlag(args: string[], flag: string): boolean {
+  return args.includes(flag);
+}
+
 function main(): void {
   const args = process.argv.slice(2);
   const mode = args[0];
@@ -364,7 +564,11 @@ function main(): void {
   switch (mode) {
     case "--from-live":
       console.log("=== snapshot-rankings: --from-live ===");
-      snapshotFromLive(label);
+      snapshotFromLive({
+        label,
+        force: hasFlag(args, "--force"),
+        requirePublicationDay: hasFlag(args, "--require-publication-day"),
+      });
       break;
     case "--from-clippd-json": {
       const p = args[1];
@@ -383,7 +587,7 @@ function main(): void {
     default:
       console.error(
         "usage:\n" +
-          "  npx tsx scripts/snapshot-rankings.ts --from-live [--label <name>]\n" +
+          "  npx tsx scripts/snapshot-rankings.ts --from-live [--label <name>] [--force] [--require-publication-day]\n" +
           "  npx tsx scripts/snapshot-rankings.ts --from-clippd-json <path> [--label <name>]\n" +
           "  npx tsx scripts/snapshot-rankings.ts --regen-index"
       );

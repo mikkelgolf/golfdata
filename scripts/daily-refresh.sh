@@ -146,8 +146,21 @@ rm -f data/clippd/rankings-men-*.ts data/clippd/rankings-women-*.ts
 # per-gender index. The archive is what the Regional Predictions page reads
 # (via loadActive in src/lib/rankings-archive.ts), so this MUST run on every
 # successful refresh — otherwise pin/latest drift apart.
-log "step 2b': npx tsx scripts/snapshot-rankings.ts --from-live"
-if ! npx --yes tsx scripts/snapshot-rankings.ts --from-live 2>&1; then
+#
+# Flags:
+#   --require-publication-day  Option-b prep: gate the write on
+#       isPublicationDay(date, gender) inside snapshot-rankings.ts. Today
+#       that function is stubbed to return true (so this flag is a no-op
+#       today). When the NCAA publication calendar is wired in, this
+#       cron will automatically stop writing snapshots on off-days —
+#       no daily-refresh.sh edits required.
+#   (no --force) Default content-aware dedup is on. If today's live
+#       data fingerprint matches the previous snapshot's, the write is
+#       skipped — catches the trivial "Clippd returned identical data"
+#       case. Does NOT catch the "Clippd has new tournament data but
+#       NCAA didn't publish new rankings" case; that's option-b's job.
+log "step 2b': npx tsx scripts/snapshot-rankings.ts --from-live --require-publication-day"
+if ! npx --yes tsx scripts/snapshot-rankings.ts --from-live --require-publication-day 2>&1; then
     abort_hard "snapshot-rankings --from-live failed"
 fi
 
