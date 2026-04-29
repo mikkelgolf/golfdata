@@ -14,6 +14,7 @@ import { AdvancementBars } from "@/components/advancement-bars";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
+import type { ActualSelection } from "@/data/regionals-actual-men-2026";
 import {
   Search,
   ChevronUp,
@@ -56,6 +57,10 @@ interface ScurveTableProps {
   womenRegionals: Regional[];
   menChampionships?: Championship[];
   womenChampionships?: Championship[];
+  /** Empty until the men's selection committee announces its field. */
+  menActual?: ActualSelection[];
+  /** Empty until the women's selection committee announces its field. */
+  womenActual?: ActualSelection[];
   lastUpdated: string;
 }
 
@@ -264,10 +269,17 @@ export default function ScurveTable({
   womenRegionals,
   menChampionships,
   womenChampionships,
+  menActual,
+  womenActual,
   lastUpdated,
 }: ScurveTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Has the selection committee published this gender's bracket yet? Drives
+  // both tab visibility and the default-mode logic below.
+  const hasActualMen = (menActual?.length ?? 0) > 0;
+  const hasActualWomen = (womenActual?.length ?? 0) > 0;
 
   // URL-persisted state
   const rawView = searchParams.get("view");
@@ -282,7 +294,20 @@ export default function ScurveTable({
       ? "advancement"
       : ((rawView as ViewMode) || "map");
   const initialGender = (searchParams.get("gender") as Gender) || "men";
-  const initialMode = (searchParams.get("mode") as ScurveMode) || "committee";
+  const hasActualForInitialGender =
+    initialGender === "men" ? hasActualMen : hasActualWomen;
+  const rawMode = searchParams.get("mode") as ScurveMode | null;
+  // When a URL pins the mode, respect it — but if it pins "actual" for a
+  // gender without published data, fall back to "committee" so the page
+  // still renders. With no URL hint, prefer "actual" when it's available.
+  let initialMode: ScurveMode;
+  if (rawMode === "strict" || rawMode === "committee") {
+    initialMode = rawMode;
+  } else if (rawMode === "actual" && hasActualForInitialGender) {
+    initialMode = "actual";
+  } else {
+    initialMode = hasActualForInitialGender ? "actual" : "committee";
+  }
 
   const [viewMode, setViewMode] = useState<ViewMode>(initialView);
   const [gender, setGender] = useState<Gender>(initialGender);
@@ -323,8 +348,15 @@ export default function ScurveTable({
 
   const handleGenderChange = (g: Gender) => {
     startTransition(() => {
+      // If the user is on "actual" and toggles to a gender whose committee
+      // hasn't published yet, coerce back to "committee" so the new view
+      // doesn't render empty.
+      const hasActualForG = g === "men" ? hasActualMen : hasActualWomen;
+      const nextMode: ScurveMode =
+        scurveMode === "actual" && !hasActualForG ? "committee" : scurveMode;
       setGender(g);
-      updateUrl(viewMode, g, scurveMode);
+      if (nextMode !== scurveMode) setScurveMode(nextMode);
+      updateUrl(viewMode, g, nextMode);
     });
   };
 
@@ -344,14 +376,24 @@ export default function ScurveTable({
     }
   };
 
+  // Mode tabs visible for the active gender. "Actual" only appears once that
+  // gender's committee has published its bracket; when present it leads the
+  // list (and is the default — see initialMode + handleGenderChange).
+  const availableModes = useMemo<ScurveMode[]>(() => {
+    const hasActual = gender === "men" ? hasActualMen : hasActualWomen;
+    return hasActual
+      ? ["actual", "committee", "strict"]
+      : ["committee", "strict"];
+  }, [gender, hasActualMen, hasActualWomen]);
+
   // Compute S-curve
   const assignments = useMemo(() => {
     if (gender === "women") {
       if (womenTeams.length === 0 || womenRegionals.length === 0) return [];
-      return computeScurve(womenTeams, womenRegionals, scurveMode, "women", womenChampionships);
+      return computeScurve(womenTeams, womenRegionals, scurveMode, "women", womenChampionships, womenActual);
     }
-    return computeScurve(menTeams, menRegionals, scurveMode, "men", menChampionships);
-  }, [gender, menTeams, menRegionals, womenTeams, womenRegionals, scurveMode, menChampionships, womenChampionships]);
+    return computeScurve(menTeams, menRegionals, scurveMode, "men", menChampionships, menActual);
+  }, [gender, menTeams, menRegionals, womenTeams, womenRegionals, scurveMode, menChampionships, womenChampionships, menActual, womenActual]);
 
   // Regional map for colors / names
   const regionalMap = useMemo(() => {
@@ -467,6 +509,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         <div className="mt-6 sm:mt-10 flex flex-col items-center gap-5 text-center">
           <div className="space-y-2">
@@ -517,6 +560,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         {/* Desktop */}
         <div className="hidden sm:block">
@@ -570,6 +614,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         <BreakdownView
           teams={gender === "men" ? menTeams : womenTeams}
@@ -606,6 +651,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         <ManualGridSection
           teams={activeTeams}
@@ -641,6 +687,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         <AdvancementBars
           regionals={orderedRegionals}
@@ -671,6 +718,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         <ScurveSnakeTable
           assignments={assignments}
@@ -711,6 +759,7 @@ export default function ScurveTable({
           onGenderChange={handleGenderChange}
           onModeChange={handleModeChange}
           onSearchChange={setSearch}
+          availableModes={availableModes}
         />
         <div className="mt-2 sm:mt-3">
           <p className="hidden sm:block text-[12px] text-text-tertiary mb-2">
@@ -750,6 +799,7 @@ export default function ScurveTable({
         onGenderChange={handleGenderChange}
         onModeChange={handleModeChange}
         onSearchChange={setSearch}
+        availableModes={availableModes}
       />
 
       {/* Mode description — desktop only to save mobile space */}
@@ -952,6 +1002,7 @@ function FilterBar({
   onGenderChange,
   onModeChange,
   onSearchChange,
+  availableModes,
 }: {
   viewMode: ViewMode;
   gender: Gender;
@@ -963,7 +1014,18 @@ function FilterBar({
   onGenderChange: (g: Gender) => void;
   onModeChange: (m: ScurveMode) => void;
   onSearchChange: (s: string) => void;
+  /** Modes visible in the toggle. Order is preserved. "actual" appears only
+   *  when the current gender's committee bracket has been published. */
+  availableModes: ScurveMode[];
 }) {
+  const allModeOptions: { value: ScurveMode; label: string }[] = [
+    { value: "actual", label: "Actual" },
+    { value: "committee", label: "Committee" },
+    { value: "strict", label: "Strict" },
+  ];
+  const modeOptions = availableModes
+    .map((m) => allModeOptions.find((opt) => opt.value === m))
+    .filter((opt): opt is { value: ScurveMode; label: string } => opt !== undefined);
   return (
     <div className="flex flex-col gap-2">
       {/* Desktop */}
@@ -998,10 +1060,7 @@ function FilterBar({
 
         {/* Mode toggle */}
         <SegmentedToggle
-          options={[
-            { value: "committee", label: "Committee" },
-            { value: "strict", label: "Strict" },
-          ]}
+          options={modeOptions}
           value={scurveMode}
           onChange={(m) => onModeChange(m as ScurveMode)}
         />
@@ -1052,10 +1111,7 @@ function FilterBar({
         </div>
         <div className="flex items-center gap-3">
           <SegmentedToggle
-            options={[
-              { value: "committee", label: "Committee" },
-              { value: "strict", label: "Strict" },
-            ]}
+            options={modeOptions}
             value={scurveMode}
             onChange={(m) => onModeChange(m as ScurveMode)}
           />
