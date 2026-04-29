@@ -63,11 +63,18 @@ export interface AppliedRegional {
   teams: AppliedTeam[];
 }
 
-// Loose `any[]` typing on the lift tables matches the JSON shape — they
-// have a discriminated union of cell levels (aggregate / tier / crossing)
-// and each lookup helper handles the variants explicitly.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type LiftTable = any[];
+// Loose structural typing on the lift tables matches the JSON shape —
+// each row has gender + level + an oddsRatio + n, plus level-specific
+// fields (tier, in_or_out, from, to, bucket) that the lookup helpers
+// inspect via runtime guards. `gender` is `string` (not `Gender`) because
+// JSON imports widen the literal — comparisons inside the helpers narrow it.
+type LiftCell = {
+  gender: string;
+  level: string;
+  n: number;
+  oddsRatio: number;
+} & Record<string, unknown>;
+type LiftTable = LiftCell[];
 
 function findSeedCell(
   seedBaseline: SeedCell[],
