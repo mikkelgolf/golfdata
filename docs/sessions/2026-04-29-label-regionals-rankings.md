@@ -69,4 +69,4 @@ The header label "Official NCAA rankings from: Apr 28, 26" is structured to evol
 Sanity gate in `daily-refresh.sh` was raised to 75% on 04-23 after Tulsa's 10→11 events cascaded through 63% of women's rankings rows. Worth re-tightening once the regular-season refresh cadence stabilizes.
 
 ## Linked PR
-_(populated by `gh pr create`)_
+https://github.com/mikkelgolf/golfdata/pull/33
