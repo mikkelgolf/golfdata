@@ -133,6 +133,8 @@ function RegionalCard({
           <thead className="text-text-tertiary">
             <tr className="text-left">
               <Th className="w-8 text-right">Seed</Th>
+              <Th className="w-8 text-right">Place</Th>
+              <Th className="w-10 text-right">Diff</Th>
               <Th className="min-w-[150px]">Team</Th>
               <Th className="w-16 text-right">Travel</Th>
               <Th className="w-24">Zone</Th>
@@ -160,6 +162,14 @@ function RegionalCard({
 
       {/* Mobile — compact, tap to expand model breakdown */}
       <div className="sm:hidden">
+        <div className="flex items-center gap-1 border-b border-border/50 bg-muted/10 px-1 py-0.5 text-[7px] font-medium uppercase tracking-wider text-text-tertiary leading-none">
+          <span className="w-4 shrink-0 text-right">Sd</span>
+          <span className="w-3 shrink-0 text-right">P</span>
+          <span className="w-5 shrink-0 text-right">Δ</span>
+          <span className="min-w-0 flex-1">Team</span>
+          <span className="shrink-0 text-right">Final</span>
+          <span className="w-2.5 shrink-0" />
+        </div>
         {reg.teams.map((t, i) => (
           <MobileRow
             key={t.team}
@@ -190,6 +200,9 @@ function DesktopRow({
   hostColor?: string;
 }) {
   const cinderella = advances && t.seed > TEAMS_ADVANCING;
+  const placing = idx + 1;
+  const diff = t.seed - placing;
+  const diffStr = diff > 0 ? `+${diff}` : diff === 0 ? "0" : `${diff}`;
   const [from, to] = t.zoneCrossing.split("->");
   const isCrossing = from !== to;
   return (
@@ -210,6 +223,17 @@ function DesktopRow({
           )}
           {t.seed}
         </span>
+      </td>
+      <td className="px-2 py-1 text-right tabular-nums text-text-secondary">
+        {placing}
+      </td>
+      <td
+        className={cn(
+          "px-2 py-1 text-right tabular-nums",
+          diff > 0 ? "font-semibold text-foreground" : diff < 0 ? "text-text-tertiary" : "text-text-tertiary",
+        )}
+      >
+        {diffStr}
       </td>
       <td className="px-2 py-1">
         <Link
@@ -288,6 +312,9 @@ function MobileRow({
 }) {
   const [open, setOpen] = useState(false);
   const cinderella = advances && t.seed > TEAMS_ADVANCING;
+  const placing = idx + 1;
+  const diff = t.seed - placing;
+  const diffStr = diff > 0 ? `+${diff}` : diff === 0 ? "0" : `${diff}`;
   const [from, to] = t.zoneCrossing.split("->");
   const isCrossing = from !== to;
 
@@ -313,6 +340,17 @@ function MobileRow({
               {cinderella && <ArrowUp className="h-2 w-2 text-foreground" />}
               {t.seed}
             </span>
+          </span>
+          <span className="w-3 shrink-0 text-right text-[8px] tabular-nums text-text-secondary leading-none">
+            {placing}
+          </span>
+          <span
+            className={cn(
+              "w-5 shrink-0 text-right text-[8px] tabular-nums leading-none",
+              diff > 0 ? "font-semibold text-foreground" : "text-text-tertiary",
+            )}
+          >
+            {diffStr}
           </span>
           <span className="min-w-0 flex-1 truncate leading-none">
             <Link
@@ -478,32 +516,42 @@ function NationalField({
         </table>
       </div>
 
-      {/* Mobile */}
+      {/* Mobile — matches regional row density */}
       <div className="sm:hidden">
+        <div className="flex items-center gap-1 border-b border-border/50 bg-muted/10 px-1 py-0.5 text-[7px] font-medium uppercase tracking-wider text-text-tertiary leading-none">
+          <span className="w-4 shrink-0 text-right">#</span>
+          <span className="w-3 shrink-0 text-right">Sd</span>
+          <span className="min-w-0 flex-1">Team · Regional</span>
+          <span className="shrink-0 text-right">Final</span>
+        </div>
         {field.map((t, i) => (
           <motion.div
             key={`${t.team}-${t.regional}`}
             initial={{ opacity: 0, x: -3 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.18, ease: "easeOut", delay: i * 0.008 }}
-            className="flex items-center gap-1.5 border-t border-border/50 px-2 py-1.5 first:border-t-0"
+            className="flex items-center gap-1 px-1 py-0.5 leading-none"
+            style={{ minHeight: "18px" }}
           >
-            <span className="w-5 shrink-0 text-right text-[10px] tabular-nums text-text-tertiary">
+            <span className="w-4 shrink-0 text-right text-[8px] tabular-nums text-text-tertiary leading-none">
               {i + 1}
             </span>
-            <span className="min-w-0 flex-1 truncate">
+            <span className="w-3 shrink-0 text-right text-[8px] tabular-nums text-text-tertiary leading-none">
+              {t.seed}
+            </span>
+            <span className="min-w-0 flex-1 truncate leading-none">
               <Link
                 href={teamHref(t.team, gender)}
-                className="text-[12px] font-medium text-foreground hover:underline"
+                className="text-[9px] font-semibold text-foreground hover:underline"
                 style={hostColorByTeam.get(t.team) ? { color: hostColorByTeam.get(t.team) } : undefined}
               >
                 {t.team}
               </Link>
-              <span className="ml-1 text-[10px] text-text-tertiary">
-                #{t.seed} · {t.regional}
+              <span className="ml-1 text-[8px] text-text-tertiary">
+                {t.regional}
               </span>
             </span>
-            <span className="shrink-0 text-right text-[12px] font-semibold tabular-nums text-foreground">
+            <span className="shrink-0 text-right text-[9px] font-semibold tabular-nums text-foreground leading-none">
               {t.finalPct.toFixed(1)}%
             </span>
           </motion.div>
