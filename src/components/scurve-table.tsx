@@ -296,18 +296,13 @@ export default function ScurveTable({
   const initialGender = (searchParams.get("gender") as Gender) || "men";
   const hasActualForInitialGender =
     initialGender === "men" ? hasActualMen : hasActualWomen;
-  const rawMode = searchParams.get("mode") as ScurveMode | null;
-  // When a URL pins the mode, respect it — but if it pins "actual" for a
-  // gender without published data, fall back to "committee" so the page
-  // still renders. With no URL hint, prefer "actual" when it's available.
-  let initialMode: ScurveMode;
-  if (rawMode === "strict" || rawMode === "committee") {
-    initialMode = rawMode;
-  } else if (rawMode === "actual" && hasActualForInitialGender) {
-    initialMode = "actual";
-  } else {
-    initialMode = hasActualForInitialGender ? "actual" : "committee";
-  }
+  // Mode is intentionally NOT URL-persisted (unlike view + gender). The site
+  // default — "actual" when that gender's bracket has been published,
+  // "committee" otherwise — should win on every fresh mount: page refresh,
+  // navigate-away-and-back, even an old shared `?mode=` link. User overrides
+  // (clicking Committee or Strict) are session-only and reset on the next
+  // gender flip or reload.
+  const initialMode: ScurveMode = hasActualForInitialGender ? "actual" : "committee";
 
   const [viewMode, setViewMode] = useState<ViewMode>(initialView);
   const [gender, setGender] = useState<Gender>(initialGender);
@@ -325,13 +320,13 @@ export default function ScurveTable({
   const deferredSearch = useDeferredValue(search);
   const isStale = deferredSearch !== search;
 
-  // Persist to URL
+  // Persist view + gender to URL (mode is intentionally session-only — see
+  // initialMode comment above).
   const updateUrl = useCallback(
-    (v: ViewMode, g: Gender, m: ScurveMode) => {
+    (v: ViewMode, g: Gender) => {
       const params = new URLSearchParams();
       params.set("view", v);
       params.set("gender", g);
-      params.set("mode", m);
       router.replace(`?${params.toString()}`, { scroll: false });
     },
     [router]
@@ -342,28 +337,29 @@ export default function ScurveTable({
       setViewMode(v);
       setSortKey("seed");
       setSortDir("asc");
-      updateUrl(v, gender, scurveMode);
+      updateUrl(v, gender);
     });
   };
 
   const handleGenderChange = (g: Gender) => {
     startTransition(() => {
-      // If the user is on "actual" and toggles to a gender whose committee
-      // hasn't published yet, coerce back to "committee" so the new view
-      // doesn't render empty.
+      // Always reset to the new gender's site default — actual if its
+      // committee has published, committee otherwise. Any user override
+      // from the previous gender does not carry over. This matches the
+      // "any reload-triggering action returns to default" rule.
       const hasActualForG = g === "men" ? hasActualMen : hasActualWomen;
-      const nextMode: ScurveMode =
-        scurveMode === "actual" && !hasActualForG ? "committee" : scurveMode;
+      const defaultMode: ScurveMode = hasActualForG ? "actual" : "committee";
       setGender(g);
-      if (nextMode !== scurveMode) setScurveMode(nextMode);
-      updateUrl(viewMode, g, nextMode);
+      setScurveMode(defaultMode);
+      updateUrl(viewMode, g);
     });
   };
 
   const handleModeChange = (m: ScurveMode) => {
     startTransition(() => {
+      // Session-only — no URL write. Reload, gender flip, or nav-away-and-back
+      // returns to default.
       setScurveMode(m);
-      updateUrl(viewMode, gender, m);
     });
   };
 
