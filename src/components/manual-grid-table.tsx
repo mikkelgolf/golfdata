@@ -70,9 +70,11 @@ import {
   TEAM_B_COLOR,
 } from "@/lib/manual-grid-colors";
 import { computeScurve, type ScurveAssignment } from "@/lib/scurve";
+import { SimpleModal } from "@/components/simple-modal";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
+import type { ActualSelection } from "@/data/regionals-actual-men-2026";
 
 // ---------------------------------------------------------------------------
 // Internal state — wraps the persisted ManualGridState with stable per-slot
@@ -125,10 +127,56 @@ const TEAMS_ADVANCING = 5;
 
 type Gender = "men" | "women";
 
+/**
+ * Imperative swap trigger from the parent (e.g. the Breakdown subtab's
+ * "Replace" modal). The grid watches the `nonce`; when it changes, it
+ * locates the slot currently holding `to` and replaces it with `from`.
+ * If `from` is already in the grid (would create a duplicate) or `to`
+ * is not present, the request is ignored. Push the previous state onto
+ * the undo stack so Cmd-Z still works after a swap.
+ */
+/**
+ * Replace mode (default): sub `from` (out-of-field) into the slot
+ * currently held by `to` (in-field). Single team enters, single team
+ * leaves. Used by the SUB tab's manual-pick "Replace" button.
+ */
+export interface ManualGridReplaceRequest {
+  mode?: "replace";
+  from: string; // team being subbed IN (currently out of field)
+  to: string;   // team being subbed OUT (currently in a slot)
+  nonce: number;
+}
+
+/**
+ * Promote mode (AQ promotion + cascade): subIn (out-of-field) becomes
+ * the new AQ for their conference. The displacedAq (current AQ for
+ * the same conference, in-field) yields their slot. If
+ * `worstAtLarge` is supplied, displacedAq cascades into that team's
+ * slot and the worst at-large is the team that actually leaves the
+ * field. If `worstAtLarge` is not supplied, displacedAq simply leaves.
+ */
+export interface ManualGridPromoteRequest {
+  mode: "promote";
+  subIn: string;
+  displacedAq: string;
+  worstAtLarge?: string | null;
+  nonce: number;
+}
+
+export type ManualGridSwapRequest =
+  | ManualGridReplaceRequest
+  | ManualGridPromoteRequest;
+
 export interface ManualGridTableProps {
   teams: TeamData[];
   regionals: Regional[];
   championships?: Championship[];
+  /**
+   * Actual NCAA bracket selections, when known. Empty/undefined means the
+   * bracket hasn't been announced for this gender yet — Reset All will
+   * skip the Committee/Actual picker and reset directly to Committee.
+   */
+  actualSelections?: ActualSelection[] | null;
   gender: Gender;
   /** Notifies parent when state changes — used to drive Breakdown / H2H view. */
   onChange?: (assignments: ScurveAssignment[]) => void;
@@ -147,6 +195,11 @@ export interface ManualGridTableProps {
   teamA?: string | null;
   /** Currently-selected Team B (highlighted in magenta in the grid). */
   teamB?: string | null;
+  /**
+   * Declarative swap trigger. The parent bumps the `nonce` when it wants
+   * the grid to perform a sub-in/sub-out. See ManualGridSwapRequest above.
+   */
+  swapRequest?: ManualGridSwapRequest | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -389,12 +442,14 @@ export function ManualGridTable({
   teams,
   regionals,
   championships,
+  actualSelections,
   gender,
   onChange,
   onRegionalsOrderChange,
   onPlaceTeam,
   teamA = null,
   teamB = null,
+  swapRequest = null,
 }: ManualGridTableProps) {
   // Build initial state (committee defaults merged with localStorage if any)
   const [internal, setInternal] = useState<InternalState>(() => {
@@ -424,6 +479,84 @@ export function ManualGridTable({
     const persisted = toPersisted(internal);
     saveGridState(gender, persisted);
   }, [internal, gender]);
+
+  // Declarative swap (sub-in / sub-out). Parent bumps `nonce` to trigger.
+  // We track the last applied nonce so re-renders with the same value
+  // don't re-fire.
+  //
+  // Replace mode: locate the slot holding `to` and set it to `from`.
+  // Ignored if `from` is already in the grid (would create a duplicate)
+  // or `to` is not present.
+  //
+  // Promote mode: subIn replaces displacedAq in their slot; if
+  // `worstAtLarge` is provided, displacedAq cascades into that slot
+  // (so the team that actually leaves is the worst at-large). Ignored
+  // if subIn is already in the grid or any of the named teams aren't
+  // present.
+  const lastSwapNonceRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!swapRequest) return;
+    if (lastSwapNonceRef.current === swapRequest.nonce) return;
+    lastSwapNonceRef.current = swapRequest.nonce;
+
+    if (swapRequest.mode === "promote") {
+      const { subIn, displacedAq, worstAtLarge } = swapRequest;
+      if (!subIn || !displacedAq || subIn === displacedAq) return;
+      setInternal((prev) => {
+        let subInAlready = false;
+        let foundDisplaced = false;
+        let foundWorst = false;
+        for (const row of prev.slots) {
+          for (const slot of row) {
+            if (slot.team === subIn) subInAlready = true;
+            if (slot.team === displacedAq) foundDisplaced = true;
+            if (worstAtLarge && slot.team === worstAtLarge) foundWorst = true;
+          }
+        }
+        if (subInAlready || !foundDisplaced) return prev;
+        if (worstAtLarge && !foundWorst) return prev;
+        const newSlots: Slot[][] = prev.slots.map((row) =>
+          row.map((slot) => {
+            if (slot.team === displacedAq) {
+              return { id: `team:${subIn}`, team: subIn };
+            }
+            if (worstAtLarge && slot.team === worstAtLarge) {
+              return { id: `team:${displacedAq}`, team: displacedAq };
+            }
+            return slot;
+          }),
+        );
+        setHistory((h) => [...h, prev]);
+        return { regionalIds: prev.regionalIds, slots: newSlots };
+      });
+      return;
+    }
+
+    // Default: replace mode
+    const { from, to } = swapRequest;
+    if (!from || !to || from === to) return;
+    setInternal((prev) => {
+      // Reject duplicate: incoming team is already on the grid.
+      let alreadyIn = false;
+      let foundOutSlot = false;
+      for (const row of prev.slots) {
+        for (const slot of row) {
+          if (slot.team === from) alreadyIn = true;
+          if (slot.team === to) foundOutSlot = true;
+        }
+      }
+      if (alreadyIn || !foundOutSlot) return prev;
+      const newSlots: Slot[][] = prev.slots.map((row) =>
+        row.map((slot) =>
+          slot.team === to
+            ? { id: `team:${from}`, team: from }
+            : slot
+        )
+      );
+      setHistory((h) => [...h, prev]);
+      return { regionalIds: prev.regionalIds, slots: newSlots };
+    });
+  }, [swapRequest]);
 
   const teamLookup = useMemo(() => {
     const map = new Map<string, TeamData>();
@@ -608,14 +741,38 @@ export function ManualGridTable({
     });
   }, []);
 
-  // Wipe history + localStorage and rebuild from committee defaults.
+  // Reset choice modal — only opens when an Actual bracket is available.
+  // When there's no Actual data, Reset All goes straight to Committee.
+  const [resetChoiceOpen, setResetChoiceOpen] = useState(false);
+  const hasActual = (actualSelections?.length ?? 0) > 0;
+
+  // Wipe history + localStorage and rebuild from the chosen mode.
+  const applyReset = useCallback(
+    (mode: "committee" | "actual") => {
+      clearGridState(gender);
+      const assignments = computeScurve(
+        teams,
+        regionals,
+        mode,
+        gender,
+        championships,
+        actualSelections ?? null,
+      );
+      const fresh = defaultGridFromAssignments(assignments, regionals);
+      setInternal(toInternal(fresh));
+      setHistory([]);
+      setResetChoiceOpen(false);
+    },
+    [gender, teams, regionals, championships, actualSelections],
+  );
+
   const handleResetAll = useCallback(() => {
-    clearGridState(gender);
-    const assignments = computeScurve(teams, regionals, "committee", gender, championships);
-    const fresh = defaultGridFromAssignments(assignments, regionals);
-    setInternal(toInternal(fresh));
-    setHistory([]);
-  }, [gender, teams, regionals, championships]);
+    if (hasActual) {
+      setResetChoiceOpen(true);
+    } else {
+      applyReset("committee");
+    }
+  }, [hasActual, applyReset]);
 
   // ---------------------------------------------------------------------
   // Travel-balance optimizer (David, 2026-04-28).
@@ -808,6 +965,7 @@ export function ManualGridTable({
   }, [gender]);
 
   return (
+    <>
     <div className="mt-3">
       <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
         <div className="text-[11px] text-text-tertiary leading-snug max-w-[640px] space-y-1.5">
@@ -1042,6 +1200,49 @@ export function ManualGridTable({
         </DragOverlay>
       </DndContext>
     </div>
+
+    {/* Reset All choice modal — only shown when an Actual bracket exists */}
+    <SimpleModal
+      open={resetChoiceOpen}
+      onClose={() => setResetChoiceOpen(false)}
+      title="Reset Manual Grid"
+      widthClass="max-w-md"
+    >
+      <div className="space-y-4 px-4 pb-4 pt-1">
+        <p className="text-[12px] text-text-tertiary leading-relaxed">
+          Choose which baseline to reset to. The Committee default is the
+          predicted bracket; the Actual default is the official NCAA bracket
+          for this gender.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            type="button"
+            autoFocus
+            onClick={() => applyReset("committee")}
+            className="h-10 px-3 rounded-md border border-primary bg-primary/10 text-[12px] font-medium text-primary hover:bg-primary/20"
+          >
+            Committee
+          </button>
+          <button
+            type="button"
+            onClick={() => applyReset("actual")}
+            className="h-10 px-3 rounded-md border border-border bg-background text-[12px] font-medium text-foreground hover:bg-secondary/50"
+          >
+            Actual
+          </button>
+        </div>
+        <div className="flex items-center justify-end pt-1">
+          <button
+            type="button"
+            onClick={() => setResetChoiceOpen(false)}
+            className="h-7 px-2.5 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </SimpleModal>
+    </>
   );
 }
 

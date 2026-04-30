@@ -64,8 +64,11 @@ export function computeRegionalPositions(
  * winners are provided, those teams get the AQ. Otherwise the top-ranked
  * team per conference is the predicted AQ.
  * Mirrors the logic in championships.ts so conference + regional pages agree.
+ *
+ * Exported so consumers (e.g. Manual Grid) that don't go through
+ * computeScurve can still get the same championship-aware AQ flags.
  */
-function deriveAutoQualifiers(
+export function deriveAutoQualifiers(
   teams: TeamData[],
   championships?: Championship[]
 ): TeamData[] {
