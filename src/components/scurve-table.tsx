@@ -1390,6 +1390,7 @@ function BreakdownView({
   hostColorByTeam,
   gender = "men",
   onOutOfFieldClick,
+  onAqClick,
   lastSwappedOut,
 }: {
   teams: TeamData[];
@@ -1405,6 +1406,13 @@ function BreakdownView({
    * subtab to open the sub-in/sub-out modal.
    */
   onOutOfFieldClick?: (team: TeamData) => void;
+  /**
+   * When provided, AQ teams in the Full D1 Breakdown table render as
+   * buttons that fire this callback. Used by the Manual Grid to open
+   * the Change AQ modal so the user can pick a different team in the
+   * conference to be the AQ.
+   */
+  onAqClick?: (aq: ScurveAssignment) => void;
   /**
    * The most recent team the user removed from the field via the SUB
    * modal. When provided, this team is pinned at the very top of the
@@ -1754,12 +1762,34 @@ function BreakdownView({
                         {team.team}
                       </TeamLink>
                       {isSubFiveHundredAq && (
-                        <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
-                          Sub-.500 AQ
-                        </span>
+                        onAqClick ? (
+                          <button
+                            type="button"
+                            onClick={() => onAqClick(team)}
+                            title={`Change ${team.conference} AQ`}
+                            className="ml-1.5 text-[9px] font-semibold text-amber-500/80 hover:text-amber-300 uppercase cursor-pointer transition-colors underline-offset-2 hover:underline"
+                          >
+                            Sub-.500 AQ
+                          </button>
+                        ) : (
+                          <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                            Sub-.500 AQ
+                          </span>
+                        )
                       )}
                       {team.isAutoQualifier && !isSubFiveHundredAq && (
-                        <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
+                        onAqClick ? (
+                          <button
+                            type="button"
+                            onClick={() => onAqClick(team)}
+                            title={`Change ${team.conference} AQ`}
+                            className="ml-1.5 text-[9px] font-semibold text-primary hover:text-primary/70 uppercase cursor-pointer transition-colors underline-offset-2 hover:underline"
+                          >
+                            AQ
+                          </button>
+                        ) : (
+                          <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
+                        )
                       )}
                     </td>
                     <td className="px-2 text-center text-muted-foreground hidden md:table-cell">{team.conference}</td>
@@ -3061,6 +3091,163 @@ function ManualGridSwapModal({
 }
 
 // ---------------------------------------------------------------------------
+// Change AQ Modal — entry point from the Full D1 Breakdown for picking
+// a different team in the conference to be the AQ.
+// ---------------------------------------------------------------------------
+// Opens when the user clicks an AQ team in the Manual Grid's Full D1
+// Breakdown. Lists every other team in the same conference (both
+// in-field and out-of-field) and lets the user pick one to promote.
+// Two outcomes:
+//   - Picking an in-field team: just flip the AQ flags. Field unchanged.
+//   - Picking an out-of-field team: cascade — newAq takes currentAq's
+//     slot, currentAq takes worst-at-large's slot, worst-at-large is
+//     removed. Same logic as the SUB modal's "Mark as AQ" path.
+function ChangeAqModal({
+  open,
+  currentAq,
+  teams,
+  gridAssignments,
+  onClose,
+  onPickNewAq,
+}: {
+  open: boolean;
+  currentAq: ScurveAssignment | null;
+  teams: TeamData[];
+  gridAssignments: ScurveAssignment[];
+  onClose: () => void;
+  onPickNewAq: (newAq: TeamData) => void;
+}) {
+  const inFieldTeamNames = useMemo(
+    () => new Set(gridAssignments.map((a) => a.team)),
+    [gridAssignments],
+  );
+
+  // All other teams in the conference, sorted by rank. Splits in-field
+  // (cleaner swap — just flip flags) from out-of-field (cascade).
+  const conferenceCandidates = useMemo(() => {
+    if (!currentAq) return { inField: [], outOfField: [] } as {
+      inField: TeamData[];
+      outOfField: TeamData[];
+    };
+    const all = teams
+      .filter(
+        (t) => t.conference === currentAq.conference && t.team !== currentAq.team,
+      )
+      .slice()
+      .sort((a, b) => a.rank - b.rank);
+    return {
+      inField: all.filter((t) => inFieldTeamNames.has(t.team)),
+      outOfField: all.filter((t) => !inFieldTeamNames.has(t.team)),
+    };
+  }, [currentAq, teams, inFieldTeamNames]);
+
+  if (!currentAq) return null;
+
+  const { inField, outOfField } = conferenceCandidates;
+  const noCandidates = inField.length === 0 && outOfField.length === 0;
+
+  return (
+    <SimpleModal open={open} onClose={onClose} widthClass="max-w-md" title={`Change ${currentAq.conference} AQ`}>
+      <div className="px-3 py-3 space-y-3 sm:px-4 sm:py-4 sm:space-y-4">
+        {/* Current AQ header */}
+        <div>
+          <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
+            Current AQ:
+          </span>
+          <div className="text-[13px] font-semibold text-foreground sm:text-[15px]">
+            {currentAq.team}
+            <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase sm:text-[10px]">AQ</span>
+          </div>
+          <div className="mt-0.5 flex items-center gap-1.5 sm:mt-1">
+            <ConferenceBadge conference={currentAq.conference} />
+            <span className="text-[10px] text-muted-foreground font-mono sm:text-[11px]">
+              #{currentAq.rank}
+            </span>
+          </div>
+        </div>
+
+        <p className="text-[10px] text-text-tertiary leading-snug sm:text-[11px]">
+          Pick a {currentAq.conference} team below to promote as the new AQ.
+          In-field picks just flip the AQ designation. Out-of-field picks
+          cascade — the new AQ takes this slot, {currentAq.team} takes the
+          worst at-large&apos;s slot, and that team leaves the field.
+        </p>
+
+        {noCandidates && (
+          <p className="text-[11px] italic text-text-tertiary px-1">
+            No other {currentAq.conference} teams to pick from.
+          </p>
+        )}
+
+        {inField.length > 0 && (
+          <div className="space-y-1">
+            <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
+              In field ({inField.length})
+            </span>
+            <div className="border border-border rounded overflow-hidden">
+              {inField.map((t) => (
+                <button
+                  key={t.team}
+                  type="button"
+                  onClick={() => onPickNewAq(t)}
+                  className="w-full text-left px-2 py-1 text-[10px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors text-foreground sm:py-1.5 sm:text-[11px]"
+                >
+                  <span className="truncate min-w-0 flex-1">{t.team}</span>
+                  <span className="text-text-tertiary text-[10px] font-mono w-8 text-right">
+                    #{t.rank}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {outOfField.length > 0 && (
+          <div className="space-y-1">
+            <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
+              Out of field ({outOfField.length}) — cascade
+            </span>
+            <div className="border border-border rounded overflow-hidden max-h-60 overflow-y-auto">
+              {outOfField.map((t) => (
+                <button
+                  key={t.team}
+                  type="button"
+                  onClick={() => onPickNewAq(t)}
+                  className="w-full text-left px-2 py-1 text-[10px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors text-muted-foreground sm:py-1.5 sm:text-[11px]"
+                >
+                  <span className="truncate min-w-0 flex-1">
+                    {t.team}
+                    {!t.eligible && (
+                      <span className="ml-1.5 text-[8px] font-semibold text-amber-500/70 uppercase">
+                        Sub-.500
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-text-tertiary text-[10px] font-mono w-8 text-right">
+                    #{t.rank}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Cancel — easy exit, especially for mobile after scrolling. */}
+        <div className="border-t border-border pt-2 sm:pt-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-2 rounded text-[12px] uppercase tracking-wider text-text-tertiary hover:text-foreground hover:bg-card cursor-pointer transition-colors sm:py-2.5 sm:text-[13px]"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </SimpleModal>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Manual Grid Section — wraps ManualGridTable with a live BreakdownView
 // driven by the user's edits.
 // ---------------------------------------------------------------------------
@@ -3092,6 +3279,10 @@ function ManualGridSection({
   const [subInTeam, setSubInTeam] = useState<TeamData | null>(null);
   const [swapRequest, setSwapRequest] = useState<ManualGridSwapRequest | null>(null);
   const swapNonceRef = useRef(0);
+  // Change-AQ modal state — populated when the user clicks an AQ team in
+  // the Full D1 Breakdown table. The modal lets them pick a different
+  // team in the same conference to be the AQ.
+  const [aqSwapTarget, setAqSwapTarget] = useState<ScurveAssignment | null>(null);
   // Regional selection on the Map tab — clicking a regional dot fans
   // lines to all teams placed in that regional and clears A/B. Tapping
   // the same regional again clears the selection.
@@ -3248,6 +3439,77 @@ function ManualGridSection({
     setLastSwappedOut(pushedOut);
     setSubInTeam(null);
   }, [subInTeam, overriddenGridAssignments]);
+
+  // User clicked an AQ team in the Full D1 Breakdown table. Open the
+  // Change AQ modal so they can pick a different team in the same
+  // conference to be the AQ.
+  const handleAqClick = useCallback((aq: ScurveAssignment) => {
+    setAqSwapTarget(aq);
+  }, []);
+
+  // User picked a new AQ in the Change AQ modal. Two paths:
+  //   1) newAq is already in field → no slot change needed, just flip
+  //      AQ flags via aqOverrides. Both teams stay in the bracket.
+  //   2) newAq is out of field → cascade: newAq takes currentAq's slot,
+  //      currentAq takes worst-at-large's slot, worst-at-large leaves.
+  // Records lastSwappedOut for the First Out pin only when a team
+  // actually leaves the field.
+  const handlePickNewAq = useCallback(
+    (newAq: TeamData) => {
+      if (!aqSwapTarget) return;
+      const currentAq = aqSwapTarget;
+      const newAqInField = overriddenGridAssignments.some(
+        (a) => a.team === newAq.team,
+      );
+
+      if (newAqInField) {
+        // Path 1: in-field. Just flip the override, no slot change.
+        setAqOverrides((prev) => {
+          const next = new Map(prev);
+          next.set(currentAq.conference, newAq.team);
+          return next;
+        });
+        // No team leaves — clear the "Just Removed" pin if it was set.
+        setLastSwappedOut(null);
+        setAqSwapTarget(null);
+        return;
+      }
+
+      // Path 2: out of field — cascade like handlePromoteToAq.
+      const worstAtLarge = [...overriddenGridAssignments]
+        .filter((a) => !a.isAutoQualifier && a.team !== newAq.team)
+        .sort((a, b) => b.rank - a.rank)[0];
+
+      swapNonceRef.current += 1;
+      let pushedOut: TeamData;
+      if (worstAtLarge && currentAq.rank < worstAtLarge.rank) {
+        setSwapRequest({
+          mode: "promote",
+          subIn: newAq.team,
+          displacedAq: currentAq.team,
+          worstAtLarge: worstAtLarge.team,
+          nonce: swapNonceRef.current,
+        });
+        pushedOut = worstAtLarge;
+      } else {
+        setSwapRequest({
+          mode: "promote",
+          subIn: newAq.team,
+          displacedAq: currentAq.team,
+          nonce: swapNonceRef.current,
+        });
+        pushedOut = currentAq;
+      }
+      setAqOverrides((prev) => {
+        const next = new Map(prev);
+        next.set(currentAq.conference, newAq.team);
+        return next;
+      });
+      setLastSwappedOut(pushedOut);
+      setAqSwapTarget(null);
+    },
+    [aqSwapTarget, overriddenGridAssignments],
+  );
 
   // Reset slots on gender switch — H2H data is gender-specific.
   // Also clears AQ overrides + last-swapped-out hint since both are
@@ -3491,6 +3753,7 @@ function ManualGridSection({
               hostColorByTeam={hostColorByTeam}
               gender={gender}
               onOutOfFieldClick={handleOutOfFieldClick}
+              onAqClick={handleAqClick}
               lastSwappedOut={lastSwappedOut}
             />
           </div>
@@ -3504,6 +3767,14 @@ function ManualGridSection({
         onClose={() => setSubInTeam(null)}
         onReplace={handleSwapReplace}
         onPromoteToAq={handlePromoteToAq}
+      />
+      <ChangeAqModal
+        open={aqSwapTarget !== null}
+        currentAq={aqSwapTarget}
+        teams={aqAwareTeams}
+        gridAssignments={overriddenGridAssignments}
+        onClose={() => setAqSwapTarget(null)}
+        onPickNewAq={handlePickNewAq}
       />
     </>
   );
