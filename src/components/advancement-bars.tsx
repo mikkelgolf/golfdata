@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Plane, ArrowUp, Trophy, Info } from "lucide-react";
+import { Plane, ArrowUp, Trophy, Info, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { SimpleModal } from "@/components/simple-modal";
@@ -23,6 +23,23 @@ import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
 
 const TEAMS_ADVANCING = MODEL_TEAMS_ADVANCING;
+
+/**
+ * Glyph used to mark a team that is geographically close to the regional
+ * venue but is not the designated host school. Swap this constant to
+ * change the icon project-wide — anything from `lucide-react` works.
+ */
+const NEAR_HOST_ICON = MapPin;
+
+/**
+ * Distance threshold (miles) for showing the "nearby" pin in the UI.
+ * This is intentionally decoupled from `HOST_RADIUS_MILES` in
+ * `projections-apply.ts` — that constant gates the model's host lift
+ * and is locked to the value the host-lift table was trained on (30 mi).
+ * The display threshold can be wider (50 mi) without affecting any
+ * probability math.
+ */
+const NEAR_HOST_DISPLAY_MILES = 50;
 
 interface Props {
   regionals: Regional[];
@@ -212,6 +229,19 @@ function BarRow({
   const fill = advances ? hostColor || "hsl(var(--foreground))" : "hsl(var(--text-tertiary))";
   const diff = team.seed - placing;
   const diffStr = diff > 0 ? `+${diff}` : diff === 0 ? "0" : `${diff}`;
+  // A "flop" is the inverse of cinderella: a top-N seed that misses the cut.
+  // Together they identify the deltas that cross the advancing threshold.
+  const flop = !advances && team.seed <= TEAMS_ADVANCING;
+  const deltaClass =
+    diff === 0
+      ? "text-text-tertiary"
+      : diff > 0
+        ? cinderella
+          ? "font-bold text-success"
+          : "font-semibold text-success/70"
+        : flop
+          ? "font-bold text-destructive"
+          : "font-medium text-destructive/65";
 
   return (
     <button
@@ -231,7 +261,7 @@ function BarRow({
       <span
         className={cn(
           "w-5 shrink-0 text-right text-[8.5px] tabular-nums sm:text-[10px]",
-          diff > 0 ? "font-semibold text-foreground" : "text-text-tertiary",
+          deltaClass,
         )}
       >
         {diffStr}
@@ -258,8 +288,22 @@ function BarRow({
             )}
           >
             {team.team}
-            {team.isHost && (
-              <span className="ml-1 text-[7px] font-bold text-text-tertiary sm:text-[8px]">H</span>
+            {hostColor && (
+              <span
+                className="ml-1 text-[7px] font-bold text-text-tertiary sm:text-[8px]"
+                title="Tournament host"
+              >
+                H
+              </span>
+            )}
+            {!hostColor && team.travelMi < NEAR_HOST_DISPLAY_MILES && (
+              <span
+                className="ml-1 inline-flex items-center align-middle text-text-tertiary"
+                title={`${team.travelMi.toFixed(0)} mi from venue — nearby, not the host school`}
+                aria-label={`Within ${NEAR_HOST_DISPLAY_MILES} miles of venue — ${team.travelMi.toFixed(0)} miles`}
+              >
+                <NEAR_HOST_ICON className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+              </span>
             )}
           </span>
         </div>
@@ -313,7 +357,7 @@ function NationalBars({
           {field.length} teams · sorted by Final %
         </span>
       </div>
-      <div className="grid grid-cols-1 gap-x-3 gap-y-0 px-2 py-1 sm:grid-cols-2">
+      <div className="px-2 py-1 sm:columns-2 sm:gap-x-3">
         {field.map((t, idx) => {
           const hostColor = hostColorByTeam.get(t.team);
           const fill = hostColor || "hsl(var(--foreground))";
@@ -322,7 +366,7 @@ function NationalBars({
               type="button"
               key={`${t.team}-${t.regional}`}
               onClick={() => onPick(t, t.regional)}
-              className="group flex items-center gap-1 py-[1px] text-left focus:outline-none"
+              className="group flex w-full items-center gap-1 break-inside-avoid py-[1px] text-left focus:outline-none"
             >
               <div className="relative h-[14px] min-w-0 flex-1 overflow-hidden rounded-[2px] bg-muted/30">
                 <motion.div
@@ -397,7 +441,18 @@ function TeamDetail({
           </Link>
           <span className="ml-2 text-[10px] text-text-tertiary">
             #{team.rank} · {team.conference}
-            {team.isHost && <span className="ml-1 font-bold text-foreground">HOST</span>}
+            {hostColor && (
+              <span className="ml-1 font-bold text-foreground">HOST</span>
+            )}
+            {!hostColor && team.travelMi < NEAR_HOST_DISPLAY_MILES && (
+              <span
+                className="ml-1 inline-flex items-center gap-0.5 align-middle font-bold text-foreground"
+                title={`${team.travelMi.toFixed(0)} mi from venue — nearby, not the host school`}
+              >
+                <NEAR_HOST_ICON className="h-3 w-3" />
+                NEARBY
+              </span>
+            )}
           </span>
         </div>
         <div className="text-right">
