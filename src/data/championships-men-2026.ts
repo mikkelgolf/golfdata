@@ -233,6 +233,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "Note: men's BIGSOUTH conference code is not in the men's rankings file.",
     sourceUrl:
       "https://bigsouthsports.com/sports/2025/8/15/GEN_0815253612.aspx",
+    winner: "Presbyterian",
   },
   {
     id: 11,
@@ -250,6 +251,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#836f9c",
     sourceUrl:
       "https://siusalukis.com/news/2026/2/6/mens-golf-salukis-ranked-as-mvc-preseason-number-one-in-coaching-poll",
+    winner: "Illinois State",
   },
   {
     id: 12,
@@ -267,6 +269,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#7ba8d3",
     notes: "First time at this Pete Dye-designed venue.",
     sourceUrl: "https://ovcsports.com/tournaments/?id=66",
+    winner: "Little Rock",
   },
   {
     id: 13,
@@ -302,6 +305,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#d9a13d",
     notes: "Long-time Big 12 host venue.",
     sourceUrl: "https://big12sports.com/sports/golf",
+    winner: "Oklahoma State",
   },
   {
     id: 15,
@@ -320,6 +324,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "54-hole stroke play.",
     sourceUrl:
       "https://www.amateurgolf.com/amateur-golf-tournaments/7554/American-Athletic-Conference-Men-s-Golf-Championship",
+    winner: "Charlotte",
   },
   {
     id: 16,
@@ -337,6 +342,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#c97540",
     notes: "3 rounds Mon-Wed; practice round Sunday April 26.",
     sourceUrl: "https://atlantic10.com/sports/2025/11/12/MGOLF26.aspx",
+    winner: "Richmond",
   },
   {
     id: 17,
@@ -391,6 +397,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "Solina (formerly Indian River GC), rebuilt and reopened 2024.",
     sourceUrl:
       "https://soconsports.com/about/championships/2025-26-championships-schedule/",
+    winner: "Chattanooga",
   },
   {
     id: 20,
@@ -407,6 +414,7 @@ export const championshipsMen2026: Championship[] = [
     endDate: "2026-04-29",
     color: "#8a5a3a",
     sourceUrl: "https://wacsports.com/tournaments/?id=180&path=mgolf",
+    winner: "Tarleton State",
   },
   {
     id: 21,
@@ -426,6 +434,7 @@ export const championshipsMen2026: Championship[] = [
       "First Big Sky men's championship after 1-year hiatus; 6 teams competing.",
     sourceUrl:
       "https://uncbears.com/news/2025/5/15/mens-golf-big-sky-reinstates-mens-golf-northern-colorado-set-to-compete-for-2026-championship",
+    winner: "Sacramento State",
   },
   {
     id: 22,

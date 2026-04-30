@@ -1787,7 +1787,7 @@
         "name": "2026 Atlantic 10 Men's Golf Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/244394",
-        "winner": null
+        "winner": "Richmond"
       },
       "matchplay": null
     },
@@ -1801,7 +1801,7 @@
         "name": "2026 American Conference Men’s Golf Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239888",
-        "winner": null
+        "winner": "Charlotte"
       },
       "matchplay": null
     },
@@ -1865,7 +1865,7 @@
         "name": "Big 12 Men's Golf Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239632",
-        "winner": null
+        "winner": "Oklahoma State"
       },
       "matchplay": null
     },
@@ -1893,7 +1893,7 @@
         "name": "Big Sky Conference Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242923",
-        "winner": null
+        "winner": "Sacramento State"
       },
       "matchplay": null
     },
@@ -1907,14 +1907,16 @@
         "name": "2026 Big South Men's Golf Championship (Stroke Play)",
         "endDate": "2026-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242780",
-        "winner": null
+        "winner": "Presbyterian"
       },
       "matchplay": {
         "tournamentId": "242781",
         "name": "2026 Big South Men's Golf Championship (Match Play)",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242781",
-        "winner": null
+        "winner": "Presbyterian",
+        "runnerUp": "USC Upstate",
+        "finalScore": "3-2"
       }
     },
     {
@@ -2031,7 +2033,7 @@
         "name": "2026 Missouri Valley Conference Men's Golf Championship",
         "endDate": "2026-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/241041",
-        "winner": null
+        "winner": "Illinois State"
       },
       "matchplay": null
     },
@@ -2073,14 +2075,16 @@
         "name": "2026 OVC Men's Golf Championship - Stroke Play",
         "endDate": "2026-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/238690",
-        "winner": null
+        "winner": "Little Rock"
       },
       "matchplay": {
         "tournamentId": "238691",
         "name": "2026 OVC Men's Golf Championship - Match Play",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/238691",
-        "winner": null
+        "winner": "Little Rock",
+        "runnerUp": "Tennessee Tech",
+        "finalScore": "4-1"
       }
     },
     {
@@ -2129,7 +2133,7 @@
         "name": "2026 SoCon Men's Golf Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239629",
-        "winner": null
+        "winner": "Chattanooga"
       },
       "matchplay": null
     },
@@ -2205,7 +2209,7 @@
         "name": "2026 WAC Men's Golf Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242538",
-        "winner": null
+        "winner": "Tarleton State"
       },
       "matchplay": null
     },
