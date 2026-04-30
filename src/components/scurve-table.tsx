@@ -1390,7 +1390,7 @@ function BreakdownView({
   hostColorByTeam,
   gender = "men",
   onOutOfFieldClick,
-  onAqClick,
+  onRowClick,
   lastSwappedOut,
 }: {
   teams: TeamData[];
@@ -1407,12 +1407,14 @@ function BreakdownView({
    */
   onOutOfFieldClick?: (team: TeamData) => void;
   /**
-   * When provided, AQ teams in the Full D1 Breakdown table render as
-   * buttons that fire this callback. Used by the Manual Grid to open
-   * the Change AQ modal so the user can pick a different team in the
-   * conference to be the AQ.
+   * When provided, every in-field row in the Full D1 Breakdown becomes
+   * clickable — tapping anywhere on the row (except the team name)
+   * fires this callback with the row's assignment. The team name link
+   * stops propagation so navigation still works. Used by the Manual
+   * Grid to open the Change AQ modal so the user can pick a different
+   * team in the row's conference to be the AQ.
    */
-  onAqClick?: (aq: ScurveAssignment) => void;
+  onRowClick?: (row: ScurveAssignment) => void;
   /**
    * The most recent team the user removed from the field via the SUB
    * modal. When provided, this team is pinned at the very top of the
@@ -1747,11 +1749,21 @@ function BreakdownView({
                 const posInRegional = regionalPositions.get(team.team);
                 const diff = fmtDiff(team.wins, team.losses);
                 const isSubFiveHundredAq = !team.eligible && team.isAutoQualifier;
+                // Whole-row click opens the Change AQ modal for this team's
+                // conference. TeamLink stops propagation so the team name
+                // still navigates to the team page. Mobile + desktop both
+                // benefit from a single, generous tap target.
+                const rowClickable = !!onRowClick;
                 return (
                   <tr
                     key={team.team}
+                    onClick={rowClickable ? () => onRowClick(team) : undefined}
+                    title={rowClickable ? `Change ${team.conference} AQ` : undefined}
                     className={cn(
-                      "h-7 border-b border-border/40 hover:bg-white/[0.02] transition-colors",
+                      "h-7 border-b border-border/40 transition-colors",
+                      rowClickable
+                        ? "cursor-pointer hover:bg-primary/[0.06]"
+                        : "hover:bg-white/[0.02]",
                       isSubFiveHundredAq && "bg-amber-500/[0.04]"
                     )}
                   >
@@ -1762,34 +1774,12 @@ function BreakdownView({
                         {team.team}
                       </TeamLink>
                       {isSubFiveHundredAq && (
-                        onAqClick ? (
-                          <button
-                            type="button"
-                            onClick={() => onAqClick(team)}
-                            title={`Change ${team.conference} AQ`}
-                            className="ml-1.5 text-[9px] font-semibold text-amber-500/80 hover:text-amber-300 uppercase cursor-pointer transition-colors underline-offset-2 hover:underline"
-                          >
-                            Sub-.500 AQ
-                          </button>
-                        ) : (
-                          <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
-                            Sub-.500 AQ
-                          </span>
-                        )
+                        <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
+                          Sub-.500 AQ
+                        </span>
                       )}
                       {team.isAutoQualifier && !isSubFiveHundredAq && (
-                        onAqClick ? (
-                          <button
-                            type="button"
-                            onClick={() => onAqClick(team)}
-                            title={`Change ${team.conference} AQ`}
-                            className="ml-1.5 text-[9px] font-semibold text-primary hover:text-primary/70 uppercase cursor-pointer transition-colors underline-offset-2 hover:underline"
-                          >
-                            AQ
-                          </button>
-                        ) : (
-                          <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
-                        )
+                        <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
                       )}
                     </td>
                     <td className="px-2 text-center text-muted-foreground hidden md:table-cell">{team.conference}</td>
@@ -3094,24 +3084,33 @@ function ManualGridSwapModal({
 // Change AQ Modal — entry point from the Full D1 Breakdown for picking
 // a different team in the conference to be the AQ.
 // ---------------------------------------------------------------------------
-// Opens when the user clicks an AQ team in the Manual Grid's Full D1
-// Breakdown. Lists every other team in the same conference (both
-// in-field and out-of-field) and lets the user pick one to promote.
-// Two outcomes:
-//   - Picking an in-field team: just flip the AQ flags. Field unchanged.
-//   - Picking an out-of-field team: cascade — newAq takes currentAq's
-//     slot, currentAq takes worst-at-large's slot, worst-at-large is
-//     removed. Same logic as the SUB modal's "Mark as AQ" path.
+// Opens when the user clicks any in-field row in the Full D1 Breakdown.
+// `target` is the row they clicked — used purely as a "take me to this
+// conference's AQ picker" signal. The actual current AQ is computed from
+// `gridAssignments` so the modal works whether the user clicked the AQ
+// row or any other team in that conference.
+//
+// Lists every team in the same conference (both in-field and
+// out-of-field), sorted by rank. The current AQ is shown but disabled
+// (picking yourself is a no-op). Two outcomes when a different team is
+// picked:
+//   - In-field pick: just flip the AQ flags via aqOverrides. Field
+//     stays the same; only AQ designation moves.
+//   - Out-of-field pick: the new AQ replaces the worst-by-rank team in
+//     the at-large pool (which now includes the previous AQ as a
+//     candidate). Previous AQ stays in their slot if their rank is
+//     better than the worst at-large; otherwise the previous AQ is the
+//     team that leaves.
 function ChangeAqModal({
   open,
-  currentAq,
+  target,
   teams,
   gridAssignments,
   onClose,
   onPickNewAq,
 }: {
   open: boolean;
-  currentAq: ScurveAssignment | null;
+  target: ScurveAssignment | null;
   teams: TeamData[];
   gridAssignments: ScurveAssignment[];
   onClose: () => void;
@@ -3122,60 +3121,75 @@ function ChangeAqModal({
     [gridAssignments],
   );
 
-  // All other teams in the conference, sorted by rank. Splits in-field
-  // (cleaner swap — just flip flags) from out-of-field (cascade).
+  // The actual current AQ for the conference — computed from
+  // gridAssignments rather than from the row that was clicked. The
+  // user can click any row in conf X and we still know who currently
+  // holds the AQ flag for conf X.
+  const currentAq = useMemo<ScurveAssignment | null>(() => {
+    if (!target) return null;
+    return (
+      gridAssignments.find(
+        (a) => a.conference === target.conference && a.isAutoQualifier,
+      ) ?? null
+    );
+  }, [target, gridAssignments]);
+
+  // Every team in the conference, sorted by rank. Splits in-field
+  // (cleaner swap — just flip flags) from out-of-field (cascade). The
+  // current AQ stays in the in-field bucket but the button is disabled.
   const conferenceCandidates = useMemo(() => {
-    if (!currentAq) return { inField: [], outOfField: [] } as {
+    if (!target) return { inField: [], outOfField: [] } as {
       inField: TeamData[];
       outOfField: TeamData[];
     };
     const all = teams
-      .filter(
-        (t) => t.conference === currentAq.conference && t.team !== currentAq.team,
-      )
+      .filter((t) => t.conference === target.conference)
       .slice()
       .sort((a, b) => a.rank - b.rank);
     return {
       inField: all.filter((t) => inFieldTeamNames.has(t.team)),
       outOfField: all.filter((t) => !inFieldTeamNames.has(t.team)),
     };
-  }, [currentAq, teams, inFieldTeamNames]);
+  }, [target, teams, inFieldTeamNames]);
 
-  if (!currentAq) return null;
+  if (!target) return null;
 
   const { inField, outOfField } = conferenceCandidates;
   const noCandidates = inField.length === 0 && outOfField.length === 0;
 
   return (
-    <SimpleModal open={open} onClose={onClose} widthClass="max-w-md" title={`Change ${currentAq.conference} AQ`}>
+    <SimpleModal open={open} onClose={onClose} widthClass="max-w-md" title={`Change ${target.conference} AQ`}>
       <div className="px-3 py-3 space-y-3 sm:px-4 sm:py-4 sm:space-y-4">
         {/* Current AQ header */}
-        <div>
-          <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
-            Current AQ:
-          </span>
-          <div className="text-[13px] font-semibold text-foreground sm:text-[15px]">
-            {currentAq.team}
-            <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase sm:text-[10px]">AQ</span>
-          </div>
-          <div className="mt-0.5 flex items-center gap-1.5 sm:mt-1">
-            <ConferenceBadge conference={currentAq.conference} />
-            <span className="text-[10px] text-muted-foreground font-mono sm:text-[11px]">
-              #{currentAq.rank}
+        {currentAq && (
+          <div>
+            <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
+              Current AQ:
             </span>
+            <div className="text-[13px] font-semibold text-foreground sm:text-[15px]">
+              {currentAq.team}
+              <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase sm:text-[10px]">AQ</span>
+            </div>
+            <div className="mt-0.5 flex items-center gap-1.5 sm:mt-1">
+              <ConferenceBadge conference={target.conference} />
+              <span className="text-[10px] text-muted-foreground font-mono sm:text-[11px]">
+                #{currentAq.rank}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         <p className="text-[10px] text-text-tertiary leading-snug sm:text-[11px]">
-          Pick a {currentAq.conference} team below to promote as the new AQ.
+          Pick a {target.conference} team below to designate as the AQ.
           In-field picks just flip the AQ designation. Out-of-field picks
-          cascade — the new AQ takes this slot, {currentAq.team} takes the
-          worst at-large&apos;s slot, and that team leaves the field.
+          slot the new AQ in by rank — whichever team is worst-ranked in
+          the at-large pool falls out of the field
+          {currentAq ? `, which can be ${currentAq.team} if their rank is the lowest among at-larges` : ""}.
         </p>
 
         {noCandidates && (
           <p className="text-[11px] italic text-text-tertiary px-1">
-            No other {currentAq.conference} teams to pick from.
+            No {target.conference} teams to pick from.
           </p>
         )}
 
@@ -3185,19 +3199,36 @@ function ChangeAqModal({
               In field ({inField.length})
             </span>
             <div className="border border-border rounded overflow-hidden">
-              {inField.map((t) => (
-                <button
-                  key={t.team}
-                  type="button"
-                  onClick={() => onPickNewAq(t)}
-                  className="w-full text-left px-2 py-1 text-[10px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors text-foreground sm:py-1.5 sm:text-[11px]"
-                >
-                  <span className="truncate min-w-0 flex-1">{t.team}</span>
-                  <span className="text-text-tertiary text-[10px] font-mono w-8 text-right">
-                    #{t.rank}
-                  </span>
-                </button>
-              ))}
+              {inField.map((t) => {
+                const isCurrent = currentAq?.team === t.team;
+                return (
+                  <button
+                    key={t.team}
+                    type="button"
+                    onClick={isCurrent ? undefined : () => onPickNewAq(t)}
+                    disabled={isCurrent}
+                    title={isCurrent ? "Already the AQ" : `Make ${t.team} the AQ`}
+                    className={cn(
+                      "w-full text-left px-2 py-1 text-[10px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 transition-colors sm:py-1.5 sm:text-[11px]",
+                      isCurrent
+                        ? "bg-primary/10 text-foreground/70 cursor-not-allowed"
+                        : "hover:bg-card cursor-pointer text-foreground",
+                    )}
+                  >
+                    <span className="truncate min-w-0 flex-1">
+                      {t.team}
+                      {isCurrent && (
+                        <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">
+                          Current AQ
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-text-tertiary text-[10px] font-mono w-8 text-right">
+                      #{t.rank}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -3205,7 +3236,7 @@ function ChangeAqModal({
         {outOfField.length > 0 && (
           <div className="space-y-1">
             <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
-              Out of field ({outOfField.length}) — cascade
+              Out of field ({outOfField.length})
             </span>
             <div className="border border-border rounded overflow-hidden max-h-60 overflow-y-auto">
               {outOfField.map((t) => (
@@ -3393,122 +3424,105 @@ function ManualGridSection({
     [subInTeam]
   );
 
-  // User confirmed PROMOTE TO AQ in the modal. Records the AQ override
-  // and triggers a cascading swap: subIn takes the displaced AQ's slot,
-  // and the displaced AQ is either pushed out (if its rank is the
-  // worst at-large or worse) or cascaded into the worst at-large's
-  // slot (so the worst at-large is the team that actually leaves).
-  const handlePromoteToAq = useCallback(() => {
-    if (!subInTeam) return;
-    const displacedAq = overriddenGridAssignments.find(
-      (a) => a.conference === subInTeam.conference && a.isAutoQualifier,
-    );
-    if (!displacedAq) return; // no AQ from this conference in field — bail
-    const worstAtLarge = [...overriddenGridAssignments]
-      .filter((a) => !a.isAutoQualifier && a.team !== subInTeam.team)
-      .sort((a, b) => b.rank - a.rank)[0];
-
-    swapNonceRef.current += 1;
-    let pushedOut: TeamData;
-    if (worstAtLarge && displacedAq.rank < worstAtLarge.rank) {
-      // Cascade: displaced AQ keeps a slot (worst at-large's), worst
-      // at-large is the team that leaves the field.
-      setSwapRequest({
-        mode: "promote",
-        subIn: subInTeam.team,
-        displacedAq: displacedAq.team,
-        worstAtLarge: worstAtLarge.team,
-        nonce: swapNonceRef.current,
-      });
-      pushedOut = worstAtLarge;
-    } else {
-      // No cascade: displaced AQ leaves the field directly.
-      setSwapRequest({
-        mode: "promote",
-        subIn: subInTeam.team,
-        displacedAq: displacedAq.team,
-        nonce: swapNonceRef.current,
-      });
-      pushedOut = displacedAq;
-    }
-    setAqOverrides((prev) => {
-      const next = new Map(prev);
-      next.set(subInTeam.conference, subInTeam.team);
-      return next;
-    });
-    setLastSwappedOut(pushedOut);
-    setSubInTeam(null);
-  }, [subInTeam, overriddenGridAssignments]);
-
-  // User clicked an AQ team in the Full D1 Breakdown table. Open the
-  // Change AQ modal so they can pick a different team in the same
-  // conference to be the AQ.
-  const handleAqClick = useCallback((aq: ScurveAssignment) => {
-    setAqSwapTarget(aq);
-  }, []);
-
-  // User picked a new AQ in the Change AQ modal. Two paths:
-  //   1) newAq is already in field → no slot change needed, just flip
-  //      AQ flags via aqOverrides. Both teams stay in the bracket.
-  //   2) newAq is out of field → cascade: newAq takes currentAq's slot,
-  //      currentAq takes worst-at-large's slot, worst-at-large leaves.
-  // Records lastSwappedOut for the First Out pin only when a team
-  // actually leaves the field.
-  const handlePickNewAq = useCallback(
-    (newAq: TeamData) => {
-      if (!aqSwapTarget) return;
-      const currentAq = aqSwapTarget;
+  // Core helper: change the AQ designation for a given conference to
+  // `newAq`. Used by BOTH entry points — the SUB modal's "Mark as AQ"
+  // toggle and the Change AQ modal's pick list — so the cascade
+  // semantics are identical regardless of how the user got here.
+  //
+  // Two paths:
+  //   1) newAq is already in field → no slot change; just flip the
+  //      AQ flag via aqOverrides.
+  //   2) newAq is out of field → the new AQ slots in by replacing
+  //      whichever team is worst-by-rank in the post-change at-large
+  //      pool. That pool is (current at-larges + previous AQ), since
+  //      the previous AQ loses their AQ lock when reassigned. If the
+  //      previous AQ has the lowest rank in that pool they fall out;
+  //      otherwise they keep their slot (and just lose the AQ badge),
+  //      and a current at-large is the team that leaves.
+  const applyAqChange = useCallback(
+    (conference: string, newAq: TeamData) => {
+      // Look up the current AQ for the conference. May be null if the
+      // conference has no current AQ in the field, which shouldn't
+      // happen in practice (every conference has a predicted AQ that
+      // makes the field) but we defend against it anyway.
+      const previousAq = overriddenGridAssignments.find(
+        (a) => a.conference === conference && a.isAutoQualifier,
+      );
       const newAqInField = overriddenGridAssignments.some(
         (a) => a.team === newAq.team,
       );
 
+      // Path 1: newAq already in field. Just flip the override flag.
       if (newAqInField) {
-        // Path 1: in-field. Just flip the override, no slot change.
         setAqOverrides((prev) => {
           const next = new Map(prev);
-          next.set(currentAq.conference, newAq.team);
+          next.set(conference, newAq.team);
           return next;
         });
-        // No team leaves — clear the "Just Removed" pin if it was set.
+        // No team leaves — clear the "Just Removed" pin so it doesn't
+        // mislead the user into thinking a team was removed.
         setLastSwappedOut(null);
-        setAqSwapTarget(null);
         return;
       }
 
-      // Path 2: out of field — cascade like handlePromoteToAq.
-      const worstAtLarge = [...overriddenGridAssignments]
-        .filter((a) => !a.isAutoQualifier && a.team !== newAq.team)
-        .sort((a, b) => b.rank - a.rank)[0];
+      // Path 2: newAq is out of field — needs an in-field slot.
+      if (!previousAq) return; // can't slot in without an AQ to swap
 
+      // Post-change at-large pool: every current at-large PLUS the
+      // previous AQ (now demoted to at-large status). Sort worst-rank
+      // first; the head of that list is the team that falls out.
+      const atLargePool = overriddenGridAssignments.filter(
+        (a) => !a.isAutoQualifier || a.team === previousAq.team,
+      );
+      const worst = [...atLargePool].sort((a, b) => b.rank - a.rank)[0];
+      if (!worst) return; // shouldn't happen — defensively bail
+
+      // Trigger a plain "replace" — newAq lands in worst's slot. If
+      // worst === previousAq, the previous AQ leaves. Otherwise the
+      // previous AQ keeps their slot (and just drops the AQ flag via
+      // aqOverrides).
       swapNonceRef.current += 1;
-      let pushedOut: TeamData;
-      if (worstAtLarge && currentAq.rank < worstAtLarge.rank) {
-        setSwapRequest({
-          mode: "promote",
-          subIn: newAq.team,
-          displacedAq: currentAq.team,
-          worstAtLarge: worstAtLarge.team,
-          nonce: swapNonceRef.current,
-        });
-        pushedOut = worstAtLarge;
-      } else {
-        setSwapRequest({
-          mode: "promote",
-          subIn: newAq.team,
-          displacedAq: currentAq.team,
-          nonce: swapNonceRef.current,
-        });
-        pushedOut = currentAq;
-      }
+      setSwapRequest({
+        mode: "replace",
+        from: newAq.team,
+        to: worst.team,
+        nonce: swapNonceRef.current,
+      });
       setAqOverrides((prev) => {
         const next = new Map(prev);
-        next.set(currentAq.conference, newAq.team);
+        next.set(conference, newAq.team);
         return next;
       });
-      setLastSwappedOut(pushedOut);
+      setLastSwappedOut(worst);
+    },
+    [overriddenGridAssignments],
+  );
+
+  // SUB modal "Mark as AQ" entry point — applies the AQ change for
+  // the subbed-in team's conference, then closes the modal.
+  const handlePromoteToAq = useCallback(() => {
+    if (!subInTeam) return;
+    applyAqChange(subInTeam.conference, subInTeam);
+    setSubInTeam(null);
+  }, [subInTeam, applyAqChange]);
+
+  // User clicked any in-field row in the Full D1 Breakdown table —
+  // open the Change AQ modal for that team's conference. The modal
+  // computes the actual current AQ from the conference, so clicking a
+  // non-AQ row still reaches the right conference picker.
+  const handleRowClick = useCallback((row: ScurveAssignment) => {
+    setAqSwapTarget(row);
+  }, []);
+
+  // Change AQ modal entry point — applies the AQ change for the
+  // clicked row's conference, then closes the modal.
+  const handlePickNewAq = useCallback(
+    (newAq: TeamData) => {
+      if (!aqSwapTarget) return;
+      applyAqChange(aqSwapTarget.conference, newAq);
       setAqSwapTarget(null);
     },
-    [aqSwapTarget, overriddenGridAssignments],
+    [aqSwapTarget, applyAqChange],
   );
 
   // Reset slots on gender switch — H2H data is gender-specific.
@@ -3753,7 +3767,7 @@ function ManualGridSection({
               hostColorByTeam={hostColorByTeam}
               gender={gender}
               onOutOfFieldClick={handleOutOfFieldClick}
-              onAqClick={handleAqClick}
+              onRowClick={handleRowClick}
               lastSwappedOut={lastSwappedOut}
             />
           </div>
@@ -3770,7 +3784,7 @@ function ManualGridSection({
       />
       <ChangeAqModal
         open={aqSwapTarget !== null}
-        currentAq={aqSwapTarget}
+        target={aqSwapTarget}
         teams={aqAwareTeams}
         gridAssignments={overriddenGridAssignments}
         onClose={() => setAqSwapTarget(null)}
