@@ -133,11 +133,37 @@ type Gender = "men" | "women";
  * is not present, the request is ignored. Push the previous state onto
  * the undo stack so Cmd-Z still works after a swap.
  */
-export interface ManualGridSwapRequest {
+/**
+ * Replace mode (default): sub `from` (out-of-field) into the slot
+ * currently held by `to` (in-field). Single team enters, single team
+ * leaves. Used by the SUB tab's manual-pick "Replace" button.
+ */
+export interface ManualGridReplaceRequest {
+  mode?: "replace";
   from: string; // team being subbed IN (currently out of field)
   to: string;   // team being subbed OUT (currently in a slot)
   nonce: number;
 }
+
+/**
+ * Promote mode (AQ promotion + cascade): subIn (out-of-field) becomes
+ * the new AQ for their conference. The displacedAq (current AQ for
+ * the same conference, in-field) yields their slot. If
+ * `worstAtLarge` is supplied, displacedAq cascades into that team's
+ * slot and the worst at-large is the team that actually leaves the
+ * field. If `worstAtLarge` is not supplied, displacedAq simply leaves.
+ */
+export interface ManualGridPromoteRequest {
+  mode: "promote";
+  subIn: string;
+  displacedAq: string;
+  worstAtLarge?: string | null;
+  nonce: number;
+}
+
+export type ManualGridSwapRequest =
+  | ManualGridReplaceRequest
+  | ManualGridPromoteRequest;
 
 export interface ManualGridTableProps {
   teams: TeamData[];
@@ -447,14 +473,57 @@ export function ManualGridTable({
 
   // Declarative swap (sub-in / sub-out). Parent bumps `nonce` to trigger.
   // We track the last applied nonce so re-renders with the same value
-  // don't re-fire. Find the slot currently holding `to` and replace its
-  // team with `from`; ignore if `from` is already in the grid (would dup)
+  // don't re-fire.
+  //
+  // Replace mode: locate the slot holding `to` and set it to `from`.
+  // Ignored if `from` is already in the grid (would create a duplicate)
   // or `to` is not present.
+  //
+  // Promote mode: subIn replaces displacedAq in their slot; if
+  // `worstAtLarge` is provided, displacedAq cascades into that slot
+  // (so the team that actually leaves is the worst at-large). Ignored
+  // if subIn is already in the grid or any of the named teams aren't
+  // present.
   const lastSwapNonceRef = useRef<number | null>(null);
   useEffect(() => {
     if (!swapRequest) return;
     if (lastSwapNonceRef.current === swapRequest.nonce) return;
     lastSwapNonceRef.current = swapRequest.nonce;
+
+    if (swapRequest.mode === "promote") {
+      const { subIn, displacedAq, worstAtLarge } = swapRequest;
+      if (!subIn || !displacedAq || subIn === displacedAq) return;
+      setInternal((prev) => {
+        let subInAlready = false;
+        let foundDisplaced = false;
+        let foundWorst = false;
+        for (const row of prev.slots) {
+          for (const slot of row) {
+            if (slot.team === subIn) subInAlready = true;
+            if (slot.team === displacedAq) foundDisplaced = true;
+            if (worstAtLarge && slot.team === worstAtLarge) foundWorst = true;
+          }
+        }
+        if (subInAlready || !foundDisplaced) return prev;
+        if (worstAtLarge && !foundWorst) return prev;
+        const newSlots: Slot[][] = prev.slots.map((row) =>
+          row.map((slot) => {
+            if (slot.team === displacedAq) {
+              return { id: `team:${subIn}`, team: subIn };
+            }
+            if (worstAtLarge && slot.team === worstAtLarge) {
+              return { id: `team:${displacedAq}`, team: displacedAq };
+            }
+            return slot;
+          }),
+        );
+        setHistory((h) => [...h, prev]);
+        return { regionalIds: prev.regionalIds, slots: newSlots };
+      });
+      return;
+    }
+
+    // Default: replace mode
     const { from, to } = swapRequest;
     if (!from || !to || from === to) return;
     setInternal((prev) => {
