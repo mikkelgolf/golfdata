@@ -2610,7 +2610,7 @@ function SubOutList({
 }) {
   return (
     <div className="space-y-1">
-      <span className="text-[11px] uppercase tracking-wide text-text-tertiary">{title}</span>
+      <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">{title}</span>
       <div className="border border-border rounded overflow-hidden">
         {teams.map((a) => (
           <button
@@ -2618,7 +2618,7 @@ function SubOutList({
             type="button"
             onClick={() => onSelect(a)}
             className={cn(
-              "w-full text-left px-2 py-1.5 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors",
+              "w-full text-left px-2 py-1 text-[10px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors sm:py-1.5 sm:text-[11px]",
               subOut?.team === a.team && "bg-primary/15"
             )}
           >
@@ -2731,50 +2731,67 @@ function ManualGridSwapModal({
   };
 
   return (
-    <SimpleModal open={open} onClose={onClose} widthClass="max-w-md">
-      <div className="px-4 py-4 space-y-4">
+    <SimpleModal open={open} onClose={onClose} widthClass="max-w-md" title="Swap Team">
+      <div className="px-3 py-3 space-y-3 sm:px-4 sm:py-4 sm:space-y-4">
         {/* Sub In header */}
         <div>
-          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+          <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
             Sub In:
           </span>
-          <div className="text-[15px] font-semibold text-foreground">
+          <div className="text-[13px] font-semibold text-foreground sm:text-[15px]">
             {subIn.team}
           </div>
-          <div className="mt-1 flex items-center gap-1.5">
+          <div className="mt-0.5 flex items-center gap-1.5 sm:mt-1">
             <ConferenceBadge conference={subIn.conference} />
-            <span className="text-[11px] text-muted-foreground font-mono">
+            <span className="text-[10px] text-muted-foreground font-mono sm:text-[11px]">
               #{subIn.rank}
             </span>
           </div>
         </div>
 
         {/* Sub Out current selection */}
-        <div className="border-t border-border pt-3">
-          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+        <div className="border-t border-border pt-2 sm:pt-3">
+          <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
             Sub Out:
           </span>
           {subOut ? (
             <>
-              <div className="text-[15px] font-semibold mt-0.5">
+              <div className="text-[13px] font-semibold mt-0.5 sm:text-[15px]">
                 <span className="text-foreground">{subOut.team}</span>
                 {subOut.isAutoQualifier && (
-                  <span className="ml-1.5 text-[10px] font-semibold text-primary uppercase">AQ</span>
+                  <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase sm:text-[10px]">AQ</span>
                 )}
               </div>
-              <div className="mt-1 flex items-center gap-1.5">
+              <div className="mt-0.5 flex items-center gap-1.5 sm:mt-1">
                 <ConferenceBadge conference={subOut.conference} />
-                <span className="text-[11px] text-muted-foreground font-mono">
+                <span className="text-[10px] text-muted-foreground font-mono sm:text-[11px]">
                   #{subOut.rank}
                 </span>
               </div>
             </>
           ) : (
-            <div className="text-[15px] font-semibold mt-0.5">
+            <div className="text-[13px] font-semibold mt-0.5 sm:text-[15px]">
               <span className="italic text-text-tertiary">[Select Team]</span>
             </div>
           )}
         </div>
+
+        {/* REPLACE button — sits right below Sub Out so the user must
+            return to the top of the modal to confirm the team they're
+            swapping in. Keeps the action visually paired with the choice. */}
+        <button
+          type="button"
+          disabled={!subOut}
+          onClick={handleReplace}
+          className={cn(
+            "w-full py-2 rounded font-bold text-[12px] uppercase tracking-wider transition-colors sm:py-2.5 sm:text-[13px]",
+            subOut
+              ? "bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+              : "bg-card text-text-tertiary cursor-not-allowed"
+          )}
+        >
+          Replace
+        </button>
 
         {/* Bubble: last N non-AQ in */}
         {bubble.length > 0 && (
@@ -2797,8 +2814,8 @@ function ManualGridSwapModal({
         )}
 
         {/* Search */}
-        <div className="space-y-1.5">
-          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+        <div className="space-y-1 sm:space-y-1.5">
+          <span className="text-[10px] uppercase tracking-wide text-text-tertiary sm:text-[11px]">
             Search field
           </span>
           <input
@@ -2806,7 +2823,7 @@ function ManualGridSwapModal({
             placeholder="Type team or conference..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-2 py-1 bg-card border border-border rounded text-[12px] focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-text-tertiary"
+            className="w-full px-2 py-1 bg-card border border-border rounded text-[11px] focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-text-tertiary sm:text-[12px]"
           />
           {search && searchResults.length > 0 && (
             <div className="max-h-40 overflow-y-auto border border-border rounded">
@@ -2819,7 +2836,7 @@ function ManualGridSwapModal({
                     disabled={!eligible}
                     onClick={() => eligible && setSubOut(a)}
                     className={cn(
-                      "w-full text-left px-2 py-1.5 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 transition-colors",
+                      "w-full text-left px-2 py-1 text-[10px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 transition-colors sm:py-1.5 sm:text-[11px]",
                       eligible
                         ? "hover:bg-card cursor-pointer text-foreground"
                         : "opacity-40 cursor-not-allowed text-muted-foreground",
@@ -2856,23 +2873,6 @@ function ManualGridSwapModal({
           {search && searchResults.length === 0 && (
             <p className="text-[11px] text-text-tertiary italic px-1">No matches in field.</p>
           )}
-        </div>
-
-        {/* REPLACE button — separated from selection options */}
-        <div className="border-t border-border pt-3">
-          <button
-            type="button"
-            disabled={!subOut}
-            onClick={handleReplace}
-            className={cn(
-              "w-full py-2.5 rounded font-bold text-[13px] uppercase tracking-wider transition-colors",
-              subOut
-                ? "bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-                : "bg-card text-text-tertiary cursor-not-allowed"
-            )}
-          >
-            Replace
-          </button>
         </div>
       </div>
     </SimpleModal>
