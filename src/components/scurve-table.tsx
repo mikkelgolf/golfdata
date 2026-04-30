@@ -7,10 +7,11 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
-import { ManualGridTable } from "@/components/manual-grid-table";
+import { ManualGridTable, type ManualGridSwapRequest } from "@/components/manual-grid-table";
 import ManualGridMap from "@/components/manual-grid-map";
 import HeadToHeadBrowser from "@/components/head-to-head-browser";
 import { AdvancementBars } from "@/components/advancement-bars";
+import { SimpleModal } from "@/components/simple-modal";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
@@ -1387,6 +1388,7 @@ function BreakdownView({
   regionalPositions,
   hostColorByTeam,
   gender = "men",
+  onOutOfFieldClick,
 }: {
   teams: TeamData[];
   assignments: ScurveAssignment[];
@@ -1395,7 +1397,36 @@ function BreakdownView({
   regionalPositions: Map<string, number>;
   hostColorByTeam?: Map<string, string>;
   gender?: Gender;
+  /**
+   * When provided, out-of-field team names render as buttons that fire
+   * this callback instead of TeamLinks. Used by the Manual Grid Breakdown
+   * subtab to open the sub-in/sub-out modal.
+   */
+  onOutOfFieldClick?: (team: TeamData) => void;
 }) {
+  // Helper: out-of-field team names are clickable buttons when
+  // `onOutOfFieldClick` is wired; otherwise fall through to TeamLink.
+  const renderOutTeam = (team: TeamData, className?: string) => {
+    if (onOutOfFieldClick) {
+      return (
+        <button
+          type="button"
+          onClick={() => onOutOfFieldClick(team)}
+          className={cn(
+            "text-left hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer",
+            className
+          )}
+        >
+          {team.team}
+        </button>
+      );
+    }
+    return (
+      <TeamLink team={team.team} gender={gender} className={className} hostColor={hostColorByTeam?.get(team.team)}>
+        {team.team}
+      </TeamLink>
+    );
+  };
   const LAST_IN = 6;
   const FIRST_OUT = 6;
 
@@ -1553,9 +1584,7 @@ function BreakdownView({
                     <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
-                    <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
-                      {team.team}
-                    </TeamLink>
+                    {renderOutTeam(team)}
                     <span className="ml-1.5 text-[8px] font-semibold text-amber-500/70 uppercase">
                       {team.wins}-{team.losses}
                     </span>
@@ -1602,9 +1631,7 @@ function BreakdownView({
                     <span className="hidden md:inline">—</span>
                   </span>
                   <span className="text-muted-foreground truncate">
-                    <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
-                      {team.team}
-                    </TeamLink>
+                    {renderOutTeam(team)}
                   </span>
                   <div className="hidden md:contents">
                     <span className="font-mono text-muted-foreground text-right">#{team.rank}</span>
@@ -1731,9 +1758,7 @@ function BreakdownView({
                     <td className="px-2 text-center font-mono text-muted-foreground">—</td>
                     <td className="px-2 text-center font-mono text-muted-foreground hidden md:table-cell">—</td>
                     <td className="px-2 text-muted-foreground">
-                      <TeamLink team={team.team} gender={gender} hostColor={hostColorByTeam?.get(team.team)}>
-                        {team.team}
-                      </TeamLink>
+                      {renderOutTeam(team)}
                       {!team.eligible && (
                         <span className="ml-1.5 text-[9px] font-semibold text-amber-500/80 uppercase">
                           Sub-.500
@@ -2557,6 +2582,269 @@ function MobileVisualScurve({
 }
 
 // ---------------------------------------------------------------------------
+// Manual Grid Sub-In / Sub-Out modal — lets the user pick a team currently
+// in the grid to remove, in exchange for the out-of-field team they clicked
+// on the Breakdown subtab. Three selection paths:
+//   1. Last N non-AQ teams in field (the bubble — most likely swap targets).
+//   2. Other teams in the same conference as the sub-in candidate.
+//   3. Free-form search across the full field. AQ teams from a different
+//      conference are greyed (their conference would lose its auto-bid).
+// ---------------------------------------------------------------------------
+
+const SUB_OUT_BUBBLE_COUNT = 6;
+
+function SubOutList({
+  title,
+  teams,
+  subOut,
+  onSelect,
+}: {
+  title: string;
+  teams: ScurveAssignment[];
+  subOut: ScurveAssignment | null;
+  onSelect: (a: ScurveAssignment) => void;
+}) {
+  return (
+    <div className="space-y-1">
+      <span className="text-[11px] uppercase tracking-wide text-text-tertiary">{title}</span>
+      <div className="border border-border rounded overflow-hidden">
+        {teams.map((a) => (
+          <button
+            key={a.team}
+            type="button"
+            onClick={() => onSelect(a)}
+            className={cn(
+              "w-full text-left px-2 py-1 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors",
+              subOut?.team === a.team && "bg-primary/15"
+            )}
+          >
+            <span className="text-foreground truncate">
+              {a.team}
+              {a.isAutoQualifier && (
+                <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
+              )}
+            </span>
+            <span className="text-text-tertiary text-[10px] shrink-0">
+              {a.conference} &middot; #{a.rank}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ManualGridSwapModal({
+  open,
+  subIn,
+  gridAssignments,
+  onClose,
+  onReplace,
+}: {
+  open: boolean;
+  subIn: TeamData | null;
+  gridAssignments: ScurveAssignment[];
+  onClose: () => void;
+  onReplace: (subOut: ScurveAssignment) => void;
+}) {
+  const [subOut, setSubOut] = useState<ScurveAssignment | null>(null);
+  const [search, setSearch] = useState("");
+
+  // Reset on subIn change (new candidate) or close.
+  useEffect(() => {
+    setSubOut(null);
+    setSearch("");
+  }, [subIn?.team]);
+
+  // Bubble: worst-ranked non-AQ teams in field. Display worst-first
+  // (highest rank number first) since those are most likely to be subbed.
+  const bubble = useMemo(() => {
+    if (!subIn) return [];
+    return gridAssignments
+      .filter((a) => !a.isAutoQualifier)
+      .slice()
+      .sort((a, b) => a.rank - b.rank)
+      .slice(-SUB_OUT_BUBBLE_COUNT)
+      .reverse();
+  }, [gridAssignments, subIn]);
+
+  // Same conference, in field, excluding the sub-in candidate itself if
+  // it somehow appears (shouldn't — modal only opens for out-of-field).
+  const sameConf = useMemo(() => {
+    if (!subIn) return [];
+    return gridAssignments
+      .filter((a) => a.conference === subIn.conference && a.team !== subIn.team)
+      .slice()
+      .sort((a, b) => a.rank - b.rank);
+  }, [gridAssignments, subIn]);
+
+  // AQ from a different conference can't be swapped out — that would
+  // leave their conference without its auto-bid representation.
+  const canSwapOut = (a: ScurveAssignment) => {
+    if (!subIn) return false;
+    return !a.isAutoQualifier || a.conference === subIn.conference;
+  };
+
+  const searchResults = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return [] as ScurveAssignment[];
+    return gridAssignments
+      .filter(
+        (a) =>
+          a.team.toLowerCase().includes(q) ||
+          a.conference.toLowerCase().includes(q)
+      )
+      .slice()
+      .sort((a, b) => a.rank - b.rank)
+      .slice(0, 25);
+  }, [search, gridAssignments]);
+
+  if (!subIn) return null;
+
+  const handleReplace = () => {
+    if (!subOut) return;
+    onReplace(subOut);
+  };
+
+  return (
+    <SimpleModal open={open} onClose={onClose} widthClass="max-w-md">
+      <div className="px-4 py-4 space-y-4">
+        {/* Sub In header */}
+        <div>
+          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+            Sub In:
+          </span>
+          <div className="text-[15px] font-semibold text-foreground">
+            {subIn.team}
+          </div>
+          <div className="text-[11px] text-muted-foreground">
+            {subIn.conference} &middot; #{subIn.rank}
+          </div>
+        </div>
+
+        {/* Sub Out current selection */}
+        <div className="border-t border-border pt-3">
+          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+            Sub Out:
+          </span>
+          <div className="text-[15px] font-semibold mt-0.5">
+            {subOut ? (
+              <>
+                <span className="text-foreground">{subOut.team}</span>
+                {subOut.isAutoQualifier && (
+                  <span className="ml-1.5 text-[10px] font-semibold text-primary uppercase">AQ</span>
+                )}
+                <div className="text-[11px] font-normal text-muted-foreground">
+                  {subOut.conference} &middot; #{subOut.rank}
+                </div>
+              </>
+            ) : (
+              <span className="italic text-text-tertiary">[Select Team]</span>
+            )}
+          </div>
+        </div>
+
+        {/* Bubble: last N non-AQ in */}
+        {bubble.length > 0 && (
+          <SubOutList
+            title={`Last ${bubble.length} non-AQ in`}
+            teams={bubble}
+            subOut={subOut}
+            onSelect={setSubOut}
+          />
+        )}
+
+        {/* Same-conference list */}
+        {sameConf.length > 0 && (
+          <SubOutList
+            title={`Same conference: ${subIn.conference}`}
+            teams={sameConf}
+            subOut={subOut}
+            onSelect={setSubOut}
+          />
+        )}
+
+        {/* Search */}
+        <div className="space-y-1.5">
+          <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
+            Search field
+          </span>
+          <input
+            type="text"
+            placeholder="Type team or conference..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-2 py-1 bg-card border border-border rounded text-[12px] focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-text-tertiary"
+          />
+          {search && searchResults.length > 0 && (
+            <div className="max-h-40 overflow-y-auto border border-border rounded">
+              {searchResults.map((a) => {
+                const eligible = canSwapOut(a);
+                return (
+                  <button
+                    key={a.team}
+                    type="button"
+                    disabled={!eligible}
+                    onClick={() => eligible && setSubOut(a)}
+                    className={cn(
+                      "w-full text-left px-2 py-1 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 transition-colors",
+                      eligible
+                        ? "hover:bg-card cursor-pointer text-foreground"
+                        : "opacity-40 cursor-not-allowed text-muted-foreground",
+                      subOut?.team === a.team && "bg-primary/15"
+                    )}
+                    title={
+                      eligible
+                        ? undefined
+                        : "AQ from a different conference can't be subbed out (would lose their auto-bid)"
+                    }
+                  >
+                    <span className="truncate">
+                      {a.team}
+                      {a.isAutoQualifier && (
+                        <span className={cn(
+                          "ml-1.5 text-[9px] font-semibold uppercase",
+                          eligible ? "text-primary" : "text-text-tertiary"
+                        )}>
+                          AQ
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-text-tertiary text-[10px] shrink-0">
+                      {a.conference} &middot; #{a.rank}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {search && searchResults.length === 0 && (
+            <p className="text-[11px] text-text-tertiary italic px-1">No matches in field.</p>
+          )}
+        </div>
+
+        {/* REPLACE button — separated from selection options */}
+        <div className="border-t border-border pt-3">
+          <button
+            type="button"
+            disabled={!subOut}
+            onClick={handleReplace}
+            className={cn(
+              "w-full py-2.5 rounded font-bold text-[13px] uppercase tracking-wider transition-colors",
+              subOut
+                ? "bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+                : "bg-card text-text-tertiary cursor-not-allowed"
+            )}
+          >
+            Replace
+          </button>
+        </div>
+      </div>
+    </SimpleModal>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Manual Grid Section — wraps ManualGridTable with a live BreakdownView
 // driven by the user's edits.
 // ---------------------------------------------------------------------------
@@ -2578,7 +2866,16 @@ function ManualGridSection({
   // then B if A is filled (and the placement isn't a duplicate of A).
   const [teamA, setTeamA] = useState<string | null>(null);
   const [teamB, setTeamB] = useState<string | null>(null);
-  const [tab, setTab] = useState<"h2h" | "map" | "advancement">("h2h");
+  const [tab, setTab] = useState<"h2h" | "map" | "advancement" | "breakdown">("h2h");
+
+  // Sub-in / sub-out modal state for the Breakdown subtab. `subInTeam` is
+  // the out-of-field team the user clicked on; the modal asks them to pick
+  // a team currently in the field to swap out. `swapRequest` is the
+  // declarative trigger handed to ManualGridTable — bumping `nonce`
+  // applies the swap inside the grid (with localStorage persist + undo).
+  const [subInTeam, setSubInTeam] = useState<TeamData | null>(null);
+  const [swapRequest, setSwapRequest] = useState<ManualGridSwapRequest | null>(null);
+  const swapNonceRef = useRef(0);
   // Regional selection on the Map tab — clicking a regional dot fans
   // lines to all teams placed in that regional and clears A/B. Tapping
   // the same regional again clears the selection.
@@ -2599,6 +2896,44 @@ function ManualGridSection({
       (a, b) => (seeds.get(a.id) ?? 99) - (seeds.get(b.id) ?? 99),
     );
   }, [gridAssignments, regionals]);
+
+  // Derived inputs for the Breakdown subtab. BreakdownView needs:
+  // regionalMap (id → Regional), regionalSeeds (regionalId → 1..N rank),
+  // regionalPositions (team name → 1..N position within its regional).
+  const breakdownRegionalMap = useMemo(() => {
+    const map = new Map<number, Regional>();
+    for (const r of regionals) map.set(r.id, r);
+    return map;
+  }, [regionals]);
+  const breakdownRegionalSeeds = useMemo(
+    () => computeRegionalSeeds(gridAssignments),
+    [gridAssignments]
+  );
+  const breakdownRegionalPositions = useMemo(
+    () => computeRegionalPositions(gridAssignments),
+    [gridAssignments]
+  );
+
+  // Out-of-field click on the Breakdown subtab → open the swap modal.
+  const handleOutOfFieldClick = useCallback((team: TeamData) => {
+    setSubInTeam(team);
+  }, []);
+
+  // User confirmed REPLACE in the modal. Bump nonce so ManualGridTable
+  // notices and applies the swap; close the modal.
+  const handleSwapReplace = useCallback(
+    (subOut: ScurveAssignment) => {
+      if (!subInTeam) return;
+      swapNonceRef.current += 1;
+      setSwapRequest({
+        from: subInTeam.team,
+        to: subOut.team,
+        nonce: swapNonceRef.current,
+      });
+      setSubInTeam(null);
+    },
+    [subInTeam]
+  );
 
   // Reset slots on gender switch — H2H data is gender-specific.
   const lastGenderRef = useRef<Gender>(gender);
@@ -2671,6 +3006,7 @@ function ManualGridSection({
         onPlaceTeam={handlePlaceTeam}
         teamA={teamA}
         teamB={teamB}
+        swapRequest={swapRequest}
       />
       <div className="mt-6">
         {/* Tab switcher */}
@@ -2720,6 +3056,20 @@ function ManualGridSection({
             )}
           >
             Advancement Model
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "breakdown"}
+            onClick={() => setTab("breakdown")}
+            className={cn(
+              "px-3 py-1 transition-colors border-l border-border",
+              tab === "breakdown"
+                ? "bg-primary/20 text-primary"
+                : "bg-card text-muted-foreground hover:bg-card/80"
+            )}
+          >
+            Breakdown
           </button>
         </div>
 
@@ -2804,7 +3154,34 @@ function ManualGridSection({
             )}
           </div>
         )}
+        {tab === "breakdown" && (
+          <div role="tabpanel">
+            <h3 className="text-[13px] font-semibold text-foreground mb-1">
+              Breakdown
+              <span className="ml-2 text-[11px] font-normal text-text-tertiary">
+                Click a team below the cutline to swap them into your grid
+              </span>
+            </h3>
+            <BreakdownView
+              teams={teams}
+              assignments={gridAssignments}
+              regionalMap={breakdownRegionalMap}
+              regionalSeeds={breakdownRegionalSeeds}
+              regionalPositions={breakdownRegionalPositions}
+              hostColorByTeam={hostColorByTeam}
+              gender={gender}
+              onOutOfFieldClick={handleOutOfFieldClick}
+            />
+          </div>
+        )}
       </div>
+      <ManualGridSwapModal
+        open={subInTeam !== null}
+        subIn={subInTeam}
+        gridAssignments={gridAssignments}
+        onClose={() => setSubInTeam(null)}
+        onReplace={handleSwapReplace}
+      />
     </>
   );
 }

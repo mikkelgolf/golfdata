@@ -125,6 +125,20 @@ const TEAMS_ADVANCING = 5;
 
 type Gender = "men" | "women";
 
+/**
+ * Imperative swap trigger from the parent (e.g. the Breakdown subtab's
+ * "Replace" modal). The grid watches the `nonce`; when it changes, it
+ * locates the slot currently holding `to` and replaces it with `from`.
+ * If `from` is already in the grid (would create a duplicate) or `to`
+ * is not present, the request is ignored. Push the previous state onto
+ * the undo stack so Cmd-Z still works after a swap.
+ */
+export interface ManualGridSwapRequest {
+  from: string; // team being subbed IN (currently out of field)
+  to: string;   // team being subbed OUT (currently in a slot)
+  nonce: number;
+}
+
 export interface ManualGridTableProps {
   teams: TeamData[];
   regionals: Regional[];
@@ -147,6 +161,11 @@ export interface ManualGridTableProps {
   teamA?: string | null;
   /** Currently-selected Team B (highlighted in magenta in the grid). */
   teamB?: string | null;
+  /**
+   * Declarative swap trigger. The parent bumps the `nonce` when it wants
+   * the grid to perform a sub-in/sub-out. See ManualGridSwapRequest above.
+   */
+  swapRequest?: ManualGridSwapRequest | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -395,6 +414,7 @@ export function ManualGridTable({
   onPlaceTeam,
   teamA = null,
   teamB = null,
+  swapRequest = null,
 }: ManualGridTableProps) {
   // Build initial state (committee defaults merged with localStorage if any)
   const [internal, setInternal] = useState<InternalState>(() => {
@@ -424,6 +444,41 @@ export function ManualGridTable({
     const persisted = toPersisted(internal);
     saveGridState(gender, persisted);
   }, [internal, gender]);
+
+  // Declarative swap (sub-in / sub-out). Parent bumps `nonce` to trigger.
+  // We track the last applied nonce so re-renders with the same value
+  // don't re-fire. Find the slot currently holding `to` and replace its
+  // team with `from`; ignore if `from` is already in the grid (would dup)
+  // or `to` is not present.
+  const lastSwapNonceRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!swapRequest) return;
+    if (lastSwapNonceRef.current === swapRequest.nonce) return;
+    lastSwapNonceRef.current = swapRequest.nonce;
+    const { from, to } = swapRequest;
+    if (!from || !to || from === to) return;
+    setInternal((prev) => {
+      // Reject duplicate: incoming team is already on the grid.
+      let alreadyIn = false;
+      let foundOutSlot = false;
+      for (const row of prev.slots) {
+        for (const slot of row) {
+          if (slot.team === from) alreadyIn = true;
+          if (slot.team === to) foundOutSlot = true;
+        }
+      }
+      if (alreadyIn || !foundOutSlot) return prev;
+      const newSlots: Slot[][] = prev.slots.map((row) =>
+        row.map((slot) =>
+          slot.team === to
+            ? { id: `team:${from}`, team: from }
+            : slot
+        )
+      );
+      setHistory((h) => [...h, prev]);
+      return { regionalIds: prev.regionalIds, slots: newSlots };
+    });
+  }, [swapRequest]);
 
   const teamLookup = useMemo(() => {
     const map = new Map<string, TeamData>();
