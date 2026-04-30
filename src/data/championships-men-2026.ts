@@ -407,6 +407,7 @@ export const championshipsMen2026: Championship[] = [
     endDate: "2026-04-29",
     color: "#8a5a3a",
     sourceUrl: "https://wacsports.com/tournaments/?id=180&path=mgolf",
+    winner: "Tarleton State",
   },
   {
     id: 21,
