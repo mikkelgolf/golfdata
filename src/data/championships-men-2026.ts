@@ -250,6 +250,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#836f9c",
     sourceUrl:
       "https://siusalukis.com/news/2026/2/6/mens-golf-salukis-ranked-as-mvc-preseason-number-one-in-coaching-poll",
+    winner: "Illinois State",
   },
   {
     id: 12,
