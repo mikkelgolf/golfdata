@@ -525,11 +525,7 @@ export function ManualGridTable({
 
     // Default: replace mode
     const { from, to } = swapRequest;
-    if (!from || !to || from === to) {
-      // eslint-disable-next-line no-console
-      console.warn("[RON-DEBUG] ManualGridTable swap: BAILED at preflight", { from, to });
-      return;
-    }
+    if (!from || !to || from === to) return;
     setInternal((prev) => {
       // Reject duplicate: incoming team is already on the grid.
       let alreadyIn = false;
@@ -540,18 +536,7 @@ export function ManualGridTable({
           if (slot.team === to) foundOutSlot = true;
         }
       }
-      if (alreadyIn || !foundOutSlot) {
-        // eslint-disable-next-line no-console
-        console.warn("[RON-DEBUG] ManualGridTable swap: REJECTED", {
-          from,
-          to,
-          alreadyIn,
-          foundOutSlot,
-        });
-        return prev;
-      }
-      // eslint-disable-next-line no-console
-      console.log("[RON-DEBUG] ManualGridTable swap: APPLIED", { from, to });
+      if (alreadyIn || !foundOutSlot) return prev;
       const newSlots: Slot[][] = prev.slots.map((row) =>
         row.map((slot) =>
           slot.team === to
