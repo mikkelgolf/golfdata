@@ -26,11 +26,20 @@ const TEAMS_ADVANCING = MODEL_TEAMS_ADVANCING;
 
 /**
  * Glyph used to mark a team that is geographically close to the regional
- * venue (within HOST_RADIUS_MILES) but is not the designated host school.
- * Swap this constant to change the icon project-wide — anything from
- * `lucide-react` works.
+ * venue but is not the designated host school. Swap this constant to
+ * change the icon project-wide — anything from `lucide-react` works.
  */
 const NEAR_HOST_ICON = MapPin;
+
+/**
+ * Distance threshold (miles) for showing the "nearby" pin in the UI.
+ * This is intentionally decoupled from `HOST_RADIUS_MILES` in
+ * `projections-apply.ts` — that constant gates the model's host lift
+ * and is locked to the value the host-lift table was trained on (30 mi).
+ * The display threshold can be wider (50 mi) without affecting any
+ * probability math.
+ */
+const NEAR_HOST_DISPLAY_MILES = 50;
 
 interface Props {
   regionals: Regional[];
@@ -279,7 +288,7 @@ function BarRow({
             )}
           >
             {team.team}
-            {team.isHost && hostColor && (
+            {hostColor && (
               <span
                 className="ml-1 text-[7px] font-bold text-text-tertiary sm:text-[8px]"
                 title="Tournament host"
@@ -287,11 +296,11 @@ function BarRow({
                 H
               </span>
             )}
-            {team.isHost && !hostColor && (
+            {!hostColor && team.travelMi < NEAR_HOST_DISPLAY_MILES && (
               <span
                 className="ml-1 inline-flex items-center align-middle text-text-tertiary"
-                title={`${team.travelMi.toFixed(0)} mi from venue (within host radius, not the host school)`}
-                aria-label={`Within host radius — ${team.travelMi.toFixed(0)} miles from venue`}
+                title={`${team.travelMi.toFixed(0)} mi from venue — nearby, not the host school`}
+                aria-label={`Within ${NEAR_HOST_DISPLAY_MILES} miles of venue — ${team.travelMi.toFixed(0)} miles`}
               >
                 <NEAR_HOST_ICON className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
               </span>
@@ -432,7 +441,18 @@ function TeamDetail({
           </Link>
           <span className="ml-2 text-[10px] text-text-tertiary">
             #{team.rank} · {team.conference}
-            {team.isHost && <span className="ml-1 font-bold text-foreground">HOST</span>}
+            {hostColor && (
+              <span className="ml-1 font-bold text-foreground">HOST</span>
+            )}
+            {!hostColor && team.travelMi < NEAR_HOST_DISPLAY_MILES && (
+              <span
+                className="ml-1 inline-flex items-center gap-0.5 align-middle font-bold text-foreground"
+                title={`${team.travelMi.toFixed(0)} mi from venue — nearby, not the host school`}
+              >
+                <NEAR_HOST_ICON className="h-3 w-3" />
+                NEARBY
+              </span>
+            )}
           </span>
         </div>
         <div className="text-right">
