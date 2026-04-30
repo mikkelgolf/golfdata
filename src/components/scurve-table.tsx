@@ -3069,7 +3069,7 @@ function ManualGridSection({
                 : "bg-card text-muted-foreground hover:bg-card/80"
             )}
           >
-            Breakdown
+            SUB
           </button>
         </div>
 
@@ -3157,7 +3157,7 @@ function ManualGridSection({
         {tab === "breakdown" && (
           <div role="tabpanel">
             <h3 className="text-[13px] font-semibold text-foreground mb-1">
-              Breakdown
+              SUB
               <span className="ml-2 text-[11px] font-normal text-text-tertiary">
                 Click a team below the cutline to swap them into your grid
               </span>
