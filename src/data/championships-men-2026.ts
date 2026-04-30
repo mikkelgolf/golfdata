@@ -268,6 +268,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#7ba8d3",
     notes: "First time at this Pete Dye-designed venue.",
     sourceUrl: "https://ovcsports.com/tournaments/?id=66",
+    winner: "Little Rock",
   },
   {
     id: 13,

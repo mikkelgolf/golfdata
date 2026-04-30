@@ -2073,14 +2073,16 @@
         "name": "2026 OVC Men's Golf Championship - Stroke Play",
         "endDate": "2026-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/238690",
-        "winner": null
+        "winner": "Little Rock"
       },
       "matchplay": {
         "tournamentId": "238691",
         "name": "2026 OVC Men's Golf Championship - Match Play",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/238691",
-        "winner": null
+        "winner": "Little Rock",
+        "runnerUp": "Tennessee Tech",
+        "finalScore": "4-1"
       }
     },
     {
