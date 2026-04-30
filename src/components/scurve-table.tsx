@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
-import { computeScurve, computeRegionalSeeds, computeRegionalPositions, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
+import { computeScurve, computeRegionalSeeds, computeRegionalPositions, deriveAutoQualifiers, type ScurveAssignment, type ScurveMode } from "@/lib/scurve";
 import { ManualGridTable, type ManualGridSwapRequest } from "@/components/manual-grid-table";
 import ManualGridMap from "@/components/manual-grid-map";
 import HeadToHeadBrowser from "@/components/head-to-head-browser";
@@ -3102,6 +3102,20 @@ function ManualGridSection({
   const [gridAssignments, setGridAssignments] = useState<ScurveAssignment[]>([]);
   const [gridRegionalIds, setGridRegionalIds] = useState<number[]>([]);
 
+  // Champion-aware team list. The raw `teams` prop carries
+  // `isAutoQualifier` from the rankings file (predicted top-of-conference
+  // only). When a championship has been confirmed, the actual AQ may be
+  // a lower-ranked team — `deriveAutoQualifiers` reconciles the two.
+  // Manual Grid feeds this list to ManualGridTable so its teamLookup,
+  // and therefore every derived assignment, carries the correct AQ flag.
+  // Without this, the Bubble Breakdown would never show the right AQs
+  // post-championship, and "Mark as AQ" would have no current AQ to
+  // displace from confirmed-winner conferences.
+  const aqAwareTeams = useMemo(
+    () => deriveAutoQualifiers(teams, championships),
+    [teams, championships],
+  );
+
   // Local AQ overrides — purely a Manual Grid thing. Maps conference code
   // to the team currently designated AQ for that conference. Empty by
   // default (every team uses its built-in `isAutoQualifier`). When the
@@ -3301,7 +3315,7 @@ function ManualGridSection({
   return (
     <>
       <ManualGridTable
-        teams={teams}
+        teams={aqAwareTeams}
         regionals={regionals}
         championships={championships}
         gender={gender}
@@ -3469,7 +3483,7 @@ function ManualGridSection({
               </span>
             </h3>
             <BreakdownView
-              teams={teams}
+              teams={aqAwareTeams}
               assignments={overriddenGridAssignments}
               regionalMap={breakdownRegionalMap}
               regionalSeeds={breakdownRegionalSeeds}
