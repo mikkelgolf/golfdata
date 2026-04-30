@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Plane, ArrowUp, Trophy, Info } from "lucide-react";
+import { Plane, ArrowUp, Trophy, Info, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { teamHref } from "@/lib/team-link";
 import { SimpleModal } from "@/components/simple-modal";
@@ -23,6 +23,14 @@ import type { ScurveAssignment } from "@/lib/scurve";
 import type { Regional } from "@/data/regionals-men-2026";
 
 const TEAMS_ADVANCING = MODEL_TEAMS_ADVANCING;
+
+/**
+ * Glyph used to mark a team that is geographically close to the regional
+ * venue (within HOST_RADIUS_MILES) but is not the designated host school.
+ * Swap this constant to change the icon project-wide — anything from
+ * `lucide-react` works.
+ */
+const NEAR_HOST_ICON = MapPin;
 
 interface Props {
   regionals: Regional[];
@@ -258,8 +266,22 @@ function BarRow({
             )}
           >
             {team.team}
-            {team.isHost && (
-              <span className="ml-1 text-[7px] font-bold text-text-tertiary sm:text-[8px]">H</span>
+            {team.isHost && hostColor && (
+              <span
+                className="ml-1 text-[7px] font-bold text-text-tertiary sm:text-[8px]"
+                title="Tournament host"
+              >
+                H
+              </span>
+            )}
+            {team.isHost && !hostColor && (
+              <span
+                className="ml-1 inline-flex items-center align-middle text-text-tertiary"
+                title={`${team.travelMi.toFixed(0)} mi from venue (within host radius, not the host school)`}
+                aria-label={`Within host radius — ${team.travelMi.toFixed(0)} miles from venue`}
+              >
+                <NEAR_HOST_ICON className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+              </span>
             )}
           </span>
         </div>
