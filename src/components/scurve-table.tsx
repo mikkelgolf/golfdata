@@ -26,6 +26,7 @@ import {
   MapPin,
   Plane,
   ExternalLink,
+  Plus,
 } from "lucide-react";
 import HeadToHeadMatrix from "@/components/head-to-head-matrix";
 import { ConferenceBadge } from "@/components/conference-badge";
@@ -1406,6 +1407,7 @@ function BreakdownView({
 }) {
   // Helper: out-of-field team names are clickable buttons when
   // `onOutOfFieldClick` is wired; otherwise fall through to TeamLink.
+  // The "+" icon hints that clicking adds the team to the user's grid.
   const renderOutTeam = (team: TeamData, className?: string) => {
     if (onOutOfFieldClick) {
       return (
@@ -1413,11 +1415,13 @@ function BreakdownView({
           type="button"
           onClick={() => onOutOfFieldClick(team)}
           className={cn(
-            "text-left hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer",
+            "inline-flex items-center gap-1 text-left text-primary/80 hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer",
             className
           )}
+          title={`Sub ${team.team} into your grid`}
         >
-          {team.team}
+          <Plus className="h-3 w-3 shrink-0 opacity-70" aria-hidden="true" />
+          <span className="truncate">{team.team}</span>
         </button>
       );
     }
@@ -2614,18 +2618,21 @@ function SubOutList({
             type="button"
             onClick={() => onSelect(a)}
             className={cn(
-              "w-full text-left px-2 py-1 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors",
+              "w-full text-left px-2 py-1.5 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 hover:bg-card cursor-pointer transition-colors",
               subOut?.team === a.team && "bg-primary/15"
             )}
           >
-            <span className="text-foreground truncate">
+            <span className="text-foreground truncate min-w-0 flex-1">
               {a.team}
               {a.isAutoQualifier && (
                 <span className="ml-1.5 text-[9px] font-semibold text-primary uppercase">AQ</span>
               )}
             </span>
-            <span className="text-text-tertiary text-[10px] shrink-0">
-              {a.conference} &middot; #{a.rank}
+            <span className="flex items-center gap-1.5 shrink-0">
+              <ConferenceBadge conference={a.conference} />
+              <span className="text-text-tertiary text-[10px] font-mono w-8 text-right">
+                #{a.rank}
+              </span>
             </span>
           </button>
         ))}
@@ -2650,10 +2657,27 @@ function ManualGridSwapModal({
   const [subOut, setSubOut] = useState<ScurveAssignment | null>(null);
   const [search, setSearch] = useState("");
 
-  // Reset on subIn change (new candidate) or close.
+  // On subIn change (new candidate), pre-select a smart default for
+  // sub-out: the worst-ranked non-AQ currently in the field. That's the
+  // typical swap target ("bump the last team in for this one"). The
+  // user can still pick a different team from any of the lists below.
+  // Deps intentionally exclude `gridAssignments` so editing the grid
+  // mid-modal doesn't clobber the user's selection.
   useEffect(() => {
-    setSubOut(null);
+    if (!subIn) {
+      setSubOut(null);
+      setSearch("");
+      return;
+    }
+    const defaultSubOut =
+      gridAssignments
+        .filter((a) => !a.isAutoQualifier)
+        .slice()
+        .sort((a, b) => a.rank - b.rank)
+        .at(-1) ?? null;
+    setSubOut(defaultSubOut);
     setSearch("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subIn?.team]);
 
   // Bubble: worst-ranked non-AQ teams in field. Display worst-first
@@ -2717,8 +2741,11 @@ function ManualGridSwapModal({
           <div className="text-[15px] font-semibold text-foreground">
             {subIn.team}
           </div>
-          <div className="text-[11px] text-muted-foreground">
-            {subIn.conference} &middot; #{subIn.rank}
+          <div className="mt-1 flex items-center gap-1.5">
+            <ConferenceBadge conference={subIn.conference} />
+            <span className="text-[11px] text-muted-foreground font-mono">
+              #{subIn.rank}
+            </span>
           </div>
         </div>
 
@@ -2727,21 +2754,26 @@ function ManualGridSwapModal({
           <span className="text-[11px] uppercase tracking-wide text-text-tertiary">
             Sub Out:
           </span>
-          <div className="text-[15px] font-semibold mt-0.5">
-            {subOut ? (
-              <>
+          {subOut ? (
+            <>
+              <div className="text-[15px] font-semibold mt-0.5">
                 <span className="text-foreground">{subOut.team}</span>
                 {subOut.isAutoQualifier && (
                   <span className="ml-1.5 text-[10px] font-semibold text-primary uppercase">AQ</span>
                 )}
-                <div className="text-[11px] font-normal text-muted-foreground">
-                  {subOut.conference} &middot; #{subOut.rank}
-                </div>
-              </>
-            ) : (
+              </div>
+              <div className="mt-1 flex items-center gap-1.5">
+                <ConferenceBadge conference={subOut.conference} />
+                <span className="text-[11px] text-muted-foreground font-mono">
+                  #{subOut.rank}
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="text-[15px] font-semibold mt-0.5">
               <span className="italic text-text-tertiary">[Select Team]</span>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Bubble: last N non-AQ in */}
@@ -2787,7 +2819,7 @@ function ManualGridSwapModal({
                     disabled={!eligible}
                     onClick={() => eligible && setSubOut(a)}
                     className={cn(
-                      "w-full text-left px-2 py-1 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 transition-colors",
+                      "w-full text-left px-2 py-1.5 text-[11px] flex items-center justify-between gap-2 border-b border-border/40 last:border-b-0 transition-colors",
                       eligible
                         ? "hover:bg-card cursor-pointer text-foreground"
                         : "opacity-40 cursor-not-allowed text-muted-foreground",
@@ -2799,7 +2831,7 @@ function ManualGridSwapModal({
                         : "AQ from a different conference can't be subbed out (would lose their auto-bid)"
                     }
                   >
-                    <span className="truncate">
+                    <span className="truncate min-w-0 flex-1">
                       {a.team}
                       {a.isAutoQualifier && (
                         <span className={cn(
@@ -2810,8 +2842,11 @@ function ManualGridSwapModal({
                         </span>
                       )}
                     </span>
-                    <span className="text-text-tertiary text-[10px] shrink-0">
-                      {a.conference} &middot; #{a.rank}
+                    <span className="flex items-center gap-1.5 shrink-0">
+                      <ConferenceBadge conference={a.conference} />
+                      <span className="text-text-tertiary text-[10px] font-mono w-8 text-right">
+                        #{a.rank}
+                      </span>
                     </span>
                   </button>
                 );
@@ -3027,7 +3062,8 @@ function ManualGridSection({
                 : "bg-card text-muted-foreground hover:bg-card/80"
             )}
           >
-            Head-to-Head
+            <span className="sm:hidden">H2H</span>
+            <span className="hidden sm:inline">Head-to-Head</span>
           </button>
           <button
             type="button"
@@ -3055,7 +3091,8 @@ function ManualGridSection({
                 : "bg-card text-muted-foreground hover:bg-card/80"
             )}
           >
-            Advancement Model
+            <span className="sm:hidden">Adv.</span>
+            <span className="hidden sm:inline">Advancement Model</span>
           </button>
           <button
             type="button"
