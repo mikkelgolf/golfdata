@@ -2805,11 +2805,21 @@ function ManualGridSwapModal({
   // hidden because there's nothing to promote against.
   const currentConferenceAq = useMemo(() => {
     if (!subIn) return null;
-    return (
-      gridAssignments.find(
-        (a) => a.conference === subIn.conference && a.isAutoQualifier,
-      ) ?? null
-    );
+    const found = gridAssignments.find(
+      (a) => a.conference === subIn.conference && a.isAutoQualifier,
+    ) ?? null;
+    // [RON-DEBUG] — temp log to diagnose SMU AQ bug.
+    // eslint-disable-next-line no-console
+    console.log("[RON-DEBUG] SUB modal currentConferenceAq lookup", {
+      subInTeam: subIn.team,
+      subInConference: subIn.conference,
+      found: found?.team ?? null,
+      foundIsAQ: found?.isAutoQualifier ?? null,
+      sameConfInGrid: gridAssignments
+        .filter((a) => a.conference === subIn.conference)
+        .map((a) => `${a.team}${a.isAutoQualifier ? "(AQ)" : ""}`),
+    });
+    return found;
   }, [gridAssignments, subIn]);
 
   // When promote-to-AQ is on, preview which team will actually leave
@@ -3364,11 +3374,23 @@ function ManualGridSection({
   // override exists for a team's conference.
   const overriddenGridAssignments = useMemo<ScurveAssignment[]>(() => {
     if (aqOverrides.size === 0) return gridAssignments;
-    return gridAssignments.map((a) => {
+    const result = gridAssignments.map((a) => {
       if (!aqOverrides.has(a.conference)) return a;
       const overrideTeam = aqOverrides.get(a.conference);
       return { ...a, isAutoQualifier: a.team === overrideTeam };
     });
+    // [RON-DEBUG] — temp: surface the override + ACC AQ situation
+    // every time it recomputes. Lets us see whether SMU is in field
+    // and whether the override has propagated.
+    // eslint-disable-next-line no-console
+    console.log("[RON-DEBUG] overriddenGridAssignments rebuilt", {
+      gridSize: result.length,
+      overrides: Array.from(aqOverrides.entries()),
+      accTeams: result
+        .filter((a) => a.conference === "ACC")
+        .map((a) => `${a.team}${a.isAutoQualifier ? "(AQ)" : ""}`),
+    });
+    return result;
   }, [gridAssignments, aqOverrides]);
 
   // Strength-order regionals for the Advancement Model tab using the seeds
@@ -3452,8 +3474,26 @@ function ManualGridSection({
         (a) => a.team === newAq.team,
       );
 
+      // [RON-DEBUG] — temp logs to diagnose SMU AQ bug. Remove when fixed.
+      // eslint-disable-next-line no-console
+      console.log("[RON-DEBUG] applyAqChange", {
+        conference,
+        newAq: newAq.team,
+        newAqEligible: newAq.eligible,
+        newAqRank: newAq.rank,
+        previousAq: previousAq?.team ?? null,
+        previousAqRank: previousAq?.rank ?? null,
+        newAqInField,
+        gridSize: overriddenGridAssignments.length,
+        confTeamsInGrid: overriddenGridAssignments
+          .filter((a) => a.conference === conference)
+          .map((a) => `${a.team}${a.isAutoQualifier ? "(AQ)" : ""}`),
+      });
+
       // Path 1: newAq already in field. Just flip the override flag.
       if (newAqInField) {
+        // eslint-disable-next-line no-console
+        console.log("[RON-DEBUG] applyAqChange: PATH 1 — newAq already in field, flag-flip only");
         setAqOverrides((prev) => {
           const next = new Map(prev);
           next.set(conference, newAq.team);
@@ -3466,7 +3506,11 @@ function ManualGridSection({
       }
 
       // Path 2: newAq is out of field — needs an in-field slot.
-      if (!previousAq) return; // can't slot in without an AQ to swap
+      if (!previousAq) {
+        // eslint-disable-next-line no-console
+        console.warn("[RON-DEBUG] applyAqChange: BAILED — no previousAq for conference", conference);
+        return;
+      }
 
       // Post-change at-large pool: every current at-large PLUS the
       // previous AQ (now demoted to at-large status). Sort worst-rank
@@ -3475,7 +3519,19 @@ function ManualGridSection({
         (a) => !a.isAutoQualifier || a.team === previousAq.team,
       );
       const worst = [...atLargePool].sort((a, b) => b.rank - a.rank)[0];
-      if (!worst) return; // shouldn't happen — defensively bail
+      if (!worst) {
+        // eslint-disable-next-line no-console
+        console.warn("[RON-DEBUG] applyAqChange: BAILED — no worst at-large in pool");
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.log("[RON-DEBUG] applyAqChange: PATH 2 — slot swap", {
+        from: newAq.team,
+        to: worst.team,
+        worstRank: worst.rank,
+        atLargePoolSize: atLargePool.length,
+      });
 
       // Trigger a plain "replace" — newAq lands in worst's slot. If
       // worst === previousAq, the previous AQ leaves. Otherwise the
