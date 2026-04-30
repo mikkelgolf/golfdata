@@ -220,6 +220,19 @@ function BarRow({
   const fill = advances ? hostColor || "hsl(var(--foreground))" : "hsl(var(--text-tertiary))";
   const diff = team.seed - placing;
   const diffStr = diff > 0 ? `+${diff}` : diff === 0 ? "0" : `${diff}`;
+  // A "flop" is the inverse of cinderella: a top-N seed that misses the cut.
+  // Together they identify the deltas that cross the advancing threshold.
+  const flop = !advances && team.seed <= TEAMS_ADVANCING;
+  const deltaClass =
+    diff === 0
+      ? "text-text-tertiary"
+      : diff > 0
+        ? cinderella
+          ? "font-bold text-success"
+          : "font-semibold text-success/70"
+        : flop
+          ? "font-bold text-destructive"
+          : "font-medium text-destructive/65";
 
   return (
     <button
@@ -239,7 +252,7 @@ function BarRow({
       <span
         className={cn(
           "w-5 shrink-0 text-right text-[8.5px] tabular-nums sm:text-[10px]",
-          diff > 0 ? "font-semibold text-foreground" : "text-text-tertiary",
+          deltaClass,
         )}
       >
         {diffStr}
