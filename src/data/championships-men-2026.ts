@@ -426,6 +426,7 @@ export const championshipsMen2026: Championship[] = [
       "First Big Sky men's championship after 1-year hiatus; 6 teams competing.",
     sourceUrl:
       "https://uncbears.com/news/2025/5/15/mens-golf-big-sky-reinstates-mens-golf-northern-colorado-set-to-compete-for-2026-championship",
+    winner: "Sacramento State",
   },
   {
     id: 22,
