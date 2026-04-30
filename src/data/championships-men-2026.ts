@@ -391,6 +391,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "Solina (formerly Indian River GC), rebuilt and reopened 2024.",
     sourceUrl:
       "https://soconsports.com/about/championships/2025-26-championships-schedule/",
+    winner: "Chattanooga",
   },
   {
     id: 20,
