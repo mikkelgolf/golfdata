@@ -313,7 +313,7 @@ function NationalBars({
           {field.length} teams · sorted by Final %
         </span>
       </div>
-      <div className="grid grid-cols-1 gap-x-3 gap-y-0 px-2 py-1 sm:grid-cols-2">
+      <div className="px-2 py-1 sm:columns-2 sm:gap-x-3">
         {field.map((t, idx) => {
           const hostColor = hostColorByTeam.get(t.team);
           const fill = hostColor || "hsl(var(--foreground))";
@@ -322,7 +322,7 @@ function NationalBars({
               type="button"
               key={`${t.team}-${t.regional}`}
               onClick={() => onPick(t, t.regional)}
-              className="group flex items-center gap-1 py-[1px] text-left focus:outline-none"
+              className="group flex w-full items-center gap-1 break-inside-avoid py-[1px] text-left focus:outline-none"
             >
               <div className="relative h-[14px] min-w-0 flex-1 overflow-hidden rounded-[2px] bg-muted/30">
                 <motion.div
