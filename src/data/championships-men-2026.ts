@@ -302,6 +302,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#d9a13d",
     notes: "Long-time Big 12 host venue.",
     sourceUrl: "https://big12sports.com/sports/golf",
+    winner: "Oklahoma State",
   },
   {
     id: 15,
