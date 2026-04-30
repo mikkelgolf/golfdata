@@ -337,6 +337,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#c97540",
     notes: "3 rounds Mon-Wed; practice round Sunday April 26.",
     sourceUrl: "https://atlantic10.com/sports/2025/11/12/MGOLF26.aspx",
+    winner: "Richmond",
   },
   {
     id: 17,
