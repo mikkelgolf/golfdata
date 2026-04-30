@@ -1907,14 +1907,16 @@
         "name": "2026 Big South Men's Golf Championship (Stroke Play)",
         "endDate": "2026-04-28",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242780",
-        "winner": null
+        "winner": "Presbyterian"
       },
       "matchplay": {
         "tournamentId": "242781",
         "name": "2026 Big South Men's Golf Championship (Match Play)",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/242781",
-        "winner": null
+        "winner": "Presbyterian",
+        "runnerUp": "USC Upstate",
+        "finalScore": "3-2"
       }
     },
     {

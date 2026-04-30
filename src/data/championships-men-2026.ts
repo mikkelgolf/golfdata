@@ -233,6 +233,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "Note: men's BIGSOUTH conference code is not in the men's rankings file.",
     sourceUrl:
       "https://bigsouthsports.com/sports/2025/8/15/GEN_0815253612.aspx",
+    winner: "Presbyterian",
   },
   {
     id: 11,
