@@ -320,6 +320,7 @@ export const championshipsMen2026: Championship[] = [
     notes: "54-hole stroke play.",
     sourceUrl:
       "https://www.amateurgolf.com/amateur-golf-tournaments/7554/American-Athletic-Conference-Men-s-Golf-Championship",
+    winner: "Charlotte",
   },
   {
     id: 16,
