@@ -649,6 +649,7 @@ export default function ScurveTable({
           teams={activeTeams}
           regionals={activeRegionals}
           championships={activeChampionships}
+          actualSelections={gender === "men" ? menActual : womenActual}
           gender={gender}
           hostColorByTeam={hostColorByTeam}
         />
@@ -3287,12 +3288,14 @@ function ManualGridSection({
   teams,
   regionals,
   championships,
+  actualSelections,
   gender,
   hostColorByTeam,
 }: {
   teams: TeamData[];
   regionals: Regional[];
   championships?: Championship[];
+  actualSelections?: ActualSelection[] | null;
   gender: Gender;
   hostColorByTeam: Map<string, string>;
 }) {
@@ -3607,6 +3610,7 @@ function ManualGridSection({
         teams={aqAwareTeams}
         regionals={regionals}
         championships={championships}
+        actualSelections={actualSelections}
         gender={gender}
         onChange={setGridAssignments}
         onRegionalsOrderChange={setGridRegionalIds}

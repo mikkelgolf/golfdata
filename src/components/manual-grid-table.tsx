@@ -70,9 +70,11 @@ import {
   TEAM_B_COLOR,
 } from "@/lib/manual-grid-colors";
 import { computeScurve, type ScurveAssignment } from "@/lib/scurve";
+import { SimpleModal } from "@/components/simple-modal";
 import type { TeamData } from "@/data/rankings-men";
 import type { Regional } from "@/data/regionals-men-2026";
 import type { Championship } from "@/data/championships-men-2026";
+import type { ActualSelection } from "@/data/regionals-actual-men-2026";
 
 // ---------------------------------------------------------------------------
 // Internal state — wraps the persisted ManualGridState with stable per-slot
@@ -169,6 +171,12 @@ export interface ManualGridTableProps {
   teams: TeamData[];
   regionals: Regional[];
   championships?: Championship[];
+  /**
+   * Actual NCAA bracket selections, when known. Empty/undefined means the
+   * bracket hasn't been announced for this gender yet — Reset All will
+   * skip the Committee/Actual picker and reset directly to Committee.
+   */
+  actualSelections?: ActualSelection[] | null;
   gender: Gender;
   /** Notifies parent when state changes — used to drive Breakdown / H2H view. */
   onChange?: (assignments: ScurveAssignment[]) => void;
@@ -434,6 +442,7 @@ export function ManualGridTable({
   teams,
   regionals,
   championships,
+  actualSelections,
   gender,
   onChange,
   onRegionalsOrderChange,
@@ -732,14 +741,38 @@ export function ManualGridTable({
     });
   }, []);
 
-  // Wipe history + localStorage and rebuild from committee defaults.
+  // Reset choice modal — only opens when an Actual bracket is available.
+  // When there's no Actual data, Reset All goes straight to Committee.
+  const [resetChoiceOpen, setResetChoiceOpen] = useState(false);
+  const hasActual = (actualSelections?.length ?? 0) > 0;
+
+  // Wipe history + localStorage and rebuild from the chosen mode.
+  const applyReset = useCallback(
+    (mode: "committee" | "actual") => {
+      clearGridState(gender);
+      const assignments = computeScurve(
+        teams,
+        regionals,
+        mode,
+        gender,
+        championships,
+        actualSelections ?? null,
+      );
+      const fresh = defaultGridFromAssignments(assignments, regionals);
+      setInternal(toInternal(fresh));
+      setHistory([]);
+      setResetChoiceOpen(false);
+    },
+    [gender, teams, regionals, championships, actualSelections],
+  );
+
   const handleResetAll = useCallback(() => {
-    clearGridState(gender);
-    const assignments = computeScurve(teams, regionals, "committee", gender, championships);
-    const fresh = defaultGridFromAssignments(assignments, regionals);
-    setInternal(toInternal(fresh));
-    setHistory([]);
-  }, [gender, teams, regionals, championships]);
+    if (hasActual) {
+      setResetChoiceOpen(true);
+    } else {
+      applyReset("committee");
+    }
+  }, [hasActual, applyReset]);
 
   // ---------------------------------------------------------------------
   // Travel-balance optimizer (David, 2026-04-28).
@@ -932,6 +965,7 @@ export function ManualGridTable({
   }, [gender]);
 
   return (
+    <>
     <div className="mt-3">
       <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
         <div className="text-[11px] text-text-tertiary leading-snug max-w-[640px] space-y-1.5">
@@ -1166,6 +1200,49 @@ export function ManualGridTable({
         </DragOverlay>
       </DndContext>
     </div>
+
+    {/* Reset All choice modal — only shown when an Actual bracket exists */}
+    <SimpleModal
+      open={resetChoiceOpen}
+      onClose={() => setResetChoiceOpen(false)}
+      title="Reset Manual Grid"
+      widthClass="max-w-md"
+    >
+      <div className="space-y-4 px-4 pb-4 pt-1">
+        <p className="text-[12px] text-text-tertiary leading-relaxed">
+          Choose which baseline to reset to. The Committee default is the
+          predicted bracket; the Actual default is the official NCAA bracket
+          for this gender.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            type="button"
+            autoFocus
+            onClick={() => applyReset("committee")}
+            className="h-10 px-3 rounded-md border border-primary bg-primary/10 text-[12px] font-medium text-primary hover:bg-primary/20"
+          >
+            Committee
+          </button>
+          <button
+            type="button"
+            onClick={() => applyReset("actual")}
+            className="h-10 px-3 rounded-md border border-border bg-background text-[12px] font-medium text-foreground hover:bg-secondary/50"
+          >
+            Actual
+          </button>
+        </div>
+        <div className="flex items-center justify-end pt-1">
+          <button
+            type="button"
+            onClick={() => setResetChoiceOpen(false)}
+            className="h-7 px-2.5 rounded-md border border-border bg-background text-[11px] text-foreground hover:bg-secondary/50"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </SimpleModal>
+    </>
   );
 }
 
