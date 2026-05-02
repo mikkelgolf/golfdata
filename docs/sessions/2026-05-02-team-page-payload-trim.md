@@ -153,6 +153,38 @@ Caching dashboard (52 ISR hits in the snapshot was the top entry).
     `revalidate` to the team route. Same reason — out of scope, can
     be a separate session.
 
+## Wrap (2026-05-02)
+
+**PR:** https://github.com/mikkelgolf/golfdata/pull/36
+**Vercel preview:** https://collegegolfdata-6i28k04nd-mikkelgolfs-projects.vercel.app
+**Branch state at wrap:** 3 commits ahead of `origin/dev`, 5 files changed, +499 / -87 lines.
+
+**What shipped:**
+
+- `scripts/build-us-base-map.mjs` — pre-renders the static US base map
+  from `src/data/us-states-10m.json`. Run on demand when topology
+  source or theme colors change.
+- `scripts/analyze-team-page-payload.mjs` — diagnostic for breaking
+  down what's eating bytes inside a prerendered team-page HTML; kept
+  around for future regressions.
+- `public/us-base-map.svg` — 391.8 KB generated static asset, served
+  from CDN, bypasses ISR billing.
+- `src/components/team-page/team-map.tsx` — replaced 50 inline state
+  `<path>` elements + topology imports with one `<image
+  href="/us-base-map.svg">`. `tzInfo` now uses `tzBandFromLatLng`
+  (lazy-loads topology internally), shrinking the client bundle too.
+- `docs/sessions/2026-05-02-team-page-payload-trim.md` — this doc.
+
+**Measured impact** (already logged above): per-page HTML cut by
+3.3–6.3× across 5 sample team pages, ~395 KB removed per page,
+~230 MB removed across all 597 prerendered team pages. Expected
+real-world ISR-read-units reduction: ~64% based on assumed
+compressed-bytes billing model and team-pages-as-85%-of-read-bytes
+assumption. Confirmation pending post-prod-deploy dashboard check.
+
+**David approved at wrap time** ("It looks ok") — folded into `dev`
+via `git merge --no-ff` next.
+
 ## Open follow-ups (after this lands)
 
 - Re-pull the Vercel ISR Read Units chart 24–48 h after deploy to
