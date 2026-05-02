@@ -3,7 +3,7 @@ import type { TeamData } from "./rankings-men";
 /**
  * NCAA D1 Women's golf rankings - 2025-26 season.
  *
- * Auto-generated from Clippd leaderboard API on 2026-05-01.
+ * Auto-generated from Clippd leaderboard API on 2026-05-02.
  * Source: scoreboard.clippd.com/rankings
  */
 export const rankingsWomen: TeamData[] = [
