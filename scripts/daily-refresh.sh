@@ -213,10 +213,33 @@ RANKINGS_FILES=(
     src/data/all-teams-men-2026.ts
     src/data/all-teams-women-2026.ts
 )
-if ! git diff --quiet "${RANKINGS_FILES[@]}" 2>/dev/null; then
+
+# Date-stamp comment lines that the scrape + build steps regenerate every
+# day even when the underlying Clippd data is byte-identical. Filtering
+# these out of the "did anything change?" check stops the script from
+# committing + redeploying on no-content days, which would otherwise pay
+# the full Vercel rebuild + ISR re-warm cost (~6-12k read units per
+# rebuild) for a one-character date change.
+#
+# Patterns:
+#   rankings-{men,women}.ts top-of-file JSDoc:
+#     ` * Auto-generated from Clippd leaderboard API on YYYY-MM-DD.`
+#   all-teams-{men,women}-2026.ts top-of-file comment:
+#     `// Source: data/clippd/rankings-YYYY-MM-DD.json`
+#
+# `git diff -I<regex>` (git 2.30+) ignores hunks where every changed line
+# matches the regex. Multiple -I flags OR together. Verified against the
+# May 1 (date-only) and Apr 29 (real-content) commits before this gate
+# was wired in.
+DATE_STAMP_IGNORE_FLAGS=(
+    -I'^ \* Auto-generated from Clippd leaderboard API on [0-9]{4}-[0-9]{2}-[0-9]{2}\.$'
+    -I'^// Source: data/clippd/rankings-[0-9]{4}-[0-9]{2}-[0-9]{2}\.json$'
+)
+
+if ! git diff --quiet "${DATE_STAMP_IGNORE_FLAGS[@]}" "${RANKINGS_FILES[@]}" 2>/dev/null; then
     RANKINGS_CHANGED="yes"
     DIFF_STAT=$(git diff --shortstat "${RANKINGS_FILES[@]}" | sed 's/^ //')
-    log "rankings delta: $DIFF_STAT"
+    log "rankings delta (real content): $DIFF_STAT"
 
     # Sanity gate: reject runs that rewrite a huge share of rows.
     CHANGED=$(git diff --numstat "${RANKINGS_FILES[@]}" | awk '{s += $1 + $2} END {print s}')
@@ -227,6 +250,20 @@ if ! git diff --quiet "${RANKINGS_FILES[@]}" 2>/dev/null; then
         if [ "$PCT" -gt "$SANITY_PCT" ]; then
             abort_hard "sanity gate tripped: ${PCT}% of rows changed (> ${SANITY_PCT}%)"
         fi
+    fi
+elif ! git diff --quiet "${RANKINGS_FILES[@]}" 2>/dev/null; then
+    # Working tree differs but only in the date-stamp comment lines. Revert
+    # those changes so tomorrow's run starts from a clean tree — the
+    # dirty-tree check at step 0 would otherwise abort the next cron.
+    # Safe to revert because we just verified the only diff is the date
+    # comments, which the scrape regenerates fresh tomorrow.
+    DATESTAMP_DIFF_STAT=$(git diff --shortstat "${RANKINGS_FILES[@]}" | sed 's/^ //')
+    log "rankings: only date-stamp comments changed ($DATESTAMP_DIFF_STAT) — reverting to keep working tree clean"
+    if [ "$dry_run_mode" = "0" ]; then
+        git checkout HEAD -- "${RANKINGS_FILES[@]}" || \
+            abort_hard "failed to revert date-stamp-only changes"
+    else
+        log "[dry-run] would: git checkout HEAD -- ${RANKINGS_FILES[*]}"
     fi
 fi
 
