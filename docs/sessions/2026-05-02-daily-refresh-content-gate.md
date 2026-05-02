@@ -93,3 +93,87 @@ This sits on top of the team-map static-asset win that just landed on
 ## Status log
 
 - 2026-05-02 — session started, branch created off `dev`.
+- 2026-05-02 — verified `git diff -I<regex>` behavior against the
+  May 1 (date-only) and Apr 29 (real-content) historical commits as
+  fixtures. Both classify correctly.
+- 2026-05-02 — wired the gate into `scripts/daily-refresh.sh` step 4:
+  `DATE_STAMP_IGNORE_FLAGS` array carries two `-I` patterns; on a
+  date-only diff the script reverts the working-tree changes with
+  `git checkout HEAD -- "${RANKINGS_FILES[@]}"` so tomorrow's run
+  starts clean. Real-content path unchanged (still hits the 75%
+  sanity gate). Champions OR at step 6 still ensures a date-only
+  rankings day with a new conference winner commits + deploys.
+- 2026-05-02 — end-to-end working-tree simulation:
+    1. mutated only the date comment in `rankings-men.ts` → gate
+       routed to date-only branch and reverted; tree clean.
+    2. bumped Auburn's `avgPoints` → gate routed to real-content
+       branch; commit-and-deploy path would proceed.
+    3. `bash -n scripts/daily-refresh.sh` syntax OK.
+  No actual cron run was triggered — that would push to `main`. The
+  fixture + simulation tests are sufficient validation; the gate
+  takes effect on the next 02:00 Norway-time LaunchAgent fire.
+
+## Wrap (2026-05-02)
+
+**PR:** https://github.com/mikkelgolf/golfdata/pull/<filled in at merge>
+**Branch state at wrap:** 2 commits ahead of `origin/dev`, 2 files
+changed (+134 / -2 lines including this doc).
+
+**What shipped:**
+
+- `scripts/daily-refresh.sh` — content-aware gate at step 4. Two
+  `-I` regex flags filter out the auto-generated date-stamp comments
+  before deciding whether to commit + redeploy. Working-tree revert
+  on date-only nights keeps the cron's step-0 dirty-tree check
+  satisfied tomorrow.
+- `docs/sessions/2026-05-02-daily-refresh-content-gate.md` — this
+  doc.
+
+**Expected impact:**
+
+Based on the Apr 29 / 30 / May 1 sample, ~2 of every 3 nightly cron
+runs are date-stamp-only no-content rebuilds. With the gate, those
+nights skip:
+
+- 1 commit to `main`
+- 1 `vercel --prod` build (~5–10 min runtime)
+- 1 full re-prerender of all 597 team pages
+- ~6–12k ISR read units to re-warm CDN caches (per the post-team-map
+  ~10–22 read units per page first-hit cost)
+- Plus the writes for the fresh prerender
+
+Annualised at ~2/3 nights skipped, that's roughly 240 fewer prod
+rebuilds per year and roughly **1.4–2.9M ISR read units saved per
+year** that were previously paid for zero data change. On the
+current 1M-units/cycle Hobby plan, that's a meaningful tail-cost
+reduction even after the team-map win lands.
+
+Real-content nights (Clippd actually moved a number) are unaffected
+— same commit, same deploy, same Discord summary.
+
+**Validation gates passed:**
+
+- Historical fixtures: May 1 → "no real content" (correct);
+  Apr 29 → "real content" (correct).
+- Working-tree simulation: date-only + bump-avgPoints both
+  classified correctly; revert path leaves tree clean.
+- Bash syntax check: passes.
+- No live cron run (would push to `main`).
+
+## Open follow-ups (after this lands)
+
+- Watch the `logs/daily-refresh-*.log` files for the next 3–5 nights
+  to confirm the gate is making the right call. Look for either:
+    - `rankings: only date-stamp comments changed (...) — reverting`
+      → gate fired (the savings case)
+    - `rankings delta (real content): ...` → real Clippd update
+- The `src/data/rankings-archive/{men,women}/YYYY-MM-DD.ts` snapshot
+  files keep accumulating untracked (the daily-refresh `git add`
+  only stages the 4 RANKINGS_FILES + champions). Worth a separate
+  session to either commit them automatically or rethink the archive
+  storage.
+- If the ISR cap fight is still tight after this and the team-map
+  win compound, the next levers are: (a) move year-by-year timeline
+  grids to client islands, (b) add `revalidate` + on-demand
+  `revalidatePath` so daily writes only touch teams whose data
+  actually changed.
