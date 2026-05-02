@@ -455,6 +455,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "First time MAAC has separated men's & women's championships in 28 years.",
     sourceUrl: "https://golfonemedia.com/maac/",
+    winner: "Iona",
   },
   {
     id: 23,
