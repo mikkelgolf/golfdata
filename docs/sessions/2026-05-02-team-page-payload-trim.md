@@ -92,3 +92,74 @@ Caching dashboard (52 ISR hits in the snapshot was the top entry).
 
 - 2026-05-02 — session started, branch created off `dev`, audit
   findings logged.
+- 2026-05-02 — built `scripts/analyze-team-page-payload.mjs` to break
+  down what's eating bytes inside `.next/server/app/teams/men/<slug>.html`.
+  Ran against 5 representative pages. Surprise finding: the
+  "Geography → 2026 conference championship" span is **395.8 KB on
+  EVERY team page** — same byte count across all five samples. Traced
+  to `TeamMap` component rendering 50 individual `<path>` elements
+  (one per state) inline in the SSR HTML, each with the full SVG
+  path data from the 10m-resolution US topology. This single
+  finding accounts for **70–85% of every team page's payload**.
+- 2026-05-02 — pivoted plan: instead of refactoring multiple
+  sections, fix the one giant lever first.
+
+  **Change:** generate the static base map (state fills + state
+  borders + timezone borders + nation border) once at build time,
+  serve it as `public/us-base-map.svg`, and reference it from
+  `TeamMap` via `<image href="/us-base-map.svg">`. Per-team overlays
+  (team marker, regional marker, travel arc, other regionals) stay
+  inline. Site is dark-mode-only so colors are hardcoded.
+
+  **Files added/changed:**
+    - `scripts/build-us-base-map.mjs` — pre-renders the static SVG
+      from `src/data/us-states-10m.json`. Run on demand when topology
+      or theme colors change.
+    - `scripts/analyze-team-page-payload.mjs` — diagnostic kept around
+      for future regressions.
+    - `public/us-base-map.svg` — generated 391.8 KB static asset.
+      Served once by the CDN, cached in the browser for the lifetime
+      of the deploy. **Bypasses ISR cache entirely** (anything in
+      `public/` is a true static asset, no ISR billing).
+    - `src/components/team-page/team-map.tsx` — removed inline state
+      paths + topology imports; added single `<image>` tag.
+      `tzBandFromCoord(lat, lng, statesGeo)` → `tzBandFromLatLng(lat,
+      lng)` (lazy-loads topology internally) to drop the topology
+      from this client component's bundle too.
+
+  **Measured impact** after `npm run build`:
+
+  | Page              | Before    | After     | Δ          | Ratio  |
+  |-------------------|-----------|-----------|------------|--------|
+  | alabama           | 567.3 KB  | 172.7 KB  | -394.6 KB  | 3.3×   |
+  | abilene-christian | 471.4 KB  |  76.9 KB  | -394.5 KB  | 6.1×   |
+  | air-force         | 516.7 KB  | 122.1 KB  | -394.6 KB  | 4.2×   |
+  | presbyterian      | 461.8 KB  |  73.0 KB  | -388.8 KB  | 6.3×   |
+  | minnesota         | 540.9 KB  | 146.2 KB  | -394.7 KB  | 3.7×   |
+
+  Across all 597 prerendered team pages, ~230 MB of inlined SVG
+  removed from the prerender output. Expected ISR-read-units
+  reduction on team-page traffic: **3–6×** depending on which pages
+  get hit (smaller-history teams benefit the most relative to their
+  pre-fix size).
+
+  **What we did NOT do** (deliberately, to keep this PR focused):
+  - Did not move the year-by-year timeline grids to client islands.
+    That was the original Step 1 in the plan; the map win was so
+    large that the timeline grid trim isn't urgent for the cap
+    fight. Worth a follow-up session if reads are still high after
+    this lands.
+  - Did not change the daily-refresh deploy cadence or add
+    `revalidate` to the team route. Same reason — out of scope, can
+    be a separate session.
+
+## Open follow-ups (after this lands)
+
+- Re-pull the Vercel ISR Read Units chart 24–48 h after deploy to
+  confirm reads have dropped on the `/teams/[gender]/[slug]` route.
+- If reads are still high, queue a session to move the regional +
+  NCAA timeline grids to client-rendered islands hydrated from a
+  small JSON prop. Estimated additional savings: 30–60 KB per page.
+- Evaluate adding `export const revalidate = 86400` + on-demand
+  `revalidatePath` from `daily-refresh.sh` so daily writes only
+  touch teams whose data actually changed.
