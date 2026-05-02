@@ -360,6 +360,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#d68a8a",
     notes: "3 rounds stroke play + match play semis & final.",
     sourceUrl: "https://sunbeltsports.org/sports/2025/9/7/MGOLF_0907252417.aspx",
+    winner: "Arkansas State",
   },
   {
     id: 18,
@@ -379,6 +380,7 @@ export const championshipsMen2026: Championship[] = [
       "Long-running venue since 2015; stroke play + match play.",
     sourceUrl:
       "https://calendar.kennesaw.edu/event/kennesaw-state-university-mens-golf-at-conference-usa-championships",
+    winner: "Liberty",
   },
   {
     id: 19,
@@ -453,6 +455,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "First time MAAC has separated men's & women's championships in 28 years.",
     sourceUrl: "https://golfonemedia.com/maac/",
+    winner: "Iona",
   },
   {
     id: 23,
