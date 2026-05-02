@@ -2175,14 +2175,16 @@
         "name": "Sun Belt Conference Men's Championship",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/243204",
-        "winner": null
+        "winner": "Coastal Carolina"
       },
       "matchplay": {
         "tournamentId": "243205",
         "name": "Sun Belt Conference Men's Championship Match Play",
         "endDate": "2026-04-30",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/243205",
-        "winner": null
+        "winner": "Arkansas State",
+        "runnerUp": "Coastal Carolina",
+        "finalScore": "4-1"
       }
     },
     {

@@ -360,6 +360,7 @@ export const championshipsMen2026: Championship[] = [
     color: "#d68a8a",
     notes: "3 rounds stroke play + match play semis & final.",
     sourceUrl: "https://sunbeltsports.org/sports/2025/9/7/MGOLF_0907252417.aspx",
+    winner: "Arkansas State",
   },
   {
     id: 18,
