@@ -1957,14 +1957,16 @@
         "name": "2026 Conference USA Men's Golf Championship - Stroke Play",
         "endDate": "2026-04-29",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/241757",
-        "winner": null
+        "winner": "UTEP"
       },
       "matchplay": {
         "tournamentId": "241762",
         "name": "2026 Conference USA Men's Golf Championship - Match Play",
         "endDate": "2026-04-30",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/241762",
-        "winner": null
+        "winner": "Liberty",
+        "runnerUp": "UTEP",
+        "finalScore": "3.5-1.5"
       }
     },
     {

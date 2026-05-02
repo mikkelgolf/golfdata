@@ -380,6 +380,7 @@ export const championshipsMen2026: Championship[] = [
       "Long-running venue since 2015; stroke play + match play.",
     sourceUrl:
       "https://calendar.kennesaw.edu/event/kennesaw-state-university-mens-golf-at-conference-usa-championships",
+    winner: "Liberty",
   },
   {
     id: 19,
