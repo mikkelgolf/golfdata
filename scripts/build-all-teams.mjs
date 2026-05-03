@@ -389,6 +389,9 @@ const CONFERENCE_OVERRIDES = {
   "women:Dayton": "A10",
   "women:Duquesne": "A10",
   "women:Saint Josephs": "A10",
+  // UTRGV competed in the Southland in 2025-26 but Clippd lists them under WAC
+  // (they moved to WAC for 2026-27). Keep this override until Clippd catches up.
+  "men:UTRGV": "SOUTHLAND",
 };
 
 // ---------------------------------------------------------------------------
