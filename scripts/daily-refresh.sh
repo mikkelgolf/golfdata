@@ -267,6 +267,19 @@ elif ! git diff --quiet "${RANKINGS_FILES[@]}" 2>/dev/null; then
     fi
 fi
 
+# Check for newly-created (untracked) archive snapshot files. snapshot-rankings.ts
+# writes dated .ts files into src/data/rankings-archive/{men,women}/ that are NOT
+# in RANKINGS_FILES above, so the git diff gate would miss them entirely. If any
+# new archive files are present we flip RANKINGS_CHANGED so the commit step runs
+# and the files get staged via the expanded git add below.
+ARCHIVE_UNTRACKED=$(git ls-files --others --exclude-standard \
+    src/data/rankings-archive/ 2>/dev/null | grep -v '^$' || true)
+if [ -n "$ARCHIVE_UNTRACKED" ]; then
+    RANKINGS_CHANGED="yes"
+    COUNT=$(echo "$ARCHIVE_UNTRACKED" | wc -l | tr -d ' ')
+    log "new archive snapshot file(s) detected ($COUNT): $ARCHIVE_UNTRACKED"
+fi
+
 # ---------------------------------------------------------------------------
 # 4b. Coordinate verifier (deploy blocker)
 # ---------------------------------------------------------------------------
@@ -308,6 +321,7 @@ if [ "$RANKINGS_CHANGED" = "yes" ] || [ "$CHAMPIONS_CHANGED" = "yes" ]; then
         log "step 6: [dry-run] skipping git add/commit/push + vercel"
     else
         git add "${RANKINGS_FILES[@]}" \
+                src/data/rankings-archive/ \
                 src/data/championships-men-2026.ts src/data/championships-women-2026.ts 2>&1
         if ! git commit -m "daily refresh $(date -u +%Y-%m-%d) — rankings${CHAMPIONS_CHANGED:+ + champions}" 2>&1; then
             abort_hard "git commit failed"
