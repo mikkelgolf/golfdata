@@ -13,6 +13,7 @@ import snap_2026_04_23 from "./2026-04-23";
 import snap_2026_04_27 from "./2026-04-27";
 import snap_2026_04_28 from "./2026-04-28";
 import snap_2026_04_30 from "./2026-04-30";
+import snap_2026_05_04 from "./2026-05-04";
 
 export const archiveWomen: Record<string, RankingsSnapshot> = {
   "2026-04-12": snap_2026_04_12,
@@ -22,6 +23,7 @@ export const archiveWomen: Record<string, RankingsSnapshot> = {
   "2026-04-27": snap_2026_04_27,
   "2026-04-28": snap_2026_04_28,
   "2026-04-30": snap_2026_04_30,
+  "2026-05-04": snap_2026_05_04,
 };
 
-export const latestDateWomen: string = "2026-04-30";
+export const latestDateWomen: string = "2026-05-04";
