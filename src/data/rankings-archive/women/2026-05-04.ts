@@ -7,7 +7,7 @@ import type { RankingsSnapshot } from "@/lib/rankings-archive";
 const snapshot: RankingsSnapshot = {
   date: "2026-05-04",
   gender: "women",
-  pulledAt: "2026-05-04T13:32:18.022Z",
+  pulledAt: "2026-05-04T13:57:01.227Z",
   label: null,
   source: "live-rankings-ts",
   teams: [
