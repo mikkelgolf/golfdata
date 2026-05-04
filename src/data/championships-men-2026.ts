@@ -491,7 +491,7 @@ export const championshipsMen2026: Championship[] = [
     endDate: "2026-05-03",
     color: "#6890b3",
     sourceUrl: "https://wccsports.com/tournaments/?id=143",
-    winner: "San Diego",
+    winner: "Pepperdine",
   },
   {
     id: 25,
