@@ -9,7 +9,7 @@
 
 import type { TeamData } from "@/data/rankings-men";
 
-export const ALL_TEAMS_GENERATED_AT = "2026-04-30";
+export const ALL_TEAMS_GENERATED_AT = "2026-05-04";
 
 export const allTeamsWomen2026: TeamData[] = [
   { rank: 1, team: "Stanford", conference: "ACC", events: 10, wins: 86, losses: 3, ties: 0, eligible: true, isAutoQualifier: false, aqConference: null, lat: 37.4275, lng: -122.1697 },
