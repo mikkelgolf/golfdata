@@ -1851,7 +1851,7 @@
         "name": "Big Ten Men's Golf Championships",
         "endDate": "2026-05-03",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/239794",
-        "winner": null
+        "winner": "UCLA"
       },
       "matchplay": null
     },
@@ -2234,7 +2234,9 @@
         "name": "West Coast Conference Men’s Golf Championship - Match Play",
         "endDate": "2026-05-03",
         "clippdUrl": "https://scoreboard.clippd.com/tournaments/240291",
-        "winner": null
+        "winner": "Pepperdine",
+        "runnerUp": "Oregon State",
+        "finalScore": "4-1"
       }
     },
     {

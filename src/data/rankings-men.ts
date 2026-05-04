@@ -22,7 +22,7 @@ export interface TeamData {
 /**
  * NCAA D1 Men's golf rankings - 2025-26 season.
  *
- * Auto-generated from Clippd leaderboard API on 2026-04-30.
+ * Auto-generated from Clippd leaderboard API on 2026-05-04.
  * Source: scoreboard.clippd.com/rankings
  */
 export const rankingsMen: TeamData[] = [
@@ -158,7 +158,7 @@ export const rankingsMen: TeamData[] = [
   { rank: 130, team: "Illinois State", conference: "MVC", events: 12, wins: 85, losses: 64, ties: 6, eligible: true, isAutoQualifier: true, aqConference: "MVC", lat: 40.5092961, lng: -88.9843937, avgPoints: 24.57, strengthOfSchedule: -1.6449, strengthOfScheduleRank: 153, adjustedScore: 288.52, eventsWon: 2, eventsTop3: 3 },
   { rank: 131, team: "North Florida", conference: "ASUN", events: 12, wins: 46, losses: 126, ties: 2, eligible: false, isAutoQualifier: false, aqConference: null, lat: 30.2694, lng: -81.5065, avgPoints: 24.49, strengthOfSchedule: -0.2403, strengthOfScheduleRank: 61, adjustedScore: 288.56, eventsWon: 0, eventsTop3: 0 },
   { rank: 132, team: "Abilene Christian", conference: "WAC", events: 12, wins: 87, losses: 62, ties: 2, eligible: true, isAutoQualifier: false, aqConference: null, lat: 32.44645, lng: -99.7475905, avgPoints: 24.47, strengthOfSchedule: -1.4434, strengthOfScheduleRank: 135, adjustedScore: 288.62, eventsWon: 1, eventsTop3: 2 },
-  { rank: 133, team: "UTRGV", conference: "SOUTHLAND", events: 11, wins: 78, losses: 54, ties: 3, eligible: true, isAutoQualifier: true, aqConference: "SOUTHLAND", lat: 26.3013982, lng: -98.1624501, avgPoints: 24.18, strengthOfSchedule: -1.5351, strengthOfScheduleRank: 145, adjustedScore: 288.73, eventsWon: 2, eventsTop3: 4 },
+  { rank: 133, team: "UTRGV", conference: "WAC", events: 11, wins: 78, losses: 54, ties: 3, eligible: true, isAutoQualifier: true, aqConference: "SOUTHLAND", lat: 26.3013982, lng: -98.1624501, avgPoints: 24.18, strengthOfSchedule: -1.5351, strengthOfScheduleRank: 145, adjustedScore: 288.73, eventsWon: 2, eventsTop3: 4 },
   { rank: 134, team: "George Mason", conference: "A10", events: 11, wins: 90, losses: 53, ties: 4, eligible: true, isAutoQualifier: false, aqConference: null, lat: 38.8462236, lng: -77.3063733, avgPoints: 23.94, strengthOfSchedule: -1.8303, strengthOfScheduleRank: 167, adjustedScore: 289.02, eventsWon: 1, eventsTop3: 3 },
   { rank: 135, team: "UTSA", conference: "AAC", events: 11, wins: 66, losses: 73, ties: 0, eligible: false, isAutoQualifier: false, aqConference: null, lat: 29.4246002, lng: -98.4951405, avgPoints: 23.75, strengthOfSchedule: -1.2699, strengthOfScheduleRank: 128, adjustedScore: 289.10, eventsWon: 1, eventsTop3: 3 },
   { rank: 136, team: "Rhode Island", conference: "A10", events: 12, wins: 105, losses: 35, ties: 3, eligible: true, isAutoQualifier: false, aqConference: null, lat: 41.8239891, lng: -71.4128343, avgPoints: 23.41, strengthOfSchedule: -2.6109, strengthOfScheduleRank: 218, adjustedScore: 289.22, eventsWon: 4, eventsTop3: 6 },
