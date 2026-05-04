@@ -474,6 +474,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "104th edition; first time hosted at Pumpkin Ridge and first westward Big Ten golf championship.",
     sourceUrl: "https://bigten.org/mgolf/article/59714/",
+    winner: "UCLA",
   },
   {
     id: 24,
