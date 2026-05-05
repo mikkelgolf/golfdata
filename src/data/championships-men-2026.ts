@@ -510,6 +510,7 @@ export const championshipsMen2026: Championship[] = [
     notes:
       "4th consecutive year at Riverton Pointe (Nicklaus Design); 11 BIG EAST teams.",
     sourceUrl: "https://thegolfwire.com/big-east-mens-golf-championships-2026",
+    winner: "Xavier",
   },
   {
     id: 26,
